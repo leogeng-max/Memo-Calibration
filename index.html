@@ -1188,6 +1188,24 @@ body.is-fullscreen .zoom-toggle {
   margin-top: 6px;
 }
 
+/* ═══════════════ SECTION HEADER (used on s24 History) ═══════════════ */
+/* Stronger eyebrow than .lbl — used for the major section breaks
+   on the History page so each block is clearly its own thing. */
+.section-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--p); font-weight: 500;
+  margin-bottom: 14px;
+}
+.section-header::before {
+  content: ''; display: inline-block;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--p);
+  flex-shrink: 0;
+}
+.section-header .meta { color: var(--t); font-weight: 400; letter-spacing: 0.04em; }
+
 /* ═══════════════ NOTES (per-stock journal) ═══════════════ */
 .note-item {
   padding: 14px 0;
@@ -1661,7 +1679,7 @@ body.is-fullscreen .zoom-toggle {
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="go('m4')">‹</button>
-                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">AAPL · Apple Inc</span>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">AAPL · 6 / 7</span>
                 <button class="s0-exit" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -1681,7 +1699,7 @@ body.is-fullscreen .zoom-toggle {
                   <div>
                     <span id="s12-prob-num" class="prob-num">50</span><span class="prob-num-pct">%</span>
                   </div>
-                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="10"
+                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="5"
                          oninput="setProb('s12', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
                     <span class="body-xs">0%</span><span class="body-xs">100%</span>
@@ -1732,7 +1750,7 @@ body.is-fullscreen .zoom-toggle {
               <div class="memo-page">
                 <div class="ticker-row lite">
                   <div class="ticker-step">Classify</div>
-                  <div class="ticker-meta">AAPL · 1 / 5</div>
+                  <div class="ticker-meta">AAPL · 1 / 7</div>
                 </div>
 
                 <div>
@@ -1780,7 +1798,7 @@ and you mis-hold.</div>
               <div class="memo-page">
                 <div class="ticker-row lite">
                   <div class="ticker-step">Size</div>
-                  <div class="ticker-meta">AAPL · 2 / 5</div>
+                  <div class="ticker-meta">AAPL · 2 / 7</div>
                 </div>
 
                 <div>
@@ -1827,7 +1845,7 @@ and how much you commit.</div>
               <div class="memo-page">
                 <div class="ticker-row lite">
                   <div class="ticker-step">Thesis</div>
-                  <div class="ticker-meta">AAPL · 3 / 5</div>
+                  <div class="ticker-meta">AAPL · 3 / 7</div>
                 </div>
 
                 <div class="title-md">Why are you buying this?</div>
@@ -1869,7 +1887,7 @@ you don't understand it.</div>
               <div class="memo-page">
                 <div class="ticker-row lite">
                   <div class="ticker-step">Kill line</div>
-                  <div class="ticker-meta">AAPL · 4 / 5</div>
+                  <div class="ticker-meta">AAPL · 4 / 7</div>
                 </div>
 
                 <div class="title-md">What would prove the thesis wrong?</div>
@@ -1911,11 +1929,16 @@ to rewrite it.</div>
               <div class="memo-page">
                 <div class="ticker-row lite">
                   <div class="ticker-step">Margin of safety</div>
-                  <div class="ticker-meta">AAPL · 5 / 5</div>
+                  <div class="ticker-meta">AAPL · 5 / 7</div>
                 </div>
 
                 <div class="title-md">At today's price, you see:</div>
                 <div class="t-bsm" style="margin-top:-20px">Conservative assumptions, not best-case.</div>
+
+                <!-- Reference data — frames the question without prescribing an answer -->
+                <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--divider);font-size:12px;color:var(--t-700);line-height:1.55;letter-spacing:-0.01em">
+                  Current price <span style="color:var(--s)">192.35 USD</span> · Analyst consensus IV <span style="color:var(--s)">~$185</span>. Your judgment, not a calculation.
+                </div>
 
                 <div class="field-list" data-list="m4-mos">
                   <button class="radio-row" data-radio="below"><div class="lbl-block"><div class="head">Meaningfully below intrinsic value</div></div><div class="radio-dot"></div></button>
@@ -1952,7 +1975,7 @@ to protect against error.</div>
               <div class="memo-page" style="gap:24px">
                 <div class="ticker-row lite">
                   <div class="ticker-step">Review</div>
-                  <div class="ticker-meta">AAPL</div>
+                  <div class="ticker-meta">AAPL · 7 / 7</div>
                 </div>
 
                 <div>
@@ -1984,7 +2007,7 @@ to protect against error.</div>
 
                 <div>
                   <div class="section-eyebrow" style="margin-bottom:0">Calibration</div>
-                  <div class="memo-row"><div class="k">Probability</div><div class="v" id="m6-prob">—</div></div>
+                  <div class="memo-row"><div class="k">Probability ≥20%/yr</div><div class="v" id="m6-prob">—</div></div>
                   <div class="memo-row"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
                   <div class="memo-row"><div class="k">Top 3 idea</div><div class="v" id="m6-top3">—</div></div>
                 </div>
@@ -2080,7 +2103,7 @@ to protect against error.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="s20-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="10"
+                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="5"
                          oninput="setProb('s20', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
                     <span class="body-xs">0%</span><span class="body-xs">100%</span>
@@ -2233,7 +2256,7 @@ to protect against error.</div>
               <div style="margin:32px 14px 24px">
                 <div class="lbl" style="margin-bottom:14px">Calibration</div>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--divider)">
-                  <span class="body-sm" style="color:var(--s)">Probability of 20%+ compounding</span>
+                  <span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span>
                   <span class="body-md" id="s4-conf">—</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0">
@@ -2266,6 +2289,7 @@ to protect against error.</div>
             <div style="padding:36px 16px 32px;flex-shrink:0">
               <div style="text-align:right">
                 <div class="h2"><span class="body-sm" style="color:var(--t);margin-right:10px">AAPL</span>Order Filled</div>
+                <div class="body-sm" style="color:var(--t);margin-top:6px" id="s9-filled-at">Filled at —</div>
               </div>
             </div>
 
@@ -2287,7 +2311,7 @@ to protect against error.</div>
 
               <div style="margin-top:32px">
                 <div class="lbl" style="margin-bottom:14px">Calibration recorded</div>
-                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0;gap:16px"><span class="body-sm" style="color:var(--s)">Probability of 20%+ compounding</span><span class="body-md" id="s9-conf">—</span></div>
+                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0;gap:16px"><span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span><span class="body-md" id="s9-conf">—</span></div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s9-horizon">—</span></div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Top 3 idea</span><span class="body-md" id="s9-top3">—</span></div>
 
@@ -2597,9 +2621,9 @@ to protect against error.</div>
             <div class="body-scroll" style="padding:0 16px 24px">
 
               <!-- Calibration timeline entry — sits at the top of History -->
-              <div style="padding:32px 0 14px;cursor:pointer" onclick="openCalibrationTimeline()">
+              <div style="padding:36px 0 14px;cursor:pointer" onclick="openCalibrationTimeline()">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-                  <div class="lbl">Calibration timeline</div>
+                  <div class="section-header">Calibration timeline</div>
                   <span style="font-size:18px;color:var(--t);line-height:1">›</span>
                 </div>
                 <div style="font-size:13px;color:var(--t);line-height:1.5;letter-spacing:-0.01em">
@@ -2607,12 +2631,12 @@ to protect against error.</div>
                 </div>
               </div>
 
-              <hr class="div" style="margin:14px 0 0">
+              <hr class="div" style="margin:24px 0 0">
 
               <!-- Investor memo section -->
-              <div style="padding:32px 0 14px">
-                <div class="lbl">Investor memo</div>
-                <div style="font-size:13px;color:var(--t);margin-top:10px;line-height:1.5;letter-spacing:-0.01em">
+              <div style="padding:48px 0 14px">
+                <div class="section-header">Investor memo</div>
+                <div style="font-size:13px;color:var(--t);margin-top:0;line-height:1.5;letter-spacing:-0.01em">
                   The current memo on file for AAPL.
                 </div>
               </div>
@@ -2636,23 +2660,22 @@ to protect against error.</div>
               </div>
 
               <!-- Thesis reviews list (only when there's at least one) -->
-              <div id="s24-reviews-block" style="display:none;margin-top:32px;padding-top:24px;border-top:1px solid var(--divider)">
-                <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
-                  <div class="lbl">Thesis reviews</div>
-                  <span class="body-xs" id="s24-reviews-count" style="color:var(--t)">—</span>
+              <div id="s24-reviews-block" style="display:none;margin-top:48px;padding-top:24px;border-top:1px solid var(--divider)">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px">
+                  <div class="section-header">Thesis reviews <span class="meta" id="s24-reviews-count">—</span></div>
                 </div>
-                <div style="font-size:13px;color:var(--t);margin-bottom:8px;line-height:1.5;letter-spacing:-0.01em">
+                <div style="font-size:13px;color:var(--t);margin-bottom:14px;line-height:1.5;letter-spacing:-0.01em">
                   Every time you review the thesis after an event. The pattern over time tells you whether conviction is being earned or eroded.
                 </div>
                 <div id="s24-reviews-list"></div>
               </div>
 
-              <hr class="div" style="margin:32px 0 0">
+              <hr class="div" style="margin:48px 0 0">
 
               <!-- Transaction history section -->
-              <div style="padding:32px 0 14px">
-                <div class="lbl">Transaction history</div>
-                <div style="font-size:13px;color:var(--t);margin-top:10px;line-height:1.5;letter-spacing:-0.01em">
+              <div style="padding:48px 0 14px">
+                <div class="section-header">Transaction history</div>
+                <div style="font-size:13px;color:var(--t);margin-top:0;line-height:1.5;letter-spacing:-0.01em">
                   Every trade is recorded with the memo and calibration at that moment. Tap any entry to inspect.
                 </div>
               </div>
@@ -2732,6 +2755,7 @@ to protect against error.</div>
                 <div class="memo-row"><div class="k">Thesis</div><div class="v" id="s25-memo-thesis">—</div></div>
                 <div class="memo-row"><div class="k">Kill line</div><div class="v" id="s25-memo-kill">—</div></div>
                 <div class="memo-row"><div class="k">Margin</div><div class="v" id="s25-memo-mos">—</div></div>
+                <div class="memo-row" id="s25-memo-note-row" style="display:none"><div class="k">Note</div><div class="v" id="s25-memo-note">—</div></div>
               </div>
 
               <div id="s25-no-memo" style="margin-top:24px;font-size:13px;color:var(--t);line-height:1.55;display:none">
@@ -2777,7 +2801,7 @@ to protect against error.</div>
 
               <div style="margin-top:32px">
                 <div class="lbl" style="margin-bottom:14px">Calibration (saved with paper trade)</div>
-                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0;gap:16px"><span class="body-sm" style="color:var(--s)">Probability of 20%+ compounding</span><span class="body-md" id="s40-conf">—</span></div>
+                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0;gap:16px"><span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span><span class="body-md" id="s40-conf">—</span></div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s40-horizon">—</span></div>
                 <div class="form-row" style="padding:12px 0"><span class="body-sm" style="color:var(--s)">Top 3 idea</span><span class="body-md" id="s40-top3">—</span></div>
               </div>
@@ -2930,9 +2954,8 @@ to protect against error.</div>
               </div>
 
               <div class="aphorism-block" style="margin-top:32px">
-                <div class="aphorism">A thesis is not a fixed prediction.
-It evolves with evidence —
-but only when you write the change down.</div>
+                <div class="aphorism">Theses evolve.
+Write the change down.</div>
               </div>
             </div>
 
@@ -3033,7 +3056,7 @@ Holding to a broken thesis is.</div>
 <span>ORIGINAL · WHEN BOUGHT</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:6px 0">
-                  <span class="body-sm" style="color:var(--s)">Probability of 20%+ compounding</span>
+                  <span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span>
                   <span class="body-md" id="r3-prev-prob" style="font-variant-numeric:tabular-nums">—%</span>
                 </div>
               </div>
@@ -3049,7 +3072,7 @@ Holding to a broken thesis is.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="r3-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="r3-prob-range" type="range" min="0" max="100" value="60" step="10"
+                  <input class="horiz-range" id="r3-prob-range" type="range" min="0" max="100" value="60" step="5"
                          oninput="setReviewProb(this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
                     <span class="body-xs">0%</span><span class="body-xs">100%</span>
@@ -3176,6 +3199,20 @@ Holding to a broken thesis is.</div>
             </div>
           </section>
 
+          <!-- Thesis review detail sheet (used from s24 review rows) -->
+          <div class="tl-overlay" id="r-overlay" onclick="hideReviewDetail()"></div>
+          <div class="tl-info" id="r-info">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <span class="lbl" id="r-detail-eyebrow">REVIEW · DATE</span>
+              <button class="tl-close" onclick="hideReviewDetail()">×</button>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+              <span id="r-detail-pill" class="status-pill intact"><span class="glyph"></span><span id="r-detail-pill-label">Intact</span></span>
+              <span class="body-md" id="r-detail-prob" style="color:var(--p);font-variant-numeric:tabular-nums">—</span>
+            </div>
+            <div class="tl-detail" id="r-detail-body">—</div>
+          </div>
+
           <!-- ════════ s30 — Notes journal (per-stock) ════════ -->
           <section class="scr" data-id="s30">
             <div style="padding-top:0;flex-shrink:0">
@@ -3216,6 +3253,25 @@ Holding to a broken thesis is.</div>
               </div>
             </div>
           </section>
+
+          <!-- ════════ Memo exit confirmation (bottom sheet) ════════ -->
+          <div class="guardrail" id="memo-exit-modal">
+            <div class="guardrail-sheet">
+              <button class="guardrail-close" onclick="dismissMemoExit()">✕</button>
+              <div class="guardrail-h">Save your progress?</div>
+              <div class="guardrail-b" style="display:block">You can resume this memo next time you start a capital decision. Discarding clears every field.</div>
+              <div class="guardrail-acts">
+                <button class="act-btn" onclick="saveAndExitMemo()" style="padding:10px 0;gap:8px">
+                  <span class="act-arrow" style="color:var(--p)">→</span>
+                  <span style="color:var(--p)">Save draft &amp; exit</span>
+                </button>
+                <button class="act-btn" onclick="discardAndExitMemo()" style="padding:10px 0;gap:8px">
+                  <span class="act-arrow" style="color:var(--t)">→</span>
+                  <span style="color:var(--t)">Discard</span>
+                </button>
+              </div>
+            </div>
+          </div>
 
           <!-- ════════ s13 — Guardrail bottom sheet ════════ -->
           <div class="guardrail" id="s13-guardrail">
@@ -3263,7 +3319,7 @@ let state = {
   shares:       '',
   reason:       null,
   guardrailNav: null,            // pending action after guardrail dismissal
-  memo: {
+  memo: (loadMemoDraft() || {
     type:   null,
     size:   null,
     thesis: '',
@@ -3271,7 +3327,7 @@ let state = {
     mos:    null,
     top3:   null,
     note:   ''
-  },
+  }),
   transactions:   loadTransactions(),
   notes:          loadNotes(),
   thesisReviews:  loadThesisReviews(),
@@ -3378,6 +3434,33 @@ const MKTPRICE_USD = 192.35;
 const FX_USD_CAD   = 1.36;
 const PORTVAL_CAD  = 285000;
 
+/* Canonical date formatter — every writer that records a date should
+   use this so the rendered format stays consistent ("May 8, 2026"). */
+function fmtDate(d) {
+  return (d || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/* Persist the in-progress memo draft so the user can recover work after
+   tapping Exit (and across page reloads). On commit (memo finalized) we
+   clear it; on a fresh entry to m1 the draft hydrates state.memo. */
+function loadMemoDraft() {
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.AAPL.memoDraft');
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return null;
+}
+function persistMemoDraft() {
+  try { localStorage.setItem('mogo.calmemo.AAPL.memoDraft', JSON.stringify(state.memo)); } catch (_) {}
+}
+function clearMemoDraft() {
+  try { localStorage.removeItem('mogo.calmemo.AAPL.memoDraft'); } catch (_) {}
+}
+function memoHasContent(m) {
+  m = m || (state && state.memo) || {};
+  return !!(m.type || m.size || (m.thesis || '').trim() || (m.kill || '').trim() || m.mos || m.top3 || (m.note || '').trim());
+}
+
 function loadHasMemo() {
   try { return localStorage.getItem(STORE_KEYS.memo) === '1'; } catch(_) { return false; }
 }
@@ -3406,13 +3489,13 @@ const SCREENS = [
   { id: 's50', group: 'Stock',          name: 'Calibration timeline',         sub: 'probability moves on AAPL over time' },
   { id: 's5',  group: 'Calibration',   name: 'Calibration analytics',        sub: 'predicted vs actual' },
   { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action' },
-  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 5' },
-  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 5' },
-  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 5' },
-  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 5' },
-  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 5' },
-  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: 'probability · horizon · top 3' },
-  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: 'memo + calibration' },
+  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 7' },
+  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 7' },
+  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 7' },
+  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 7' },
+  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 7' },
+  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 7 · probability · horizon · top 3' },
+  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '7 / 7 · memo + calibration' },
   { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why' },
   { id: 's20', group: 'Returning user',name: 'Updated probability',          sub: 'with delta' },
   { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad' },
@@ -3455,6 +3538,8 @@ function go(id) {
   if (id === 'r4')  renderR4();
   if (id === 's50') renderTimeline();
   if (id === 's12' || id === 'm6') refreshMemoLocks();
+  // Hydrate memo screens from the draft so resuming visibly fills in
+  if (['m1','m1b','m2','m3','m4','s12','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
   // Highlight drawer entry
   document.querySelectorAll('#drawerJumper button').forEach(b => {
     b.classList.toggle('is-active', b.dataset.go === id);
@@ -3551,6 +3636,7 @@ function pickTop3(value) {
   state.memo.top3 = value;
   document.getElementById('s12-t3-yes').classList.toggle('on', value === 'yes');
   document.getElementById('s12-t3-no').classList.toggle('on', value === 'no');
+  persistMemoDraft();
   refreshMemoLocks();
 }
 
@@ -3569,6 +3655,7 @@ document.addEventListener('click', e => {
   if (key === 'm1-type') state.memo.type = value;
   if (key === 'm1-size') state.memo.size = value;
   if (key === 'm4-mos')  state.memo.mos  = value;
+  persistMemoDraft();
   refreshMemoLocks();
 });
 
@@ -3584,10 +3671,54 @@ function pickYN(listKey, value, btn) {
 function onMemoInput() {
   state.memo.thesis = document.getElementById('m2-text')?.value || '';
   state.memo.kill   = document.getElementById('m3-text')?.value || '';
+  // Auto-save draft on every input so closing the tab doesn't lose work
+  persistMemoDraft();
+  refreshMemoLocks();
+}
+
+/* Hydrate inputs/radios on screen entry so a resumed draft visibly
+   fills in. Called from go() for each memo screen. */
+function hydrateMemoScreen(screenId) {
+  const m = state.memo;
+  if (screenId === 'm1') {
+    const list = document.querySelector('[data-list="m1-type"]');
+    if (list) {
+      list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.type));
+    }
+  }
+  if (screenId === 'm1b') {
+    const list = document.querySelector('[data-list="m1-size"]');
+    if (list) {
+      list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.size));
+    }
+  }
+  if (screenId === 'm2') {
+    const ta = document.getElementById('m2-text');
+    if (ta && ta.value !== m.thesis) ta.value = m.thesis || '';
+  }
+  if (screenId === 'm3') {
+    const ta = document.getElementById('m3-text');
+    if (ta && ta.value !== m.kill) ta.value = m.kill || '';
+  }
+  if (screenId === 'm4') {
+    const list = document.querySelector('[data-list="m4-mos"]');
+    if (list) {
+      list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.mos));
+    }
+  }
+  if (screenId === 's12') {
+    document.getElementById('s12-t3-yes')?.classList.toggle('on', m.top3 === 'yes');
+    document.getElementById('s12-t3-no')?.classList.toggle('on',  m.top3 === 'no');
+  }
+  if (screenId === 'm6') {
+    const ta = document.getElementById('m6-note');
+    if (ta && ta.value !== m.note) ta.value = m.note || '';
+  }
   refreshMemoLocks();
 }
 function onM6NoteInput() {
   state.memo.note = document.getElementById('m6-note')?.value || '';
+  persistMemoDraft();
 }
 function memoStepValid(stepId) {
   switch (stepId) {
@@ -3620,7 +3751,7 @@ function renderM6() {
   document.getElementById('m6-prob').textContent    = state.prob + '%';
   document.getElementById('m6-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
   document.getElementById('m6-top3').textContent    = m.top3 === 'yes' ? 'Yes' : (m.top3 === 'no' ? 'No' : '—');
-  document.getElementById('m6-date').textContent    = 'Drafted ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  document.getElementById('m6-date').textContent    = 'Drafted ' + fmtDate();
 
   // Reset hold-to-commit progress fill in case the user came back from cancellation
   const fill = document.getElementById('m6-commit-fill');
@@ -3633,9 +3764,42 @@ function renderM6() {
 function commitMemo() {
   state.hasMemo = true;
   persistHasMemo(true);
+  // Memo is finalized — drop any in-progress draft
+  clearMemoDraft();
   go('s8');
 }
-function exitMemo() { go('s0'); }
+
+/* Exit from any memo screen — confirm if there's content to lose */
+function exitMemo() {
+  if (!memoHasContent()) { go('s0'); return; }
+  const m = document.getElementById('memo-exit-modal');
+  if (m) m.classList.add('is-active');
+}
+function dismissMemoExit() {
+  const m = document.getElementById('memo-exit-modal');
+  if (m) m.classList.remove('is-active');
+}
+function saveAndExitMemo() {
+  persistMemoDraft();
+  dismissMemoExit();
+  go('s0');
+}
+function discardAndExitMemo() {
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+  clearMemoDraft();
+  // Also reset memo-screen DOM so a fresh entry doesn't show old values
+  ['m1-type','m1-size','m4-mos'].forEach(k => {
+    document.querySelectorAll(`[data-list="${k}"] .radio-row`).forEach(r => r.classList.remove('is-on'));
+  });
+  document.getElementById('s12-t3-yes')?.classList.remove('on');
+  document.getElementById('s12-t3-no')?.classList.remove('on');
+  const ta2 = document.getElementById('m2-text'); if (ta2) ta2.value = '';
+  const ta3 = document.getElementById('m3-text'); if (ta3) ta3.value = '';
+  const taN = document.getElementById('m6-note'); if (taN) taN.value = '';
+  refreshMemoLocks();
+  dismissMemoExit();
+  go('s0');
+}
 
 /* ═════════════════════════════════════════════════
    AI CALIBRATION CHECK (m6) — reads memo + calibration,
@@ -3849,6 +4013,14 @@ function renderS9() {
   document.getElementById('s9-conf').textContent = state.prob + '%';
   document.getElementById('s9-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
   document.getElementById('s9-top3').textContent = state.memo.top3 === 'yes' ? 'Yes' : (state.memo.top3 === 'no' ? 'No' : '—');
+  // Filled-at timestamp — generated at execution
+  const filledEl = document.getElementById('s9-filled-at');
+  if (filledEl) {
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const date = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    filledEl.textContent = `Filled at ${time} · ${date}`;
+  }
 
   const memoSec  = document.getElementById('s9-memo-section');
   const memoNote = document.getElementById('s9-memo-note');
@@ -3881,6 +4053,8 @@ function setMode(m) {
     state.transactions = []; persistTransactions();
     state.notes = []; persistNotes();
     state.thesisReviews = []; persistThesisReviews();
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+    clearMemoDraft();
   } else {
     state.hasMemo = true;  persistHasMemo(true);
   }
@@ -3905,6 +4079,7 @@ function resetFlow() {
   state.thesisReviews = [];
   persistThesisReviews();
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
+  clearMemoDraft();
   ['m1-type','m1-size','m4-mos'].forEach(k => {
     document.querySelectorAll(`[data-list="${k}"] .radio-row`).forEach(r => r.classList.remove('is-on'));
   });
@@ -4499,11 +4674,21 @@ function renderTxnList() {
           ['Kill line',        m.kill   || 'Services revenue growth drops below 8% for two consecutive quarters.'],
           ['Margin of safety', MOS_LBL[m.mos] || 'Roughly around intrinsic value']
         ];
-        memoDetail.innerHTML = rows.map(([k, v]) => `
+        let html = rows.map(([k, v]) => `
           <div style="display:flex;gap:16px;align-items:baseline">
             <span style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:uppercase;flex-shrink:0;width:88px">${k}</span>
             <span style="font-size:13px;color:var(--s);line-height:1.5;letter-spacing:-0.01em">${v}</span>
           </div>`).join('');
+        // Optional free-form note — quoted, italic, only if present
+        const note = (m.note || '').trim();
+        if (note) {
+          html += `
+          <div style="margin-top:6px;padding-top:14px;border-top:1px solid var(--divider)">
+            <div style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px">Note</div>
+            <div style="font-size:13px;color:var(--s);line-height:1.55;letter-spacing:-0.01em;font-style:italic">"${note}"</div>
+          </div>`;
+        }
+        memoDetail.innerHTML = html;
       }
     } else {
       memoEmpty.style.display = 'block';
@@ -4531,7 +4716,7 @@ function renderTxnList() {
         const noteLine = r.addendum ? `Addendum: ${escapeNote(r.addendum)}`
                        : (r.newThesis ? `Rewritten: ${escapeNote(r.newThesis.slice(0, 80))}${r.newThesis.length > 80 ? '…' : ''}`
                                       : (r.note || ''));
-        return `<div class="review-row">
+        return `<div class="review-row" onclick="showReviewDetail('${r.id}')">
           <div class="meta">
             <div class="label"><span class="status-pill ${pill}"><span class="glyph"></span>${pillLbl}</span><span style="margin-left:8px;font-size:11px;color:var(--t)">${probDelta}</span></div>
             ${noteLine ? `<div class="note">${noteLine}</div>` : ''}
@@ -4595,6 +4780,17 @@ function openTxnDetail(txnId) {
     document.getElementById('s25-memo-thesis').textContent = txn.memo.thesis || '—';
     document.getElementById('s25-memo-kill').textContent   = txn.memo.kill || '—';
     document.getElementById('s25-memo-mos').textContent    = MOS_LBL[txn.memo.mos] || '—';
+    // Optional free-form note — only show the row when there's content
+    const noteRow  = document.getElementById('s25-memo-note-row');
+    const noteText = (txn.memo.note || '').trim();
+    if (noteRow) {
+      if (noteText) {
+        noteRow.style.display = '';
+        document.getElementById('s25-memo-note').textContent = noteText;
+      } else {
+        noteRow.style.display = 'none';
+      }
+    }
   } else {
     memoBlock.style.display = 'none';
     noMemo.style.display = '';
@@ -4675,7 +4871,7 @@ function saveNewNote() {
   state.notes.push({
     id: 'n-' + Date.now(),
     text: text,
-    date: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+    date: fmtDate()
   });
   persistNotes();
   ta.value = '';
@@ -4690,7 +4886,7 @@ function recordTransaction(opts) {
   const isBuy = state.cd === 'initial' || state.cd === 'increase';
   const tx = {
     id: 't-' + Date.now(),
-    date: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }),
+    date: fmtDate(),
     action: isBuy ? 'Buy' : 'Sell',
     shares: n,
     cost: n * MKTPRICE_USD * FX_USD_CAD,
@@ -4908,7 +5104,7 @@ function saveReview() {
 
   const review = {
     id: 'tr-' + Date.now(),
-    date: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }),
+    date: fmtDate(),
     answer: state.review.answer,
     prevProb: baselineProb,
     newProb:  state.review.newProb != null ? state.review.newProb : baselineProb,
@@ -4964,6 +5160,47 @@ function renderR4() {
 function finishReview() {
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
   go('s0');
+}
+
+/* Review detail bottom sheet — opened from a tap on any row in the s24
+   "Thesis reviews" list. Reuses the same overlay/sheet pattern as the
+   timeline + dot-info inspectors. */
+function showReviewDetail(reviewId) {
+  const r = getReviewList().find(x => x.id === reviewId);
+  if (!r) return;
+  const pill      = document.getElementById('r-detail-pill');
+  const pillLabel = document.getElementById('r-detail-pill-label');
+  const eyebrow   = document.getElementById('r-detail-eyebrow');
+  const probEl    = document.getElementById('r-detail-prob');
+  const bodyEl    = document.getElementById('r-detail-body');
+
+  pill.classList.remove('intact','partial','broken');
+  if (r.answer === 'yes')          { pill.classList.add('intact');  pillLabel.textContent = 'Intact'; }
+  else if (r.answer === 'partial') { pill.classList.add('partial'); pillLabel.textContent = 'Partial'; }
+  else                              { pill.classList.add('broken');  pillLabel.textContent = 'Broken'; }
+
+  eyebrow.textContent = `THESIS REVIEW · ${r.date.toUpperCase()}`;
+  probEl.textContent  = r.newProb !== r.prevProb
+    ? `${r.prevProb}% → ${r.newProb}%`
+    : `${r.newProb}% · unchanged`;
+
+  // Body — full text of whatever was captured at review time
+  let body = '';
+  if (r.answer === 'yes') {
+    body = r.note || 'Thesis reaffirmed. The original record stays as-is, with this review timestamped against it.';
+  } else if (r.answer === 'partial') {
+    body = `ADDENDUM\n${r.addendum || '—'}`;
+  } else {
+    body = `NEW THESIS\n${r.newThesis || '—'}\n\nNEW KILL LINE\n${r.newKill || '—'}`;
+  }
+  bodyEl.textContent = body;
+
+  document.getElementById('r-overlay').classList.add('show');
+  document.getElementById('r-info').classList.add('show');
+}
+function hideReviewDetail() {
+  document.getElementById('r-overlay').classList.remove('show');
+  document.getElementById('r-info').classList.remove('show');
 }
 
 /* ═════════════════════════════════════════════════
