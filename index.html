@@ -326,6 +326,127 @@ body.is-fullscreen .zoom-toggle {
 .calib-row { padding: 18px 0; }
 .calib-row:first-of-type { padding-top: 4px; }
 .calib-row:last-of-type { padding-bottom: 4px; }
+
+/* Unified prob+horizon block — visually one prediction, not two questions.
+   No internal divider; the .calib-link is the only separator. */
+.calib-section--unified {
+  margin-top: 18px;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+}
+.calib-row--tight { padding: 10px 0; }
+.calib-row--tight:first-of-type { padding-top: 4px; }
+.calib-row--tight:last-of-type  { padding-bottom: 4px; }
+
+/* Inline signal-strength readout — surfaces track record maturity on the
+   page itself so the user can see where they stand without opening the modal.
+   Tapping opens the full Probability info modal with the calibration chart. */
+.calib-signal {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--divider);
+  cursor: pointer;
+  transition: opacity 150ms var(--ease);
+}
+.calib-signal:active { opacity: 0.7; }
+.calib-signal-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 8px;
+}
+.calib-signal-lbl {
+  font-size: 11px; letter-spacing: 0.06em;
+  color: var(--t); text-transform: uppercase;
+}
+.calib-signal-stage {
+  font-size: 12px; letter-spacing: -0.01em;
+  color: var(--p); font-weight: 500;
+}
+.calib-signal-stage.is-cold { color: var(--t); font-weight: 400; }
+.calib-signal-stage.is-early { color: var(--p); }
+.calib-signal-stage.is-calibrated { color: var(--p); }
+.calib-signal-meta {
+  display: flex; align-items: center; gap: 10px;
+}
+.calib-signal-bar {
+  flex: 1; height: 2px;
+  background: var(--divider);
+  position: relative;
+}
+.calib-signal-bar-fill {
+  height: 100%; background: var(--p);
+  transition: width 240ms var(--ease);
+}
+.calib-signal-bar::before,
+.calib-signal-bar::after {
+  content: ''; position: absolute;
+  top: -2px; width: 1px; height: 6px;
+  background: var(--t-800);
+}
+.calib-signal-bar::before { left: 50%; }
+.calib-signal-bar::after  { right: 0; }
+.calib-signal-count {
+  font-size: 11px; color: var(--t);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Thin connector between probability + horizon inside the unified block.
+   Reads as: "X% probability OVER Y years" — one statement, one block. */
+.calib-link {
+  height: 1px;
+  background: var(--divider);
+  margin: 6px 0;
+  position: relative;
+}
+.calib-link::after {
+  content: 'over';
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0 10px;
+  background: var(--bg);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+
+/* Live answer sentence — the headline that the controls below fill in.
+   Slots (the editable parts) are visually distinct + tappable to scroll. */
+.calib-statement {
+  margin-top: 22px;
+  padding: 18px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  font-size: 17px;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: var(--s);
+}
+.calib-statement-lead { color: var(--t); }
+.calib-statement-slot {
+  display: inline-block;
+  color: var(--p);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+  padding: 0 2px 1px;
+  margin: 0 1px;
+  cursor: pointer;
+  transition: border-color 150ms var(--ease);
+}
+.calib-statement-slot:hover,
+.calib-statement-slot:active { border-bottom-color: var(--p); }
+.calib-statement-prior {
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--t);
+  text-transform: none;
+}
 .calib-row-label {
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -639,6 +760,82 @@ body.is-fullscreen .zoom-toggle {
 }
 .np-key:active { background: rgba(255,255,255,0.04); }
 .np-empty { pointer-events: none; }
+
+/* ═══════════════ iOS-STYLE NUMPAD (s8 v2) ═══════════════ */
+/* Slides up from the bottom when a numeric input row is tapped. */
+.ios-numpad {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 30;
+  background: #1C1C1E;
+  padding: 6px 6px 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 47px;
+  gap: 6px 6px;
+  transform: translateY(110%);
+  transition: transform 320ms var(--ease);
+  box-shadow: 0 -16px 32px rgba(0,0,0,0.45);
+}
+.ios-numpad.is-open { transform: translateY(0); }
+.ios-key {
+  position: relative;
+  background: #6C6C70;
+  background-image: linear-gradient(180deg, #797A7E 0%, #636468 100%);
+  border-radius: 5px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: #FFFFFF;
+  font-family: var(--font);
+  font-weight: 400;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  user-select: none;
+}
+.ios-key:active { background-image: linear-gradient(180deg, #5B5C60 0%, #4A4B4F 100%); }
+.ios-key.is-empty { background: transparent; box-shadow: none; pointer-events: none; }
+.ios-key .num { font-size: 24px; line-height: 1; letter-spacing: -0.01em; }
+.ios-key .sub {
+  font-size: 9px; letter-spacing: 0.18em;
+  margin-top: 2px; color: #FFFFFF; opacity: 0.95;
+}
+.ios-key.is-action { background-image: linear-gradient(180deg, #535458 0%, #3F4044 100%); }
+.ios-key.is-action .num { font-size: 22px; }
+.ios-key.is-decimal .num { font-size: 26px; line-height: 0.6; }
+
+/* Tappable input rows on s8 — wider hit target than text alone */
+.s8-tap {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.s8-tap.is-active .s8-value { color: var(--p); }
+.s8-tap.is-active .s8-value::after {
+  content: '';
+  display: inline-block;
+  width: 1px; height: 14px;
+  background: var(--p); margin-left: 2px;
+  vertical-align: -2px;
+  animation: aiCaret 1s steps(2, end) infinite;
+}
+.s8-value { font-variant-numeric: tabular-nums; }
+.s8-sub {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 2px;
+}
+.s8-sub-text { font-size: 11px; color: var(--t); }
+.s8-sub-info {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid var(--d);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 7px; color: var(--d);
+}
+
+/* AI section variant for s8 — slimmer (no top border) */
+.ai-section--s8 {
+  padding: 4px 16px 18px;
+  border-top: 0;
+}
+.ai-section--s8 .ai-body { min-height: 48px; font-size: 12.5px; line-height: 1.6; }
 
 /* form rows shared */
 .form-row {
@@ -1214,6 +1411,152 @@ body.is-fullscreen .zoom-toggle {
   margin-top: 6px;
 }
 
+/* ═══════════════ INLINE INFO MODAL ═══════════════ */
+/* Reusable bottom sheet used to explain individual input fields
+   (probability, horizon, etc.). Lighter than the s5 cal-modal — single
+   block of explainer copy, close button, no list of secondary actions. */
+.info-modal {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 320;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.info-modal.is-active { display: flex; }
+.info-modal-sheet {
+  background: var(--surface);
+  padding: 28px 24px 36px;
+  position: relative;
+  transform: translateY(100%);
+  transition: transform 320ms cubic-bezier(0.32,0.72,0,1);
+}
+.info-modal.is-active .info-modal-sheet { transform: translateY(0); }
+.info-modal-close {
+  position: absolute; top: 18px; right: 18px;
+  background: none; border: none;
+  color: var(--t); font-size: 18px;
+  line-height: 1; padding: 4px;
+}
+.info-modal-eyebrow {
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--t); margin-bottom: 8px;
+}
+.info-modal-title {
+  font-size: 18px; font-weight: 500;
+  letter-spacing: -0.02em; color: var(--p);
+  line-height: 1.25;
+  margin-bottom: 18px;
+  padding-right: 32px;
+}
+.info-modal-body {
+  font-size: 13px;
+  color: var(--s);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  white-space: pre-line;
+}
+
+/* ─── Inline chart inside info modal — calibration maturity visual ─── */
+.info-modal-chart {
+  margin: 0 0 22px;
+  padding: 16px 14px 14px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.015);
+}
+.info-chart-stats {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 10px;
+}
+.info-chart-stat-num {
+  font-size: 15px; color: var(--p); font-weight: 400;
+  letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+}
+.info-chart-stat-lbl {
+  font-size: 10px; letter-spacing: 0.06em;
+  color: var(--t); margin-top: 2px;
+  text-transform: uppercase;
+}
+.info-chart-bar {
+  position: relative;
+  height: 2px; background: var(--divider);
+  margin-bottom: 8px;
+}
+.info-chart-bar-fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: var(--p);
+}
+.info-chart-bar-tick {
+  position: absolute; top: -3px; width: 1px; height: 8px;
+  background: var(--t-800);
+}
+.info-chart-axis {
+  display: flex; justify-content: space-between;
+  font-size: 10px; letter-spacing: 0.04em;
+  color: var(--t); margin-bottom: 18px;
+}
+.info-chart-stages {
+  display: grid;
+  grid-template-columns: 1fr 12px 1fr 12px 1fr;
+  align-items: center;
+  gap: 0;
+  margin-top: 4px;
+}
+.info-chart-stage {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+.info-chart-stage svg {
+  width: 100%; height: 64px;
+  transition: opacity 200ms var(--ease);
+  opacity: 0.55;
+}
+.info-chart-stage-lbl {
+  font-size: 10px; letter-spacing: 0.04em;
+  color: var(--t); text-align: center;
+  line-height: 1.4;
+}
+.info-chart-stage-lbl .yr {
+  display: block; color: var(--s);
+  font-size: 11px; letter-spacing: 0.02em;
+  margin-bottom: 2px;
+}
+.info-chart-stage.is-current svg { opacity: 1; }
+.info-chart-stage.is-current svg rect { stroke: rgba(255,255,255,0.32); }
+.info-chart-stage.is-current .yr { color: var(--p); }
+.info-chart-stage.is-current .info-chart-stage-lbl { color: var(--s); }
+.info-chart-arrow {
+  color: var(--t-800); font-size: 14px;
+  text-align: center; line-height: 1;
+}
+
+/* Inline "i" trigger inside a label — reuses cal-info-btn idiom */
+.label-info-btn {
+  background: none; border: none; padding: 0;
+  display: inline-flex; align-items: center; line-height: 1;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.label-info-btn:active svg circle { stroke: var(--s); }
+
+/* ═══════════════ BACKFILL BANNER (memo for existing positions) ═══════════════ */
+/* Slim ribbon shown at the top of every memo screen when state.backfillMode
+   is on, so the user always knows which existing position the memo applies
+   to. Kept visually distinct from primary content so it reads as context. */
+.backfill-banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--t-700);
+}
+.backfill-banner .icon { color: var(--p); }
+.backfill-banner .ticker { color: var(--p); font-weight: 500; }
+
 /* ═══════════════ REVIEW NOTIFICATION ═══════════════ */
 /* Slim banner used on the dashboard (s10) and stock page (s0) when a new
    earnings event has been recorded and the thesis review is pending. */
@@ -1524,6 +1867,15 @@ body.is-fullscreen .zoom-toggle {
             </div>
 
             <div class="dash-body">
+              <!-- Backfill memos banner — fires when state.hasMemo on existing positions is false. V2+. -->
+              <div id="s10-backfill-notif" class="review-notif" onclick="go('s60')" style="display:none;margin-top:8px" data-min-version="2">
+                <div class="label">
+                  <span class="pulse-dot"></span>
+                  <span><b style="font-weight:500" id="s10-backfill-count">4 positions</b> don't have memos yet · Add them</span>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+
               <!-- Review-pending notification (hidden when state.reviewPending = false) — V4 -->
               <div id="s10-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:8px" data-min-version="4">
                 <div class="label">
@@ -1783,40 +2135,75 @@ body.is-fullscreen .zoom-toggle {
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="go('m4')">‹</button>
-                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">AAPL · 6 / 7</span>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em"><span class="memo-ctx-ticker">AAPL</span> · 6 / 8</span>
                 <button class="s0-exit" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
             </div>
 
             <div class="body-scroll" style="padding:0 16px 24px">
-              <div class="calib-section" style="margin-top:36px">
-                <div class="calib-eyebrow">Calibration</div>
+              <div class="backfill-banner memo-backfill-banner" style="display:none;margin-top:18px">
+                <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+              </div>
 
-                <div style="padding:18px 0 6px">
-                  <div class="lbl" style="margin-bottom:12px">Your view</div>
-                  <div class="flow-h">Will Apple compound at over 20% annually?</div>
+              <div style="margin-top:36px">
+                <div class="lbl" style="margin-bottom:12px">Your view</div>
+                <div class="flow-h" style="display:flex;align-items:flex-start;gap:8px">
+                  <span>Will Apple compound at over 20% annually?</span>
+                  <button class="label-info-btn" onclick="showInfoModal('compound20')" aria-label="Why 20% per year?" style="margin-top:6px;flex-shrink:0">
+                    <svg width="15" height="15" viewBox="0 0 13 13" fill="none">
+                      <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                      <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                    </svg>
+                  </button>
                 </div>
+              </div>
 
-                <div class="calib-row">
-                  <div class="calib-row-label">Probability</div>
+              <!-- Live answer sentence — the prediction takes shape as the controls below change.
+                   This is THE single calibration statement; the two controls underneath fill it in. -->
+              <div class="calib-statement">
+                <span class="calib-statement-lead">Yes — with</span>
+                <span class="calib-statement-slot" id="s12-summary-prob" onclick="document.getElementById('s12-prob-block')?.scrollIntoView({behavior:'smooth',block:'center'})">50%</span>
+                <span class="calib-statement-lead">probability over</span>
+                <span class="calib-statement-slot" id="s12-summary-horizon" onclick="document.getElementById('s12-horizon-block')?.scrollIntoView({behavior:'smooth',block:'center'})">3 years</span><span class="calib-statement-lead">.</span>
+              </div>
+
+              <!-- Single unified block: probability + horizon are one prediction, not two questions -->
+              <div class="calib-section calib-section--unified">
+                <!-- "Your signal" footer is appended dynamically below the horizon row -->
+                <div class="calib-row calib-row--tight" id="s12-prob-block">
+                  <div class="calib-row-label" style="display:flex;align-items:center">
+                    <span>Probability</span>
+                    <button class="label-info-btn" onclick="showInfoModal('probability')" aria-label="What is probability?">
+                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                      </svg>
+                    </button>
+                  </div>
                   <div>
                     <span id="s12-prob-num" class="prob-num">50</span><span class="prob-num-pct">%</span>
                   </div>
-                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="10"
+                  <input class="horiz-range" id="s12-prob-range" type="range" min="50" max="100" value="50" step="10"
                          oninput="setProb('s12', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs" style="color:var(--t-700)">50% coin flip</span><span class="body-xs">100%</span>
-                  </div>
-                  <div class="prob-microcopy" style="text-align:left;margin-top:14px;line-height:1.55">
-                    Below 50: betting against your own view.<br>
-                    60–70: modest edge.<br>
-                    80+: rare conviction (Buffett's "fat pitch").
+                    <span class="body-xs">50%</span><span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">Coin flip</span><span class="body-xs">100%</span>
                   </div>
                 </div>
 
-                <div class="calib-row">
-                  <div class="calib-row-label">Time horizon</div>
+                <!-- Visual link between the two — a single thin line, like an "=" between two halves of one equation -->
+                <div class="calib-link" aria-hidden="true"></div>
+
+                <div class="calib-row calib-row--tight" id="s12-horizon-block">
+                  <div class="calib-row-label" style="display:flex;align-items:center">
+                    <span>Time horizon</span>
+                    <button class="label-info-btn" onclick="showInfoModal('horizon')" aria-label="What is time horizon?">
+                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                      </svg>
+                    </button>
+                  </div>
                   <div class="period-wrap">
                     <button class="period-btn period-btn-multi"    id="s12-h-1y" onclick="setHorizon('s12','1y')"><span class="period-btn-year">1Y</span><span class="period-btn-date" data-h-date="1y">—</span></button>
                     <button class="period-btn period-btn-multi"    id="s12-h-2y" onclick="setHorizon('s12','2y')"><span class="period-btn-year">2Y</span><span class="period-btn-date" data-h-date="2y">—</span></button>
@@ -1826,18 +2213,32 @@ body.is-fullscreen .zoom-toggle {
                   </div>
                 </div>
 
-                <div class="calib-row">
-                  <div class="calib-row-label">Top 3 idea right now?</div>
-                  <div class="period-wrap">
-                    <button class="period-btn" id="s12-t3-yes" onclick="pickTop3('yes')">Yes</button>
-                    <button class="period-btn" id="s12-t3-no"  onclick="pickTop3('no')">No</button>
+                <!-- Live signal-strength readout for the user's track record.
+                     Tap to open the full Probability info modal with the chart. -->
+                <div class="calib-signal" id="s12-signal" onclick="showInfoModal('probability')">
+                  <div class="calib-signal-head">
+                    <span class="calib-signal-lbl">Your signal</span>
+                    <span class="calib-signal-stage" id="s12-signal-stage">Cold start</span>
                   </div>
+                  <div class="calib-signal-meta">
+                    <div class="calib-signal-bar"><div class="calib-signal-bar-fill" id="s12-signal-fill" style="width:0%"></div></div>
+                    <span class="calib-signal-count" id="s12-signal-count">0 / 20</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Past calibrations link (V3+) — only shows when there are recorded reviews -->
+              <div id="s12-past-link" style="display:none;margin-top:18px;cursor:pointer;padding:12px 0" onclick="openCalibrationTimeline()" data-min-version="3">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em"><span class="act-arrow" style="margin-right:8px">→</span>Past calibrations <span id="s12-past-count" style="color:var(--t);margin-left:4px">—</span></span>
+                  <span style="font-size:16px;color:var(--t);line-height:1">›</span>
                 </div>
               </div>
             </div>
 
             <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="s12-cont" onclick="continueFromCalibration()">
+              <button class="act-btn" id="s12-cont" onclick="continueFromCalibration()">
                 <span class="act-arrow">→</span>
                 <span>Continue</span>
               </button>
@@ -1856,9 +2257,12 @@ body.is-fullscreen .zoom-toggle {
 
             <div class="body-scroll">
               <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Classify</div>
-                  <div class="ticker-meta">AAPL · 1 / 7</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·1 / 8</div>
                 </div>
 
                 <div>
@@ -1904,9 +2308,12 @@ and you mis-hold.</div>
 
             <div class="body-scroll">
               <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Size</div>
-                  <div class="ticker-meta">AAPL · 2 / 7</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·2 / 8</div>
                 </div>
 
                 <div>
@@ -1951,18 +2358,21 @@ and how much you commit.</div>
 
             <div class="body-scroll">
               <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Thesis</div>
-                  <div class="ticker-meta">AAPL · 3 / 7</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 8</div>
                 </div>
 
                 <div class="title-md">Why are you buying this?</div>
-                <div class="t-bsm" style="margin-top:-20px">One sentence. Plain English.</div>
+                <div class="t-bsm" style="margin-top:-20px">A thesis explains why this business will be worth more in the future than the market thinks today — and what would have to be true for you to be wrong.</div>
 
                 <div class="bracket">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
-                  <textarea id="m2-text" rows="4" placeholder="One sentence. The change driving long-term value at this business." oninput="onMemoInput()"></textarea>
+                  <textarea id="m2-text" rows="6" placeholder="A few sentences. Why the market is mispricing this business today — and what assumptions you're making for it to compound. Be specific enough that you'd know later whether you were right or wrong." oninput="onMemoInput()"></textarea>
                 </div>
 
                 <div class="aphorism-block">
@@ -1993,9 +2403,12 @@ you don't understand it.</div>
 
             <div class="body-scroll">
               <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Kill line</div>
-                  <div class="ticker-meta">AAPL · 4 / 7</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 8</div>
                 </div>
 
                 <div class="title-md">What would prove the thesis wrong?</div>
@@ -2035,9 +2448,12 @@ to rewrite it.</div>
 
             <div class="body-scroll">
               <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Margin of safety</div>
-                  <div class="ticker-meta">AAPL · 5 / 7</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 8</div>
                 </div>
 
                 <div class="title-md">What's your margin of safety here?</div>
@@ -2063,14 +2479,14 @@ to protect against error.</div>
             </div>
 
             <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m4-next" onclick="advanceMemo('s12')">
+              <button class="act-btn locked" id="m4-next" onclick="continueFromM4()">
                 <span class="act-arrow">→</span>
               </button>
             </div>
           </section>
 
-          <!-- ════════ m6 — Final review & commit ════════ -->
-          <section class="scr" data-id="m6">
+          <!-- ════════ m5 — Note (optional free-form context, sits between s12 and m6) ════════ -->
+          <section class="scr" data-id="m5">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="go('s12')">‹</button>
@@ -2080,28 +2496,62 @@ to protect against error.</div>
             </div>
 
             <div class="body-scroll">
+              <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
+                <div class="ticker-row lite">
+                  <div class="ticker-step">Note</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·7 / 8</div>
+                </div>
+
+                <div class="title-md">Anything else?</div>
+                <div class="t-bsm" style="margin-top:-20px">Optional. A catalyst, a quote, a hunch — context you'd want to remember when this decision is reviewed later.</div>
+
+                <div class="bracket">
+                  <span class="c tl"></span><span class="c tr"></span>
+                  <span class="c bl"></span><span class="c br"></span>
+                  <textarea id="m5-note" rows="5" placeholder="Whatever else is on your mind. Skip if there's nothing." oninput="onM5NoteInput()"></textarea>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">Context survives memory.
+What's obvious now will be murky later.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
+              <button class="act-btn" id="m5-next" onclick="advanceMemo('m6')">
+                <span class="act-arrow">→</span>
+                <span>Continue</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- ════════ m6 — Final review & commit ════════ -->
+          <section class="scr" data-id="m6">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('m5')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
               <div class="memo-page" style="gap:24px">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Review</div>
-                  <div class="ticker-meta">AAPL · 7 / 7</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·8 / 8</div>
                 </div>
 
                 <div>
                   <div class="title-md">Investment Memo</div>
                   <div class="t-bsm" id="m6-date" style="margin-top:8px">Drafted today</div>
-                </div>
-
-                <!-- Optional free-form note — bracket-corner textarea, V1 idiom -->
-                <div>
-                  <div class="memo-row"><div class="k">Note</div>
-                    <div class="v">
-                      <div class="bracket" style="padding:12px;min-height:64px">
-                        <span class="c tl"></span><span class="c tr"></span>
-                        <span class="c bl"></span><span class="c br"></span>
-                        <textarea id="m6-note" rows="2" placeholder="Optional" oninput="onM6NoteInput()"></textarea>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div>
@@ -2111,22 +2561,13 @@ to protect against error.</div>
                   <div class="memo-row"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
                   <div class="memo-row"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div></div>
                   <div class="memo-row"><div class="k">Margin</div><div class="v" id="m6-mos">—</div></div>
+                  <div class="memo-row" id="m6-note-row" style="display:none"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
                 </div>
 
                 <div>
                   <div class="section-eyebrow" style="margin-bottom:0">Calibration</div>
                   <div class="memo-row"><div class="k">Probability ≥20%/yr</div><div class="v" id="m6-prob">—</div></div>
                   <div class="memo-row"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
-                  <div class="memo-row"><div class="k">Top 3 idea</div><div class="v" id="m6-top3">—</div></div>
-                </div>
-
-                <!-- AI calibration check — generated from memo + calibration data · V4 -->
-                <div class="ai-section" data-min-version="4">
-                  <div class="ai-eyebrow">
-                    <span class="ai-eyebrow-dot"></span>
-                    <span class="lbl">AI calibration check</span>
-                  </div>
-                  <div class="ai-body" id="m6-ai-body"></div>
                 </div>
 
                 <div class="t-bsm" style="line-height:1.55">
@@ -2200,10 +2641,17 @@ to protect against error.</div>
                 <div class="flow-h">State your new probability.</div>
               </div>
 
-              <div class="calib-section">
-                <div class="calib-eyebrow">Calibration · updated</div>
+              <!-- Live answer sentence — same pattern as s12, with delta vs prior reading -->
+              <div class="calib-statement">
+                <span class="calib-statement-lead">Now —</span>
+                <span class="calib-statement-slot" id="s20-summary-prob" onclick="document.getElementById('s20-prob-block')?.scrollIntoView({behavior:'smooth',block:'center'})">60%</span>
+                <span class="calib-statement-lead">probability over</span>
+                <span class="calib-statement-slot" id="s20-summary-horizon" onclick="document.getElementById('s20-horizon-block')?.scrollIntoView({behavior:'smooth',block:'center'})">3 years</span><span class="calib-statement-lead">.</span>
+                <div class="calib-statement-prior" id="s20-statement-prior" style="visibility:hidden">Was 60% over 3 years.</div>
+              </div>
 
-                <div class="calib-row">
+              <div class="calib-section calib-section--unified">
+                <div class="calib-row calib-row--tight" id="s20-prob-block">
                   <div class="calib-row-label">Updated probability</div>
                   <div>
                     <span id="s20-prob-num" class="prob-num">60</span><span class="prob-num-pct">%</span>
@@ -2211,14 +2659,16 @@ to protect against error.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="s20-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="10"
+                  <input class="horiz-range" id="s20-prob-range" type="range" min="50" max="100" value="60" step="10"
                          oninput="setProb('s20', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs" style="color:var(--t-700)">50% coin flip</span><span class="body-xs">100%</span>
+                    <span class="body-xs">50%</span><span class="body-xs" id="s20-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
                   </div>
                 </div>
 
-                <div class="calib-row">
+                <div class="calib-link" aria-hidden="true"></div>
+
+                <div class="calib-row calib-row--tight" id="s20-horizon-block">
                   <div class="calib-row-label">Time horizon</div>
                   <div class="period-wrap">
                     <button class="period-btn period-btn-multi"    id="s20-h-1y" onclick="setHorizon('s20','1y')"><span class="period-btn-year">1Y</span><span class="period-btn-date" data-h-date="1y">—</span></button>
@@ -2226,6 +2676,18 @@ to protect against error.</div>
                     <button class="period-btn period-btn-multi on" id="s20-h-3y" onclick="setHorizon('s20','3y')"><span class="period-btn-year">3Y</span><span class="period-btn-date" data-h-date="3y">—</span></button>
                     <button class="period-btn period-btn-multi"    id="s20-h-4y" onclick="setHorizon('s20','4y')"><span class="period-btn-year">4Y</span><span class="period-btn-date" data-h-date="4y">—</span></button>
                     <button class="period-btn period-btn-multi"    id="s20-h-5y" onclick="setHorizon('s20','5y')"><span class="period-btn-year">5Y</span><span class="period-btn-date" data-h-date="5y">—</span></button>
+                  </div>
+                </div>
+
+                <!-- Live signal-strength readout (same pattern as s12) -->
+                <div class="calib-signal" id="s20-signal" onclick="showInfoModal('probability')">
+                  <div class="calib-signal-head">
+                    <span class="calib-signal-lbl">Your signal</span>
+                    <span class="calib-signal-stage" id="s20-signal-stage">Cold start</span>
+                  </div>
+                  <div class="calib-signal-meta">
+                    <div class="calib-signal-bar"><div class="calib-signal-bar-fill" id="s20-signal-fill" style="width:0%"></div></div>
+                    <span class="calib-signal-count" id="s20-signal-count">0 / 20</span>
                   </div>
                 </div>
               </div>
@@ -2240,12 +2702,12 @@ to protect against error.</div>
           </section>
 
           <!-- ════════ s8 — Enter shares (numpad) ════════ -->
-          <section class="scr" data-id="s8">
+          <section class="scr" data-id="s8" onclick="if(state.activeInput) closeNumpad()">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
-                <button class="back-btn" onclick="goBackFromShares()">‹</button>
+                <button class="back-btn" onclick="event.stopPropagation();goBackFromShares()">‹</button>
                 <button style="background:none;border:none;color:var(--s);font-family:var(--font);font-size:13px;display:flex;align-items:center;gap:4px;padding:0">
-                  Market Order <span style="font-size:9px;color:var(--t)">▾</span>
+                  Limit Order <span style="font-size:9px;color:var(--t)">⌄</span>
                 </button>
               </div>
               <hr class="div">
@@ -2254,64 +2716,80 @@ to protect against error.</div>
                 <span style="font-size:13px;color:var(--t)">AAPL</span>
                 <span class="h2" style="margin-left:10px">Buy</span>
               </div>
-              <div style="text-align:right;margin:0 16px 28px">
+              <div style="text-align:right;margin:0 16px 22px">
                 <span style="font-size:13px;color:var(--t)">Non-Registered</span>
                 <span style="font-size:13px;color:var(--t);margin-left:10px">25,430.00 CAD</span>
               </div>
+            </div>
 
-              <div style="padding:0 16px">
-                <div class="form-row">
-                  <span class="body-md" style="color:var(--s)">Estimated Portfolio Weight</span>
-                  <span class="body-md" id="s8-weight" style="color:var(--p);font-variant-numeric:tabular-nums">0.00%</span>
-                </div>
-                <div class="form-row">
-                  <span class="body-md" style="color:var(--s)">Shares</span>
-                  <span class="body-md" id="s8-shares-disp" style="color:var(--p);font-variant-numeric:tabular-nums">0<span style="opacity:0.4;margin-left:1px">|</span></span>
-                </div>
-                <div class="form-row">
-                  <div style="display:flex;align-items:center;gap:7px">
-                    <span class="body-md" style="color:var(--s)">Market Price</span>
-                    <span style="width:14px;height:14px;border-radius:50%;border:1px solid var(--d);display:inline-flex;align-items:center;justify-content:center;font-size:8px;color:var(--d)">i</span>
+            <!-- AI calibration check — moved up from m6, animates on entry · V4 -->
+            <div class="ai-section ai-section--s8" data-min-version="4">
+              <div class="ai-eyebrow">
+                <span class="ai-eyebrow-dot"></span>
+                <span class="lbl">AI calibration check</span>
+              </div>
+              <div class="ai-body" id="s8-ai-body"></div>
+            </div>
+
+            <div style="flex-shrink:0;padding:0 16px">
+              <div class="form-row">
+                <span class="body-md" style="color:var(--s)">Estimated Portfolio Weight</span>
+                <span class="body-md s8-value" id="s8-weight" style="color:var(--p)">0.00%</span>
+              </div>
+
+              <div class="form-row s8-tap" id="s8-limit-row" onclick="event.stopPropagation();openNumpad('limit')" style="align-items:flex-start">
+                <div>
+                  <span class="body-md" style="color:var(--s)">Limit Price</span>
+                  <div class="s8-sub">
+                    <span class="s8-sub-text">Market Price</span>
+                    <span class="s8-sub-info">i</span>
+                    <span class="s8-sub-text" style="color:var(--s)">192.35 USD</span>
                   </div>
-                  <span class="body-md">192.35 USD</span>
                 </div>
-                <div class="form-row">
-                  <span class="body-md" style="color:var(--s)">Estimated Cost</span>
-                  <span class="body-md" id="s8-cost" style="color:var(--p);font-variant-numeric:tabular-nums">0.00 CAD</span>
-                </div>
+                <span class="body-md s8-value" id="s8-limit-disp" style="color:var(--p)">0.00</span>
+              </div>
 
-                <div class="form-row" style="margin-top:18px">
-                  <span class="body-md" style="color:var(--s)">Updated probability</span>
-                  <span class="body-md" id="s8-prob" style="font-variant-numeric:tabular-nums">—</span>
-                </div>
-                <div class="form-row">
-                  <span class="body-md" style="color:var(--s)">Updated horizon</span>
-                  <span class="body-md" id="s8-horizon">—</span>
-                </div>
+              <div class="form-row s8-tap" id="s8-shares-row" onclick="event.stopPropagation();openNumpad('shares')">
+                <span class="body-md" style="color:var(--s)">Shares</span>
+                <span class="body-md s8-value" id="s8-shares-disp" style="color:var(--p)">0</span>
+              </div>
+
+              <div class="form-row">
+                <span class="body-md" style="color:var(--s)">Duration</span>
+                <span class="body-md" style="color:var(--p);display:inline-flex;align-items:center;gap:6px">Good for Day <span style="font-size:9px;color:var(--t)">⌄</span></span>
+              </div>
+
+              <div class="form-row">
+                <span class="body-md" style="color:var(--s)">Estimated Cost</span>
+                <span class="body-md s8-value" id="s8-cost" style="color:var(--p)">0.00 CAD</span>
               </div>
             </div>
 
             <div style="flex:1"></div>
 
-            <div class="act-row" style="flex-shrink:0;padding:0 26px 12px;justify-content:flex-end">
-              <button class="act-btn locked" id="s8-review-btn" onclick="goToReview()">
+            <div class="act-row" style="flex-shrink:0;padding:0 26px 18px;justify-content:space-between">
+              <button class="act-btn" onclick="event.stopPropagation();goBackFromShares()">
+                <span>→ Cancel</span>
+              </button>
+              <button class="act-btn locked" id="s8-review-btn" onclick="event.stopPropagation();goToReview()">
                 <span>→ Review</span>
               </button>
             </div>
 
-            <div class="numpad" style="flex-shrink:0">
-              <div class="np-key" onclick="numpadTap('1')">1</div>
-              <div class="np-key" onclick="numpadTap('2')">2</div>
-              <div class="np-key" onclick="numpadTap('3')">3</div>
-              <div class="np-key" onclick="numpadTap('4')">4</div>
-              <div class="np-key" onclick="numpadTap('5')">5</div>
-              <div class="np-key" onclick="numpadTap('6')">6</div>
-              <div class="np-key" onclick="numpadTap('7')">7</div>
-              <div class="np-key" onclick="numpadTap('8')">8</div>
-              <div class="np-key" onclick="numpadTap('9')">9</div>
-              <div class="np-key np-empty"></div>
-              <div class="np-key" onclick="numpadTap('0')">0</div>
-              <div class="np-key" onclick="numpadTap('del')" style="font-size:22px">⌫</div>
+            <!-- iOS-style numpad — slides up when a numeric row is tapped -->
+            <div class="ios-numpad" id="s8-numpad" onclick="event.stopPropagation()">
+              <div class="ios-key" onclick="numpadTap('1')"><span class="num">1</span></div>
+              <div class="ios-key" onclick="numpadTap('2')"><span class="num">2</span><span class="sub">ABC</span></div>
+              <div class="ios-key" onclick="numpadTap('3')"><span class="num">3</span><span class="sub">DEF</span></div>
+              <div class="ios-key" onclick="numpadTap('4')"><span class="num">4</span><span class="sub">GHI</span></div>
+              <div class="ios-key" onclick="numpadTap('5')"><span class="num">5</span><span class="sub">JKL</span></div>
+              <div class="ios-key" onclick="numpadTap('6')"><span class="num">6</span><span class="sub">MNO</span></div>
+              <div class="ios-key" onclick="numpadTap('7')"><span class="num">7</span><span class="sub">PQRS</span></div>
+              <div class="ios-key" onclick="numpadTap('8')"><span class="num">8</span><span class="sub">TUV</span></div>
+              <div class="ios-key" onclick="numpadTap('9')"><span class="num">9</span><span class="sub">WXYZ</span></div>
+              <div class="ios-key is-decimal" onclick="numpadTap('.')"><span class="num">.</span></div>
+              <div class="ios-key" onclick="numpadTap('0')"><span class="num">0</span></div>
+              <div class="ios-key is-action" onclick="numpadTap('del')"><span class="num">⌫</span></div>
             </div>
           </section>
 
@@ -2374,11 +2852,11 @@ to protect against error.</div>
               </div>
             </div>
 
-            <!-- Secondary: log this decision as a paper trade and exit · V3 -->
+            <!-- Secondary: log this decision as a paper trade (no real order placed) · V3 -->
             <div style="flex-shrink:0;padding:14px 16px 12px;display:flex;justify-content:flex-start;background:var(--bg)" data-min-version="3">
               <button class="act-btn" onclick="savePaperTrade()">
                 <span class="act-arrow">→</span>
-                <span>Save &amp; exit</span>
+                <span>Log as paper trade — don't buy</span>
               </button>
             </div>
 
@@ -2402,7 +2880,7 @@ to protect against error.</div>
             </div>
 
             <div class="body-scroll" style="padding:0 16px">
-              <div class="form-row"><span class="body-md" style="color:var(--s)">Type</span><span class="body-md">Market Buy</span></div>
+              <div class="form-row"><span class="body-md" style="color:var(--s)">Type</span><span class="body-md" id="s9-type">Market Buy</span></div>
               <div class="form-row"><span class="body-md" style="color:var(--s)">Portfolio Weight</span><span class="body-md" id="s9-weight">—</span></div>
               <div class="form-row"><span class="body-md" style="color:var(--s)">Shares</span><span class="body-md" id="s9-shares">—</span></div>
               <div class="form-row"><span class="body-md" style="color:var(--s)">Market Price</span><span class="body-md">192.35 USD</span></div>
@@ -2420,8 +2898,7 @@ to protect against error.</div>
               <div style="margin-top:32px">
                 <div class="lbl" style="margin-bottom:14px">Calibration recorded</div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0;gap:16px"><span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span><span class="body-md" id="s9-conf">—</span></div>
-                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s9-horizon">—</span></div>
-                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Top 3 idea</span><span class="body-md" id="s9-top3">—</span></div>
+                <div class="form-row" style="padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s9-horizon">—</span></div>
 
                 <!-- Direct entry into calibration analytics for this fresh prediction · V4 -->
                 <div style="padding:14px 0;display:flex;justify-content:flex-end" data-min-version="4">
@@ -2849,10 +3326,6 @@ to protect against error.</div>
                   <span class="txn-detail-label">Horizon</span>
                   <span class="txn-detail-value" id="s25-horizon">—</span>
                 </div>
-                <div class="txn-detail-row">
-                  <span class="txn-detail-label">Top 3 idea</span>
-                  <span class="txn-detail-value" id="s25-top3">—</span>
-                </div>
               </div>
 
               <!-- Memo snapshot -->
@@ -2910,8 +3383,7 @@ to protect against error.</div>
               <div style="margin-top:32px">
                 <div class="lbl" style="margin-bottom:14px">Calibration (saved with paper trade)</div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0;gap:16px"><span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span><span class="body-md" id="s40-conf">—</span></div>
-                <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s40-horizon">—</span></div>
-                <div class="form-row" style="padding:12px 0"><span class="body-sm" style="color:var(--s)">Top 3 idea</span><span class="body-md" id="s40-top3">—</span></div>
+                <div class="form-row" style="padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s40-horizon">—</span></div>
               </div>
 
               <div class="t-bsm" style="line-height:1.55;margin-top:32px;padding-bottom:24px">
@@ -3222,10 +3694,10 @@ Holding to a broken thesis is.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="r3-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="r3-prob-range" type="range" min="0" max="100" value="60" step="10"
+                  <input class="horiz-range" id="r3-prob-range" type="range" min="50" max="100" value="60" step="10"
                          oninput="setReviewProb(this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs" style="color:var(--t-700)">50% coin flip</span><span class="body-xs">100%</span>
+                    <span class="body-xs">50%</span><span class="body-xs" id="r3-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
                   </div>
                 </div>
               </div>
@@ -3363,6 +3835,67 @@ Holding to a broken thesis is.</div>
             <div class="tl-detail" id="r-detail-body">—</div>
           </div>
 
+          <!-- ════════ s60 — Backfill memo list (positions without memos) ════════ -->
+          <section class="scr" data-id="s60">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s10')">‹</button>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">Backfill memos</span>
+                <span style="width:22px"></span>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll" style="padding:0 16px 24px">
+              <div style="padding:32px 0 24px">
+                <div class="lbl" style="margin-bottom:14px">Backfill</div>
+                <div class="flow-h">Positions without memos.</div>
+                <div class="t-bsm" style="margin-top:12px;line-height:1.6">
+                  These positions were opened before you started tracking thesis and calibration. Add a memo to each so the calibration system can begin measuring your accuracy on future decisions.
+                </div>
+              </div>
+
+              <hr class="div">
+
+              <div id="s60-list" style="margin-top:8px"></div>
+
+              <div id="s60-empty" style="display:none;font-size:13px;color:var(--t);padding:48px 0;text-align:center;line-height:1.55">
+                Every position has a memo on file. ✓
+              </div>
+            </div>
+          </section>
+
+          <!-- ════════ s61 — Memo saved confirmation (after backfill) ════════ -->
+          <section class="scr" data-id="s61">
+            <div style="padding-top:0;flex-shrink:0;padding-bottom:18px"><hr class="div"></div>
+
+            <div style="padding:36px 16px 20px;flex-shrink:0">
+              <div style="text-align:right">
+                <div class="h2"><span class="body-sm" style="color:var(--t);margin-right:10px" id="s61-ticker">NVDA</span>Memo saved</div>
+                <div class="body-sm" style="color:var(--t);margin-top:6px" id="s61-name">Nvidia Corp.</div>
+              </div>
+            </div>
+
+            <div class="body-scroll" style="padding:0 16px">
+              <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--divider);font-size:13px;color:var(--s);line-height:1.6;letter-spacing:-0.01em">
+                Your thesis and calibration for <span style="color:var(--p)" id="s61-ticker-2">NVDA</span> are now on file. Future capital decisions on this position will reuse the memo, and quarterly events will surface a thesis-review prompt.
+              </div>
+
+              <div id="s61-remaining" style="margin-top:24px;font-size:13px;color:var(--t);line-height:1.55"></div>
+
+              <div style="margin-top:32px;padding-bottom:24px;display:flex;flex-direction:column;gap:10px">
+                <button class="act-btn" onclick="go('s60')" id="s61-add-another" style="padding:10px 0">
+                  <span class="act-arrow">→</span>
+                  <span>Add another</span>
+                </button>
+                <button class="act-btn" onclick="finishBackfill()" style="padding:10px 0">
+                  <span class="act-arrow">→</span>
+                  <span style="color:var(--s)">Done · back to dashboard</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
           <!-- ════════ s30 — Notes journal (per-stock) ════════ -->
           <section class="scr" data-id="s30">
             <div style="padding-top:0;flex-shrink:0">
@@ -3403,6 +3936,18 @@ Holding to a broken thesis is.</div>
               </div>
             </div>
           </section>
+
+          <!-- ════════ Generic info modal (used by label info icons) ════════ -->
+          <div class="info-modal" id="info-modal">
+            <div class="info-modal-sheet">
+              <button class="info-modal-close" onclick="hideInfoModal()">✕</button>
+              <div class="info-modal-eyebrow" id="info-modal-eyebrow">—</div>
+              <div class="info-modal-title" id="info-modal-title">—</div>
+              <!-- Optional inline chart (rendered only when a modal entry sets `chart`) -->
+              <div class="info-modal-chart" id="info-modal-chart" style="display:none"></div>
+              <div class="info-modal-body" id="info-modal-body">—</div>
+            </div>
+          </div>
 
           <!-- ════════ Memo exit confirmation (bottom sheet) ════════ -->
           <div class="guardrail" id="memo-exit-modal">
@@ -3467,6 +4012,9 @@ let state = {
   prob:         50,
   horizon:      '3y',
   shares:       '',
+  orderType:    'limit',         // 'limit' | 'market' — limit is now the default on s8
+  limitPrice:   '',              // user-entered limit price string (numpad-edited)
+  activeInput:  null,            // 'limit' | 'shares' | null — which row the numpad targets
   reason:       null,
   guardrailNav: null,            // pending action after guardrail dismissal
   memo: (loadMemoDraft() || {
@@ -3483,6 +4031,8 @@ let state = {
   thesisReviews:  loadThesisReviews(),
   reviewPending:  loadReviewPending(),
   version:        loadVersion(),
+  activeStock:    'AAPL',          // which stock's memo flow is currently active
+  backfillMode:   false,           // true when memo flow is for an existing position (not a new buy)
   // Live draft for an in-progress review (cleared after r4 saves)
   review: {
     answer:    null,   // 'yes' | 'partial' | 'no'
@@ -3596,6 +4146,23 @@ function fmtDate(d) {
    versions we'd hand to engineering one sprint at a time. Selecting a
    lower version hides UI elements + drawer entries that belong to
    later versions, so each version's flow is internally complete. */
+/* Existing positions the user already owns but hasn't written a memo for.
+   This drives the backfill flow — V2's day-1 migration scenario. Once a
+   position is memo'd, hasMemo flips to true and the count on the dashboard
+   banner decreases. */
+const STOCKS_OWNED = [
+  { ticker: 'ORIO.TO', name: 'Origin Energy',       price: 8.42,   shares: 250, weight: '25%', hasMemo: false },
+  { ticker: 'BWEN',    name: 'Broadwind Energy',    price: 6.10,   shares: 180, weight: '20%', hasMemo: false },
+  { ticker: 'EOSCR',   name: 'Eos Energy',          price: 1.52,   shares: 850, weight: '15%', hasMemo: false },
+  { ticker: 'NVDA',    name: 'Nvidia Corp.',        price: 487.20, shares: 22,  weight: '12%', hasMemo: false }
+];
+function getBackfillPending() {
+  return STOCKS_OWNED.filter(s => !s.hasMemo);
+}
+function findStock(ticker) {
+  return STOCKS_OWNED.find(s => s.ticker === ticker);
+}
+
 const VERSIONS = {
   1: { label: 'V1', title: 'Notes',                       blurb: 'Per-stock journal' },
   2: { label: 'V2', title: 'Capital decision + Memo',     blurb: 'Memo + order placement' },
@@ -3673,14 +4240,17 @@ const SCREENS = [
 
   // V2 — capital decision + memo + order
   { id: 's11', group: 'Discovery',     name: 'Search',                       sub: 'find a stock',                                         minVersion: 2 },
+  { id: 's60', group: 'Backfill',      name: 'Positions without memos',      sub: 'list of stocks needing a memo',                        minVersion: 2 },
+  { id: 's61', group: 'Backfill',      name: 'Memo saved',                   sub: 'backfill confirmation',                                minVersion: 2 },
   { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action',                                          minVersion: 2 },
-  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 7',                                                      minVersion: 2 },
-  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 7',                                                      minVersion: 2 },
-  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 7',                                                      minVersion: 2 },
-  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 7',                                                      minVersion: 2 },
-  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 7',                                                      minVersion: 2 },
-  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 7 · probability · horizon · top 3',                minVersion: 2 },
-  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '7 / 7 · memo + calibration',                           minVersion: 2 },
+  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 8',                                                      minVersion: 2 },
+  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 8',                                                      minVersion: 2 },
+  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 8',                                                      minVersion: 2 },
+  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 8',                                                      minVersion: 2 },
+  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 8',                                                      minVersion: 2 },
+  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 8 · probability · horizon',                        minVersion: 2 },
+  { id: 'm5',  group: 'Memo',    name: 'Note',                         sub: '7 / 8 · optional context',                                  minVersion: 2 },
+  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '8 / 8 · memo + calibration',                           minVersion: 2 },
   { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why',                                                  minVersion: 2 },
   { id: 's20', group: 'Returning user',name: 'Updated probability',          sub: 'with delta',                                           minVersion: 2 },
   { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad',                                               minVersion: 2 },
@@ -3729,6 +4299,10 @@ function go(id) {
   if (id === 's11') renderS11Init();
   if (id === 's24') renderTxnList();
   if (id === 's30') renderNotesPage();
+  if (id === 's60') renderBackfillList();
+  if (id === 's61') renderBackfillSaved();
+  // Backfill banner visibility on every memo screen
+  if (['m1','m1b','m2','m3','m4','s12','m5','m6'].indexOf(id) !== -1) refreshBackfillBanner();
   if (id === 's40') renderS40();
   if (id === 'r1')  renderR1();
   if (id === 'r2a') renderR2a();
@@ -3737,8 +4311,10 @@ function go(id) {
   if (id === 'r4')  renderR4();
   if (id === 's50') renderTimeline();
   if (id === 's12' || id === 'm6') refreshMemoLocks();
+  if (id === 's12') refreshCalibSummary();
+  if (id === 's20') refreshS20Summary();
   // Hydrate memo screens from the draft so resuming visibly fills in
-  if (['m1','m1b','m2','m3','m4','s12','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
+  if (['m1','m1b','m2','m3','m4','s12','m5','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
   // Apply current-version visibility to any dynamic content just rendered
   refreshVersionVisibility();
   // Highlight drawer entry
@@ -3804,16 +4380,40 @@ function onCapitalDecisionContinue() {
 /* ═════════════════════════════════════════════════
    CALIBRATION
    ═════════════════════════════════════════════════ */
+/* Munger-flavored band labels — each slider stop carries a single phrase
+   describing what that conviction level actually means in practice. */
+const PROB_LABELS = {
+  50:  'Coin flip',
+  60:  'Modest edge',
+  70:  'Strong edge',
+  80:  'Fat pitch',
+  90:  'Punch card swing',
+  100: 'Near-certainty (rare)'
+};
+function probLabel(v) {
+  const snapped = Math.round(parseInt(v, 10) / 10) * 10;
+  return PROB_LABELS[snapped] || '';
+}
+
 function setProb(scr, val) {
   const v = parseInt(val, 10);
   state.prob = v;
   const num = document.getElementById(scr + '-prob-num');
   if (num) num.textContent = v;
+  // Live anchor label under the slider — replaces the static description
+  const msgEl = document.getElementById(scr + '-prob-msg');
+  if (msgEl) msgEl.textContent = probLabel(v);
   const range = document.getElementById(scr + '-prob-range');
   if (range) {
-    range.style.background = `linear-gradient(to right, var(--p) ${v}%, var(--divider) ${v}%)`;
+    // Adjust the linear-gradient fill since the track now starts at 50, not 0
+    const min = parseInt(range.min, 10) || 0;
+    const max = parseInt(range.max, 10) || 100;
+    const pct = ((v - min) / (max - min) * 100).toFixed(1);
+    range.style.background = `linear-gradient(to right, var(--p) ${pct}%, var(--divider) ${pct}%)`;
     range.setAttribute('value', v);
   }
+  // Connector sentence on s12 + s20 updates in real time
+  if (scr === 's12') refreshCalibSummary();
   if (scr === 's20') {
     const d = v - 60;
     const chip = document.getElementById('s20-delta');
@@ -3821,6 +4421,7 @@ function setProb(scr, val) {
       chip.textContent = (d > 0 ? '+' : (d < 0 ? '−' : '')) + Math.abs(d) + '%';
       chip.style.visibility = d === 0 ? 'hidden' : 'visible';
     }
+    refreshS20Summary();
   }
 }
 function setHorizon(scr, h) {
@@ -3829,18 +4430,85 @@ function setHorizon(scr, h) {
     const btn = document.getElementById(`${scr}-h-${k}`);
     if (btn) btn.classList.toggle('on', k === h);
   });
-}
-function continueFromCalibration() {
-  checkProbGuardrail(() => go('m6'));
+  if (scr === 's12') refreshCalibSummary();
+  if (scr === 's20') refreshS20Summary();
 }
 
-function pickTop3(value) {
-  state.memo.top3 = value;
-  document.getElementById('s12-t3-yes').classList.toggle('on', value === 'yes');
-  document.getElementById('s12-t3-no').classList.toggle('on', value === 'no');
-  persistMemoDraft();
-  refreshMemoLocks();
+/* Inline "Your signal" readout — surfaced on s12 + s20 so the user sees
+   their track record maturity on the calibration page itself, not only
+   when they tap the info icon. Tapping the row opens the full modal. */
+function renderSignalRow(scr) {
+  const stage    = document.getElementById(scr + '-signal-stage');
+  const fill     = document.getElementById(scr + '-signal-fill');
+  const count    = document.getElementById(scr + '-signal-count');
+  if (!stage || !fill || !count) return;
+  const resolved = computeMaturity();
+  const pct      = Math.min(100, (resolved / 20) * 100);
+
+  let stageLbl, stageCls;
+  if (resolved === 0)      { stageLbl = 'Cold start · no signal';    stageCls = 'is-cold'; }
+  else if (resolved < 5)   { stageLbl = 'Cold start · ' + Math.round(pct) + '%'; stageCls = 'is-cold'; }
+  else if (resolved < 15)  { stageLbl = 'Early read · ' + Math.round(pct) + '%'; stageCls = 'is-early'; }
+  else                     { stageLbl = 'Calibrated · ' + Math.round(pct) + '%'; stageCls = 'is-calibrated'; }
+
+  stage.textContent = stageLbl;
+  stage.className   = 'calib-signal-stage ' + stageCls;
+  fill.style.width  = pct + '%';
+  count.textContent = resolved + ' / 20 resolved';
 }
+
+/* s20 live-summary sentence + "Was X% over Y" prior reading */
+function refreshS20Summary() {
+  const probEl    = document.getElementById('s20-summary-prob');
+  const horizonEl = document.getElementById('s20-summary-horizon');
+  if (probEl)    probEl.textContent    = state.prob + '%';
+  if (horizonEl) horizonEl.textContent = HORIZON_LBL[state.horizon] || state.horizon;
+  // Show the prior reading only if the user has moved off of it
+  const prior  = document.getElementById('s20-statement-prior');
+  if (prior) {
+    // The s20 page seeds at 60% / 3y as the previous reading (per existing delta-chip logic)
+    const movedProb = state.prob !== 60;
+    const movedHoriz = state.horizon !== '3y';
+    if (movedProb || movedHoriz) {
+      prior.textContent = `Was 60% over 3 years.`;
+      prior.style.visibility = 'visible';
+    } else {
+      prior.style.visibility = 'hidden';
+    }
+  }
+
+  renderSignalRow('s20');
+}
+
+/* Connector sentence on s12: ties probability + horizon into one declarative
+   line. Also refreshes the "Past calibrations" link visibility. */
+function refreshCalibSummary() {
+  const probEl    = document.getElementById('s12-summary-prob');
+  const horizonEl = document.getElementById('s12-summary-horizon');
+  if (probEl)    probEl.textContent    = state.prob + '%';
+  if (horizonEl) horizonEl.textContent = HORIZON_LBL[state.horizon] || state.horizon;
+
+  // Past calibrations entry — only show when we have recorded history
+  const link  = document.getElementById('s12-past-link');
+  const count = document.getElementById('s12-past-count');
+  const past  = (state.thesisReviews || []).concat(state.transactions || []).filter(t => !t.paper);
+  if (link) {
+    if (past.length > 0) {
+      link.style.display = '';
+      if (count) count.textContent = `· ${past.length} record${past.length === 1 ? '' : 's'}`;
+    } else {
+      link.style.display = 'none';
+    }
+  }
+
+  // Inline signal-strength readout
+  renderSignalRow('s12');
+}
+function continueFromCalibration() {
+  checkProbGuardrail(() => go('m5'));
+}
+
+/* pickTop3 — removed; Top 3 idea question no longer part of the calibration step */
 
 /* ═════════════════════════════════════════════════
    LIGHT MEMO (m1-m6)
@@ -3909,17 +4577,19 @@ function hydrateMemoScreen(screenId) {
     }
   }
   if (screenId === 's12') {
-    document.getElementById('s12-t3-yes')?.classList.toggle('on', m.top3 === 'yes');
-    document.getElementById('s12-t3-no')?.classList.toggle('on',  m.top3 === 'no');
+    /* Top 3 question removed — no hydrate needed for s12 */
   }
-  if (screenId === 'm6') {
-    const ta = document.getElementById('m6-note');
+  if (screenId === 'm5') {
+    const ta = document.getElementById('m5-note');
     if (ta && ta.value !== m.note) ta.value = m.note || '';
   }
   refreshMemoLocks();
 }
 function onM6NoteInput() {
-  state.memo.note = document.getElementById('m6-note')?.value || '';
+  /* legacy — Note input moved to its own m5 screen; kept as no-op for safety */
+}
+function onM5NoteInput() {
+  state.memo.note = document.getElementById('m5-note')?.value || '';
   persistMemoDraft();
 }
 function memoStepValid(stepId) {
@@ -3929,7 +4599,7 @@ function memoStepValid(stepId) {
     case 'm2':  return state.memo.thesis.trim().length > 0;
     case 'm3':  return state.memo.kill.trim().length > 0;
     case 'm4':  return !!state.memo.mos;
-    case 's12': return !!state.memo.top3;
+    case 's12': return true;  // Top 3 idea question removed — no required field on s12
     default:    return true;
   }
 }
@@ -3943,32 +4613,175 @@ function refreshMemoLocks() {
 }
 function advanceMemo(target) { go(target); }
 
+/* M4 (Margin of safety) soft-block. Only "below" advances freely; the
+   other three answers each surface a guardrail modal with bespoke copy
+   explaining why the answer represents a discipline risk. User can still
+   Proceed — this is friction, not a hard block. */
+function continueFromM4() {
+  const mos = state.memo.mos;
+  if (!mos) return;   // shouldn't happen — Next is locked until selection
+  if (mos === 'below') { go('s12'); return; }
+
+  const messages = {
+    around: {
+      title: 'No margin of safety.',
+      body:  'Buying at fair value leaves no room for error. If the thesis is even slightly wrong, there’s nothing to cushion the downside. Reconsider whether this deserves capital at today’s price.'
+    },
+    above: {
+      title: 'You’re paying a premium.',
+      body:  'Above intrinsic value means the thesis has to compound enough to overcome the overpayment — a much higher bar. Strong views deserve cheap prices. Wait, or trim size.'
+    },
+    unclear: {
+      title: 'Value is uncertain.',
+      body:  'Without an estimate of intrinsic value, there’s no margin of safety to measure against. You’re buying on conviction alone. Sharpen the valuation before committing capital.'
+    }
+  };
+  const m = messages[mos];
+  if (!m) { go('s12'); return; }
+  showGuardrail({
+    title:    m.title,
+    body:     m.body,
+    onProceed: () => go('s12')
+  });
+}
+
 function renderM6() {
   const m = state.memo;
   document.getElementById('m6-type').textContent    = TYPE_LBL[m.type] || '—';
   document.getElementById('m6-size').textContent    = SIZE_LBL[m.size] || '—';
   document.getElementById('m6-thesis').textContent  = m.thesis || '—';
+  // Note (optional) — only show the row when populated
+  const noteRow  = document.getElementById('m6-note-row');
+  const noteDisp = document.getElementById('m6-note-display');
+  const noteVal  = (m.note || '').trim();
+  if (noteRow && noteDisp) {
+    if (noteVal) { noteRow.style.display = ''; noteDisp.textContent = noteVal; }
+    else         { noteRow.style.display = 'none'; }
+  }
   document.getElementById('m6-kill').textContent    = m.kill   || '—';
   document.getElementById('m6-mos').textContent     = MOS_LBL[m.mos] || '—';
   document.getElementById('m6-prob').textContent    = state.prob + '%';
   document.getElementById('m6-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
-  document.getElementById('m6-top3').textContent    = m.top3 === 'yes' ? 'Yes' : (m.top3 === 'no' ? 'No' : '—');
+  /* m6-top3 removed */
   document.getElementById('m6-date').textContent    = 'Drafted ' + fmtDate();
 
   // Reset hold-to-commit progress fill in case the user came back from cancellation
   const fill = document.getElementById('m6-commit-fill');
   if (fill) fill.style.width = '0%';
-
-  // Trigger the AI calibration check animation
-  renderAIInsight();
 }
 
 function commitMemo() {
+  // If we're backfilling an existing position, the memo finalizes against
+  // that position — no order placement, route to s61 confirmation instead.
+  if (state.backfillMode) {
+    const stock = findStock(state.activeStock);
+    if (stock) stock.hasMemo = true;
+    clearMemoDraft();
+    // Reset memo draft state so the next backfill starts fresh
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+    go('s61');
+    return;
+  }
+  // Normal first-time buy flow
   state.hasMemo = true;
   persistHasMemo(true);
-  // Memo is finalized — drop any in-progress draft
   clearMemoDraft();
   go('s8');
+}
+
+/* ═════════════════════════════════════════════════
+   BACKFILL FLOW (s60 list → memo → s61 confirmation)
+   ═════════════════════════════════════════════════ */
+function startBackfill(ticker) {
+  // Set context and route into the memo flow
+  state.activeStock = ticker;
+  state.backfillMode = true;
+  // Fresh memo for this position
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+  clearMemoDraft();
+  refreshBackfillBanner();
+  go('m1');
+}
+
+function refreshBackfillBanner() {
+  // Show/hide the "Backfilling memo for X" banner on every memo screen
+  const show = !!state.backfillMode;
+  document.querySelectorAll('.memo-backfill-banner').forEach(el => {
+    el.style.display = show ? '' : 'none';
+  });
+  document.querySelectorAll('.memo-backfill-ticker').forEach(el => {
+    el.textContent = state.activeStock || '—';
+  });
+  // Also sync the ticker shown in every memo step's header (ticker-meta and
+  // s12 topbar) so AAPL doesn't appear when backfilling a different stock.
+  const ticker = state.activeStock || 'AAPL';
+  document.querySelectorAll('.memo-ctx-ticker').forEach(el => {
+    el.textContent = ticker;
+  });
+}
+
+function renderBackfillList() {
+  const list = document.getElementById('s60-list');
+  const empty = document.getElementById('s60-empty');
+  if (!list || !empty) return;
+  const pending = getBackfillPending();
+  if (!pending.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = pending.map(s => `
+    <div onclick="startBackfill('${s.ticker}')" style="display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--divider);cursor:pointer">
+      <div>
+        <div style="font-size:14px;color:var(--p);letter-spacing:-0.01em">${s.ticker}</div>
+        <div style="font-size:12px;color:var(--t);margin-top:4px">${s.name} · ${s.shares} shares · ${s.weight}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em">Add memo</span>
+        <span style="font-size:18px;color:var(--t);line-height:1">›</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderBackfillSaved() {
+  const stock = findStock(state.activeStock);
+  if (!stock) return;
+  document.getElementById('s61-ticker').textContent   = stock.ticker;
+  document.getElementById('s61-ticker-2').textContent = stock.ticker;
+  document.getElementById('s61-name').textContent     = stock.name;
+  const remaining = getBackfillPending();
+  const remEl = document.getElementById('s61-remaining');
+  const addAnotherBtn = document.getElementById('s61-add-another');
+  if (remaining.length > 0) {
+    remEl.textContent = `${remaining.length} position${remaining.length === 1 ? '' : 's'} still need${remaining.length === 1 ? 's' : ''} a memo.`;
+    addAnotherBtn.style.display = '';
+  } else {
+    remEl.innerHTML = `Every position has a memo on file now. <span style="color:var(--p)">✓</span>`;
+    addAnotherBtn.style.display = 'none';
+  }
+}
+
+function finishBackfill() {
+  state.backfillMode = false;
+  state.activeStock = 'AAPL';
+  refreshBackfillBanner();
+  go('s10');
+}
+
+/* Dashboard render needs to count the pending positions */
+function refreshBackfillNotif() {
+  const banner = document.getElementById('s10-backfill-notif');
+  const count  = document.getElementById('s10-backfill-count');
+  if (!banner) return;
+  const pending = getBackfillPending();
+  if (pending.length === 0) {
+    banner.style.display = 'none';
+  } else {
+    banner.style.display = '';
+    if (count) count.textContent = `${pending.length} position${pending.length === 1 ? '' : 's'}`;
+  }
 }
 
 /* Exit from any memo screen — confirm if there's content to lose */
@@ -3993,11 +4806,10 @@ function discardAndExitMemo() {
   ['m1-type','m1-size','m4-mos'].forEach(k => {
     document.querySelectorAll(`[data-list="${k}"] .radio-row`).forEach(r => r.classList.remove('is-on'));
   });
-  document.getElementById('s12-t3-yes')?.classList.remove('on');
-  document.getElementById('s12-t3-no')?.classList.remove('on');
+  /* s12-t3 buttons removed — no reset needed */
   const ta2 = document.getElementById('m2-text'); if (ta2) ta2.value = '';
   const ta3 = document.getElementById('m3-text'); if (ta3) ta3.value = '';
-  const taN = document.getElementById('m6-note'); if (taN) taN.value = '';
+  const taN = document.getElementById('m5-note'); if (taN) taN.value = '';
   refreshMemoLocks();
   dismissMemoExit();
   go('s0');
@@ -4053,8 +4865,10 @@ function generateMemoInsight() {
 
 let _aiTimer1 = null;
 let _aiTimer2 = null;
-function renderAIInsight() {
-  const body = document.getElementById('m6-ai-body');
+function renderAIInsight(targetId) {
+  // Default to s8-ai-body (the new location); m6-ai-body kept as optional fallback.
+  const id = targetId || 's8-ai-body';
+  const body = document.getElementById(id);
   if (!body) return;
   if (_aiTimer1) clearTimeout(_aiTimer1);
   if (_aiTimer2) clearTimeout(_aiTimer2);
@@ -4066,8 +4880,8 @@ function renderAIInsight() {
 
   // 2. After ~1.2s, type the verdict character by character with a caret
   _aiTimer1 = setTimeout(() => {
-    body.innerHTML = '<span id="m6-ai-text"></span><span class="ai-caret"></span>';
-    const target = body.querySelector('#m6-ai-text');
+    body.innerHTML = '<span class="ai-text"></span><span class="ai-caret"></span>';
+    const target = body.querySelector('.ai-text');
     let i = 0;
     const step = () => {
       if (!target) return;
@@ -4116,52 +4930,115 @@ function pickReason(scr, row) {
 }
 
 /* ═════════════════════════════════════════════════
-   ENTER SHARES (s8)
+   ENTER SHARES (s8) — limit order, iOS numpad
    ═════════════════════════════════════════════════ */
 function goBackFromShares() {
+  closeNumpad();
   go(state.cd === 'initial' ? 'm6' : 's20');
 }
 function renderS8() {
-  document.getElementById('s8-prob').textContent    = state.prob + '%';
-  document.getElementById('s8-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
-  state.shares = state.shares || '';
-  updateSharesDisplay();
+  // Default to limit order; seed limit price to market price on first visit.
+  state.shares     = state.shares || '';
+  state.limitPrice = state.limitPrice || '';
+  state.activeInput = null;
+  closeNumpad();
+  updateInputsDisplay();
+  // Replay the AI calibration check animation each time the screen opens.
+  renderAIInsight('s8-ai-body');
 }
-function numpadTap(val) {
-  if (val === 'del') state.shares = state.shares.slice(0, -1);
-  else if (state.shares.length < 6) state.shares = (state.shares + val).replace(/^0+(\d)/, '$1');
-  updateSharesDisplay();
-}
-function updateSharesDisplay() {
-  const n = parseInt(state.shares, 10) || 0;
-  const disp = document.getElementById('s8-shares-disp');
-  // Always show a numeric value with the cursor after it. Empty input shows 0|.
-  const sharesText = state.shares.length > 0 ? state.shares : '0';
-  disp.innerHTML = sharesText + '<span style="opacity:0.4;margin-left:1px">|</span>';
 
+function openNumpad(which) {
+  state.activeInput = which;
+  const pad = document.getElementById('s8-numpad');
+  if (pad) pad.classList.add('is-open');
+  // Toggle active styling on the rows
+  const limitRow  = document.getElementById('s8-limit-row');
+  const sharesRow = document.getElementById('s8-shares-row');
+  if (limitRow)  limitRow.classList.toggle('is-active',  which === 'limit');
+  if (sharesRow) sharesRow.classList.toggle('is-active', which === 'shares');
+}
+function closeNumpad() {
+  state.activeInput = null;
+  const pad = document.getElementById('s8-numpad');
+  if (pad) pad.classList.remove('is-open');
+  const limitRow  = document.getElementById('s8-limit-row');
+  const sharesRow = document.getElementById('s8-shares-row');
+  if (limitRow)  limitRow.classList.remove('is-active');
+  if (sharesRow) sharesRow.classList.remove('is-active');
+}
+
+function numpadTap(val) {
+  // Route the keystroke to whichever input row is currently active.
+  const which = state.activeInput;
+  if (!which) return;
+
+  if (which === 'shares') {
+    // Shares is an integer field
+    if (val === '.') return;
+    if (val === 'del') state.shares = state.shares.slice(0, -1);
+    else if (state.shares.length < 6) {
+      state.shares = (state.shares + val).replace(/^0+(\d)/, '$1');
+    }
+  } else if (which === 'limit') {
+    // Limit price supports a single decimal point and up to 2 decimal digits
+    if (val === 'del') {
+      state.limitPrice = state.limitPrice.slice(0, -1);
+    } else if (val === '.') {
+      if (state.limitPrice.indexOf('.') === -1) {
+        state.limitPrice = (state.limitPrice || '0') + '.';
+      }
+    } else {
+      // Cap decimals at 2 digits past the point
+      const dot = state.limitPrice.indexOf('.');
+      if (dot !== -1 && state.limitPrice.length - dot > 2) return;
+      if (state.limitPrice.length >= 8) return;
+      state.limitPrice = (state.limitPrice + val).replace(/^0+(\d)/, '$1');
+    }
+  }
+  updateInputsDisplay();
+}
+
+function updateInputsDisplay() {
+  const n = parseInt(state.shares, 10) || 0;
+  const limit = parseFloat(state.limitPrice) || 0;
+
+  const sharesDisp = document.getElementById('s8-shares-disp');
+  if (sharesDisp) sharesDisp.textContent = state.shares.length > 0 ? state.shares : '0';
+
+  const limitDisp = document.getElementById('s8-limit-disp');
+  if (limitDisp) limitDisp.textContent = state.limitPrice.length > 0 ? state.limitPrice : '0.00';
+
+  // Use the limit price (if set) for cost / weight math; fall back to market price.
+  const priceUSD = limit > 0 ? limit : MKTPRICE_USD;
+  const costCAD = n * priceUSD * FX_USD_CAD;
   const w = document.getElementById('s8-weight');
   const c = document.getElementById('s8-cost');
+  if (w) w.textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
+  if (c) c.textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
+
+  // Review unlocks only when both shares AND limit price are populated.
   const reviewBtn = document.getElementById('s8-review-btn');
-  const costCAD = n * MKTPRICE_USD * FX_USD_CAD;
-  // Always render numeric values in white — no grey dashes
-  w.textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
-  c.textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
-  w.style.color = 'var(--p)';
-  c.style.color = 'var(--p)';
-  // Review button still gates on n > 0 — you can't review a zero-share order
-  if (n > 0) reviewBtn.classList.remove('locked');
-  else        reviewBtn.classList.add('locked');
+  if (reviewBtn) {
+    if (n > 0 && limit > 0) reviewBtn.classList.remove('locked');
+    else                    reviewBtn.classList.add('locked');
+  }
 }
-function goToReview() { go('s4'); }
+function goToReview() {
+  closeNumpad();
+  go('s4');
+}
 
 /* ═════════════════════════════════════════════════
    REVIEW (s4) + EXEC
    ═════════════════════════════════════════════════ */
 function renderS4() {
   const n = parseInt(state.shares, 10) || 0;
-  const costCAD = n * MKTPRICE_USD * FX_USD_CAD;
+  const limit = parseFloat(state.limitPrice) || 0;
+  const isLimit = state.orderType === 'limit' && limit > 0;
+  const priceUSD = isLimit ? limit : MKTPRICE_USD;
+  const costCAD = n * priceUSD * FX_USD_CAD;
   document.getElementById('s4-action').textContent = 'Buy';
-  document.getElementById('s4-type').textContent = 'Market Buy';
+  document.getElementById('s4-type').textContent = isLimit ? 'Limit Buy' : 'Market Buy';
   document.getElementById('s4-weight').textContent = n ? (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%' : '—';
   document.getElementById('s4-shares').textContent = n || '—';
   document.getElementById('s4-cost').textContent = n
@@ -4208,13 +5085,18 @@ function execOrder() {
    ═════════════════════════════════════════════════ */
 function renderS9() {
   const n = parseInt(state.shares, 10) || 0;
-  const costCAD = n * MKTPRICE_USD * FX_USD_CAD;
+  const limit = parseFloat(state.limitPrice) || 0;
+  const isLimit = state.orderType === 'limit' && limit > 0;
+  const priceUSD = isLimit ? limit : MKTPRICE_USD;
+  const costCAD = n * priceUSD * FX_USD_CAD;
   document.getElementById('s9-shares').textContent = n;
   document.getElementById('s9-weight').textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
   document.getElementById('s9-cost').textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
+  const s9Type = document.getElementById('s9-type');
+  if (s9Type) s9Type.textContent = isLimit ? 'Limit Buy' : 'Market Buy';
   document.getElementById('s9-conf').textContent = state.prob + '%';
   document.getElementById('s9-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
-  document.getElementById('s9-top3').textContent = state.memo.top3 === 'yes' ? 'Yes' : (state.memo.top3 === 'no' ? 'No' : '—');
+  /* s9-top3 removed — Top 3 idea no longer captured */
   // Filled-at timestamp — generated at execution
   const filledEl = document.getElementById('s9-filled-at');
   if (filledEl) {
@@ -4242,6 +5124,7 @@ function renderS9() {
 
 function finishOrder() {
   state.shares = '';
+  state.limitPrice = '';
   state.reason = null;
   go('s0');
 }
@@ -4273,6 +5156,9 @@ function refreshModeButtons() {
 }
 function resetFlow() {
   state.shares = '';
+  state.limitPrice = '';
+  state.orderType = 'limit';
+  state.activeInput = null;
   state.reason = null;
   state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
   state.prob = 50;
@@ -4290,11 +5176,10 @@ function resetFlow() {
   ['m1-type','m1-size','m4-mos'].forEach(k => {
     document.querySelectorAll(`[data-list="${k}"] .radio-row`).forEach(r => r.classList.remove('is-on'));
   });
-  document.getElementById('s12-t3-yes')?.classList.remove('on');
-  document.getElementById('s12-t3-no')?.classList.remove('on');
+  /* s12-t3 buttons removed — no reset needed */
   const ta2 = document.getElementById('m2-text'); if (ta2) ta2.value = '';
   const ta3 = document.getElementById('m3-text'); if (ta3) ta3.value = '';
-  const taN = document.getElementById('m6-note'); if (taN) taN.value = '';
+  const taN = document.getElementById('m5-note'); if (taN) taN.value = '';
   const r12 = document.getElementById('s12-prob-range'); if (r12) { r12.value = 50; setProb('s12', 50); }
   setHorizon('s12','3y');
   const r20 = document.getElementById('s20-prob-range'); if (r20) { r20.value = 60; setProb('s20', 60); }
@@ -4469,6 +5354,8 @@ function renderDashboard() {
   }
   // Review-pending surfaces — banner at top + inline badge next to AAPL
   refreshReviewNotif();
+  // Backfill banner: count positions without memos
+  refreshBackfillNotif();
 }
 
 /* Refresh the three review-pending surfaces from state. Called whenever
@@ -4606,6 +5493,232 @@ let _selDot  = null;
 
 function toggleCalDropdown() { document.getElementById('cal-mode-menu').classList.toggle('open'); }
 function closeCalDropdown()  { document.getElementById('cal-mode-menu').classList.remove('open'); }
+
+/* ═════════════════════════════════════════════════
+   INLINE INFO MODAL — explain individual input fields
+   ═════════════════════════════════════════════════ */
+const INFO_MODALS = {
+  probability: {
+    eyebrow: 'Probability',
+    // title + body are generated dynamically based on the user's track-record
+    // maturity (see resolveProbabilityCopy()). The static values here are the
+    // fallback for the cold-start case.
+    title:   'A forecast — not yet a score.',
+    chart:   'maturity',
+    dynamic: 'probability',
+    body:    ''
+  },
+  horizon: {
+    eyebrow: 'Time horizon',
+    title:   'When this prediction gets judged.',
+    body:    `Time horizon defines the future date when this prediction is measured against reality. Without one, you can't know if you were right — only whether the stock moved at some arbitrary moment.
+
+For compounding theses, 3+ years is the meaningful window. Shorter horizons are dominated by noise. Longer ones give the business room to deliver.
+
+Once the horizon arrives, the system compares your stated probability to the actual outcome. That's how your calibration gets measured.`
+  },
+  compound20: {
+    eyebrow: 'Why 20%/yr',
+    title:   'A bar that rewards you even when you miss.',
+    body:    `The S&P 500 averages about 11% a year. If you can match that with an index fund and zero work, picking individual stocks only makes sense when you're aiming meaningfully higher.
+
+20% is set deliberately above that bar. Even if your thesis falls short — say it compounds at 15% instead of 20% — you still beat the index handily. The asymmetry is the point: you're building a margin of safety into the goal itself, not just the entry price.
+
+Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names won't clear it. That's by design — most of the time the right answer is "no, not at this price."`
+  }
+};
+
+function showInfoModal(key) {
+  const m = INFO_MODALS[key];
+  if (!m) return;
+
+  // Some modals (probability) generate their title + body from live state so
+  // a returning user with a track record sees different framing than a
+  // first-time user.
+  let title = m.title;
+  let body  = m.body;
+  if (m.dynamic === 'probability') {
+    const dyn = resolveProbabilityCopy();
+    title = dyn.title;
+    body  = dyn.body;
+  }
+
+  document.getElementById('info-modal-eyebrow').textContent = m.eyebrow.toUpperCase();
+  document.getElementById('info-modal-title').textContent   = title;
+  document.getElementById('info-modal-body').textContent    = body;
+
+  // Render an optional inline chart for this modal entry. Hidden otherwise.
+  const chartEl = document.getElementById('info-modal-chart');
+  if (chartEl) {
+    if (m.chart === 'maturity') {
+      chartEl.style.display = '';
+      chartEl.innerHTML = renderMaturityChart();
+    } else {
+      chartEl.style.display = 'none';
+      chartEl.innerHTML = '';
+    }
+  }
+  document.getElementById('info-modal').classList.add('is-active');
+}
+
+/* Count "resolved predictions" — used to scale both the chart and the
+   surrounding copy. For the returning persona we seed a baseline so the
+   demo actually demonstrates a mature track record. */
+function computeMaturity() {
+  const userTx      = (state.transactions  || []).filter(t => !t.paper).length;
+  const userReviews = (state.thesisReviews || []).length;
+  // Returning persona represents someone who's been on the app for years —
+  // they should see signal that's mid-maturity, not zero. The baseline
+  // covers their off-screen history; the user's own actions add to it.
+  const personaBaseline = state.hasMemo ? 9 : 0;
+  return Math.min(userTx + userReviews + personaBaseline, 20);
+}
+
+function resolveProbabilityCopy() {
+  const resolved = computeMaturity();
+  if (resolved === 0) {
+    return {
+      title: 'A forecast — not yet a score.',
+      body:
+`Your probability is a forecast of how likely Apple is to compound at ≥20% annually over your chosen horizon. It's an honest guess today — and it stays a guess until your horizon arrives and reality answers back.
+
+The chart above shows when this becomes meaningful. With zero predictions resolved, your true skill is unknown — any number you pick could turn out calibrated, overconfident, or underconfident. As predictions mature, the signal sharpens: if your 70% predictions land 70% of the time across many calls, you're calibrated.
+
+The job today is to commit to a number you can be measured against. The job over years is to show up consistently so the data set grows.`
+    };
+  }
+  if (resolved < 15) {
+    return {
+      title: 'Your forecast — signal emerging.',
+      body:
+`Your probability is your forecast of how likely Apple is to compound at ≥20% annually over your chosen horizon — your own number, not market consensus.
+
+You're past cold start. With ${resolved} predictions resolved, the chart above shows real signal taking shape: you can begin to see which probability levels you tend to hit and which you miss. It's not yet locked in — most users need around 15+ resolved predictions before calibration is reliable — but the trend is now informative, not random.
+
+Use what's there. If your 70% calls have been landing closer to 55%, weight that against the number you commit to today. The track record earns the right to override gut feel.`
+    };
+  }
+  return {
+    title: 'Your forecast — backed by track record.',
+    body:
+`Your probability is your forecast of how likely Apple is to compound at ≥20% annually over your chosen horizon — your own number, not market consensus.
+
+With ${resolved} predictions resolved, your calibration has substance. The chart above shows the dots clustering on the diagonal — that's a real signal about how your stated probabilities map to outcomes. You can trust it the way you couldn't on day one.
+
+The discipline now isn't more data; it's honest revision. When reality disagrees with your stated probability, adjust the next forecast — don't argue with the dot.`
+  };
+}
+function hideInfoModal() {
+  document.getElementById('info-modal').classList.remove('is-active');
+}
+
+/* Calibration-maturity chart shown inside the Probability info modal.
+   The point: your stated probability is a forecast, not a score. It can only
+   be graded once your horizon passes and many predictions resolve. This chart
+   shows that progression visually — empty grid today → sparse dots at year 3
+   → dense dots near the diagonal at year 5+. */
+function renderMaturityChart() {
+  // Pull live counts from state — returning users see a different chart than
+  // first-time users. computeMaturity() includes a persona baseline so the
+  // returning demo actually shows a meaningful track record.
+  const resolvedCount = computeMaturity();
+  const targetCount   = 20;
+  const pct = Math.min(100, (resolvedCount / targetCount) * 100);
+
+  // Which stage are we currently in? <5: Today, 5-14: Year 3, 15+: Year 5+
+  const stage = resolvedCount === 0 ? 0
+               : resolvedCount < 5  ? 0
+               : resolvedCount < 15 ? 1
+               : 2;
+
+  // Three mini calibration plots. Each is a 60×60 box with a diagonal
+  // "perfect calibration" line + dots arranged near the diagonal.
+  const stageSvg = (dots) => {
+    let dotMarkup = '';
+    dots.forEach(d => {
+      dotMarkup += `<circle cx="${d.x}" cy="${d.y}" r="${d.r || 2}" fill="${d.f || '#FFFFFF'}" opacity="${d.o || 0.85}"/>`;
+    });
+    return `<svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet">
+      <rect x="0.5" y="0.5" width="59" height="59" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+      <line x1="0" y1="60" x2="60" y2="0" stroke="rgba(255,255,255,0.18)" stroke-dasharray="2 2" stroke-width="0.5"/>
+      ${dotMarkup}
+    </svg>`;
+  };
+
+  // Today stage — if the user already has some resolved predictions, show
+  // their actual dots in this panel so the chart feels personal, not generic.
+  const todayDots = [];
+  if (resolvedCount > 0 && resolvedCount < 5) {
+    for (let i = 0; i < resolvedCount; i++) {
+      const p = 12 + (i * (40 / Math.max(resolvedCount - 1, 1)));
+      const jitter = (Math.sin(i * 2.1) * 6);
+      todayDots.push({ x: p, y: 60 - p + jitter, r: 2.2, o: 0.9 });
+    }
+  }
+
+  // Sparse dots (year 3) — a few scattered around the diagonal
+  const sparse = [
+    { x: 18, y: 44 }, { x: 30, y: 32 }, { x: 42, y: 22 },
+    { x: 12, y: 50 }, { x: 50, y: 14 },
+    { x: 22, y: 36 }, { x: 38, y: 28 }
+  ];
+  // Dense dots (year 5+) — many points hugging the diagonal
+  const dense = [];
+  for (let i = 0; i < 15; i++) {
+    const p = 6 + i * 3.4;
+    const jitter = (Math.sin(i * 1.7) * 4);
+    dense.push({ x: p, y: 60 - p + jitter, r: 1.8, o: 0.9 });
+  }
+
+  // If the user is mid-maturity, show their actual count of dots in stage 2
+  // rather than the hardcoded sparse array.
+  const midDots = stage === 1
+    ? Array.from({ length: Math.min(resolvedCount, 14) }, (_, i) => {
+        const p = 8 + (i * (44 / 13));
+        const jitter = (Math.sin(i * 1.9) * 5);
+        return { x: p, y: 60 - p + jitter, r: 2, o: 0.9 };
+      })
+    : sparse;
+
+  return `
+    <div class="info-chart-stats">
+      <div>
+        <div class="info-chart-stat-num">${resolvedCount} of ~${targetCount}</div>
+        <div class="info-chart-stat-lbl">Predictions resolved</div>
+      </div>
+      <div style="text-align:right">
+        <div class="info-chart-stat-num">${Math.round(pct)}%</div>
+        <div class="info-chart-stat-lbl">Signal strength</div>
+      </div>
+    </div>
+    <div class="info-chart-bar">
+      <div class="info-chart-bar-fill" style="width:${Math.max(pct, 1.5)}%"></div>
+      <div class="info-chart-bar-tick" style="left:50%"></div>
+      <div class="info-chart-bar-tick" style="left:calc(100% - 1px)"></div>
+    </div>
+    <div class="info-chart-axis">
+      <span>Today</span>
+      <span>3Y · first signal</span>
+      <span>5Y · reliable</span>
+    </div>
+    <div class="info-chart-stages">
+      <div class="info-chart-stage${stage === 0 ? ' is-current' : ''}">
+        ${stageSvg(todayDots)}
+        <div class="info-chart-stage-lbl"><span class="yr">Today</span>${resolvedCount === 0 ? 'No signal' : 'Cold start'}</div>
+      </div>
+      <div class="info-chart-arrow">›</div>
+      <div class="info-chart-stage${stage === 1 ? ' is-current' : ''}">
+        ${stageSvg(midDots)}
+        <div class="info-chart-stage-lbl"><span class="yr">Year 3</span>Early read</div>
+      </div>
+      <div class="info-chart-arrow">›</div>
+      <div class="info-chart-stage${stage === 2 ? ' is-current' : ''}">
+        ${stageSvg(dense)}
+        <div class="info-chart-stage-lbl"><span class="yr">Year 5+</span>Calibrated</div>
+      </div>
+    </div>
+  `;
+}
 
 function showCalInfo() {
   closeCalDropdown();
@@ -5065,7 +6178,7 @@ function openTxnDetail(txnId) {
   document.getElementById('s25-date').textContent   = txn.date;
   document.getElementById('s25-prob').textContent   = txn.prob + '%';
   document.getElementById('s25-horizon').textContent = HORIZON_LBL[txn.horizon] || txn.horizon;
-  document.getElementById('s25-top3').textContent   = txn.top3 === 'yes' ? 'Yes' : (txn.top3 === 'no' ? 'No' : '—');
+  /* s25-top3 removed */
 
   const memoBlock = document.getElementById('s25-memo-block');
   const noMemo    = document.getElementById('s25-no-memo');
@@ -5181,12 +6294,14 @@ function recordTransaction(opts) {
   const n = parseInt(state.shares, 10) || 0;
   if (n <= 0) return null;
   const isBuy = state.cd === 'initial' || state.cd === 'increase';
+  const limit = parseFloat(state.limitPrice) || 0;
+  const priceUSD = (state.orderType === 'limit' && limit > 0) ? limit : MKTPRICE_USD;
   const tx = {
     id: 't-' + Date.now(),
     date: fmtDate(),
     action: isBuy ? 'Buy' : 'Sell',
     shares: n,
-    cost: n * MKTPRICE_USD * FX_USD_CAD,
+    cost: n * priceUSD * FX_USD_CAD,
     prob: state.prob,
     horizon: state.horizon,
     top3: state.memo.top3,
@@ -5232,7 +6347,7 @@ function renderS40() {
     : '—';
   document.getElementById('s40-conf').textContent = state.prob + '%';
   document.getElementById('s40-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
-  document.getElementById('s40-top3').textContent = state.memo.top3 === 'yes' ? 'Yes' : (state.memo.top3 === 'no' ? 'No' : '—');
+  /* s40-top3 removed */
 
   const memoSec = document.getElementById('s40-memo-section');
   if (state.cd === 'initial') {
@@ -5250,6 +6365,7 @@ function renderS40() {
 function finishPaper() {
   // Reset transient draft state and return to stock detail
   state.shares = '';
+  state.limitPrice = '';
   state.reason = null;
   go('s0');
 }
@@ -5374,8 +6490,15 @@ function setReviewProb(val) {
   state.review.newProb = v;
   const num = document.getElementById('r3-prob-num');
   if (num) num.textContent = v;
+  const msgEl = document.getElementById('r3-prob-msg');
+  if (msgEl) msgEl.textContent = probLabel(v);
   const range = document.getElementById('r3-prob-range');
-  if (range) range.style.background = `linear-gradient(to right, var(--p) ${v}%, var(--divider) ${v}%)`;
+  if (range) {
+    const min = parseInt(range.min, 10) || 0;
+    const max = parseInt(range.max, 10) || 100;
+    const pct = ((v - min) / (max - min) * 100).toFixed(1);
+    range.style.background = `linear-gradient(to right, var(--p) ${pct}%, var(--divider) ${pct}%)`;
+  }
 
   // Delta chip vs baseline
   const txns = getTxnList();
@@ -5747,10 +6870,10 @@ function proceedFromGuardrail() {
    Anything in 50–80% proceeds without interruption. */
 function checkProbGuardrail(onProceed) {
   const prob = state.prob;
-  if (prob < 50) {
+  if (prob === 50) {
     showGuardrail({
-      title: `Below 50% — that's barely an edge.`,
-      body:  `At ${prob}%, you're stating less than a coin flip. This isn't a thesis — it's a guess. Most successful investors don't commit capital under 50% confidence. Reconsider whether you have an edge here at all.`,
+      title: `50% — that's a coin flip.`,
+      body:  `At 50% you're stating you have no edge — just a toss-up. If you can't make a case for better-than-coin-flip odds, this isn't a position to commit capital to. Sharpen the thesis until you reach modest edge (60%+), or pass on the trade.`,
       onProceed: onProceed
     });
     return;
