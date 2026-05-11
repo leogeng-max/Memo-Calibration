@@ -339,58 +339,6 @@ body.is-fullscreen .zoom-toggle {
 .calib-row--tight:first-of-type { padding-top: 4px; }
 .calib-row--tight:last-of-type  { padding-bottom: 4px; }
 
-/* Inline signal-strength readout — surfaces track record maturity on the
-   page itself so the user can see where they stand without opening the modal.
-   Tapping opens the full Probability info modal with the calibration chart. */
-.calib-signal {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--divider);
-  cursor: pointer;
-  transition: opacity 150ms var(--ease);
-}
-.calib-signal:active { opacity: 0.7; }
-.calib-signal-head {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 8px;
-}
-.calib-signal-lbl {
-  font-size: 11px; letter-spacing: 0.06em;
-  color: var(--t); text-transform: uppercase;
-}
-.calib-signal-stage {
-  font-size: 12px; letter-spacing: -0.01em;
-  color: var(--p); font-weight: 500;
-}
-.calib-signal-stage.is-cold { color: var(--t); font-weight: 400; }
-.calib-signal-stage.is-early { color: var(--p); }
-.calib-signal-stage.is-calibrated { color: var(--p); }
-.calib-signal-meta {
-  display: flex; align-items: center; gap: 10px;
-}
-.calib-signal-bar {
-  flex: 1; height: 2px;
-  background: var(--divider);
-  position: relative;
-}
-.calib-signal-bar-fill {
-  height: 100%; background: var(--p);
-  transition: width 240ms var(--ease);
-}
-.calib-signal-bar::before,
-.calib-signal-bar::after {
-  content: ''; position: absolute;
-  top: -2px; width: 1px; height: 6px;
-  background: var(--t-800);
-}
-.calib-signal-bar::before { left: 50%; }
-.calib-signal-bar::after  { right: 0; }
-.calib-signal-count {
-  font-size: 11px; color: var(--t);
-  font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
-}
-
 /* Thin connector between probability + horizon inside the unified block.
    Reads as: "X% probability OVER Y years" — one statement, one block. */
 .calib-link {
@@ -2213,19 +2161,6 @@ body.is-fullscreen .zoom-toggle {
                   </div>
                 </div>
 
-                <!-- Live signal-strength readout for the user's track record.
-                     Tap to open the full Probability info modal with the chart. -->
-                <div class="calib-signal" id="s12-signal" onclick="showInfoModal('probability')">
-                  <div class="calib-signal-head">
-                    <span class="calib-signal-lbl">Your signal</span>
-                    <span class="calib-signal-stage" id="s12-signal-stage">Cold start</span>
-                  </div>
-                  <div class="calib-signal-meta">
-                    <div class="calib-signal-bar"><div class="calib-signal-bar-fill" id="s12-signal-fill" style="width:0%"></div></div>
-                    <span class="calib-signal-count" id="s12-signal-count">0 / 20</span>
-                  </div>
-                </div>
-
               </div>
 
               <!-- Past calibrations link (V3+) — only shows when there are recorded reviews -->
@@ -2676,18 +2611,6 @@ What's obvious now will be murky later.</div>
                     <button class="period-btn period-btn-multi on" id="s20-h-3y" onclick="setHorizon('s20','3y')"><span class="period-btn-year">3Y</span><span class="period-btn-date" data-h-date="3y">—</span></button>
                     <button class="period-btn period-btn-multi"    id="s20-h-4y" onclick="setHorizon('s20','4y')"><span class="period-btn-year">4Y</span><span class="period-btn-date" data-h-date="4y">—</span></button>
                     <button class="period-btn period-btn-multi"    id="s20-h-5y" onclick="setHorizon('s20','5y')"><span class="period-btn-year">5Y</span><span class="period-btn-date" data-h-date="5y">—</span></button>
-                  </div>
-                </div>
-
-                <!-- Live signal-strength readout (same pattern as s12) -->
-                <div class="calib-signal" id="s20-signal" onclick="showInfoModal('probability')">
-                  <div class="calib-signal-head">
-                    <span class="calib-signal-lbl">Your signal</span>
-                    <span class="calib-signal-stage" id="s20-signal-stage">Cold start</span>
-                  </div>
-                  <div class="calib-signal-meta">
-                    <div class="calib-signal-bar"><div class="calib-signal-bar-fill" id="s20-signal-fill" style="width:0%"></div></div>
-                    <span class="calib-signal-count" id="s20-signal-count">0 / 20</span>
                   </div>
                 </div>
               </div>
@@ -4434,29 +4357,6 @@ function setHorizon(scr, h) {
   if (scr === 's20') refreshS20Summary();
 }
 
-/* Inline "Your signal" readout — surfaced on s12 + s20 so the user sees
-   their track record maturity on the calibration page itself, not only
-   when they tap the info icon. Tapping the row opens the full modal. */
-function renderSignalRow(scr) {
-  const stage    = document.getElementById(scr + '-signal-stage');
-  const fill     = document.getElementById(scr + '-signal-fill');
-  const count    = document.getElementById(scr + '-signal-count');
-  if (!stage || !fill || !count) return;
-  const resolved = computeMaturity();
-  const pct      = Math.min(100, (resolved / 20) * 100);
-
-  let stageLbl, stageCls;
-  if (resolved === 0)      { stageLbl = 'Cold start · no signal';    stageCls = 'is-cold'; }
-  else if (resolved < 5)   { stageLbl = 'Cold start · ' + Math.round(pct) + '%'; stageCls = 'is-cold'; }
-  else if (resolved < 15)  { stageLbl = 'Early read · ' + Math.round(pct) + '%'; stageCls = 'is-early'; }
-  else                     { stageLbl = 'Calibrated · ' + Math.round(pct) + '%'; stageCls = 'is-calibrated'; }
-
-  stage.textContent = stageLbl;
-  stage.className   = 'calib-signal-stage ' + stageCls;
-  fill.style.width  = pct + '%';
-  count.textContent = resolved + ' / 20 resolved';
-}
-
 /* s20 live-summary sentence + "Was X% over Y" prior reading */
 function refreshS20Summary() {
   const probEl    = document.getElementById('s20-summary-prob');
@@ -4477,7 +4377,6 @@ function refreshS20Summary() {
     }
   }
 
-  renderSignalRow('s20');
 }
 
 /* Connector sentence on s12: ties probability + horizon into one declarative
@@ -4501,8 +4400,6 @@ function refreshCalibSummary() {
     }
   }
 
-  // Inline signal-strength readout
-  renderSignalRow('s12');
 }
 function continueFromCalibration() {
   checkProbGuardrail(() => go('m5'));
