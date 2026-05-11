@@ -763,6 +763,32 @@ body.is-fullscreen .zoom-toggle {
 .drawer-toggle button.on {
   background: var(--p); color: #000; border-color: var(--p);
 }
+
+/* Version picker — sits in the drawer header. 4 chip-style buttons. */
+.version-picker {
+  display: flex; gap: 4px;
+  margin-top: 6px;
+}
+.version-picker button {
+  flex: 1;
+  padding: 6px 0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.10);
+  color: var(--t-700);
+  font-size: 11px; letter-spacing: 0.06em;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+}
+.version-picker button.on {
+  background: var(--p); color: #000; border-color: var(--p);
+}
+.version-meta {
+  margin-top: 8px;
+  font-size: 11px; letter-spacing: -0.01em; line-height: 1.4;
+  color: var(--t-700);
+}
+.version-meta .title { color: var(--p); font-weight: 500; margin-right: 6px; }
 .drawer-action {
   width: 100%;
   padding: 10px 12px;
@@ -1188,6 +1214,51 @@ body.is-fullscreen .zoom-toggle {
   margin-top: 6px;
 }
 
+/* ═══════════════ REVIEW NOTIFICATION ═══════════════ */
+/* Slim banner used on the dashboard (s10) and stock page (s0) when a new
+   earnings event has been recorded and the thesis review is pending. */
+.review-notif {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.10);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 140ms var(--ease);
+}
+.review-notif:hover  { background: rgba(255,255,255,0.05); }
+.review-notif:active { background: rgba(255,255,255,0.07); }
+.review-notif .label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--p); letter-spacing: -0.01em; line-height: 1.4;
+}
+.review-notif .pulse-dot {
+  flex-shrink: 0;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--p);
+  animation: notifPulse 1.6s ease-in-out infinite;
+}
+.review-notif .arrow {
+  color: var(--s); font-size: 16px; line-height: 1; flex-shrink: 0;
+}
+
+/* Inline review badge (next to a ticker in a list) — sits to the LEFT */
+.review-badge {
+  display: inline-block;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--p);
+  animation: notifPulse 1.6s ease-in-out infinite;
+  margin-right: 6px;
+  vertical-align: 2px;
+  flex-shrink: 0;
+}
+
+@keyframes notifPulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
 /* ═══════════════ SECTION HEADER (used on s24 History) ═══════════════ */
 /* Stronger eyebrow than .lbl — used for the major section breaks
    on the History page so each block is clearly its own thing. */
@@ -1374,9 +1445,23 @@ body.is-fullscreen .zoom-toggle {
 <!-- ═════════════ Drawer ═════════════ -->
 <div class="drawer-backdrop" id="drawerBackdrop"></div>
 <aside class="drawer" id="drawer" aria-label="Menu">
-  <header class="drawer-head">
-    <div class="brand">Calibration + Memo<span class="sub">AAPL</span></div>
-    <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
+  <header class="drawer-head" style="flex-direction:column;align-items:stretch;gap:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="brand">Calibration + Memo<span class="sub">AAPL</span></div>
+      <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
+    </div>
+    <div>
+      <div class="version-picker" id="versionPicker">
+        <button data-version="1" onclick="setVersion(1)">V1</button>
+        <button data-version="2" onclick="setVersion(2)">V2</button>
+        <button data-version="3" onclick="setVersion(3)">V3</button>
+        <button data-version="4" onclick="setVersion(4)">V4</button>
+      </div>
+      <div class="version-meta">
+        <span class="title" id="versionTitle">—</span>
+        <span id="versionBlurb">—</span>
+      </div>
+    </div>
   </header>
   <div class="drawer-body">
     <div class="drawer-group">Persona</div>
@@ -1389,6 +1474,7 @@ body.is-fullscreen .zoom-toggle {
 
     <div class="drawer-group">Demo</div>
     <div class="drawer-row">
+      <button class="drawer-action" onclick="triggerReviewNotif()" data-min-version="4">Trigger earnings review prompt</button>
       <button class="drawer-action" onclick="resetFlow()">Reset to stock page</button>
     </div>
 
@@ -1438,8 +1524,17 @@ body.is-fullscreen .zoom-toggle {
             </div>
 
             <div class="dash-body">
+              <!-- Review-pending notification (hidden when state.reviewPending = false) — V4 -->
+              <div id="s10-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:8px" data-min-version="4">
+                <div class="label">
+                  <span class="pulse-dot"></span>
+                  <span><b style="font-weight:500">AAPL</b> · Q1 2026 earnings released · Review your thesis</span>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+
               <!-- Total value -->
-              <div style="padding-top:70px;padding-bottom:78px;text-align:right">
+              <div style="padding-top:48px;padding-bottom:78px;text-align:right">
                 <div style="font-size:13px;color:var(--t);letter-spacing:-0.22px;margin-bottom:8px">Total Value</div>
                 <div style="font-size:28px;font-weight:400;letter-spacing:-0.56px;font-variant-numeric:tabular-nums;color:var(--p)" id="s10-total">
                   173,249.00 <span style="color:var(--d)">CAD</span>
@@ -1507,8 +1602,8 @@ body.is-fullscreen .zoom-toggle {
                     <div class="dash-val-sm">4,677.72</div>
                   </div>
 
-                  <!-- Calibration entry -->
-                  <div class="dash-block dash-tap" style="width:auto" onclick="go('s5')">
+                  <!-- Calibration entry — V4 (calibration analytics screen) -->
+                  <div class="dash-block dash-tap" style="width:auto" onclick="go('s5')" data-min-version="4">
                     <div class="dash-val-sm">Calibration</div>
                     <div class="dash-meta-row"><span class="dash-meta-key">Accuracy</span><span class="dash-meta-val" id="s10-cal-acc">54%</span></div>
                     <div class="dash-meta-row"><span class="dash-meta-key">Predictions</span><span class="dash-meta-val" id="s10-cal-pred">17</span></div>
@@ -1523,7 +1618,7 @@ body.is-fullscreen .zoom-toggle {
                       <div class="dash-meta-row"><span class="dash-meta-key">BWEN</span><span class="dash-meta-val">20%</span></div>
                       <div class="dash-meta-row"><span class="dash-meta-key">EOSCR</span><span class="dash-meta-val">15%</span></div>
                       <div class="dash-meta-row"><span class="dash-meta-key">NVDA</span><span class="dash-meta-val">12%</span></div>
-                      <div class="dash-meta-row"><span class="dash-meta-key">AAPL</span><span class="dash-meta-val" id="s10-aapl-weight">—</span></div>
+                      <div class="dash-meta-row dash-tap" onclick="go('s0')" style="cursor:pointer"><span class="dash-meta-key"><span id="s10-aapl-badge" class="review-badge" style="display:none"></span>AAPL</span><span class="dash-meta-val" id="s10-aapl-weight">—</span></div>
                     </div>
                     <div style="font-size:13px;color:var(--s);letter-spacing:-0.26px;cursor:pointer">View All</div>
                   </div>
@@ -1579,6 +1674,15 @@ body.is-fullscreen .zoom-toggle {
             </div>
 
             <div class="body-scroll" style="padding:0 16px 40px">
+              <!-- Review-pending notification — fires the thesis review flow when tapped — V4 -->
+              <div id="s0-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:18px" data-min-version="4">
+                <div class="label">
+                  <span class="pulse-dot"></span>
+                  <span><b style="font-weight:500">Q1 2026 earnings released</b> · Review your thesis</span>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+
               <!-- Right-aligned company + last price -->
               <div style="text-align:right;margin-top:36px">
                 <div style="font-size:18px;font-weight:400;letter-spacing:-0.02em;color:var(--p)">Apple Inc · AAPL</div>
@@ -1621,8 +1725,8 @@ body.is-fullscreen .zoom-toggle {
                 <span style="color:var(--p);font-size:14px;margin-left:4px">→</span>
               </div>
 
-              <!-- Notes — track thoughts on this stock at any time -->
-              <div style="margin-top:36px;cursor:pointer" onclick="openNotes()">
+              <!-- Notes — track thoughts on this stock at any time · V1 -->
+              <div style="margin-top:36px;cursor:pointer" onclick="openNotes()" data-min-version="1">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
                   <div class="lbl">Notes</div>
                   <span style="font-size:18px;color:var(--t);line-height:1">›</span>
@@ -1633,17 +1737,17 @@ body.is-fullscreen .zoom-toggle {
                 <div id="s0-notes-list"></div>
               </div>
 
-              <!-- Menu items — History opens the unified memo + transactions page -->
+              <!-- Menu items — History opens the unified memo + transactions page · V3 -->
               <div style="margin-top:36px">
-                <div class="s0-item" onclick="openHistory()">History</div>
+                <div class="s0-item" onclick="openHistory()" data-min-version="3">History</div>
                 <div class="s0-item">Market</div>
                 <div class="s0-item">News</div>
                 <div class="s0-item">Research</div>
               </div>
             </div>
 
-            <!-- Pinned bottom CTA -->
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
+            <!-- Pinned bottom CTA · V2 (capital decision flow) -->
+            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end" data-min-version="2">
               <button class="act-btn" onclick="onCapitalDecision()" style="padding:14px 4px;font-size:15px">
                 <span class="act-arrow">→</span>
                 <span>Capital decision</span>
@@ -1699,12 +1803,16 @@ body.is-fullscreen .zoom-toggle {
                   <div>
                     <span id="s12-prob-num" class="prob-num">50</span><span class="prob-num-pct">%</span>
                   </div>
-                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="5"
+                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="10"
                          oninput="setProb('s12', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs">100%</span>
+                    <span class="body-xs">0%</span><span class="body-xs" style="color:var(--t-700)">50% coin flip</span><span class="body-xs">100%</span>
                   </div>
-                  <div class="prob-microcopy">Most investors cannot estimate this accurately.</div>
+                  <div class="prob-microcopy" style="text-align:left;margin-top:14px;line-height:1.55">
+                    Below 50: betting against your own view.<br>
+                    60–70: modest edge.<br>
+                    80+: rare conviction (Buffett's "fat pitch").
+                  </div>
                 </div>
 
                 <div class="calib-row">
@@ -1932,12 +2040,12 @@ to rewrite it.</div>
                   <div class="ticker-meta">AAPL · 5 / 7</div>
                 </div>
 
-                <div class="title-md">At today's price, you see:</div>
-                <div class="t-bsm" style="margin-top:-20px">Conservative assumptions, not best-case.</div>
+                <div class="title-md">What's your margin of safety here?</div>
+                <div class="t-bsm" style="margin-top:-20px">Use conservative assumptions — what the business is worth in a bad year, not a good one.</div>
 
                 <!-- Reference data — frames the question without prescribing an answer -->
                 <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--divider);font-size:12px;color:var(--t-700);line-height:1.55;letter-spacing:-0.01em">
-                  Current price <span style="color:var(--s)">192.35 USD</span> · Analyst consensus IV <span style="color:var(--s)">~$185</span>. Your judgment, not a calculation.
+                  Current price <span style="color:var(--s)">192.35 USD</span>. Compare it to your own estimate of intrinsic value — there's no calculator for this.
                 </div>
 
                 <div class="field-list" data-list="m4-mos">
@@ -1985,7 +2093,7 @@ to protect against error.</div>
 
                 <!-- Optional free-form note — bracket-corner textarea, V1 idiom -->
                 <div>
-                  <div class="memo-row"><div class="k">Add a note</div>
+                  <div class="memo-row"><div class="k">Note</div>
                     <div class="v">
                       <div class="bracket" style="padding:12px;min-height:64px">
                         <span class="c tl"></span><span class="c tr"></span>
@@ -2012,8 +2120,8 @@ to protect against error.</div>
                   <div class="memo-row"><div class="k">Top 3 idea</div><div class="v" id="m6-top3">—</div></div>
                 </div>
 
-                <!-- AI calibration check — generated from memo + calibration data -->
-                <div class="ai-section">
+                <!-- AI calibration check — generated from memo + calibration data · V4 -->
+                <div class="ai-section" data-min-version="4">
                   <div class="ai-eyebrow">
                     <span class="ai-eyebrow-dot"></span>
                     <span class="lbl">AI calibration check</span>
@@ -2103,10 +2211,10 @@ to protect against error.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="s20-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="5"
+                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="10"
                          oninput="setProb('s20', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs">100%</span>
+                    <span class="body-xs">0%</span><span class="body-xs" style="color:var(--t-700)">50% coin flip</span><span class="body-xs">100%</span>
                   </div>
                 </div>
 
@@ -2266,8 +2374,8 @@ to protect against error.</div>
               </div>
             </div>
 
-            <!-- Secondary: log this decision as a paper trade and exit -->
-            <div style="flex-shrink:0;padding:14px 16px 12px;display:flex;justify-content:flex-start;background:var(--bg)">
+            <!-- Secondary: log this decision as a paper trade and exit · V3 -->
+            <div style="flex-shrink:0;padding:14px 16px 12px;display:flex;justify-content:flex-start;background:var(--bg)" data-min-version="3">
               <button class="act-btn" onclick="savePaperTrade()">
                 <span class="act-arrow">→</span>
                 <span>Save &amp; exit</span>
@@ -2315,8 +2423,8 @@ to protect against error.</div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Horizon</span><span class="body-md" id="s9-horizon">—</span></div>
                 <div class="form-row" style="border-bottom:1px solid var(--divider);padding:12px 0"><span class="body-sm" style="color:var(--s)">Top 3 idea</span><span class="body-md" id="s9-top3">—</span></div>
 
-                <!-- Direct entry into calibration analytics for this fresh prediction -->
-                <div style="padding:14px 0;display:flex;justify-content:flex-end">
+                <!-- Direct entry into calibration analytics for this fresh prediction · V4 -->
+                <div style="padding:14px 0;display:flex;justify-content:flex-end" data-min-version="4">
                   <button class="act-btn" onclick="go('s5')" style="padding:6px 0">
                     <span class="act-arrow">→</span>
                     <span>View calibration</span>
@@ -2620,8 +2728,8 @@ to protect against error.</div>
 
             <div class="body-scroll" style="padding:0 16px 24px">
 
-              <!-- Calibration timeline entry — sits at the top of History -->
-              <div style="padding:36px 0 14px;cursor:pointer" onclick="openCalibrationTimeline()">
+              <!-- Calibration timeline entry — sits at the top of History · V3 -->
+              <div style="padding:36px 0 14px;cursor:pointer" onclick="openCalibrationTimeline()" data-min-version="3">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                   <div class="section-header">Calibration timeline</div>
                   <span style="font-size:18px;color:var(--t);line-height:1">›</span>
@@ -2650,8 +2758,8 @@ to protect against error.</div>
                 </div>
                 <div id="s24-memo-detail" style="margin-top:18px;display:flex;flex-direction:column;gap:18px"></div>
 
-                <!-- Trigger the thesis review flow -->
-                <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--divider);display:flex;justify-content:flex-end">
+                <!-- Trigger the thesis review flow · V4 -->
+                <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--divider);display:flex;justify-content:flex-end" data-min-version="4">
                   <button class="act-btn" onclick="startThesisReview()" style="padding:8px 0">
                     <span class="act-arrow">→</span>
                     <span>Review thesis</span>
@@ -2659,8 +2767,8 @@ to protect against error.</div>
                 </div>
               </div>
 
-              <!-- Thesis reviews list (only when there's at least one) -->
-              <div id="s24-reviews-block" style="display:none;margin-top:48px;padding-top:24px;border-top:1px solid var(--divider)">
+              <!-- Thesis reviews list (only when there's at least one) · V4 -->
+              <div id="s24-reviews-block" style="display:none;margin-top:48px;padding-top:24px;border-top:1px solid var(--divider)" data-min-version="4">
                 <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px">
                   <div class="section-header">Thesis reviews <span class="meta" id="s24-reviews-count">—</span></div>
                 </div>
@@ -2831,6 +2939,48 @@ to protect against error.</div>
                 <div class="flow-h">Is the thesis still intact?</div>
                 <div class="t-bsm" style="margin-top:10px;line-height:1.55">
                   Re-read what you wrote when you first bought AAPL. Then tell us how the world has shifted.
+                </div>
+              </div>
+
+              <!-- Quarterly earnings summary — the trigger event's actual facts.
+                   AI-summarized metrics + 1-line takeaway + link to fuller research. -->
+              <div class="ai-section" style="margin-top:32px">
+                <div class="ai-eyebrow">
+                  <span class="ai-eyebrow-dot"></span>
+                  <span class="lbl">Q1 2026 earnings · Apr 27, 2026</span>
+                </div>
+
+                <!-- Key metrics — each row: label · value · YoY change -->
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+                    <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em">Revenue</span>
+                    <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums;letter-spacing:-0.01em">$91.3B <span style="color:var(--t-700);margin-left:4px">+4% YoY</span></span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+                    <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em">Services</span>
+                    <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums;letter-spacing:-0.01em">$24.0B <span style="color:var(--t-700);margin-left:4px">+14% YoY</span></span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+                    <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em">EPS</span>
+                    <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums;letter-spacing:-0.01em">$1.53 <span style="color:var(--t-700);margin-left:4px">+6% YoY</span></span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+                    <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em">Greater China</span>
+                    <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums;letter-spacing:-0.01em">−12% YoY</span>
+                  </div>
+                </div>
+
+                <!-- AI takeaway -->
+                <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--divider);font-size:13px;color:var(--s);line-height:1.6;letter-spacing:-0.01em">
+                  Services growth intact — the long thesis lever. iPhone flat. Greater China dropped 12% YoY for the third consecutive quarter. Management held guidance.
+                </div>
+
+                <!-- Link to fuller research (stub) -->
+                <div style="margin-top:14px;display:flex;justify-content:flex-end">
+                  <button class="act-btn" onclick="openFiscalResearch()" style="padding:6px 0">
+                    <span class="act-arrow">→</span>
+                    <span>Open full research on Fiscal AI</span>
+                  </button>
                 </div>
               </div>
 
@@ -3072,10 +3222,10 @@ Holding to a broken thesis is.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="r3-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="r3-prob-range" type="range" min="0" max="100" value="60" step="5"
+                  <input class="horiz-range" id="r3-prob-range" type="range" min="0" max="100" value="60" step="10"
                          oninput="setReviewProb(this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs">100%</span>
+                    <span class="body-xs">0%</span><span class="body-xs" style="color:var(--t-700)">50% coin flip</span><span class="body-xs">100%</span>
                   </div>
                 </div>
               </div>
@@ -3331,6 +3481,8 @@ let state = {
   transactions:   loadTransactions(),
   notes:          loadNotes(),
   thesisReviews:  loadThesisReviews(),
+  reviewPending:  loadReviewPending(),
+  version:        loadVersion(),
   // Live draft for an in-progress review (cleared after r4 saves)
   review: {
     answer:    null,   // 'yes' | 'partial' | 'no'
@@ -3347,7 +3499,7 @@ const SEED_THESIS_REVIEWS = [
     id:       'tr-seed-1',
     date:     'Mar 28, 2026',
     answer:   'yes',
-    prevProb: 55,
+    prevProb: 50,
     newProb:  60,
     note:     'Q4 earnings reaffirmed services growth thesis. No changes needed.'
   }
@@ -3391,7 +3543,7 @@ const SEED_TXNS = [
     action: 'Buy',
     shares: 25,
     cost:  6539.90,
-    prob:  55,
+    prob:  50,
     horizon: '3y',
     top3:  'no',
     memo: {
@@ -3440,6 +3592,45 @@ function fmtDate(d) {
   return (d || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+/* Release-version picker — segments the prototype into the shippable
+   versions we'd hand to engineering one sprint at a time. Selecting a
+   lower version hides UI elements + drawer entries that belong to
+   later versions, so each version's flow is internally complete. */
+const VERSIONS = {
+  1: { label: 'V1', title: 'Notes',                       blurb: 'Per-stock journal' },
+  2: { label: 'V2', title: 'Capital decision + Memo',     blurb: 'Memo + order placement' },
+  3: { label: 'V3', title: 'History & tracking',          blurb: 'Trades + paper trades + timeline' },
+  4: { label: 'V4', title: 'Reflection',                  blurb: 'AI insights + thesis review + calibration analytics' }
+};
+function loadVersion() {
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.version');
+    if (raw) { const v = parseInt(raw, 10); if (v >= 1 && v <= 4) return v; }
+  } catch (_) {}
+  return 4;   // default: latest, so the demo shows everything
+}
+function persistVersion(v) {
+  try { localStorage.setItem('mogo.calmemo.version', String(v)); } catch (_) {}
+}
+
+/* Pending thesis-review flag — set when a triggering event (earnings, etc.)
+   surfaces a review prompt. Defaults to true for the Returning persona so
+   the demo always lights up at least one notification. */
+function loadReviewPending() {
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.AAPL.reviewPending');
+    if (raw !== null) return raw === '1';
+  } catch (_) {}
+  // No stored value — default ON only if user has a memo (returning persona)
+  return loadHasMemo();
+}
+function persistReviewPending(v) {
+  try {
+    if (v) localStorage.setItem('mogo.calmemo.AAPL.reviewPending', '1');
+    else   localStorage.setItem('mogo.calmemo.AAPL.reviewPending', '0');
+  } catch (_) {}
+}
+
 /* Persist the in-progress memo draft so the user can recover work after
    tapping Exit (and across page reloads). On commit (memo finalized) we
    clear it; on a fresh entry to m1 the draft hydrates state.memo. */
@@ -3475,39 +3666,47 @@ function persistHasMemo(v) {
    NAVIGATION
    ═════════════════════════════════════════════════ */
 const SCREENS = [
-  { id: 's10', group: 'Discovery',     name: 'Main dashboard',               sub: 'portfolio overview' },
-  { id: 's11', group: 'Discovery',     name: 'Search',                       sub: 'find a stock' },
-  { id: 's0',  group: 'Stock',         name: 'Stock detail',                 sub: 'AAPL · Apple Inc' },
-  { id: 's24', group: 'Stock',         name: 'History',                      sub: 'memo + all AAPL trades' },
-  { id: 's25', group: 'Stock',         name: 'Transaction detail',           sub: 'memo + calibration snapshot' },
-  { id: 's30', group: 'Stock',         name: 'Notes',                        sub: 'thoughts on AAPL · journal' },
-  { id: 'r1',  group: 'Thesis review',  name: 'Re-read original',             sub: 'is the thesis still intact?' },
-  { id: 'r2a', group: 'Thesis review',  name: 'Addendum',                     sub: 'partial update' },
-  { id: 'r2b', group: 'Thesis review',  name: 'Rewrite thesis',               sub: 'broken — new thesis' },
-  { id: 'r3',  group: 'Thesis review',  name: 'Recalibrate',                  sub: 'updated probability' },
-  { id: 'r4',  group: 'Thesis review',  name: 'Review saved',                 sub: 'confirmation + status pill' },
-  { id: 's50', group: 'Stock',          name: 'Calibration timeline',         sub: 'probability moves on AAPL over time' },
-  { id: 's5',  group: 'Calibration',   name: 'Calibration analytics',        sub: 'predicted vs actual' },
-  { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action' },
-  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 7' },
-  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 7' },
-  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 7' },
-  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 7' },
-  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 7' },
-  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 7 · probability · horizon · top 3' },
-  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '7 / 7 · memo + calibration' },
-  { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why' },
-  { id: 's20', group: 'Returning user',name: 'Updated probability',          sub: 'with delta' },
-  { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad' },
-  { id: 's4',  group: 'Order',         name: 'Review & execute',             sub: 'hold to confirm' },
-  { id: 's9',  group: 'Order',         name: 'Order filled',                 sub: 'AAPL' },
-  { id: 's40', group: 'Order',         name: 'Saved as paper trade',         sub: 'logged · no capital committed' }
+  // V1 — existing surfaces + notes
+  { id: 's10', group: 'Discovery',     name: 'Main dashboard',               sub: 'portfolio overview',                                  minVersion: 1 },
+  { id: 's0',  group: 'Stock',         name: 'Stock detail',                 sub: 'AAPL · Apple Inc',                                     minVersion: 1 },
+  { id: 's30', group: 'Stock',         name: 'Notes',                        sub: 'thoughts on AAPL · journal',                           minVersion: 1 },
+
+  // V2 — capital decision + memo + order
+  { id: 's11', group: 'Discovery',     name: 'Search',                       sub: 'find a stock',                                         minVersion: 2 },
+  { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action',                                          minVersion: 2 },
+  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 7',                                                      minVersion: 2 },
+  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 7',                                                      minVersion: 2 },
+  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 7',                                                      minVersion: 2 },
+  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 7',                                                      minVersion: 2 },
+  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 7',                                                      minVersion: 2 },
+  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 7 · probability · horizon · top 3',                minVersion: 2 },
+  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '7 / 7 · memo + calibration',                           minVersion: 2 },
+  { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why',                                                  minVersion: 2 },
+  { id: 's20', group: 'Returning user',name: 'Updated probability',          sub: 'with delta',                                           minVersion: 2 },
+  { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad',                                               minVersion: 2 },
+  { id: 's4',  group: 'Order',         name: 'Review & execute',             sub: 'hold to confirm',                                      minVersion: 2 },
+  { id: 's9',  group: 'Order',         name: 'Order filled',                 sub: 'AAPL',                                                 minVersion: 2 },
+
+  // V3 — history & tracking
+  { id: 's24', group: 'Stock',         name: 'History',                      sub: 'memo + all AAPL trades',                               minVersion: 3 },
+  { id: 's25', group: 'Stock',         name: 'Transaction detail',           sub: 'memo + calibration snapshot',                          minVersion: 3 },
+  { id: 's50', group: 'Stock',          name: 'Calibration timeline',         sub: 'probability moves on AAPL over time',                  minVersion: 3 },
+  { id: 's40', group: 'Order',         name: 'Saved as paper trade',         sub: 'logged · no capital committed',                        minVersion: 3 },
+
+  // V4 — reflection
+  { id: 's5',  group: 'Calibration',   name: 'Calibration analytics',        sub: 'predicted vs actual',                                  minVersion: 4 },
+  { id: 'r1',  group: 'Thesis review',  name: 'Re-read original',             sub: 'is the thesis still intact?',                          minVersion: 4 },
+  { id: 'r2a', group: 'Thesis review',  name: 'Addendum',                     sub: 'partial update',                                       minVersion: 4 },
+  { id: 'r2b', group: 'Thesis review',  name: 'Rewrite thesis',               sub: 'broken — new thesis',                                  minVersion: 4 },
+  { id: 'r3',  group: 'Thesis review',  name: 'Recalibrate',                  sub: 'updated probability',                                  minVersion: 4 },
+  { id: 'r4',  group: 'Thesis review',  name: 'Review saved',                 sub: 'confirmation + status pill',                           minVersion: 4 }
 ];
 const SCREEN_BY_ID = Object.fromEntries(SCREENS.map(s => [s.id, s]));
 
 let cur = 's0';
 function go(id) {
   cur = id;
+  window._currentScreenId = id;
   document.querySelectorAll('.scr').forEach(el => el.classList.remove('is-active'));
   const el = document.querySelector(`.scr[data-id="${id}"]`);
   if (el) {
@@ -3540,6 +3739,8 @@ function go(id) {
   if (id === 's12' || id === 'm6') refreshMemoLocks();
   // Hydrate memo screens from the draft so resuming visibly fills in
   if (['m1','m1b','m2','m3','m4','s12','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
+  // Apply current-version visibility to any dynamic content just rendered
+  refreshVersionVisibility();
   // Highlight drawer entry
   document.querySelectorAll('#drawerJumper button').forEach(b => {
     b.classList.toggle('is-active', b.dataset.go === id);
@@ -3552,6 +3753,7 @@ function go(id) {
 function renderStock() {
   document.getElementById('s0-holdings').style.display = state.hasMemo ? 'block' : 'none';
   renderNotesPreview();
+  refreshReviewNotif();
 }
 
 function onCapitalDecision() { go('s6'); }
@@ -4055,8 +4257,11 @@ function setMode(m) {
     state.thesisReviews = []; persistThesisReviews();
     state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
     clearMemoDraft();
+    state.reviewPending = false; persistReviewPending(false);
   } else {
     state.hasMemo = true;  persistHasMemo(true);
+    // Returning persona re-arms the review prompt so the demo always lights up
+    state.reviewPending = true; persistReviewPending(true);
   }
   refreshModeButtons();
   go('s10');
@@ -4080,6 +4285,8 @@ function resetFlow() {
   persistThesisReviews();
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
   clearMemoDraft();
+  state.reviewPending = false;
+  persistReviewPending(false);
   ['m1-type','m1-size','m4-mos'].forEach(k => {
     document.querySelectorAll(`[data-list="${k}"] .radio-row`).forEach(r => r.classList.remove('is-on'));
   });
@@ -4130,9 +4337,11 @@ drawerBackdrop.addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
 function buildDrawerJumper() {
+  // Filter screens to those available in the current version
+  const visible = SCREENS.filter(s => (s.minVersion || 1) <= state.version);
   const groups = [];
   let cur = null;
-  SCREENS.forEach(s => {
+  visible.forEach(s => {
     if (!cur || cur.name !== s.group) {
       cur = { name: s.group, items: [] };
       groups.push(cur);
@@ -4143,6 +4352,54 @@ function buildDrawerJumper() {
     <div class="drawer-group">${g.name}</div>
     ${g.items.map(it => `<button data-go="${it.id}" onclick="go('${it.id}'); closeDrawer();">${it.name}</button>`).join('')}
   `).join('');
+}
+
+/* Hide every UI element whose data-min-version exceeds state.version.
+   Runs on init, on every navigate, and on version change. */
+function refreshVersionVisibility() {
+  document.querySelectorAll('[data-min-version]').forEach(el => {
+    const minVer = parseInt(el.dataset.minVersion, 10) || 1;
+    const ok = minVer <= state.version;
+    if (!ok) {
+      el.dataset._origDisplay = el.dataset._origDisplay || el.style.display || '';
+      el.style.display = 'none';
+    } else if (el.dataset._origDisplay !== undefined) {
+      el.style.display = el.dataset._origDisplay;
+    }
+  });
+}
+
+/* Version picker chip — updates state, persists, and refreshes UI */
+function setVersion(v) {
+  v = parseInt(v, 10) || 4;
+  state.version = v;
+  persistVersion(v);
+  refreshVersionUI();
+  // If the current screen is no longer reachable in this version, route to s10
+  const cur = SCREENS.find(s => s.id === window._currentScreenId);
+  if (cur && (cur.minVersion || 1) > v) {
+    go('s10');
+  } else {
+    // Re-render the active screen so conditional UI inside it picks up the change
+    if (typeof window._currentScreenId === 'string') go(window._currentScreenId);
+  }
+}
+
+function refreshVersionUI() {
+  // Update version-picker chip state
+  document.querySelectorAll('#versionPicker button').forEach(btn => {
+    btn.classList.toggle('on', parseInt(btn.dataset.version, 10) === state.version);
+  });
+  // Update header title/blurb
+  const meta = VERSIONS[state.version];
+  const titleEl = document.getElementById('versionTitle');
+  const blurbEl = document.getElementById('versionBlurb');
+  if (titleEl && meta) titleEl.textContent = `${meta.label} · ${meta.title}`;
+  if (blurbEl && meta) blurbEl.textContent = meta.blurb;
+  // Rebuild the drawer jumper (filtered)
+  buildDrawerJumper();
+  // Apply visibility to all data-min-version elements
+  refreshVersionVisibility();
 }
 
 /* ═════════════════════════════════════════════════
@@ -4210,6 +4467,46 @@ function renderDashboard() {
     if (acc)  acc.textContent  = '—';
     if (pred) pred.textContent = '0';
   }
+  // Review-pending surfaces — banner at top + inline badge next to AAPL
+  refreshReviewNotif();
+}
+
+/* Refresh the three review-pending surfaces from state. Called whenever
+   the relevant screens render (s10, s0) or after a review completes. */
+/* Demo helper: re-arm the pending-review prompt so you can re-trigger
+   the flow after completing or dismissing it. Wired to a drawer action. */
+/* Stubbed external research link — would route to a fiscal-research
+   detail page (analyst notes, full earnings transcript, sparklines, etc.)
+   For now, a brief inline confirmation via the page-label area below the
+   phone. */
+function openFiscalResearch() {
+  const sub = document.getElementById('pageSub');
+  if (!sub) return;
+  const original = sub.textContent;
+  sub.textContent = 'Stub · Fiscal AI research would open here';
+  setTimeout(() => { sub.textContent = original; }, 2400);
+}
+
+function triggerReviewNotif() {
+  if (!state.hasMemo) {
+    state.hasMemo = true;
+    persistHasMemo(true);
+  }
+  state.reviewPending = true;
+  persistReviewPending(true);
+  refreshReviewNotif();
+  go('s10');
+  closeDrawer();
+}
+
+function refreshReviewNotif() {
+  const show = !!(state.hasMemo && state.reviewPending);
+  const banner10 = document.getElementById('s10-review-notif');
+  const banner0  = document.getElementById('s0-review-notif');
+  const badge    = document.getElementById('s10-aapl-badge');
+  if (banner10) banner10.style.display = show ? '' : 'none';
+  if (banner0)  banner0.style.display  = show ? '' : 'none';
+  if (badge)    badge.style.display    = show ? '' : 'none';
 }
 
 /* ═════════════════════════════════════════════════
@@ -5159,6 +5456,9 @@ function renderR4() {
 
 function finishReview() {
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
+  // Review completed — dismiss the pending-review notification
+  state.reviewPending = false;
+  persistReviewPending(false);
   go('s0');
 }
 
@@ -5476,7 +5776,7 @@ function continueFromS20() {
    ═════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   populateHorizonDates();
-  buildDrawerJumper();
+  refreshVersionUI();           // builds drawer jumper (filtered) + applies version-gated visibility
   refreshModeButtons();
   setProb('s12', 50);
   setProb('s20', 60);
