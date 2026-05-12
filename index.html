@@ -261,6 +261,251 @@ body.is-fullscreen .zoom-toggle {
   font-size: 15px; color: var(--p);
   padding: 15px 0;
 }
+
+/* ─────────────────── POSITION ARTIFACT (s0 redesign) ─────────────────── */
+/* Stock header — ticker · exchange + company on the left, price + delta on the right */
+.s0-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 28px;
+}
+.s0-header-left  { display: flex; flex-direction: column; gap: 4px; }
+.s0-header-right { text-align: right; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+.s0-ticker-row {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--t);
+  text-transform: uppercase;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.s0-company-name {
+  font-size: 18px;
+  color: var(--p);
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.s0-price {
+  font-size: 16px;
+  color: var(--p);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.s0-delta {
+  font-size: 11px;
+  color: var(--s);
+  font-variant-numeric: tabular-nums;
+}
+.s0-divider {
+  border: none;
+  border-top: 1px solid var(--divider);
+  margin: 24px 0 0;
+}
+.s0-divider.thin {
+  border: none;
+  border-top: 1px solid var(--divider);
+  opacity: 0.55;
+  margin: 12px 0 0;
+}
+
+/* Base for each position section (thesis, kill line, MOS, memo, confidence, research) */
+.position-section { padding: 28px 0; }
+.position-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--t);
+  text-transform: none;
+  margin-bottom: 14px;
+  font-weight: 400;
+}
+
+/* Thesis — hero typography. Generous leading, real paragraph rhythm.
+   Empty state is visibly empty (italic placeholder, minimum height) to
+   create the "quiet visual itch" the design principles call for. */
+.thesis-prose {
+  font-size: 14.5px;
+  color: var(--p);
+  line-height: 1.75;
+  letter-spacing: -0.01em;
+  white-space: pre-line;
+  font-weight: 400;
+}
+.thesis-prose.is-empty {
+  font-style: italic;
+  color: var(--t-800);
+  font-size: 13.5px;
+  min-height: 96px;
+  line-height: 1.7;
+}
+.thesis-version {
+  font-size: 10px;
+  color: var(--t-800);
+  text-align: right;
+  margin-top: 16px;
+  letter-spacing: 0.02em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Kill line — set apart. Left rule + indent reads as a document clause. */
+.kill-line-block {
+  border-left: 2px solid var(--t-800);
+  padding: 6px 0 6px 20px;
+  margin: 4px 0;
+}
+.kill-line-block .position-eyebrow { margin-bottom: 10px; }
+.kill-line-text {
+  font-size: 14px;
+  color: var(--p);
+  line-height: 1.75;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+.kill-line-text.is-empty {
+  font-style: italic;
+  color: var(--t-800);
+  font-size: 13px;
+  min-height: 64px;
+}
+
+/* Margin of safety — three rows + anchoring caption */
+.mos-rows { border-top: 1px solid var(--divider); }
+.mos-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--divider);
+  font-size: 13px;
+}
+.mos-row > span:first-child { color: var(--t); }
+.mos-row > span:last-child  {
+  color: var(--p);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.mos-anchoring {
+  font-size: 12px;
+  color: var(--t);
+  line-height: 1.65;
+  margin-top: 14px;
+  letter-spacing: -0.01em;
+}
+.mos-anchoring.is-empty {
+  font-style: italic;
+  color: var(--t-800);
+}
+
+/* Memo — structured slots */
+.memo-slot { margin-bottom: 20px; }
+.memo-slot:last-child { margin-bottom: 0; }
+.memo-slot-label {
+  font-size: 12.5px;
+  color: var(--p);
+  font-weight: 500;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.memo-slot-body {
+  font-size: 12.5px;
+  color: var(--s);
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+}
+.memo-slot-body.is-empty {
+  font-style: italic;
+  color: var(--t-800);
+}
+
+/* Confidence — mono-style line for the prediction; a tag for the calibration bucket */
+.confidence-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--s);
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+.confidence-line.is-empty {
+  font-style: italic;
+  color: var(--t-800);
+  font-family: var(--font);
+}
+.category-tag {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 3px 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  color: var(--t);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  letter-spacing: 0;
+}
+
+/* Attached research — list of dated cards */
+.research-list { display: flex; flex-direction: column; gap: 10px; }
+.research-card {
+  padding: 12px 12px 10px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.012);
+}
+.research-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.research-card-title {
+  font-size: 12.5px;
+  color: var(--p);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.research-card-date {
+  font-size: 10.5px;
+  color: var(--t-800);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  flex-shrink: 0;
+}
+.research-card-summary {
+  font-size: 12px;
+  color: var(--s);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+.research-empty {
+  font-size: 12.5px;
+  color: var(--t-800);
+  font-style: italic;
+  padding: 16px 0;
+  line-height: 1.55;
+}
+.research-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--s);
+  letter-spacing: -0.01em;
+}
+.research-add-btn .act-arrow { font-size: 16px; color: var(--s); line-height: 1; }
+.research-add-btn:hover { color: var(--p); }
+
+/* Transaction record — visually subordinate, mono style */
+.position-tx-strip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  color: var(--t-800);
+  letter-spacing: 0.02em;
+  line-height: 1.85;
+  padding-top: 18px;
+  white-space: pre-line;
+}
 /* Variant: marked as test-only so the row keeps its tap target but the
    sub-label tells reviewers this entry is gated in production. */
 .s0-item.s0-item--test {
@@ -2176,7 +2421,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <hr class="div">
             </div>
 
-            <div class="body-scroll" style="padding:0 16px 40px">
+            <div class="body-scroll" style="padding:0 20px 40px">
               <!-- Review-pending notification — fires the thesis review flow when tapped — V4 -->
               <div id="s0-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:18px" data-min-version="4">
                 <div class="label">
@@ -2186,49 +2431,98 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <span class="arrow">→</span>
               </div>
 
-              <!-- Right-aligned company + last price -->
-              <div style="text-align:right;margin-top:36px">
-                <div style="font-size:18px;font-weight:400;letter-spacing:-0.02em;color:var(--p)">Apple Inc · AAPL</div>
-                <div style="display:flex;justify-content:flex-end;align-items:baseline;gap:10px;margin-top:6px">
-                  <span style="font-size:13px;color:var(--t)">Last Price</span>
-                  <span style="font-size:13px;color:var(--s)">192.35 USD</span>
+              <!-- ─── Stock header: ticker · exchange + company name (left), price + delta (right) ─── -->
+              <div class="s0-header">
+                <div class="s0-header-left">
+                  <div class="s0-ticker-row"><span class="memo-ctx-ticker">AAPL</span> · NASDAQ</div>
+                  <div class="s0-company-name">Apple Inc.</div>
+                </div>
+                <div class="s0-header-right">
+                  <div class="s0-price">$192.35</div>
+                  <div class="s0-delta" id="s0-delta">+0.42 today</div>
+                </div>
+              </div>
+              <hr class="s0-divider">
+
+              <!-- ─── Thesis — hero ─── -->
+              <div class="position-section">
+                <div class="position-eyebrow">Thesis</div>
+                <div class="thesis-prose" id="s0-thesis">—</div>
+                <div class="thesis-version" id="s0-version" style="display:none">v3 · Mar 12, 2026 · 2 prior</div>
+              </div>
+
+              <!-- ─── Kill line — its own bordered treatment ─── -->
+              <div class="position-section" style="padding-top:8px">
+                <div class="kill-line-block">
+                  <div class="position-eyebrow">Kill line</div>
+                  <div class="kill-line-text" id="s0-kill-line">—</div>
                 </div>
               </div>
 
-              <!-- Holdings (only when OWNED / has memo) -->
-              <div id="s0-holdings" style="margin-top:32px;display:none">
-                <div style="padding:6px 0 18px">
-                  <div style="display:flex;align-items:baseline;gap:6px">
-                    <span style="font-size:22px;font-weight:400;letter-spacing:-0.02em;color:var(--p);font-variant-numeric:tabular-nums">18,950.00</span>
-                    <span style="font-size:13px;color:var(--t)">CAD</span>
-                  </div>
-                  <div style="font-size:12px;color:var(--t);margin-top:4px">Market Value</div>
+              <!-- ─── Margin of safety — price-anchored ─── -->
+              <div class="position-section">
+                <div class="position-eyebrow">Margin of safety</div>
+                <div class="mos-rows" id="s0-mos-rows">
+                  <div class="mos-row"><span>at entry</span><span id="s0-mos-entry">—</span></div>
+                  <div class="mos-row"><span>today</span><span id="s0-mos-today">—</span></div>
+                  <div class="mos-row"><span>fair value</span><span id="s0-mos-fv">—</span></div>
                 </div>
-                <div style="padding:6px 0 18px">
-                  <div style="font-size:22px;font-weight:400;letter-spacing:-0.02em;color:var(--p);font-variant-numeric:tabular-nums">12.2%</div>
-                  <div style="font-size:12px;color:var(--t);margin-top:4px">Portfolio Weight</div>
+                <div class="mos-anchoring" id="s0-mos-anchoring">—</div>
+              </div>
+
+              <!-- ─── Memo — structured slots ─── -->
+              <div class="position-section">
+                <div class="position-eyebrow">Memo</div>
+                <div class="memo-slot">
+                  <div class="memo-slot-label">Catalysts and timing</div>
+                  <div class="memo-slot-body" id="s0-catalysts">—</div>
                 </div>
-                <div style="padding:6px 0 18px">
-                  <div style="display:flex;align-items:baseline;gap:6px">
-                    <span style="font-size:22px;font-weight:400;letter-spacing:-0.02em;color:var(--p);font-variant-numeric:tabular-nums">+5,640.00</span>
-                    <span style="font-size:13px;color:var(--t)">CAD</span>
-                    <span style="font-size:14px;color:var(--s);margin-left:4px;font-variant-numeric:tabular-nums">(+42.4%)</span>
-                  </div>
-                  <div style="font-size:12px;color:var(--t);margin-top:4px">Unrealized P/L</div>
+                <div class="memo-slot">
+                  <div class="memo-slot-label">Key metrics tracked</div>
+                  <div class="memo-slot-body" id="s0-metrics">—</div>
                 </div>
-                <div style="padding:6px 0 0">
-                  <span style="font-size:13px;color:var(--s);letter-spacing:-0.01em">View Holdings</span>
-                  <span style="font-size:13px;color:var(--t);margin-left:6px;line-height:1">›</span>
+                <div class="memo-slot">
+                  <div class="memo-slot-label">Position sizing rationale</div>
+                  <div class="memo-slot-body" id="s0-sizing">—</div>
                 </div>
               </div>
 
-              <!-- Description -->
-              <div style="margin-top:32px;line-height:1.6">
+              <hr class="s0-divider thin">
+
+              <!-- ─── Confidence ─── -->
+              <div class="position-section" style="padding-bottom:8px">
+                <div class="position-eyebrow">Confidence</div>
+                <div class="confidence-line" id="s0-confidence">—</div>
+                <div class="category-tag" id="s0-category" style="display:none">category: —</div>
+              </div>
+
+              <!-- ─── Attached research — research-only list; user Notes preview lives in its own block below ─── -->
+              <div class="position-section">
+                <div class="position-eyebrow">Attached research</div>
+                <div class="research-list" id="s0-research-list"></div>
+                <div class="research-empty" id="s0-research-empty" style="display:none">
+                  Attach a Claude conversation, a filing, or a note. Each item carries one line of your own summary.
+                </div>
+                <button class="research-add-btn" onclick="openNotes()" type="button">
+                  <span class="act-arrow">→</span>
+                  <span>Add note or research</span>
+                </button>
+              </div>
+
+              <hr class="s0-divider thin">
+
+              <!-- ─── Transaction record — visually subordinate ─── -->
+              <div class="position-tx-strip" id="s0-tx-strip">—</div>
+
+              <!-- ─── Recovered: original page sections, retained below the new position artifact ─── -->
+
+              <!-- Company description -->
+              <div style="margin-top:40px;line-height:1.6">
                 <span style="font-size:14px;color:var(--s)">Apple Inc., together with its subsidiaries, designs, manufactures and sells smartphones, personal computers, tablets, wearables and accessories...</span>
                 <span style="color:var(--p);font-size:14px;margin-left:4px">→</span>
               </div>
 
-              <!-- Notes — track thoughts on this stock at any time · V1 -->
+              <!-- Notes preview — track thoughts on this stock at any time · V1 -->
               <div style="margin-top:36px;cursor:pointer" onclick="openNotes()" data-min-version="1">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
                   <div class="lbl">Notes</div>
@@ -2242,9 +2536,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <!-- Menu items — History opens the unified memo + transactions page · V3
                    NOTE: In production, History should only render when the user has
-                   actually bought this stock (state.hasMemo === true OR there's at
-                   least one transaction recorded for AAPL). It's kept always-visible
-                   here so testers can verify both empty and populated states of s24. -->
+                   actually bought this stock. Kept always-visible here so testers
+                   can verify both empty and populated states of s24. -->
               <div style="margin-top:36px">
                 <div class="s0-item s0-item--test" onclick="openHistory()" data-min-version="3">
                   <span>History</span>
@@ -4422,11 +4715,31 @@ function persistNotes() {
 const SEED_AAPL_MEMO = {
   type:   'comp',                                                  // Compounder
   size:   'conv',                                                  // Conviction [5–10%]
-  thesis: 'Apple is positioned to compound at 20%+ via services growth and capital return.',
-  kill:   'Services revenue growth drops below 8% for two consecutive quarters.',
-  mos:    'around',                                                // Roughly around intrinsic value
+  thesis: `Apple is mispriced because the market still treats it as a hardware cycle. The real engine is the installed base — over two billion active devices that throw off recurring, high-margin services revenue at gross margins north of 70%.\n\nThe thesis needs two things. First, Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale. Second, gross margins on the hardware side stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and capex on AI silicon is paying for itself.\n\nIf both hold, Apple compounds at 20%+ over three years from a margin of safety near 25%.`,
+  kill:   `Services revenue growth drops below 8% for two consecutive quarters, or hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any one invalidates the durable-pricing-power claim and the position closes within ten trading days.`,
+  mos:    'below',                                                 // Meaningfully below intrinsic value
   top3:   null,
-  note:   ''
+  note:   '',
+  // ── Extended fields for the position-artifact view on s0 ──
+  category: 'consumer tech',
+  mosAtEntry: 28,          // % discount to intrinsic value at the time of first buy
+  mosToday:   25,          // current % discount
+  fairValue:  255.00,       // user's intrinsic value estimate (USD)
+  anchoring:  'Anchored to 18× FY26 earnings on the Products segment plus a 22× multiple on Services FCF, blended and discounted 15% for execution risk.',
+  catalysts:  'WWDC June 2026: expect AI-feature pricing reveal. iPhone 18 cycle late September. Q4 print mid-November — Services run-rate clears $120B annualized.',
+  metrics:    'Services revenue growth · iPhone gross margin · Greater China unit volumes · App Store take rate · installed-base growth',
+  sizing:     '7.2% of portfolio. Sized above the 5% cap because the kill line is unusually clean — three independent, falsifiable triggers — and the downside is bounded by the buyback floor.',
+  versionNo:  3,
+  versionDate:'Mar 12, 2026',
+  priorVersions: 2,
+  // The user's most-recent recorded calibration on AAPL (used by s0)
+  confProb:   60,
+  confHorizon:'3y',
+  research: [
+    { source: 'Claude',  title: 'Services margin decomposition',  summary: 'Services gross margin walked from 70.5% to 73.2% over 8 quarters — driven by advertising mix, not App Store fee structure.', date: 'Mar 04' },
+    { source: '10-K',    title: 'FY2025',                          summary: 'Installed base disclosure: 2.2B active devices, +6.8% YoY. Capex on AI silicon $14.8B, depreciation schedule extended to 5 yrs.', date: 'Feb 22' },
+    { source: 'Claude',  title: 'Scenario valuation — base / bull / bear', summary: 'Bull/base/bear FV $290 / $255 / $185. Asymmetry holds at current price under base case.', date: 'Jan 28' }
+  ]
 };
 
 /* Hydrate state.memo from the seed if any field is missing. Used at the entry
@@ -4690,9 +5003,158 @@ function go(id) {
    STOCK PAGE (s0)
    ═════════════════════════════════════════════════ */
 function renderStock() {
-  document.getElementById('s0-holdings').style.display = state.hasMemo ? 'block' : 'none';
-  renderNotesPreview();
   refreshReviewNotif();
+
+  // Pull from state.memo. For the returning persona we hydrate from the seed
+  // so the page actually shows a populated position artifact in the demo.
+  const usingSeed = state.hasMemo;
+  if (usingSeed) hydrateAaplMemoFromSeed();
+  const m = state.memo || {};
+
+  // ── Thesis (hero) ──
+  const thesisEl = document.getElementById('s0-thesis');
+  const thesisVer = document.getElementById('s0-version');
+  if (thesisEl) {
+    const t = (m.thesis || '').trim();
+    if (t) {
+      thesisEl.textContent = t;
+      thesisEl.classList.remove('is-empty');
+    } else {
+      thesisEl.textContent = 'No thesis yet. Write what has to be true for this position to work — in your own words, not the market\'s.';
+      thesisEl.classList.add('is-empty');
+    }
+  }
+  if (thesisVer) {
+    if (usingSeed && m.versionNo) {
+      thesisVer.textContent = `v${m.versionNo} · ${m.versionDate || ''} · ${m.priorVersions || 0} prior`;
+      thesisVer.style.display = '';
+    } else {
+      thesisVer.style.display = 'none';
+    }
+  }
+
+  // ── Kill line ──
+  const killEl = document.getElementById('s0-kill-line');
+  if (killEl) {
+    const k = (m.kill || '').trim();
+    if (k) {
+      killEl.textContent = k;
+      killEl.classList.remove('is-empty');
+    } else {
+      killEl.textContent = 'What would prove this thesis wrong? Name the specific operating change. The blank space here is the question you have not yet answered.';
+      killEl.classList.add('is-empty');
+    }
+  }
+
+  // ── Margin of safety ──
+  const mosEntry = document.getElementById('s0-mos-entry');
+  const mosToday = document.getElementById('s0-mos-today');
+  const mosFv    = document.getElementById('s0-mos-fv');
+  const mosAnch  = document.getElementById('s0-mos-anchoring');
+  if (mosEntry) mosEntry.textContent = (m.mosAtEntry != null) ? (m.mosAtEntry + '%') : '—';
+  if (mosToday) mosToday.textContent = (m.mosToday   != null) ? (m.mosToday   + '%') : '—';
+  if (mosFv) {
+    mosFv.textContent = (m.fairValue != null)
+      ? '$' + Number(m.fairValue).toFixed(2)
+      : '—';
+  }
+  if (mosAnch) {
+    if (m.anchoring) {
+      mosAnch.textContent = m.anchoring;
+      mosAnch.classList.remove('is-empty');
+    } else {
+      mosAnch.textContent = 'Show your work. What multiple, on what segment, and what haircut for execution risk?';
+      mosAnch.classList.add('is-empty');
+    }
+  }
+
+  // ── Memo slots ──
+  const fillSlot = (id, value, emptyMsg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const v = (value || '').trim();
+    if (v) { el.textContent = v; el.classList.remove('is-empty'); }
+    else   { el.textContent = emptyMsg; el.classList.add('is-empty'); }
+  };
+  fillSlot('s0-catalysts', m.catalysts,
+    'What are you waiting for, and when? Name the print, the disclosure, the cycle.');
+  fillSlot('s0-metrics',   m.metrics,
+    'Pick the smallest set of leading indicators that, if they move, would force a price response.');
+  fillSlot('s0-sizing',    m.sizing,
+    'Why this size and not larger or smaller? Anchor the answer to your conviction and the kill line, not the price.');
+
+  // ── Confidence ──
+  const confEl = document.getElementById('s0-confidence');
+  const catEl  = document.getElementById('s0-category');
+  if (confEl) {
+    // Prefer the explicit memo-level confidence (the "on file" reading) over
+    // whatever transient state.prob/horizon may hold from an in-flight flow.
+    const confProb    = m.confProb    || (usingSeed ? state.prob    : null);
+    const confHorizon = m.confHorizon || (usingSeed ? state.horizon : null);
+    if (confProb && confHorizon) {
+      const hLbl = HORIZON_LBL[confHorizon] || confHorizon;
+      confEl.textContent = `${confProb}% probability of 20%+ CAGR over ${hLbl}`;
+      confEl.classList.remove('is-empty');
+    } else {
+      confEl.textContent = 'No calibration yet — commit a probability and horizon when the memo is in place.';
+      confEl.classList.add('is-empty');
+    }
+  }
+  if (catEl) {
+    if (m.category) {
+      catEl.textContent = 'category: ' + m.category;
+      catEl.style.display = '';
+    } else {
+      catEl.style.display = 'none';
+    }
+  }
+
+  // ── Attached research — research entries only; the user-facing Notes
+  //    preview below has its own block, so keep these two surfaces distinct. ──
+  const listEl  = document.getElementById('s0-research-list');
+  const emptyEl = document.getElementById('s0-research-empty');
+  if (listEl && emptyEl) {
+    const items = Array.isArray(m.research) ? m.research.slice() : [];
+    if (!items.length) {
+      listEl.innerHTML = '';
+      emptyEl.style.display = '';
+    } else {
+      emptyEl.style.display = 'none';
+      listEl.innerHTML = items.map(it => {
+        const head = it.source ? `${escapeNote(it.source)} · ${escapeNote(it.title || '')}` : escapeNote(it.title || '');
+        return `
+          <div class="research-card">
+            <div class="research-card-head">
+              <div class="research-card-title">${head}</div>
+              <div class="research-card-date">${escapeNote(it.date || '')}</div>
+            </div>
+            <div class="research-card-summary">${escapeNote(it.summary || '')}</div>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  // ── Notes preview (recovered below the position artifact) ──
+  if (typeof renderNotesPreview === 'function') renderNotesPreview();
+
+  // ── Transaction record (subordinate strip) ──
+  const txEl = document.getElementById('s0-tx-strip');
+  if (txEl) {
+    if (usingSeed) {
+      // Aggregate seed + user transactions for the position summary
+      const txs = (typeof getTxnList === 'function') ? getTxnList() : (state.transactions || []);
+      const shares = txs.reduce((s, t) => s + (t.action === 'Buy' ? (t.shares || 0) : -(t.shares || 0)), 0);
+      const cost   = txs.reduce((s, t) => s + (t.action === 'Buy' ? (t.cost   || 0) : -(t.cost   || 0)), 0);
+      const avgUsd = shares > 0 ? (cost / shares / FX_USD_CAD) : 0;
+      const unrealPct = avgUsd > 0 ? ((MKTPRICE_USD - avgUsd) / avgUsd * 100) : 0;
+      const opened = txs.length ? txs[0].date : '—';
+      txEl.textContent =
+        `cost basis $${avgUsd.toFixed(2)} · shares ${shares.toLocaleString()}\n` +
+        `opened ${opened} · unrealized ${unrealPct >= 0 ? '+' : ''}${unrealPct.toFixed(1)}%`;
+    } else {
+      txEl.textContent = 'no position opened';
+    }
+  }
 }
 
 function onCapitalDecision() { go('s6'); }
