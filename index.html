@@ -261,6 +261,18 @@ body.is-fullscreen .zoom-toggle {
   font-size: 15px; color: var(--p);
   padding: 15px 0;
 }
+/* Variant: marked as test-only so the row keeps its tap target but the
+   sub-label tells reviewers this entry is gated in production. */
+.s0-item.s0-item--test {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+}
+.s0-test-tag {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--t-800);
+  line-height: 1.3;
+  font-style: italic;
+}
 
 /* View history rows */
 .vh-item {
@@ -620,6 +632,134 @@ body.is-fullscreen .zoom-toggle {
   resize: none;
 }
 .bracket textarea::placeholder, .bracket input::placeholder { color: var(--t-800); }
+
+/* Composer variant — bracket box that also holds a paste / attach toolbar
+   at the bottom (used on the Notes page). Uses a flex column so the textarea
+   pushes the toolbar down to the bracket's bottom edge. */
+.bracket--composer {
+  display: flex; flex-direction: column;
+}
+.bracket--composer textarea { flex: 1; min-height: 60px; }
+.composer-toolbar {
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--divider);
+}
+.composer-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 4px;
+  color: var(--t-700);
+  cursor: pointer;
+  transition: color 150ms var(--ease), background 150ms var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.composer-icon-btn:hover  { color: var(--s); background: rgba(255,255,255,0.04); }
+.composer-icon-btn:active { color: var(--p); background: rgba(255,255,255,0.07); }
+.composer-toolbar-spacer { flex: 1; }
+.composer-hint {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--t-800);
+  font-style: italic;
+}
+
+/* Attached-file chip shown below the composer once the user picks a file */
+.composer-attachment {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 12px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+}
+.composer-attachment-icon {
+  color: var(--s);
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.composer-attachment-name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--s);
+  letter-spacing: -0.01em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.composer-attachment-remove {
+  font-size: 13px;
+  color: var(--t);
+  padding: 2px 6px;
+  line-height: 1;
+  transition: color 150ms var(--ease);
+}
+.composer-attachment-remove:hover { color: var(--p); }
+
+/* Inline attachment chip rendered on a saved note in the All notes list */
+.note-attachment {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+  padding: 5px 8px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  font-size: 11px;
+  color: var(--s);
+  letter-spacing: -0.01em;
+  max-width: 100%;
+}
+.note-attachment-icon { color: var(--t); display: inline-flex; flex-shrink: 0; }
+.note-attachment-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.note-attachment-size { color: var(--t); flex-shrink: 0; }
+
+/* Toast surfaced when paste / attach succeeds */
+.composer-toast {
+  position: absolute;
+  bottom: 14px; left: 50%;
+  transform: translate(-50%, 12px);
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  font-size: 11px;
+  color: var(--s);
+  letter-spacing: -0.01em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+  z-index: 50;
+}
+.composer-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Test-scenario badge — small label next to the hamburger that marks the
+   returning-user memo re-review flow. Hover/long-press surfaces the full
+   description via the title attribute. Toggled by refreshReviewCaption(). */
+.memo-review-caption {
+  position: fixed;
+  top: 24px;
+  left: 66px;                      /* sits just right of the 40px hamburger at left:18 */
+  z-index: 1000;
+  display: none;
+  padding: 4px 8px;
+  background: rgba(28,28,28,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 3px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: #E3E2E2;
+  font-weight: 500;
+  line-height: 1;
+  cursor: help;
+  user-select: none;
+}
+.memo-review-caption.is-on { display: inline-block; }
+/* Hidden in fullscreen — meta context is reviewer-only. */
+body.is-fullscreen .memo-review-caption { display: none !important; }
 
 /* Aphorism (tail body text in lower right) */
 .aphorism-block { margin-top: auto; }
@@ -1378,7 +1518,11 @@ body.is-fullscreen .zoom-toggle {
   position: relative;
   transform: translateY(100%);
   transition: transform 320ms cubic-bezier(0.32,0.72,0,1);
+  max-height: 85%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
+.info-modal-sheet::-webkit-scrollbar { width: 0; }
 .info-modal.is-active .info-modal-sheet { transform: translateY(0); }
 .info-modal-close {
   position: absolute; top: 18px; right: 18px;
@@ -1403,6 +1547,60 @@ body.is-fullscreen .zoom-toggle {
   line-height: 1.6;
   letter-spacing: -0.01em;
   white-space: pre-line;
+}
+/* Rich-HTML body variant — used for long-form explainers (e.g. thesis).
+   white-space resets so manual <p> spacing controls rhythm. */
+.info-modal-body.is-html { white-space: normal; }
+.info-modal-body.is-html p { margin: 0 0 12px; }
+.info-modal-body.is-html p:last-child { margin-bottom: 0; }
+.info-modal-body.is-html h4 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t);
+  font-weight: 500;
+  margin: 22px 0 10px;
+}
+.info-modal-body.is-html h4:first-child { margin-top: 0; }
+.info-modal-body.is-html strong {
+  color: var(--p);
+  font-weight: 500;
+}
+.info-modal-body.is-html em {
+  color: var(--p);
+  font-style: normal;
+}
+.info-modal-body.is-html .info-list {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+.info-modal-body.is-html .info-list li {
+  position: relative;
+  padding-left: 14px;
+  margin-bottom: 8px;
+}
+.info-modal-body.is-html .info-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 9px;
+  width: 4px; height: 1px;
+  background: var(--t);
+}
+.info-modal-body.is-html .info-example {
+  padding: 14px 14px;
+  margin: 6px 0 12px;
+  border-left: 2px solid var(--divider);
+  background: rgba(255,255,255,0.02);
+}
+.info-modal-body.is-html .info-example p {
+  margin: 0 0 8px;
+}
+.info-modal-body.is-html .info-example p:last-child { margin-bottom: 0; }
+.info-modal-body.is-html .info-example-title {
+  color: var(--p);
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 /* ─── Inline chart inside info modal — calibration maturity visual ─── */
@@ -1726,6 +1924,10 @@ body.is-fullscreen .zoom-toggle {
   </svg>
 </button>
 
+<!-- Test-scenario badge — shows next to the hamburger only when a reviewer
+     is walking the returning-user increase flow through the memo screens. -->
+<div class="memo-review-caption" id="memo-review-caption" title="Returning user · 2 weeks since last AAPL memo · full re-review before increase">TEST SCENARIO</div>
+
 <!-- ═════════════ Zoom toggle (top-right) ═════════════ -->
 <button class="zoom-toggle" id="zoomToggle" aria-label="Toggle phone zoom" title="Toggle phone zoom">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" id="zoomIcon">
@@ -1777,6 +1979,7 @@ body.is-fullscreen .zoom-toggle {
 <!-- ═════════════ Stage ═════════════ -->
 <main class="stage">
   <div class="device-label">iPhone 16 · 393 × 852</div>
+
   <div class="frame-wrap" id="frameWrap">
     <div class="frame">
       <div class="island"></div>
@@ -1828,7 +2031,7 @@ body.is-fullscreen .zoom-toggle {
               <div id="s10-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:8px" data-min-version="4">
                 <div class="label">
                   <span class="pulse-dot"></span>
-                  <span><b style="font-weight:500">AAPL</b> · Q1 2026 earnings released · Review your thesis</span>
+                  <span><b style="font-weight:500">AAPL</b> · Q1 2026 earnings released · Time for your quarterly review</span>
                 </div>
                 <span class="arrow">→</span>
               </div>
@@ -1978,7 +2181,7 @@ body.is-fullscreen .zoom-toggle {
               <div id="s0-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:18px" data-min-version="4">
                 <div class="label">
                   <span class="pulse-dot"></span>
-                  <span><b style="font-weight:500">Q1 2026 earnings released</b> · Review your thesis</span>
+                  <span><b style="font-weight:500">Q1 2026 earnings released</b> · Time for your quarterly review</span>
                 </div>
                 <span class="arrow">→</span>
               </div>
@@ -2037,9 +2240,16 @@ body.is-fullscreen .zoom-toggle {
                 <div id="s0-notes-list"></div>
               </div>
 
-              <!-- Menu items — History opens the unified memo + transactions page · V3 -->
+              <!-- Menu items — History opens the unified memo + transactions page · V3
+                   NOTE: In production, History should only render when the user has
+                   actually bought this stock (state.hasMemo === true OR there's at
+                   least one transaction recorded for AAPL). It's kept always-visible
+                   here so testers can verify both empty and populated states of s24. -->
               <div style="margin-top:36px">
-                <div class="s0-item" onclick="openHistory()" data-min-version="3">History</div>
+                <div class="s0-item s0-item--test" onclick="openHistory()" data-min-version="3">
+                  <span>History</span>
+                  <span class="s0-test-tag">Test only · normally hidden until first purchase</span>
+                </div>
                 <div class="s0-item">Market</div>
                 <div class="s0-item">News</div>
                 <div class="s0-item">Research</div>
@@ -2082,7 +2292,7 @@ body.is-fullscreen .zoom-toggle {
           <section class="scr" data-id="s12">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('m4')">‹</button>
+                <button class="back-btn" onclick="go('m3')">‹</button>
                 <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em"><span class="memo-ctx-ticker">AAPL</span> · 6 / 8</span>
                 <button class="s0-exit" onclick="exitMemo()">Exit</button>
               </div>
@@ -2184,7 +2394,7 @@ body.is-fullscreen .zoom-toggle {
           <section class="scr" data-id="m1">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('s6')">‹</button>
+                <button class="back-btn" onclick="backFromM1()">‹</button>
                 <button class="exit-btn" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -2275,17 +2485,17 @@ and how much you commit.</div>
             </div>
 
             <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m1b-next" onclick="advanceMemo('m2')">
+              <button class="act-btn locked" id="m1b-next" onclick="advanceMemo('m4')">
                 <span class="act-arrow">→</span>
               </button>
             </div>
           </section>
 
-          <!-- ════════ m2 — Memo · Thesis ════════ -->
+          <!-- ════════ m2 — Memo · Thesis (moved to step 4/8, after Margin of safety) ════════ -->
           <section class="scr" data-id="m2">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('m1b')">‹</button>
+                <button class="back-btn" onclick="go('m4')">‹</button>
                 <button class="exit-btn" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -2297,17 +2507,55 @@ and how much you commit.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Thesis</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 8</div>
+                  <div class="ticker-step" style="display:flex;align-items:center;gap:7px">
+                    <span>Thesis</span>
+                    <button class="label-info-btn" onclick="showInfoModal('thesis')" aria-label="What is a thesis?">
+                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 8</div>
                 </div>
 
                 <div class="title-md">Why are you buying this?</div>
-                <div class="t-bsm" style="margin-top:-20px">A thesis explains why this business will be worth more in the future than the market thinks today — and what would have to be true for you to be wrong.</div>
+                <div class="t-bsm" style="margin-top:-20px">A few sentences. Why the market is mispricing this business today — and what assumptions you're making for it to compound. Be specific enough that you'd know later whether you were right or wrong.</div>
 
-                <div class="bracket">
+                <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
-                  <textarea id="m2-text" rows="6" placeholder="A few sentences. Why the market is mispricing this business today — and what assumptions you're making for it to compound. Be specific enough that you'd know later whether you were right or wrong." oninput="onMemoInput()"></textarea>
+                  <textarea id="m2-text" rows="6" placeholder="Example. DAL is priced as a cyclical airline. Loyalty and premium cabins now drive ~60% of EBIT and deserve an industrial multiple. Re-rates when 2026 FCF clears $7B and leverage crosses into IG." oninput="onMemoInput()"></textarea>
+
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('m2-text', refreshMemoLocks)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <button class="composer-icon-btn" onclick="document.getElementById('m2-file-input').click()" type="button" aria-label="Attach file" title="Attach PDF / Word file">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <path d="M11.5 5.5L6.8 10.2c-0.6 0.6-0.6 1.6 0 2.2 0.6 0.6 1.6 0.6 2.2 0L13.7 7.7c1.2-1.2 1.2-3.2 0-4.4-1.2-1.2-3.2-1.2-4.4 0L4.6 8c-1.8 1.8-1.8 4.8 0 6.6 1.8 1.8 4.8 1.8 6.6 0L15 11" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <input id="m2-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 'm2')">
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste · attach research</span>
+                  </div>
+                </div>
+                <div id="m2-attachment" class="composer-attachment" style="display:none">
+                  <span class="composer-attachment-icon">
+                    <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
+                      <path d="M1 1.5h6L10 4.5v7a0.8 0.8 0 0 1-0.8 0.8H1A0.8 0.8 0 0 1 0.2 11.5v-9.2A0.8 0.8 0 0 1 1 1.5z" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                      <path d="M7 1.5v3h3" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                    </svg>
+                  </span>
+                  <span class="composer-attachment-name" id="m2-attachment-name">—</span>
+                  <button class="composer-attachment-remove" onclick="clearComposerFile('m2')" type="button" aria-label="Remove attachment">✕</button>
                 </div>
 
                 <div class="aphorism-block">
@@ -2342,17 +2590,39 @@ you don't understand it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Kill line</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 8</div>
+                  <div class="ticker-step" style="display:flex;align-items:center;gap:7px">
+                    <span>Kill line</span>
+                    <button class="label-info-btn" onclick="showInfoModal('killline')" aria-label="What is a kill line?">
+                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 8</div>
                 </div>
 
                 <div class="title-md">What would prove the thesis wrong?</div>
                 <div class="t-bsm" style="margin-top:-20px">Short. Factual. No forecasts.</div>
 
-                <div class="bracket">
+                <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
-                  <textarea id="m3-text" rows="4" placeholder="The specific operating change that would invalidate the thesis." oninput="onMemoInput()"></textarea>
+                  <textarea id="m3-text" rows="4" placeholder="Example. DAL thesis dies if premium demand softens more than 5% YoY for two consecutive quarters, or jet fuel sustains above $3.00/gal for six months. Exit on trigger, not on narrative." oninput="onMemoInput()"></textarea>
+
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('m3-text', refreshMemoLocks)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste from clipboard</span>
+                  </div>
                 </div>
 
                 <div class="aphorism-block">
@@ -2365,17 +2635,18 @@ to rewrite it.</div>
             </div>
 
             <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m3-next" onclick="advanceMemo('m4')">
+              <button class="act-btn locked" id="m3-next" onclick="advanceMemo('s12')">
                 <span class="act-arrow">→</span>
               </button>
             </div>
           </section>
 
-          <!-- ════════ m4 — Memo · Margin of safety ════════ -->
+          <!-- ════════ m4 — Memo · Margin of safety (moved to step 3/8 so users
+               confront price-vs-value before authoring a thesis) ════════ -->
           <section class="scr" data-id="m4">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('m3')">‹</button>
+                <button class="back-btn" onclick="go('m1b')">‹</button>
                 <button class="exit-btn" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -2387,8 +2658,16 @@ to rewrite it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Margin of safety</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 8</div>
+                  <div class="ticker-step" style="display:flex;align-items:center;gap:7px">
+                    <span>Margin of safety</span>
+                    <button class="label-info-btn" onclick="showInfoModal('margin')" aria-label="What is margin of safety?">
+                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 8</div>
                 </div>
 
                 <div class="title-md">What's your margin of safety here?</div>
@@ -2443,10 +2722,40 @@ to protect against error.</div>
                 <div class="title-md">Anything else?</div>
                 <div class="t-bsm" style="margin-top:-20px">Optional. A catalyst, a quote, a hunch — context you'd want to remember when this decision is reviewed later.</div>
 
-                <div class="bracket">
+                <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
                   <textarea id="m5-note" rows="5" placeholder="Whatever else is on your mind. Skip if there's nothing." oninput="onM5NoteInput()"></textarea>
+
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('m5-note')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <button class="composer-icon-btn" onclick="document.getElementById('m5-file-input').click()" type="button" aria-label="Attach file" title="Attach PDF / Word file">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <path d="M11.5 5.5L6.8 10.2c-0.6 0.6-0.6 1.6 0 2.2 0.6 0.6 1.6 0.6 2.2 0L13.7 7.7c1.2-1.2 1.2-3.2 0-4.4-1.2-1.2-3.2-1.2-4.4 0L4.6 8c-1.8 1.8-1.8 4.8 0 6.6 1.8 1.8 4.8 1.8 6.6 0L15 11" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <input id="m5-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 'm5')">
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste · attach context</span>
+                  </div>
+                </div>
+                <div id="m5-attachment" class="composer-attachment" style="display:none">
+                  <span class="composer-attachment-icon">
+                    <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
+                      <path d="M1 1.5h6L10 4.5v7a0.8 0.8 0 0 1-0.8 0.8H1A0.8 0.8 0 0 1 0.2 11.5v-9.2A0.8 0.8 0 0 1 1 1.5z" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                      <path d="M7 1.5v3h3" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                    </svg>
+                  </span>
+                  <span class="composer-attachment-name" id="m5-attachment-name">—</span>
+                  <button class="composer-attachment-remove" onclick="clearComposerFile('m5')" type="button" aria-label="Remove attachment">✕</button>
                 </div>
 
                 <div class="aphorism-block">
@@ -2552,7 +2861,7 @@ What's obvious now will be murky later.</div>
             </div>
 
             <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="s19-cont" onclick="go('s20')" style="padding:14px 4px">
+              <button class="act-btn locked" id="s19-cont" onclick="continueFromS19()" style="padding:14px 4px">
                 <span class="act-arrow">→</span>
                 <span>Continue</span>
               </button>
@@ -2645,11 +2954,13 @@ What's obvious now will be murky later.</div>
               </div>
             </div>
 
-            <!-- AI calibration check — moved up from m6, animates on entry · V4 -->
+            <!-- AI memo summary — reads back the memo + calibration the user
+                 just authored, in one paragraph, so they re-confront their own
+                 commitment before placing the order · V4 -->
             <div class="ai-section ai-section--s8" data-min-version="4">
               <div class="ai-eyebrow">
                 <span class="ai-eyebrow-dot"></span>
-                <span class="lbl">AI calibration check</span>
+                <span class="lbl">AI memo summary</span>
               </div>
               <div class="ai-body" id="s8-ai-body"></div>
             </div>
@@ -3491,10 +3802,24 @@ What's obvious now will be murky later.</div>
                 <div class="locked-eyebrow" style="color:var(--s)">
                   <span>NEW ADDENDUM · TODAY</span>
                 </div>
-                <div class="bracket">
+                <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
                   <textarea id="r2a-text" rows="4" placeholder="One or two sentences. What's changed in the thesis since you bought?" oninput="onReviewInput()"></textarea>
+
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('r2a-text')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste from clipboard</span>
+                  </div>
                 </div>
               </div>
 
@@ -3547,20 +3872,64 @@ Write the change down.</div>
               <!-- New thesis -->
               <div style="margin-top:24px">
                 <div class="locked-eyebrow" style="color:var(--s)"><span>NEW THESIS · TODAY</span></div>
-                <div class="bracket">
+                <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
                   <textarea id="r2b-thesis" rows="3" placeholder="One sentence. The new reason this is worth owning." oninput="onReviewInput()"></textarea>
+
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('r2b-thesis')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <button class="composer-icon-btn" onclick="document.getElementById('r2bThesis-file-input').click()" type="button" aria-label="Attach file" title="Attach PDF / Word file">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <path d="M11.5 5.5L6.8 10.2c-0.6 0.6-0.6 1.6 0 2.2 0.6 0.6 1.6 0.6 2.2 0L13.7 7.7c1.2-1.2 1.2-3.2 0-4.4-1.2-1.2-3.2-1.2-4.4 0L4.6 8c-1.8 1.8-1.8 4.8 0 6.6 1.8 1.8 4.8 1.8 6.6 0L15 11" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <input id="r2bThesis-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 'r2bThesis')">
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste · attach research</span>
+                  </div>
+                </div>
+                <div id="r2bThesis-attachment" class="composer-attachment" style="display:none">
+                  <span class="composer-attachment-icon">
+                    <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
+                      <path d="M1 1.5h6L10 4.5v7a0.8 0.8 0 0 1-0.8 0.8H1A0.8 0.8 0 0 1 0.2 11.5v-9.2A0.8 0.8 0 0 1 1 1.5z" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                      <path d="M7 1.5v3h3" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                    </svg>
+                  </span>
+                  <span class="composer-attachment-name" id="r2bThesis-attachment-name">—</span>
+                  <button class="composer-attachment-remove" onclick="clearComposerFile('r2bThesis')" type="button" aria-label="Remove attachment">✕</button>
                 </div>
               </div>
 
               <!-- New kill line -->
               <div style="margin-top:24px">
                 <div class="locked-eyebrow" style="color:var(--s)"><span>NEW KILL LINE</span></div>
-                <div class="bracket">
+                <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
                   <textarea id="r2b-kill" rows="3" placeholder="The specific operating change that would invalidate the new thesis." oninput="onReviewInput()"></textarea>
+
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('r2b-kill')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste from clipboard</span>
+                  </div>
                 </div>
               </div>
 
@@ -3831,14 +4200,50 @@ Holding to a broken thesis is.</div>
             </div>
 
             <div class="body-scroll" style="padding:0 16px 24px">
-              <!-- New note input -->
+              <!-- New note input — includes a small inline toolbar for paste-from-clipboard
+                   (for dropping in ChatGPT / Claude output) and file attach (for PDF/Word
+                   exports from those tools). -->
               <div style="padding:32px 0 18px">
                 <div class="lbl" style="margin-bottom:12px">New note</div>
-                <div class="bracket" style="padding:14px;min-height:96px">
+                <div class="bracket bracket--composer" style="padding:14px;min-height:120px">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
                   <textarea id="s30-new-note" rows="3" placeholder="A thought, an observation, a price level you want to track…" oninput="refreshNoteSaveLock()"></textarea>
+
+                  <!-- Inline composer toolbar — sits at the bottom inside the bracket -->
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('s30-new-note', refreshNoteSaveLock)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    <button class="composer-icon-btn" onclick="document.getElementById('s30-file-input').click()" type="button" aria-label="Attach file" title="Attach PDF / Word file">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <path d="M11.5 5.5L6.8 10.2c-0.6 0.6-0.6 1.6 0 2.2 0.6 0.6 1.6 0.6 2.2 0L13.7 7.7c1.2-1.2 1.2-3.2 0-4.4-1.2-1.2-3.2-1.2-4.4 0L4.6 8c-1.8 1.8-1.8 4.8 0 6.6 1.8 1.8 4.8 1.8 6.6 0L15 11" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <input id="s30-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 's30', refreshNoteSaveLock)">
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste · attach a file</span>
+                  </div>
                 </div>
+
+                <!-- Attached-file chip (appears after the user picks a file) -->
+                <div id="s30-attachment" class="composer-attachment" style="display:none">
+                  <span class="composer-attachment-icon">
+                    <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
+                      <path d="M1 1.5h6L10 4.5v7a0.8 0.8 0 0 1-0.8 0.8H1A0.8 0.8 0 0 1 0.2 11.5v-9.2A0.8 0.8 0 0 1 1 1.5z" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                      <path d="M7 1.5v3h3" stroke="currentColor" stroke-width="0.9" fill="none"/>
+                    </svg>
+                  </span>
+                  <span class="composer-attachment-name" id="s30-attachment-name">—</span>
+                  <button class="composer-attachment-remove" onclick="clearComposerFile('s30', refreshNoteSaveLock)" type="button" aria-label="Remove attachment">✕</button>
+                </div>
+
                 <div style="display:flex;justify-content:flex-end;margin-top:14px">
                   <button class="act-btn locked" id="s30-save-btn" onclick="saveNewNote()" style="padding:10px 4px">
                     <span class="act-arrow">→</span>
@@ -4009,6 +4414,32 @@ function persistNotes() {
   try { localStorage.setItem('mogo.calmemo.AAPL.notes', JSON.stringify(state.notes)); } catch (_) {}
 }
 
+/* Seed memo for the returning persona — what's "on file" for AAPL when a
+   returning user enters the increase flow. Used to pre-fill the memo review
+   screens (m1 → m6) so the user reviews their prior commitments rather than
+   starting from a blank page. Pulled from the same defaults the History page
+   uses, so the demo stays internally consistent. */
+const SEED_AAPL_MEMO = {
+  type:   'comp',                                                  // Compounder
+  size:   'conv',                                                  // Conviction [5–10%]
+  thesis: 'Apple is positioned to compound at 20%+ via services growth and capital return.',
+  kill:   'Services revenue growth drops below 8% for two consecutive quarters.',
+  mos:    'around',                                                // Roughly around intrinsic value
+  top3:   null,
+  note:   ''
+};
+
+/* Hydrate state.memo from the seed if any field is missing. Used at the entry
+   of the increase flow so the memo review screens have something to review. */
+function hydrateAaplMemoFromSeed() {
+  if (!state.memo) state.memo = {};
+  Object.keys(SEED_AAPL_MEMO).forEach(k => {
+    if (state.memo[k] == null || state.memo[k] === '') {
+      state.memo[k] = SEED_AAPL_MEMO[k];
+    }
+  });
+}
+
 const SEED_TXNS = [
   {
     id: 't-seed-1',
@@ -4136,6 +4567,12 @@ function persistMemoDraft() {
 }
 function clearMemoDraft() {
   try { localStorage.removeItem('mogo.calmemo.AAPL.memoDraft'); } catch (_) {}
+  // Also wipe any pending attachments on memo composers + hide their chips.
+  ['m2', 'm5'].forEach(cid => {
+    delete _pendingAttachments[cid];
+    const chip = document.getElementById(`${cid}-attachment`);
+    if (chip) chip.style.display = 'none';
+  });
 }
 function memoHasContent(m) {
   m = m || (state && state.memo) || {};
@@ -4168,9 +4605,9 @@ const SCREENS = [
   { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action',                                          minVersion: 2 },
   { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 8',                                                      minVersion: 2 },
   { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 8',                                                      minVersion: 2 },
-  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '3 / 8',                                                      minVersion: 2 },
-  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '4 / 8',                                                      minVersion: 2 },
-  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '5 / 8',                                                      minVersion: 2 },
+  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '3 / 8',                                                      minVersion: 2 },
+  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '4 / 8',                                                      minVersion: 2 },
+  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '5 / 8',                                                      minVersion: 2 },
   { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 8 · probability · horizon',                        minVersion: 2 },
   { id: 'm5',  group: 'Memo',    name: 'Note',                         sub: '7 / 8 · optional context',                                  minVersion: 2 },
   { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '8 / 8 · memo + calibration',                           minVersion: 2 },
@@ -4226,6 +4663,9 @@ function go(id) {
   if (id === 's61') renderBackfillSaved();
   // Backfill banner visibility on every memo screen
   if (['m1','m1b','m2','m3','m4','s12','m5','m6'].indexOf(id) !== -1) refreshBackfillBanner();
+  // Test-scenario caption — shown on memo review screens during the returning
+  // increase flow so reviewers know why the user is going through all 8 steps.
+  refreshReviewCaption(id);
   if (id === 's40') renderS40();
   if (id === 'r1')  renderR1();
   if (id === 'r2a') renderR2a();
@@ -4298,6 +4738,37 @@ function selectCD(choice) {
 function onCapitalDecisionContinue() {
   if (state.cd === 'initial') go('m1');
   else go('s19');
+}
+
+/* s19 → memo review path. For the returning user increasing exposure, after
+   "Why are you increasing?" we send them through the full memo review starting
+   at Classify (m1). Pre-fill state.memo from the seed so the review screens
+   have the user's prior commitments to review instead of blank fields. */
+function continueFromS19() {
+  if (!state.reason) return;                  // shouldn't happen — button is locked
+  hydrateAaplMemoFromSeed();
+  // Seed the prior probability + horizon once per session so when the user
+  // lands on s12 (the Calibration page in the memo review) the slider sits at
+  // their "on file" 60% / 3y reading. After this, back/forward keeps changes.
+  if (!state._increaseSeeded) {
+    state.prob    = 60;
+    state.horizon = '3y';
+    state._increaseSeeded = true;
+    if (typeof setProb    === 'function') setProb('s12', 60);
+    if (typeof setHorizon === 'function') setHorizon('s12', '3y');
+  }
+  go('m1');
+}
+
+/* m1 back button — context-aware. For an initial buy the back target is the
+   Capital decision picker (s6). For an increase / reduce / exit, back returns
+   to the "Why are you increasing?" screen (s19). */
+function backFromM1() {
+  if (state.cd && state.cd !== 'initial') {
+    go('s19');
+  } else {
+    go('s6');
+  }
 }
 
 /* ═════════════════════════════════════════════════
@@ -4517,12 +4988,15 @@ function advanceMemo(target) { go(target); }
 function continueFromM4() {
   const mos = state.memo.mos;
   if (!mos) return;   // shouldn't happen — Next is locked until selection
-  if (mos === 'below') { go('s12'); return; }
+  // Margin of safety is now step 3/8 — it gates entry into the thesis step.
+  // The whole point of moving it forward: don't let a user spend energy
+  // writing a thesis on a position where the price/value gap doesn't deserve it.
+  if (mos === 'below') { go('m2'); return; }
 
   const messages = {
     around: {
       title: 'No margin of safety.',
-      body:  'Buying at fair value leaves no room for error. If the thesis is even slightly wrong, there’s nothing to cushion the downside. Reconsider whether this deserves capital at today’s price.'
+      body:  'Buying at fair value leaves no room for error. If the thesis is even slightly wrong, there’s nothing to cushion the downside. Reconsider whether this deserves capital at today’s price — before you spend energy writing the thesis.'
     },
     above: {
       title: 'You’re paying a premium.',
@@ -4534,11 +5008,11 @@ function continueFromM4() {
     }
   };
   const m = messages[mos];
-  if (!m) { go('s12'); return; }
+  if (!m) { go('m2'); return; }
   showGuardrail({
     title:    m.title,
     body:     m.body,
-    onProceed: () => go('s12')
+    onProceed: () => go('m2')
   });
 }
 
@@ -4615,6 +5089,21 @@ function refreshBackfillBanner() {
   document.querySelectorAll('.memo-ctx-ticker').forEach(el => {
     el.textContent = ticker;
   });
+}
+
+/* Show the "TEST SCENARIO" caption only when we're on a memo review screen
+   AND the user is in the returning-user increase flow. Hidden otherwise. */
+function refreshReviewCaption(id) {
+  const caption = document.getElementById('memo-review-caption');
+  if (!caption) return;
+  const memoScreens = ['m1','m1b','m2','m3','m4','s12','m5','m6'];
+  const onMemoScreen = memoScreens.indexOf(id) !== -1;
+  const isIncreaseReview = state.cd === 'increase' && !state.backfillMode;
+  if (onMemoScreen && isIncreaseReview) {
+    caption.classList.add('is-on');
+  } else {
+    caption.classList.remove('is-on');
+  }
 }
 
 function renderBackfillList() {
@@ -4713,51 +5202,62 @@ function discardAndExitMemo() {
 }
 
 /* ═════════════════════════════════════════════════
-   AI CALIBRATION CHECK (m6) — reads memo + calibration,
-   returns a paragraph that either reinforces the decision
-   or surfaces a misalignment. Animated reveal.
+   AI MEMO SUMMARY (s8) — reads memo + calibration and
+   returns a paragraph that simply restates what the user
+   just committed to. NOT analysis. The point is to make
+   the user re-confront their own words before placing the
+   order. Animated reveal mimics a model "thinking" then typing.
    ═════════════════════════════════════════════════ */
 function generateMemoInsight() {
   const m       = state.memo;
   const prob    = state.prob;
   const horizon = state.horizon;
-  const top3    = m.top3;
+  const ticker  = state.activeStock || 'AAPL';
+  const horizonLbl = HORIZON_LBL[horizon] || horizon;
 
-  // Sizing mismatch — Speculative classification with Core/Conviction sizing
-  if (m.type === 'spec' && (m.size === 'core' || m.size === 'conv')) {
-    return `Sizing mismatch flagged. You've classified this as Speculative — explicitly "no edge" — but committed to ${SIZE_LBL[m.size]}. Speculative bets shouldn't dominate a portfolio. Consider sizing down to ≤2% before placing the order.`;
+  // Helper — trim a long field at a word boundary so the summary stays scannable
+  const trim = (s, n) => {
+    if (!s) return '';
+    const t = String(s).trim();
+    if (t.length <= n) return t;
+    const cut = t.slice(0, n);
+    const space = cut.lastIndexOf(' ');
+    return (space > 40 ? cut.slice(0, space) : cut) + '…';
+  };
+
+  // Returning user (increase / reduce / exit) — there's no fresh memo to summarize,
+  // so just restate the calibration update they're committing to.
+  if (state.cd && state.cd !== 'initial') {
+    const action = state.cd === 'increase' ? 'increasing'
+                 : state.cd === 'reduce'   ? 'reducing'
+                 : state.cd === 'exit'     ? 'exiting'
+                 : 'adjusting';
+    return `You're ${action} ${ticker} with updated conviction at ${prob}% over ${horizonLbl}. The memo on file still applies — re-read the kill line before placing the order.`;
   }
-  // Core sizing with sub-60% probability — overcommitting
-  if (m.size === 'core' && prob < 60) {
-    return `The math doesn't reconcile. You've committed to Core [10%+] but stated only ${prob}% conviction. Either the conviction belongs higher, or the position belongs smaller. Reconsider the sizing.`;
-  }
-  // Above intrinsic value paired with high stated conviction
-  if (m.mos === 'above' && prob >= 60) {
-    return `You're paying a premium for conviction. Stated probability is ${prob}% but your own margin-of-safety check says price is above intrinsic value. Strong views deserve cheap prices — wait, or trim size.`;
-  }
-  // Weak edge across the board
-  if (prob < 55) {
-    return `Weak edge. At ${prob}% you are barely above a coin flip. The strongest investors limit themselves to high-conviction positions — anything below 60% suggests you're underwriting more uncertainty than edge. Reconsider before committing capital.`;
-  }
-  // Strong alignment — meaningfully below + high prob + Core/Conviction + Top 3
-  if (prob >= 70 && (m.size === 'core' || m.size === 'conv') && m.mos === 'below' && top3 === 'yes') {
-    return `Strong alignment. ${prob}% conviction in a ${(TYPE_LBL[m.type] || 'business').toLowerCase()} you'd size at ${SIZE_LBL[m.size]}, priced meaningfully below intrinsic value, and your top-3 idea right now. The kill line you wrote is what you'll measure against — track it on every earnings cycle.`;
-  }
-  // Top-3 with strong sizing — confidence boost
-  if (top3 === 'yes' && (m.size === 'core' || m.size === 'conv')) {
-    return `Top-3 alignment. A ${prob}% conviction position you'd size at ${SIZE_LBL[m.size]} in your strongest idea slot. Set a calendar reminder to test the kill line every quarter — that's how the discipline compounds.`;
-  }
-  // Not top-3 with Core sizing — sizing concern
-  if (top3 === 'no' && m.size === 'core') {
-    return `Sizing question. You've committed to Core [10%+] but said this isn't a top-3 idea. Buffett's punch card says high-conviction sizing belongs to your strongest convictions. Either elevate it to top-3, or step the size down to Conviction [5–10%].`;
-  }
-  // Reasonable thesis fallback
-  if (prob >= 65) {
-    const killSnippet = m.kill ? m.kill.trim().slice(0, 64) + (m.kill.length > 64 ? '…' : '') : 'the disconfirming change';
-    return `Reasonable thesis at ${prob}% conviction over a ${HORIZON_LBL[horizon] || horizon} window. The kill line is the test — if "${killSnippet}" happens, the thesis is broken. Hold the rule even when the price moves against it.`;
-  }
-  // Borderline default
-  return `Borderline edge at ${prob}%. Keep the position small until conviction strengthens or the thesis confirms. Re-read your kill line before placing the order — it should still hold.`;
+
+  // Initial buy — restate the full memo + calibration as one paragraph.
+  const typeLbl = TYPE_LBL[m.type] ? TYPE_LBL[m.type].toLowerCase() : 'position';
+  const sizeRaw = SIZE_LBL[m.size] || '';
+  const sizeShort = sizeRaw ? sizeRaw.split(' ')[0].toLowerCase() : '';
+  const mosLbl  = MOS_LBL[m.mos] ? MOS_LBL[m.mos].toLowerCase() : '';
+
+  const thesisSnippet = m.thesis ? trim(m.thesis, 130) : '';
+  const killSnippet   = m.kill   ? trim(m.kill, 110)   : '';
+
+  // Assemble sentence in a stable order:
+  //  Ticker · category · sizing · margin-of-safety
+  //  Thesis: "…"
+  //  Kill line: "…"
+  //  Conviction: X% over Y
+  let s = `${ticker}`;
+  if (typeLbl !== 'position') s += ` · ${typeLbl}`;
+  if (sizeShort)              s += ` at ${sizeShort} sizing`;
+  if (mosLbl)                 s += `, ${mosLbl}`;
+  s += '.';
+  if (thesisSnippet) s += ` Thesis: "${thesisSnippet}"`;
+  if (killSnippet)   s += ` Kill line: "${killSnippet}"`;
+  s += ` ${prob}% conviction over ${horizonLbl}.`;
+  return s;
 }
 
 let _aiTimer1 = null;
@@ -5023,6 +5523,9 @@ function finishOrder() {
   state.shares = '';
   state.limitPrice = '';
   state.reason = null;
+  // Clear the "this session already seeded prob/horizon" guard so a future
+  // increase flow re-seeds the prior reading on s12.
+  state._increaseSeeded = false;
   go('s0');
 }
 
@@ -5057,6 +5560,7 @@ function resetFlow() {
   state.orderType = 'limit';
   state.activeInput = null;
   state.reason = null;
+  state._increaseSeeded = false;
   state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
   state.prob = 50;
   state.horizon = '3y';
@@ -5422,6 +5926,153 @@ Once the horizon arrives, the system compares your stated probability to the act
 20% is set deliberately above that bar. Even if your thesis falls short — say it compounds at 15% instead of 20% — you still beat the index handily. The asymmetry is the point: you're building a margin of safety into the goal itself, not just the entry price.
 
 Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names won't clear it. That's by design — most of the time the right answer is "no, not at this price."`
+  },
+  margin: {
+    eyebrow: 'Margin of safety',
+    title:   'The price of being wrong about the details.',
+    bodyHtml: `
+<h4>What is margin of safety?</h4>
+<p>The gap between what you're paying and what the business is worth if you're roughly right. It is the price of being wrong about the details while still being right about the bet.</p>
+<p>Every thesis contains assumptions. Some will be off. Margin of safety is the buffer that absorbs the error.</p>
+
+<h4>Why does it matter more than the thesis?</h4>
+<p>The thesis tells you what you believe. Margin of safety tells you what happens when you're wrong about it.</p>
+<p>A correct thesis bought at no margin of safety is a coin flip on execution. A flawed thesis bought at a wide margin of safety is often still a winning position. <em>Over a career, the second pattern compounds; the first does not.</em></p>
+
+<h4>Isn't this just "buy cheap"?</h4>
+<p>No. Cheap is a multiple. Margin of safety is a relationship between price and intrinsic value under conservative assumptions. A 4× EBIT stock with deteriorating economics has no margin of safety. An 18× earnings stock priced as if growth stops tomorrow can have an enormous one.</p>
+<p>The number on the screen is not the input. The distance between that number and a defensible estimate of value — built on assumptions you would accept if you were the seller — is the input.</p>
+
+<h4>How do you size it?</h4>
+<p>Three ways, used together:</p>
+<ul class="info-list">
+  <li><strong>Downside case.</strong> Model the business under pessimistic but plausible assumptions — not catastrophe, just disappointment. The price you'd pay to be flat in that scenario is the floor. Anything below it is margin.</li>
+  <li><strong>Asset coverage.</strong> What does the balance sheet underwrite if the income statement breaks? Net cash, hard assets, separable segments. This is the floor beneath the floor.</li>
+  <li><strong>Reflexivity check.</strong> If the stock fell 40% tomorrow on no specific news, would the thesis still hold? If yes, the margin was real. If no, the margin was a number, not a buffer.</li>
+</ul>
+
+<h4>How much is enough?</h4>
+<p>Inversely proportional to the quality of the business and the durability of the mechanism.</p>
+<p>For a high-quality compounder with a mechanism that works across cycles, <strong>20–30%</strong> to intrinsic value can be sufficient — the business grows into the gap. For a cyclical, a turnaround, or any thesis that requires something specific to happen, <strong>40–50%</strong> is closer to the floor, because the range of outcomes is wider and the time to be proven right is longer.</p>
+<p>If you cannot estimate intrinsic value within a band, the margin of safety is undefined and the position is a guess. Pass.</p>
+
+<h4>What erodes margin of safety?</h4>
+<ul class="info-list">
+  <li><strong>Time.</strong> A 40% discount that takes seven years to close is a single-digit IRR. Margin of safety has a duration.</li>
+  <li><strong>Leverage at the company.</strong> Debt converts a wide range of outcomes into a narrow one. A levered business with a 40% discount can have less effective margin than an unlevered business at 20%.</li>
+  <li><strong>Multiple compression in the comp set.</strong> If the entire industry re-rates lower, the discount narrows without anything happening at the business. Always check whether the margin is to a stable comp or a frothy one.</li>
+  <li><strong>Optionality you didn't pay for evaporating.</strong> If part of the value was a non-core segment, a real estate footprint, or a litigation settlement, and that disappears, the margin disappears with it — even if the core business is fine.</li>
+</ul>
+
+<h4>What does it look like in practice?</h4>
+<div class="info-example">
+  <div class="info-example-title">Delta Air Lines</div>
+  <p>If loyalty and premium are worth a 12× EBIT multiple, and the rest of the business is worth 5×, blended intrinsic value sits around 8.5×. Current price implies 6×. The margin of safety is the gap between 6× and 8.5× — roughly 30% — plus the asset coverage from the fleet and the optionality on credit upgrade.</p>
+  <p>The thesis is the re-rate. The margin of safety is what protects the position if the re-rate takes three years instead of one.</p>
+</div>
+<p><em>The thesis is the upside. The margin is the permission to be patient.</em></p>
+
+<h4>When is margin of safety a trap?</h4>
+<p>When the discount is the thesis. "It's cheap" is not a mechanism. Cheap things stay cheap, or get cheaper, when nothing forces the gap to close.</p>
+<p>Margin of safety is necessary, not sufficient. It buys time for a mechanism to work. Without a mechanism, it buys nothing.</p>
+`
+  },
+  killline: {
+    eyebrow: 'Kill line',
+    title:   'A decision made by the version of you that had nothing to lose.',
+    bodyHtml: `
+<h4>Why a kill line</h4>
+<p>Exits are where portfolios are made or unmade, and they're decided under the worst possible conditions: position underwater, narrative crumbling, sunk cost screaming. Every framework you'd use to think clearly is the framework most compromised in that moment.</p>
+<p>A kill line is a decision made in advance, by a version of you that had nothing to lose.</p>
+<p><em>The point is not to minimize losses. The point is to make the exit a mechanical act, not an emotional one.</em></p>
+
+<h4>What a kill line is</h4>
+<p>The specific evidence that would prove the thesis wrong, defined before the position is under pressure.</p>
+<ul class="info-list">
+  <li>It is <strong>not a stop loss</strong>. A stop loss is a price rule. A kill line is a fundamental rule. Price tells you the market disagrees with you; it does not tell you who is right.</li>
+  <li>It is <strong>not a target</strong>. Targets are where you take profit. Kill lines are where you accept the bet failed.</li>
+  <li>It is <strong>not a feeling</strong>. "I'll know it when I see it" is the absence of a kill line.</li>
+</ul>
+
+<h4>The three parts</h4>
+<ul class="info-list">
+  <li><strong>Trigger.</strong> The specific metric that invalidates the mechanism. Pull it directly from the thesis — if the thesis says premium revenue decouples from main cabin, the trigger is the moment they recouple. A kill line that doesn't map to a thesis claim is unmoored.</li>
+  <li><strong>Threshold.</strong> The level and duration that count as a real break. One bad quarter is noise. Two is a question. Three is an answer. Specify both magnitude and persistence — a 3% miss for one quarter is not the same event as a 3% miss for a year.</li>
+  <li><strong>Action.</strong> What you do when it hits. Trim, exit, reassess. Pre-commit to which. "Reassess" is a valid action only if it's bounded — a date, a next print, a specific question to answer — otherwise it's a euphemism for doing nothing.</li>
+</ul>
+
+<h4>A worked example</h4>
+<div class="info-example">
+  <div class="info-example-title">Delta Air Lines</div>
+  <p><strong>Trigger.</strong> Premium revenue growth recouples with main cabin growth. (The mechanism in the thesis is that they've decoupled. If they re-converge, the mechanism is gone.)</p>
+  <p><strong>Threshold.</strong> Premium growth within 200bps of main cabin growth for three consecutive quarters, or loyalty revenue declines YoY for two consecutive quarters.</p>
+  <p><strong>Action.</strong> Exit. Not trim, not reassess. The thesis was specifically about mix shift; if the mix shift reverses, there is no thesis to hold.</p>
+</div>
+<p>Note what this kill line does. It is anchored to the mechanism, not to the price. It specifies magnitude and duration. It pre-commits to a specific action. And it can be checked against a 10-Q without ambiguity.</p>
+
+<h4>Common failure modes</h4>
+<ul class="info-list">
+  <li><strong>The price kill line.</strong> "Out at −20%." Tells you the market disagrees, not whether you're wrong. The market disagreeing is often when the thesis is most valuable.</li>
+  <li><strong>The vague kill line.</strong> "If fundamentals deteriorate." Every business deteriorates somewhere every quarter. Without a specific metric, this never triggers — or always does, depending on mood.</li>
+  <li><strong>The moving kill line.</strong> Triggered, then revised. If the threshold moves every time it's approached, it isn't a kill line; it's a comfort object.</li>
+  <li><strong>The orphan kill line.</strong> Unrelated to anything in the thesis. If the thesis is about loyalty economics and the kill line is about jet fuel prices, the two documents are about different positions.</li>
+</ul>
+
+<h4>The decay problem</h4>
+<p>Most theses do not die from a single broken trigger. They die from drift — the mechanism quietly stops working, no metric snaps, the position becomes a stale claim on a business that has moved on. Hard kill lines do not catch this.</p>
+<p>The remedy is a scheduled re-read: a calendar event, not a trigger event, where the thesis is read against the latest filings and asked one question — <em>would I open this position today, fresh, at this price?</em> If the honest answer is no, the position is dead even if no kill line fired.</p>
+<p>This is the exit that costs people the most. It has no drama. It feels like nothing. Build the habit anyway.</p>
+
+<h4>When a kill line fires</h4>
+<p>Execute. Do not re-litigate. The argument against the action was made by the version of you holding the position; the argument for it was made by the version of you who could think clearly. Defer to the latter.</p>
+<p>Then write down what happened. Whether the thesis was wrong, the kill line was wrong, or both. <em>The post-mortem is where the next thesis gets better.</em></p>
+`
+  },
+  thesis: {
+    eyebrow: 'Thesis',
+    title:   'A falsifiable bet — legible to your future self.',
+    bodyHtml: `
+<h4>Why a thesis</h4>
+<p>Most positions die from a quiet kind of failure: the investor can't remember why they bought it. Without a written thesis, every drawdown becomes a referendum on conviction, every rally becomes confirmation, and exits get decided by mood.</p>
+<p>A thesis converts a position into a falsifiable bet. It tells you what you believed, what has to be true, and — read months later — whether you were right for the right reasons or wrong for the right ones.</p>
+<p><em>The point is not to be correct. The point is to be legible to your future self.</em></p>
+
+<h4>What a thesis is</h4>
+<p>A specific claim about what the market is mispricing, the mechanism that corrects it, and the metric that proves you right.</p>
+<ul class="info-list">
+  <li>It is <strong>not a story</strong>. Stories are unfalsifiable and survive any outcome. A thesis can lose on purpose.</li>
+  <li>It is <strong>not a forecast</strong>. Forecasts predict prices. A thesis explains a gap between price and value, and names what closes it.</li>
+  <li>It is <strong>not a tag</strong>. "Quality compounder" is a category, not a bet.</li>
+</ul>
+
+<h4>The three parts</h4>
+<ul class="info-list">
+  <li><strong>Claim.</strong> What the market has wrong, in one sentence. The sharper the disagreement with consensus, the more useful the thesis. If your claim matches the sell-side average, you don't have a thesis — you have a position.</li>
+  <li><strong>Mechanism.</strong> Why the market is wrong and what changes. This is the load-bearing part. A claim without a mechanism is a hunch. The mechanism should be specific enough that you can name what would have to happen in the business — not the stock — for the gap to close.</li>
+  <li><strong>Proof.</strong> The metric that confirms the mechanism is working. Not the stock price. Price is the result; proof is the cause. Pick the smallest number of leading indicators that, if they move, you'd expect price to follow within a definable window.</li>
+</ul>
+
+<h4>A worked example</h4>
+<div class="info-example">
+  <div class="info-example-title">Delta Air Lines</div>
+  <p><strong>Claim.</strong> Market prices DAL as a cyclical airline at 6–7× EBIT. Mix shift means it isn't one anymore.</p>
+  <p><strong>Mechanism.</strong> Loyalty (Amex co-brand) and premium cabins now drive ~60% of segment EBIT and grow with affluent consumer spend, not GDP. These are industrial-grade earnings streams trading at airline multiples.</p>
+  <p><strong>Proof.</strong> Re-rates when (a) 2026 FCF clears $7B, (b) leverage crosses into investment grade, and (c) premium revenue growth decouples from main cabin for four consecutive quarters.</p>
+</div>
+<p>Note what this thesis does. It names a specific mispricing, identifies the structural reason it exists, and gives three metrics you can check against reality. It can be wrong — and you'll know.</p>
+
+<h4>Common failure modes</h4>
+<ul class="info-list">
+  <li><strong>The vibe thesis.</strong> "Great management, strong moat, secular tailwinds." True of half the S&P. Buys you nothing.</li>
+  <li><strong>The price-target thesis.</strong> "$120 in 18 months." A conclusion without a mechanism. You will not know whether you were right or lucky.</li>
+  <li><strong>The kitchen-sink thesis.</strong> Seven reasons it's a buy. If you need seven, none of them are load-bearing, and you can't tell which one broke when it stops working.</li>
+  <li><strong>The unfalsifiable thesis.</strong> Phrased so any outcome confirms it. If you can't write down what would prove you wrong, you don't have a thesis. (Kill lines live on a separate page.)</li>
+</ul>
+
+<h4>When to revise</h4>
+<p>Theses are not static. Revise when the mechanism evolves — new segment, new capital structure, new competitive dynamic. Do not revise to accommodate a falling price. The line between updating your model and rationalizing a loss is whether the business changed or only the quote did.</p>
+<p><em>Every revision should be dated. The history is the asset.</em></p>
+`
   }
 };
 
@@ -5442,7 +6093,19 @@ function showInfoModal(key) {
 
   document.getElementById('info-modal-eyebrow').textContent = m.eyebrow.toUpperCase();
   document.getElementById('info-modal-title').textContent   = title;
-  document.getElementById('info-modal-body').textContent    = body;
+  // Body supports either plain text (default, pre-line) or rich HTML
+  // for long-form explainers like the Thesis modal.
+  const bodyEl = document.getElementById('info-modal-body');
+  if (m.bodyHtml) {
+    bodyEl.classList.add('is-html');
+    bodyEl.innerHTML = m.bodyHtml;
+  } else {
+    bodyEl.classList.remove('is-html');
+    bodyEl.textContent = body;
+  }
+  // Reset scroll to top so the user always lands at the first sentence
+  const sheetEl = bodyEl.closest('.info-modal-sheet');
+  if (sheetEl) sheetEl.scrollTop = 0;
 
   // Render an optional inline chart for this modal entry. Hidden otherwise.
   const chartEl = document.getElementById('info-modal-chart');
@@ -6150,15 +6813,30 @@ function renderNotesPage() {
     empty.style.display = 'block';
   } else {
     empty.style.display = 'none';
-    list.innerHTML = notes.slice().reverse().map(n => `
+    list.innerHTML = notes.slice().reverse().map(n => {
+      // Saved attachment chip — appears inline beneath the note text
+      const att = n.attachment
+        ? `<div class="note-attachment"><span class="note-attachment-icon">
+             <svg width="10" height="12" viewBox="0 0 11 13" fill="none">
+               <path d="M1 1.5h6L10 4.5v7a0.8 0.8 0 0 1-0.8 0.8H1A0.8 0.8 0 0 1 0.2 11.5v-9.2A0.8 0.8 0 0 1 1 1.5z" stroke="currentColor" stroke-width="0.9" fill="none"/>
+               <path d="M7 1.5v3h3" stroke="currentColor" stroke-width="0.9" fill="none"/>
+             </svg>
+           </span><span class="note-attachment-name">${escapeNote(n.attachment.name)}</span><span class="note-attachment-size">${formatFileSize(n.attachment.size || 0)}</span></div>`
+        : '';
+      return `
       <div class="note-item">
         <div class="text">${escapeNote(n.text)}</div>
+        ${att}
         <div class="date">${n.date}</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
-  // Reset the input on entry
+  // Reset the input + any leftover pending attachment on entry
   const ta = document.getElementById('s30-new-note');
   if (ta) ta.value = '';
+  delete _pendingAttachments['s30'];
+  const chip = document.getElementById('s30-attachment');
+  if (chip) chip.style.display = 'none';
   refreshNoteSaveLock();
 }
 
@@ -6166,22 +6844,128 @@ function refreshNoteSaveLock() {
   const ta  = document.getElementById('s30-new-note');
   const btn = document.getElementById('s30-save-btn');
   if (!ta || !btn) return;
+  // Either typed text OR an attached file is enough to unlock the Save button.
   const hasText = ta.value.trim().length > 0;
-  btn.classList.toggle('locked', !hasText);
+  const hasFile = !!_pendingAttachments['s30'];
+  btn.classList.toggle('locked', !hasText && !hasFile);
+}
+
+/* ──────────────── Composer toolbar — generic paste/attach helpers ──────────────── */
+/* Pending attachments keyed by composer context ID (e.g. 's30', 'm2', 'm5',
+   'r2bThesis'). Cleared after the parent flow saves / commits. Stored in a
+   single registry so any composer on any screen can reuse the same handlers. */
+const _pendingAttachments = {};
+
+/* Paste-from-clipboard into a target textarea. Designed for dropping in
+   output from ChatGPT / Claude. Tries the async Clipboard API first and
+   falls back to focusing the textarea so the user can paste manually if
+   the browser blocks programmatic clipboard reads. Fires an `input` event
+   after pasting so any oninput-bound logic (memo state, lock buttons, etc.)
+   updates immediately. */
+async function pasteToTextarea(taId, refreshLockFn) {
+  const ta = document.getElementById(taId);
+  if (!ta) return;
+  try {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      const text = await navigator.clipboard.readText();
+      if (text && text.length) {
+        // Insert at cursor (or append if nothing selected)
+        const start = ta.selectionStart || ta.value.length;
+        const end   = ta.selectionEnd   || ta.value.length;
+        ta.value = ta.value.slice(0, start) + text + ta.value.slice(end);
+        const cursor = start + text.length;
+        ta.focus();
+        ta.setSelectionRange(cursor, cursor);
+        // Trigger any oninput-bound binding (state.memo.thesis = ..., etc.)
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
+        if (typeof refreshLockFn === 'function') refreshLockFn();
+        showComposerToast('Pasted from clipboard');
+        return;
+      }
+    }
+  } catch (_) { /* clipboard blocked — fall through to manual focus */ }
+  ta.focus();
+  showComposerToast('Paste manually with ⌘V');
+}
+
+/* File picker handler — accepts PDF / DOC / DOCX / TXT / MD from desktop
+   or mobile share sheets (where ChatGPT / Claude exports land). For the
+   prototype we record only the file metadata; production would upload the
+   contents to storage and stash the URL on the saved record. */
+function attachComposerFile(event, cid, refreshLockFn) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  _pendingAttachments[cid] = {
+    name: file.name,
+    size: file.size,
+    type: file.type
+  };
+  const chip = document.getElementById(`${cid}-attachment`);
+  const name = document.getElementById(`${cid}-attachment-name`);
+  if (chip) chip.style.display = '';
+  if (name) name.textContent = `${file.name} · ${formatFileSize(file.size)}`;
+  if (typeof refreshLockFn === 'function') refreshLockFn();
+  showComposerToast('Attached ' + file.name);
+  // Reset so picking the same file twice still fires onchange
+  event.target.value = '';
+}
+
+function clearComposerFile(cid, refreshLockFn) {
+  delete _pendingAttachments[cid];
+  const chip = document.getElementById(`${cid}-attachment`);
+  if (chip) chip.style.display = 'none';
+  if (typeof refreshLockFn === 'function') refreshLockFn();
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024)       return bytes + ' B';
+  if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+/* Lightweight bottom toast inside the composer card. Auto-dismisses. */
+let _composerToastTimer = null;
+function showComposerToast(message) {
+  // Mount the toast inside the s30 scroll body so it sits over the composer
+  let toast = document.getElementById('s30-toast');
+  if (!toast) {
+    const container = document.querySelector('section.scr[data-id="s30"]');
+    if (!container) return;
+    toast = document.createElement('div');
+    toast.id = 's30-toast';
+    toast.className = 'composer-toast';
+    container.appendChild(toast);
+  }
+  toast.textContent = message;
+  // Force a reflow then add the class so the transition runs
+  void toast.offsetWidth;
+  toast.classList.add('is-on');
+  if (_composerToastTimer) clearTimeout(_composerToastTimer);
+  _composerToastTimer = setTimeout(() => {
+    toast.classList.remove('is-on');
+  }, 1800);
 }
 
 function saveNewNote() {
   const ta = document.getElementById('s30-new-note');
   if (!ta) return;
   const text = ta.value.trim();
-  if (!text) return;
-  state.notes.push({
+  const att  = _pendingAttachments['s30'];
+  if (!text && !att) return;
+  const note = {
     id: 'n-' + Date.now(),
-    text: text,
+    text: text || (att ? `Attached: ${att.name}` : ''),
     date: fmtDate()
-  });
+  };
+  if (att) {
+    note.attachment = { name: att.name, size: att.size, type: att.type };
+  }
+  state.notes.push(note);
   persistNotes();
   ta.value = '';
+  delete _pendingAttachments['s30'];
+  const chip = document.getElementById('s30-attachment');
+  if (chip) chip.style.display = 'none';
   renderNotesPage();   // re-render list with the new entry on top
   refreshNoteSaveLock();
 }
@@ -6290,12 +7074,23 @@ function getCurrentMemo() {
 function startThesisReview() {
   // Reset draft for a fresh review
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
+  clearReviewComposerAttachments();
   go('r1');
 }
 
 function exitReview() {
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
+  clearReviewComposerAttachments();
   go('s0');
+}
+
+/* Drop any pending attachments on review composers + hide their chips. */
+function clearReviewComposerAttachments() {
+  ['r2bThesis'].forEach(cid => {
+    delete _pendingAttachments[cid];
+    const chip = document.getElementById(`${cid}-attachment`);
+    if (chip) chip.style.display = 'none';
+  });
 }
 
 function renderR1() {
