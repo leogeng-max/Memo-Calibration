@@ -2398,15 +2398,23 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .ai-section--s8 .ai-body { min-height: 48px; font-size: 12.5px; line-height: 1.6; }
 
+/* Single scrollable surface on s8 — wraps the AI summary, order form rows,
+   and memo section so the entire middle section scrolls as one. The header
+   stays docked at top via flex-shrink:0; the act-row + numpad stay docked
+   at bottom the same way. min-height:0 is the flexbox idiom that prevents
+   this child from refusing to shrink and forcing the parent to overflow. */
+.s8-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 /* Full memo display on s8 — visible during initial-buy flow so the user
    can reference the commitment they just authored while sizing the
-   position. Scrolls internally when content overflows so the act-row +
-   numpad below stay docked. */
+   position. Flows inline with the rest of .s8-scroll's content. */
 .s8-memo-section {
-  flex-shrink: 1;
-  overflow-y: auto;
   margin-top: 18px;
-  padding: 0 16px 4px;
+  padding: 0 16px 16px;
 }
 .s8-memo-section .lbl {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -3971,7 +3979,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <div class="v5-foot">
-              <button class="v5-primary" id="s12-cont" onclick="continueFromCalibration()">Continue</button>
+              <button class="v5-primary locked" id="s12-cont" onclick="continueFromCalibration()">Continue</button>
             </div>
           </section>
 
@@ -4892,6 +4900,12 @@ actually works for you.</div>
               </div>
             </div>
 
+            <!-- Single scroll surface for everything between the header and
+                 the act-row: AI summary, order form rows, and full memo all
+                 flow together so the user can scroll through the entire
+                 context in one motion. -->
+            <div class="s8-scroll">
+
             <!-- AI memo summary — reads back the memo + calibration the user
                  just authored, in one paragraph, so they re-confront their own
                  commitment before placing the order · V4 -->
@@ -4903,7 +4917,7 @@ actually works for you.</div>
               <div class="ai-body" id="s8-ai-body"></div>
             </div>
 
-            <div style="flex-shrink:0;padding:0 16px">
+            <div style="padding:0 16px">
               <div class="form-row">
                 <span class="body-md" style="color:var(--s)">Estimated Portfolio Weight</span>
                 <span class="body-md s8-value" id="s8-weight" style="color:var(--p)">0.00%</span>
@@ -4973,7 +4987,7 @@ actually works for you.</div>
               </div>
             </div>
 
-            <div style="flex:1;min-height:8px"></div>
+            </div><!-- /.s8-scroll -->
 
             <div class="act-row" style="flex-shrink:0;padding:0 26px 18px;justify-content:space-between">
               <button class="act-btn" onclick="event.stopPropagation();goBackFromShares()">
@@ -7801,6 +7815,11 @@ function onCapitalDecisionContinue() {
   // acknowledged a page on a prior buy we skip it. Increase / Reduce / Exit
   // keep V4's review path so the two flows stay independent.
   if (state.cd === 'initial') {
+    // Reset the calibration slider for the new flow so any prior session's
+    // probability can't carry over and pre-unlock the Continue button on s12.
+    // The user must actively move the slider on this buy.
+    state.prob = 0;
+    state._memoEditedThisFlow = false;
     if (state.version >= 5) { go('v5-entry'); return; }
     if (!loadMintroAck())    { go('mintro');    return; }
     if (!loadMresearchAck()) { go('mresearch'); return; }
@@ -9139,7 +9158,13 @@ function hydrateMemoScreen(screenId) {
     renderM4Screen();
   }
   if (screenId === 's12') {
-    /* Top 3 question removed — no hydrate needed for s12 */
+    // Sync the slider's visual position, label, fill bar, and Continue
+    // lock to whatever state.prob currently holds. Fresh initial-buy
+    // flows reset to 0 so the user has to actively move the slider;
+    // increase / V5 flows pre-seed a prior probability and the slider
+    // hydrates to that on entry.
+    const v = (typeof state.prob === 'number' && isFinite(state.prob)) ? state.prob : 0;
+    setProb('s12', v);
   }
   if (screenId === 'm5') {
     const ta = document.getElementById('m5-note');
