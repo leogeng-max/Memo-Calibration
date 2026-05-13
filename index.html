@@ -668,6 +668,14 @@ body.is-fullscreen .zoom-toggle {
 /* Push a secondary action to the right side of the row (e.g. help link
    when both back + help share the same screen). */
 .v5-foot-secondary .v5-secondary.is-right { margin-left: auto; }
+/* Stack variant — two help / off-ramp links rendered one above the other
+   instead of side-by-side. Used on miv where labels are long enough that
+   side-by-side reads as cramped. */
+.v5-foot-secondary.stack {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
 
 /* Primary CTA — V4 .lpb style: full-bleed, dark grey, 99px tall, white text */
 .v5-primary {
@@ -3932,7 +3940,7 @@ to rewrite it.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary">
+              <div class="v5-foot-secondary stack">
                 <button class="v5-secondary" onclick="showInfoModal('intrinsic_value')">
                   <span class="act-arrow">→</span>
                   <span>What is intrinsic value</span>
