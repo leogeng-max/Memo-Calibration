@@ -583,19 +583,22 @@ body.is-fullscreen .zoom-toggle {
   padding: 0 22px 24px;
 }
 
-/* Step indicator strip at the top of each numbered capture step */
+/* Step indicator strip at the top of each numbered capture step.
+   Sized one tier up from the original 10px/var(--t) treatment — bigger
+   and on the secondary colour so the page identity reads first when
+   you land on a screen, without competing with the title underneath. */
 .v5-step-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--t);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--s);
   text-transform: uppercase;
-  padding: 24px 0 20px;
+  padding: 28px 0 22px;
   border-bottom: 1px solid var(--divider);
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .v5-title {
@@ -804,6 +807,250 @@ body.is-fullscreen .zoom-toggle {
 .v5-tool-card-sub   { font-size: 11.5px; color: var(--t); letter-spacing: -0.01em; }
 .v5-tool-card-arrow { font-size: 18px; color: var(--s); }
 
+/* ── Memo intro (mintro) — collapsible questions disclosure ───────────── */
+.mintro-disclosure {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  width: 100%;
+  padding: 13px 14px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--p);
+  font: inherit;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: background 150ms var(--ease), border-color 150ms var(--ease);
+}
+.mintro-disclosure:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.12); }
+.mintro-disclosure-chev {
+  font-size: 12px;
+  color: var(--s);
+  transition: transform 180ms var(--ease);
+}
+.mintro-disclosure[aria-expanded="true"] .mintro-disclosure-chev { transform: rotate(180deg); }
+.mintro-questions {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  counter-reset: mintroq;
+}
+.mintro-questions[hidden] { display: none; }
+.mintro-questions li {
+  counter-increment: mintroq;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--divider);
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+.mintro-questions li:last-child { border-bottom: none; }
+.mintro-questions li::before {
+  content: counter(mintroq);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--t);
+  grid-row: 1 / span 2;
+  align-self: start;
+  line-height: 1.7;
+}
+.mintro-q-head {
+  font-size: 13.5px;
+  color: var(--p);
+  letter-spacing: -0.01em;
+}
+.mintro-q-sub {
+  font-size: 12px;
+  color: var(--t);
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+/* ── Acknowledgement row — checkbox above the V5 primary CTA ─────────── */
+.ack-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.ack-check {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.ack-box {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 150ms var(--ease), border-color 150ms var(--ease);
+  position: relative;
+}
+.ack-check:focus-visible + .ack-box {
+  outline: 2px solid var(--s);
+  outline-offset: 2px;
+}
+.ack-check:checked + .ack-box {
+  background: var(--p);
+  border-color: var(--p);
+}
+.ack-check:checked + .ack-box::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid var(--bg);
+  border-width: 0 2px 2px 0;
+  transform: translateY(-1px) rotate(45deg);
+}
+.ack-label {
+  font-size: 13px;
+  color: var(--s);
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+}
+
+/* ── AI prompt card on mresearch + full-screen prompt detail ─────────── */
+.mresearch-prompt-card {
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  padding: 14px;
+  margin-top: 12px;
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mresearch-prompt-eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.mresearch-prompt-preview {
+  font-size: 13px;
+  color: var(--s);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mresearch-prompt-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.mresearch-prompt-iconbtn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  padding: 7px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--p);
+  font: inherit;
+  font-size: 11.5px;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: background 150ms var(--ease), border-color 150ms var(--ease);
+}
+.mresearch-prompt-iconbtn:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.12); }
+.mresearch-prompt-iconbtn.is-copied { color: var(--p); border-color: rgba(255,255,255,0.18); }
+.mresearch-prompt-iconbtn .glyph { font-size: 13px; line-height: 1; }
+
+/* Full prompt detail page — generous reading column + giant copy button */
+.prompt-detail-body {
+  font-size: 14.5px;
+  color: var(--s);
+  line-height: 1.75;
+  letter-spacing: -0.005em;
+}
+.prompt-detail-body p { margin: 0 0 14px; }
+.prompt-detail-body ol {
+  margin: 0 0 14px;
+  padding-left: 18px;
+}
+.prompt-detail-body ol li { margin-bottom: 12px; }
+.prompt-detail-body strong { color: var(--p); font-weight: 500; }
+.prompt-detail-rule {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--divider);
+  padding: 12px 14px;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--p);
+  line-height: 1.55;
+}
+
+/* ── Example-memo banner on s0 ───────────────────────────────────────── */
+.example-banner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 14px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid var(--divider);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.example-banner.is-on { display: flex; }
+.example-banner-back {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--p);
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+}
+.example-banner-back .glyph { font-size: 13px; line-height: 1; }
+.example-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.92);
+  color: var(--p);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  padding: 10px 14px;
+  font-size: 12px;
+  letter-spacing: -0.005em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease);
+  z-index: 9999;
+}
+.example-toast.is-on { opacity: 1; }
+
 /* Numbered prompt list on Research orientation */
 .v5-prompt-list {
   margin: 4px 0 0;
@@ -883,6 +1130,60 @@ body.is-fullscreen .zoom-toggle {
   text-transform: uppercase;
   margin-top: 6px;
 }
+
+/* ── miv top-of-page price strip ──────────────────────────────────────
+   On the Intrinsic value screen we surface Market vs. Your value at the
+   TOP of the page so the user is anchored to the comparison before they
+   start typing. Two side-by-side cells in a bordered container, with a
+   live-updating delta under "Your value" so they always see how their
+   estimate compares to the current price. */
+.miv-prices-strip {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  margin: 0 0 28px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+.miv-price-cell {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.miv-price-divider {
+  background: var(--divider);
+  width: 1px;
+}
+.miv-price-lbl {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.miv-price-val {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--p);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.miv-price-val.is-empty { color: var(--t-800); }
+.miv-price-delta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--t);
+  margin-top: 1px;
+  min-height: 14px;
+  text-transform: uppercase;
+}
+.miv-price-delta.is-up   { color: #6ec48f; }
+.miv-price-delta.is-down { color: #d68a8a; }
 
 /* Compare rows used on IV, MOS, and Confirmation */
 .v5-compare-row {
@@ -1649,22 +1950,24 @@ body.is-fullscreen .zoom-toggle {
   gap: 32px;
   min-height: 100%;
 }
-/* V4 memo step indicator — restyled to match V5's compact mono step bar
-   ("THESIS                3 / 10"). The HTML stays the same; we just
-   render the label uppercased and small, with a divider line below. */
+/* V4 memo step indicator — kept in lockstep with .v5-step-bar so the
+   entire memo flow (intro → research → numbered steps → review) reads
+   with one consistent header treatment. Sized one tier up from the
+   original 10px/var(--t) so each screen's identity is unmistakable
+   without crowding the title beneath it. */
 .ticker-row.lite {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--t);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--s);
   text-transform: uppercase;
-  padding: 24px 0 20px;
+  padding: 28px 0 22px;
   border-bottom: 1px solid var(--divider);
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 .ticker-row.lite .ticker-step {
   font: inherit;
@@ -1678,6 +1981,25 @@ body.is-fullscreen .zoom-toggle {
   letter-spacing: inherit;
   line-height: 1;
 }
+/* Persistent "your context" badge — shows the user's Classify + Size picks
+   on every memo screen after they've been set, so the user never has to
+   remember what kind of business this is or how big the position will be.
+   Sits right under the step bar, one tier dimmer so it reads as context
+   rather than competing with the page identity above. */
+.memo-context-chip {
+  display: flex;
+  justify-content: flex-end;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--t);
+  text-transform: uppercase;
+  margin: -18px 0 22px;
+  padding: 0;
+  line-height: 1.4;
+}
+.memo-context-chip[hidden] { display: none; }
+.memo-context-chip-sep { opacity: 0.55; padding: 0 6px; }
 .title-md { font-size: 20px; line-height: 1.2; letter-spacing: -0.02em; color: var(--p); font-weight: 400; }
 .t-bsm  { font-size: 13px; font-weight: 400; line-height: 1.32; letter-spacing: -0.02em; color: var(--t-700); }
 .section-eyebrow {
@@ -1950,10 +2272,13 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   transform: translateY(-50%);
 }
 
-/* Memo summary rows on review screen */
+/* Memo summary rows on review screen — third "auto" column hosts an
+   inline Edit affordance on m6 so the user can jump back to any step,
+   tweak the answer, and return. Rows that don't render an Edit button
+   simply leave the third column empty (auto sizes to 0). */
 .memo-row {
   display: grid;
-  grid-template-columns: 92px 1fr;
+  grid-template-columns: 92px 1fr auto;
   gap: 16px;
   padding: 14px 0;
   align-items: start;
@@ -1961,7 +2286,25 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .memo-row:last-of-type { border-bottom: 1px solid var(--c-1000); }
 .memo-row .k { color: var(--t-700); font-size: 14px; }
-.memo-row .v { color: #E3E2E2; font-size: 14px; line-height: 1.5; }
+.memo-row .v { color: #E3E2E2; font-size: 14px; line-height: 1.5; min-width: 0; }
+.memo-row-edit {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 2px 0 2px 8px;
+  margin: 0;
+  font: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+  cursor: pointer;
+  align-self: start;
+  line-height: 1.6;
+  transition: color 150ms var(--ease);
+}
+.memo-row-edit:hover { color: var(--p); }
 
 /* ═══════════════ NUMPAD (s8) ═══════════════ */
 .numpad {
@@ -2054,6 +2397,37 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border-top: 0;
 }
 .ai-section--s8 .ai-body { min-height: 48px; font-size: 12.5px; line-height: 1.6; }
+
+/* Full memo display on s8 — visible during initial-buy flow so the user
+   can reference the commitment they just authored while sizing the
+   position. Scrolls internally when content overflows so the act-row +
+   numpad below stay docked. */
+.s8-memo-section {
+  flex-shrink: 1;
+  overflow-y: auto;
+  margin-top: 18px;
+  padding: 0 16px 4px;
+}
+.s8-memo-section .lbl {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.s8-memo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--divider);
+}
+.s8-memo-row--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
 
 /* form rows shared */
 .form-row {
@@ -3108,9 +3482,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
     </div>
     <div>
       <div class="version-picker" id="versionPicker">
-        <button data-version="1" onclick="setVersion(1)">V1</button>
-        <button data-version="2" onclick="setVersion(2)">V2</button>
-        <button data-version="3" onclick="setVersion(3)">V3</button>
         <button data-version="4" onclick="setVersion(4)">V4</button>
         <button data-version="5" onclick="setVersion(5)">V5</button>
       </div>
@@ -3132,6 +3503,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
     <div class="drawer-group">Demo</div>
     <div class="drawer-row">
       <button class="drawer-action" onclick="triggerReviewNotif()" data-min-version="4">Trigger earnings review prompt</button>
+      <button class="drawer-action" onclick="resetMemoOrientation()">Reset memo orientation</button>
       <button class="drawer-action" onclick="resetFlow()">Reset to stock page</button>
     </div>
 
@@ -3334,8 +3706,15 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
           <section class="scr" data-id="s0">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('s10')">‹</button>
-                <button class="s0-exit" onclick="go('s10')">Exit</button>
+                <button class="back-btn" onclick="backFromS0()">‹</button>
+                <button class="s0-exit" onclick="exitS0()">Exit</button>
+              </div>
+              <div class="example-banner" id="s0-example-banner">
+                <span>EXAMPLE MEMO · Read-only reference</span>
+                <button type="button" class="example-banner-back" onclick="exitExampleMode()">
+                  <span class="glyph" aria-hidden="true">‹</span>
+                  <span>Back to intro</span>
+                </button>
               </div>
               <hr class="div">
             </div>
@@ -3451,7 +3830,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                    NOTE: In production, History should only render when the user has
                    actually bought this stock. Kept always-visible here so testers
                    can verify both empty and populated states of s24. -->
-              <div style="margin-top:36px">
+              <div style="margin-top:36px" id="s0-nav-menu">
                 <div class="s0-item s0-item--test" onclick="openHistory()" data-min-version="3">
                   <span>History</span>
                   <span class="s0-test-tag">Test only · normally hidden until first purchase</span>
@@ -3475,6 +3854,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
           <section class="scr padded" data-id="s6">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;margin-top:-8px">
               <button class="back-btn" onclick="go('s0')">‹</button>
+              <button class="exit-btn" onclick="exitMemo()">Exit</button>
             </div>
             <hr class="div">
 
@@ -3509,6 +3889,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <div class="backfill-banner memo-backfill-banner" style="display:none;margin-top:18px">
                 <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
               </div>
+
+              <div class="memo-context-chip" data-memo-context hidden style="margin:14px 0 0;padding-top:6px"></div>
 
               <div style="margin-top:36px">
                 <div class="lbl" style="margin-bottom:12px">Your view</div>
@@ -3548,7 +3930,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <div>
                     <span id="s12-prob-num" class="prob-num">50</span><span class="prob-num-pct">%</span>
                   </div>
-                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="10"
+                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="0" step="10"
                          oninput="setProb('s12', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
                     <span class="body-xs">0%</span><span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">Coin flip</span><span class="body-xs">100%</span>
@@ -3593,6 +3975,67 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
           </section>
 
+          <!-- ════════ mintro — Memo intro (before Research orientation) ════════ -->
+          <section class="scr v5-screen" data-id="mintro">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="backFromMintro()">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll v5-body">
+              <div class="v5-step-bar"><span>MEMO · INTRO</span></div>
+
+              <div class="v5-title">An investing memo, scored.</div>
+              <div class="v5-prose" style="margin-top:14px">Every position you open here starts with a memo — what the business is, why you're buying it, what would prove you wrong, and how confident you are. Each one gets dated, stored, and measured against the S&amp;P 500 over the horizon you set, so in a few years you'll know — with proof — whether your judgment beats the index.</div>
+
+              <hr class="v5-rule">
+
+              <div class="v5-section-eyebrow">The questions</div>
+              <div class="v5-prose">Ten short prompts. Most are one tap or one line.</div>
+
+              <button type="button" class="mintro-disclosure" id="mintro-questions-toggle" onclick="toggleMintroQuestions()" aria-expanded="false">
+                <span class="mintro-disclosure-label">See all 10 questions</span>
+                <span class="mintro-disclosure-chev" aria-hidden="true">▾</span>
+              </button>
+              <ol class="mintro-questions" id="mintro-questions-list" hidden>
+                <li><span class="mintro-q-head">Classify</span><span class="mintro-q-sub">What kind of business is this?</span></li>
+                <li><span class="mintro-q-head">Size</span><span class="mintro-q-sub">What role in your portfolio?</span></li>
+                <li><span class="mintro-q-head">Intrinsic value</span><span class="mintro-q-sub">What's a share worth?</span></li>
+                <li><span class="mintro-q-head">Margin of safety</span><span class="mintro-q-sub">Is there enough room to be wrong?</span></li>
+                <li><span class="mintro-q-head">Thesis</span><span class="mintro-q-sub">The one-sentence reason this works.</span></li>
+                <li><span class="mintro-q-head">Kill line</span><span class="mintro-q-sub">What would prove you wrong?</span></li>
+                <li><span class="mintro-q-head">Calibration</span><span class="mintro-q-sub">Probability + horizon.</span></li>
+                <li><span class="mintro-q-head">Note</span><span class="mintro-q-sub">Optional context.</span></li>
+                <li><span class="mintro-q-head">Source</span><span class="mintro-q-sub">Where this idea came from.</span></li>
+                <li><span class="mintro-q-head">Review</span><span class="mintro-q-sub">Confirm and commit.</span></li>
+              </ol>
+
+              <hr class="v5-rule">
+
+              <div class="v5-section-eyebrow">See a good memo</div>
+              <div class="v5-prose">Browse a finished AAPL memo so you know what the end product looks like.</div>
+              <a class="v5-tool-card" href="javascript:void(0)" onclick="openExampleMemo()" style="margin-top:12px">
+                <div class="v5-tool-card-text">
+                  <div class="v5-tool-card-title">AAPL · example memo</div>
+                  <div class="v5-tool-card-sub">Read-only. Won't touch your data.</div>
+                </div>
+                <span class="v5-tool-card-arrow">→</span>
+              </a>
+            </div>
+
+            <div class="v5-foot">
+              <label class="ack-row" for="mintro-ack">
+                <input type="checkbox" id="mintro-ack" class="ack-check" onchange="onMintroAckChange(this.checked)">
+                <span class="ack-box" aria-hidden="true"></span>
+                <span class="ack-label">Got it. Don't show me this again.</span>
+              </label>
+              <button class="v5-primary" onclick="continueFromMintro()">Continue</button>
+            </div>
+          </section>
+
           <!-- ════════ mresearch — Research orientation (before Classify) ════════ -->
           <section class="scr v5-screen" data-id="mresearch">
             <div style="padding-top:0;flex-shrink:0">
@@ -3612,6 +4055,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <div class="v5-section-eyebrow">Data</div>
               <div class="v5-prose">Use fiscal.ai. It is the cleanest source for financial statements, segment economics, and history.</div>
+
+              <div class="v5-section-eyebrow" style="margin-top:24px">One rule</div>
+              <div class="v5-prose">The AI does not know the latest financials and will invent them if you ask. For anything quantitative — earnings, margins, shares — paste the numbers from fiscal.ai. Don't ask the AI to recall them.</div>
+
               <a class="v5-tool-card" href="https://fiscal.ai" target="_blank" rel="noopener" style="margin-top:12px">
                 <div class="v5-tool-card-text">
                   <div class="v5-tool-card-title">Open fiscal.ai</div>
@@ -3623,6 +4070,22 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <div class="v5-section-eyebrow">Analysis</div>
               <div class="v5-prose">Use Claude or ChatGPT. Ask the questions a serious investor would ask — what the business actually does, how it makes money, what could break the thesis, what a fair price looks like.</div>
+
+              <div class="mresearch-prompt-card">
+                <div class="mresearch-prompt-eyebrow">Prompt for Claude / ChatGPT</div>
+                <div class="mresearch-prompt-preview" id="mresearch-prompt-preview">I'm researching AAPL to write a short investment memo. Help me think through it in order — classification, intrinsic value, margin of safety, thesis, kill line, probability over a 3-year horizon…</div>
+                <div class="mresearch-prompt-actions">
+                  <button type="button" class="mresearch-prompt-iconbtn" onclick="go('mresearch-prompt')" aria-label="Expand prompt">
+                    <span class="glyph" aria-hidden="true">↗</span>
+                    <span>Expand</span>
+                  </button>
+                  <button type="button" class="mresearch-prompt-iconbtn" id="mresearch-copy-btn" onclick="copyResearchPrompt()" aria-label="Copy prompt">
+                    <span class="glyph" aria-hidden="true">⧉</span>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+
               <a class="v5-tool-card" href="https://claude.ai" target="_blank" rel="noopener" style="margin-top:12px">
                 <div class="v5-tool-card-text"><div class="v5-tool-card-title">Open Claude</div></div>
                 <span class="v5-tool-card-arrow">→</span>
@@ -3631,15 +4094,51 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="v5-tool-card-text"><div class="v5-tool-card-title">Open ChatGPT</div></div>
                 <span class="v5-tool-card-arrow">→</span>
               </a>
-
-              <hr class="v5-rule">
-
-              <div class="v5-section-eyebrow">One rule</div>
-              <div class="v5-prose">The AI does not know the latest financials and will invent them if you ask. For anything quantitative — earnings, margins, shares — paste the numbers from fiscal.ai. Don't ask the AI to recall them.</div>
             </div>
 
             <div class="v5-foot">
-              <button class="v5-primary" onclick="go('m1')">I'm ready to record my memo</button>
+              <label class="ack-row" for="mresearch-ack">
+                <input type="checkbox" id="mresearch-ack" class="ack-check" onchange="onMresearchAckChange(this.checked)">
+                <span class="ack-box" aria-hidden="true"></span>
+                <span class="ack-label">Got it. Don't show me this again.</span>
+              </label>
+              <button class="v5-primary" onclick="continueFromMresearch()">I'm ready to record my memo</button>
+            </div>
+          </section>
+
+          <!-- ════════ mresearch-prompt — Full-screen prompt detail ════════ -->
+          <section class="scr v5-screen" data-id="mresearch-prompt">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('mresearch')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll v5-body">
+              <div class="v5-step-bar"><span>PROMPT FOR CLAUDE / CHATGPT</span></div>
+
+              <div class="v5-title">Paste this. Then paste your data.</div>
+
+              <hr class="v5-rule">
+
+              <div class="prompt-detail-body" id="mresearch-prompt-fulltext">
+                <p>I'm researching <strong>AAPL</strong> to write a short investment memo. Help me think through it in order. For each question, give me a short, opinionated answer first, then a one-paragraph rationale.</p>
+                <ol>
+                  <li><strong>Classification.</strong> Is this a Compounder (durable, long runway), an Emerging Compounder (execution risk), a Situational Mispricing (specific outcome bet), or Speculative (no edge)?</li>
+                  <li><strong>Intrinsic value.</strong> What's a defensible per-share intrinsic value? Show your assumptions on earnings, multiple, and growth.</li>
+                  <li><strong>Margin of safety.</strong> At today's price, is there enough room to be wrong about the details and still be right about the bet?</li>
+                  <li><strong>Thesis.</strong> In one sentence, why does this investment work?</li>
+                  <li><strong>Kill line.</strong> What specific event, metric, or quarter would prove the thesis broken — not just disappointing?</li>
+                  <li><strong>Probability + horizon.</strong> What probability would you assign to the thesis playing out over 3 years, and why that number?</li>
+                </ol>
+                <div class="prompt-detail-rule">One rule: don't recall financials from memory. If you need numbers — earnings, margins, share count — ask me to paste them from fiscal.ai first.</div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary" id="prompt-detail-copy" onclick="copyResearchPrompt('detail')">Copy prompt</button>
             </div>
           </section>
 
@@ -3662,6 +4161,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <div class="ticker-step">Classify</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·1 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div>
                   <div class="title-md">What kind of business is this?</div>
@@ -3711,6 +4211,7 @@ and you mis-hold.</div>
                   <div class="ticker-step">Size</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·2 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div>
                   <div class="title-md">What role in your portfolio?</div>
@@ -3759,6 +4260,7 @@ and how much you commit.</div>
                   <div class="ticker-step">Thesis</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div class="title-md">Why are you buying this?</div>
                 <div class="t-bsm" style="margin-top:-20px">A few sentences. Why the market is mispricing this business today — and what assumptions you're making for it to compound. Be specific enough that you'd know later whether you were right or wrong.</div>
@@ -3838,6 +4340,7 @@ you don't understand it.</div>
                   <div class="ticker-step">Kill line</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·6 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div class="title-md">What would prove the thesis wrong?</div>
                 <div class="t-bsm" style="margin-top:-20px">Short. Factual. No forecasts.</div>
@@ -3903,6 +4406,21 @@ to rewrite it.</div>
                   <div class="ticker-step">Intrinsic value</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
+
+                <div class="miv-prices-strip">
+                  <div class="miv-price-cell">
+                    <div class="miv-price-lbl">Market</div>
+                    <div class="miv-price-val">$192.35</div>
+                    <div class="miv-price-delta">Today</div>
+                  </div>
+                  <div class="miv-price-divider"></div>
+                  <div class="miv-price-cell">
+                    <div class="miv-price-lbl">Your value</div>
+                    <div class="miv-price-val is-empty" id="miv-display-top">$—</div>
+                    <div class="miv-price-delta" id="miv-delta-top">—</div>
+                  </div>
+                </div>
 
                 <div class="title-md">What's it worth?</div>
 
@@ -3932,10 +4450,6 @@ to rewrite it.</div>
                   </div>
                 </div>
 
-                <hr class="v5-rule">
-
-                <div class="v5-compare-row"><span>Current price</span><span class="v5-num">$192.35</span></div>
-                <div class="v5-compare-row"><span>Your value</span><span class="v5-num" id="miv-display">$—</span></div>
               </div>
             </div>
 
@@ -3995,6 +4509,7 @@ to rewrite it.</div>
                   <div class="ticker-step">Margin of safety</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div class="v5-compare-row"><span>Price</span><span class="v5-num">$192.35</span></div>
                 <div class="v5-compare-row"><span>Your value</span><span class="v5-num" id="m4-yourvalue">$—</span></div>
@@ -4077,14 +4592,16 @@ to protect against error.</div>
                   <div class="ticker-step">Note</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·8 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
-                <div class="title-md">Anything else?</div>
-                <div class="t-bsm" style="margin-top:-20px">Optional. A catalyst, a quote, a hunch — context you'd want to remember when this decision is reviewed later.</div>
+                <div class="title-md">The work behind it</div>
+                <div class="t-bsm" style="margin-top:-20px">The model, memo, filings, transcripts, or notes the thesis is built on. If the kill line trips, this is what you'll re-read to figure out whether the thesis was wrong or the world was.</div>
+                <div class="t-bsm" style="margin-top:8px;color:var(--t-700)">Optional.</div>
 
                 <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
-                  <textarea id="m5-note" rows="5" placeholder="Whatever else is on your mind. Skip if there's nothing." oninput="onM5NoteInput()"></textarea>
+                  <textarea id="m5-note" rows="5" placeholder="Optional" oninput="onM5NoteInput()"></textarea>
 
                   <div class="composer-toolbar">
                     <button class="composer-icon-btn" onclick="pasteToTextarea('m5-note')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
@@ -4148,12 +4665,13 @@ What's obvious now will be murky later.</div>
                   <div class="ticker-step">Source</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·9 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div class="title-md">Where did this come from?</div>
-                <div class="t-bsm" style="margin-top:-20px">Tracking source over time tells you which of your inputs actually translate into good positions — Twitter follow, podcast, gut, or your own screen.</div>
+                <div class="t-bsm" style="margin-top:-20px">Tracking source over time tells you which of your inputs actually translate into good positions — social media post, podcast, gut, or your own screen.</div>
 
                 <div class="field-list" data-list="msrc-source">
-                  <button class="radio-row" data-radio="twitter"><div class="lbl-block"><div class="head">Twitter</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="twitter"><div class="lbl-block"><div class="head">Social media</div></div><div class="radio-dot"></div></button>
                   <button class="radio-row" data-radio="screener"><div class="lbl-block"><div class="head">Screener</div></div><div class="radio-dot"></div></button>
                   <button class="radio-row" data-radio="podcast"><div class="lbl-block"><div class="head">Podcast</div></div><div class="radio-dot"></div></button>
                   <button class="radio-row" data-radio="newsletter"><div class="lbl-block"><div class="head">Newsletter</div></div><div class="radio-dot"></div></button>
@@ -4192,7 +4710,7 @@ actually works for you.</div>
           <section class="scr" data-id="m6">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('msrc')">‹</button>
+                <button class="back-btn" onclick="backFromM6()">‹</button>
                 <button class="exit-btn" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -4207,6 +4725,7 @@ actually works for you.</div>
                   <div class="ticker-step">Review</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·10 / 10</div>
                 </div>
+                <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div>
                   <div class="title-md">Investment Memo</div>
@@ -4215,19 +4734,19 @@ actually works for you.</div>
 
                 <div>
                   <div class="section-eyebrow" style="margin-bottom:0">Memo</div>
-                  <div class="memo-row"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
-                  <div class="memo-row"><div class="k">Size</div><div class="v" id="m6-size">—</div></div>
-                  <div class="memo-row"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
-                  <div class="memo-row"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div></div>
-                  <div class="memo-row"><div class="k">Margin</div><div class="v" id="m6-mos">—</div></div>
-                  <div class="memo-row" id="m6-note-row" style="display:none"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
-                  <div class="memo-row" id="m6-source-row" style="display:none"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
+                  <div class="memo-row"><div class="k">Type</div><div class="v" id="m6-type">—</div><button class="memo-row-edit" onclick="editFromReview('m1')">Edit</button></div>
+                  <div class="memo-row"><div class="k">Size</div><div class="v" id="m6-size">—</div><button class="memo-row-edit" onclick="editFromReview('m1b')">Edit</button></div>
+                  <div class="memo-row"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div><button class="memo-row-edit" onclick="editFromReview('m2')">Edit</button></div>
+                  <div class="memo-row"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div><button class="memo-row-edit" onclick="editFromReview('m3')">Edit</button></div>
+                  <div class="memo-row"><div class="k">Margin</div><div class="v" id="m6-mos">—</div><button class="memo-row-edit" onclick="editFromReview('m4')">Edit</button></div>
+                  <div class="memo-row" id="m6-note-row" style="display:none"><div class="k">Note</div><div class="v" id="m6-note-display">—</div><button class="memo-row-edit" onclick="editFromReview('m5')">Edit</button></div>
+                  <div class="memo-row" id="m6-source-row" style="display:none"><div class="k">Source</div><div class="v" id="m6-source-display">—</div><button class="memo-row-edit" onclick="editFromReview('msrc')">Edit</button></div>
                 </div>
 
                 <div>
                   <div class="section-eyebrow" style="margin-bottom:0">Calibration</div>
-                  <div class="memo-row"><div class="k">Probability ≥20%/yr</div><div class="v" id="m6-prob">—</div></div>
-                  <div class="memo-row"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
+                  <div class="memo-row"><div class="k">Probability ≥20%/yr</div><div class="v" id="m6-prob">—</div><button class="memo-row-edit" onclick="editFromReview('s12')">Edit</button></div>
+                  <div class="memo-row"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div><button class="memo-row-edit" onclick="editFromReview('s12')">Edit</button></div>
                 </div>
 
                 <div class="t-bsm" style="line-height:1.55">
@@ -4236,7 +4755,7 @@ actually works for you.</div>
               </div>
             </div>
 
-            <button class="lpb" onclick="commitMemo()">Continue</button>
+            <button class="lpb" onclick="commitMemo()">Confirm memo</button>
           </section>
 
           <!-- ════════ s19 — Increase reason (returning user) ════════ -->
@@ -4352,11 +4871,14 @@ actually works for you.</div>
           <!-- ════════ s8 — Enter shares (numpad) ════════ -->
           <section class="scr" data-id="s8" onclick="if(state.activeInput) closeNumpad()">
             <div style="padding-top:0;flex-shrink:0">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px">
                 <button class="back-btn" onclick="event.stopPropagation();goBackFromShares()">‹</button>
-                <button style="background:none;border:none;color:var(--s);font-family:var(--font);font-size:13px;display:flex;align-items:center;gap:4px;padding:0">
-                  Limit Order <span style="font-size:9px;color:var(--t)">⌄</span>
-                </button>
+                <div style="display:flex;align-items:center;gap:18px">
+                  <button style="background:none;border:none;color:var(--s);font-family:var(--font);font-size:13px;display:flex;align-items:center;gap:4px;padding:0">
+                    Limit Order <span style="font-size:9px;color:var(--t)">⌄</span>
+                  </button>
+                  <button class="exit-btn" onclick="event.stopPropagation();exitMemo()">Exit</button>
+                </div>
               </div>
               <hr class="div">
 
@@ -4415,7 +4937,43 @@ actually works for you.</div>
               </div>
             </div>
 
-            <div style="flex:1"></div>
+            <!-- Full memo display — visible during the initial-buy flow so the
+                 user can reference the commitment they just authored while
+                 sizing the position. Mirrors s4's memo section but tighter to
+                 fit alongside the form rows + numpad on the same screen. -->
+            <div id="s8-memo-section" class="s8-memo-section" style="display:none">
+              <div class="lbl" style="margin-bottom:12px">Your memo</div>
+              <div class="s8-memo-row">
+                <span class="body-sm" style="color:var(--s);flex-shrink:0">Type</span>
+                <span class="body-md" id="s8-memo-type" style="text-align:right">—</span>
+              </div>
+              <div class="s8-memo-row">
+                <span class="body-sm" style="color:var(--s);flex-shrink:0">Size</span>
+                <span class="body-md" id="s8-memo-size" style="text-align:right">—</span>
+              </div>
+              <div class="s8-memo-row">
+                <span class="body-sm" style="color:var(--s);flex-shrink:0">Intrinsic value</span>
+                <span class="body-md" id="s8-memo-iv" style="text-align:right">—</span>
+              </div>
+              <div class="s8-memo-row">
+                <span class="body-sm" style="color:var(--s);flex-shrink:0">Margin of safety</span>
+                <span class="body-md" id="s8-memo-mos" style="text-align:right;line-height:1.5">—</span>
+              </div>
+              <div class="s8-memo-row s8-memo-row--stacked">
+                <span class="body-sm" style="color:var(--s)">Thesis</span>
+                <span class="body-md" id="s8-memo-thesis" style="line-height:1.5">—</span>
+              </div>
+              <div class="s8-memo-row s8-memo-row--stacked">
+                <span class="body-sm" style="color:var(--s)">Kill line</span>
+                <span class="body-md" id="s8-memo-kill" style="line-height:1.5">—</span>
+              </div>
+              <div class="s8-memo-row" style="border-bottom:none">
+                <span class="body-sm" style="color:var(--s);flex-shrink:0">Calibration</span>
+                <span class="body-md" id="s8-memo-calib" style="text-align:right">—</span>
+              </div>
+            </div>
+
+            <div style="flex:1;min-height:8px"></div>
 
             <div class="act-row" style="flex-shrink:0;padding:0 26px 18px;justify-content:space-between">
               <button class="act-btn" onclick="event.stopPropagation();goBackFromShares()">
@@ -4446,7 +5004,10 @@ actually works for you.</div>
           <!-- ════════ s4 — Review & execute ════════ -->
           <section class="scr" data-id="s4">
             <div style="padding-top:0;flex-shrink:0">
-              <button class="back-btn" style="padding:0 0 14px 14px;font-size:20px" onclick="go('s8')">←</button>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px 14px">
+                <button class="back-btn" style="font-size:20px;padding:0" onclick="go('s8')">←</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
               <hr class="div">
             </div>
 
@@ -6544,7 +7105,11 @@ let state = {
   hasMemo:      loadHasMemo(),
   usingSeedPersona: loadHasMemo(),   // true only when the demo is in returning-user mode (seed memo + seed transactions)
   cd:           'initial',      // 'initial' | 'increase' | 'reduce' | 'exit' | 'draft'
-  prob:         50,
+  prob:         0,              // 0 = "user hasn't picked yet" — Continue stays locked on s12 until they move the slider
+  editingFromReview: false,     // true while user is editing a single field via m6's "Edit" affordance — short-circuits step advancement back to m6
+  _memoEditedThisFlow: false,   // true once the user has touched any memo field on this buy flow — used by tx snapshots to label carried-over vs edited memos
+
+
   horizon:      '3y',
   shares:       '',
   orderType:    'limit',         // 'limit' | 'market' — limit is now the default on s8
@@ -6777,16 +7342,18 @@ function findStock(ticker) {
 }
 
 const VERSIONS = {
-  1: { label: 'V1', title: 'Notes',                       blurb: 'Per-stock journal' },
-  2: { label: 'V2', title: 'Capital decision + Memo',     blurb: 'Memo + order placement' },
-  3: { label: 'V3', title: 'History & tracking',          blurb: 'Trades + paper trades + timeline' },
   4: { label: 'V4', title: 'Reflection',                  blurb: 'AI insights + thesis review + calibration analytics' },
   5: { label: 'V5', title: 'Measurement system',          blurb: 'Research scaffolding → prediction → scored against S&P at horizon' }
 };
 function loadVersion() {
   try {
     const raw = localStorage.getItem('mogo.calmemo.version');
-    if (raw) { const v = parseInt(raw, 10); if (v >= 1 && v <= 5) return v; }
+    if (raw) {
+      const v = parseInt(raw, 10);
+      if (v >= 4 && v <= 5) return v;
+      // Legacy stored value (V1–V3 were retired) — promote to V4 baseline.
+      if (v >= 1 && v <= 3) return 4;
+    }
   } catch (_) {}
   return 5;   // default: latest, so the demo shows everything
 }
@@ -6863,6 +7430,9 @@ const SCREENS = [
   { id: 's60', group: 'Backfill',      name: 'Positions without memos',      sub: 'list of stocks needing a memo',                        minVersion: 2 },
   { id: 's61', group: 'Backfill',      name: 'Memo saved',                   sub: 'backfill confirmation',                                minVersion: 2 },
   { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action',                                          minVersion: 2 },
+  { id: 'mintro',           group: 'Memo intro', name: 'Memo intro',          sub: 'what you\'ll record + example',                        minVersion: 4 },
+  { id: 'mresearch',        group: 'Memo intro', name: 'Research orientation', sub: 'data + analysis + AI prompt',                          minVersion: 4 },
+  { id: 'mresearch-prompt', group: 'Memo intro', name: 'AI prompt detail',    sub: 'paste into Claude / ChatGPT',                          minVersion: 4 },
   { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 10',                                                     minVersion: 2 },
   { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 10',                                                     minVersion: 2 },
   { id: 'miv', group: 'Memo',    name: 'Intrinsic value',              sub: '3 / 10 · $ per share + method',                              minVersion: 2 },
@@ -6929,7 +7499,7 @@ function go(id) {
   document.getElementById('pageName').textContent = meta ? meta.name : id;
   document.getElementById('pageSub').textContent  = meta ? meta.sub  : '';
   // Refresh dynamic content
-  if (id === 's0')  renderStock();
+  if (id === 's0')  { renderStock(); applyExampleMode(); }
   if (id === 's6')  renderCDOptions();
   if (id === 's8')  renderS8();
   if (id === 's4')  renderS4();
@@ -6965,6 +7535,15 @@ function go(id) {
   if (id === 'postmortem')      renderPostMortem();
   // Hydrate memo screens from the draft so resuming visibly fills in
   if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
+  // Refresh the persistent "your context" chip (Compounder · Core etc.)
+  // on every memo screen. It self-hides when no selection is set yet.
+  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshMemoContextChip();
+  // Apply / restore m6 edit-mode UI overrides (back arrow + Continue
+  // label) when entering any of the per-field memo steps.
+  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc'].indexOf(id) !== -1) refreshEditModeUI(id);
+  // Clear the edit flag the moment the user lands back on m6 — keeps
+  // state clean if they leave the memo entirely without saving.
+  if (id === 'm6') state.editingFromReview = false;
   // Apply current-version visibility to any dynamic content just rendered
   refreshVersionVisibility();
   // Highlight drawer entry
@@ -7174,7 +7753,10 @@ function renderStock() {
   }
 }
 
-function onCapitalDecision() { go('s6'); }
+function onCapitalDecision() {
+  if (state.exampleMode) { showExampleToast(); return; }
+  go('s6');
+}
 
 /* ═════════════════════════════════════════════════
    CAPITAL DECISION (s6)
@@ -7202,9 +7784,6 @@ function renderCDOptions() {
       <div class="radio-opt" onclick="selectCD('initial')">
         <span class="body-lg">Initiate position</span>
         <div class="radio-circle on" id="cd-initial"></div>
-      </div>
-      <div style="font-size:13px;color:var(--t);margin-top:24px;line-height:1.55">
-        First time buying AAPL. You'll calibrate your view and write the memo before placing the order.
       </div>`;
   }
 }
@@ -7216,13 +7795,16 @@ function selectCD(choice) {
 }
 function onCapitalDecisionContinue() {
   // V5 routes first-time positions through the new entry screen + measurement
-  // capture flow. V4 initial positions route through the Research orientation
-  // (mresearch) before the Classify step. Increase / Reduce / Exit on an
-  // existing position keep V4's review path so the demo's two flows stay
-  // independent.
+  // capture flow. V4 initial positions front the memo with two orientation
+  // pages — Memo intro (mintro) and Research orientation (mresearch). Each
+  // page has a "got it, don't show me again" checkbox; if the user has
+  // acknowledged a page on a prior buy we skip it. Increase / Reduce / Exit
+  // keep V4's review path so the two flows stay independent.
   if (state.cd === 'initial') {
-    if (state.version >= 5) go('v5-entry');
-    else                    go('mresearch');
+    if (state.version >= 5) { go('v5-entry'); return; }
+    if (!loadMintroAck())    { go('mintro');    return; }
+    if (!loadMresearchAck()) { go('mresearch'); return; }
+    go('m1');
     return;
   }
   go('s19');
@@ -7234,6 +7816,7 @@ function onCapitalDecisionContinue() {
    have the user's prior commitments to review instead of blank fields. */
 function continueFromS19() {
   if (!state.reason) return;                  // shouldn't happen — button is locked
+  state._memoEditedThisFlow = false;          // fresh flow: assume memo is carried-over until the user edits something
   hydrateAaplMemoFromSeed();
   // Seed the prior probability + horizon once per session so when the user
   // lands on s12 (the Calibration page in the memo review) the slider sits at
@@ -7245,30 +7828,266 @@ function continueFromS19() {
     if (typeof setProb    === 'function') setProb('s12', 60);
     if (typeof setHorizon === 'function') setHorizon('s12', '3y');
   }
-  go('m1');
+  // Increase flow shortcut: skip the 10 sequential memo steps and land
+  // directly on the review screen (m6). Every field is already pre-filled
+  // from the on-file memo, and m6's per-row Edit affordances let the user
+  // tweak any single answer if they want. Tapping "Confirm memo" on m6
+  // routes to the buy page just like the initial-buy flow.
+  go('m6');
 }
 
 /* m1 back button — context-aware. For an initial buy the back target is the
-   Research orientation (mresearch) which sits between s6 and m1. For an
-   increase / reduce / exit, back returns to the "Why are you increasing?"
+   most recent unacknowledged orientation page (mresearch, then mintro). For
+   an increase / reduce / exit, back returns to the "Why are you increasing?"
    screen (s19). For a draft memo (writing the artifact without buying) back
    returns to the stock page (s0). */
 function backFromM1() {
   if (state.cd === 'draft')                   { go('s0');  return; }
   if (state.cd && state.cd !== 'initial')     { go('s19'); return; }
-  go('mresearch');
+  if (!loadMresearchAck())                    { go('mresearch'); return; }
+  if (!loadMintroAck())                       { go('mintro');    return; }
+  go('s6');
 }
 
-/* mresearch back button — Research orientation only fronts the initial-buy
-   path, so back always returns to the Capital decision picker (s6). */
+/* mresearch back button — orientation pages only front the initial-buy path.
+   Back goes to mintro if it's still unacknowledged, otherwise straight to s6. */
 function backFromMResearch() {
+  if (!loadMintroAck()) { go('mintro'); return; }
   go('s6');
+}
+
+/* mintro back button — Memo intro is the first orientation page, so back
+   always returns to the Capital decision picker (s6). */
+function backFromMintro() {
+  go('s6');
+}
+
+/* m6 back button — context-aware. The initial-buy flow walks through the
+   numbered steps to reach m6 so back returns to the previous step (msrc).
+   The increase / reduce / exit flow skips the sequence and lands directly
+   on m6 from s19, so back should return there. */
+function backFromM6() {
+  if (state.cd && state.cd !== 'initial' && state.cd !== 'draft') { go('s19'); return; }
+  go('msrc');
+}
+
+/* Forward navigation from each orientation page. The checkbox writes its
+   value on-change (see onMintroAckChange / onMresearchAckChange), so the
+   Continue handler just routes forward. */
+function continueFromMintro()    { go('mresearch'); }
+function continueFromMresearch() { go('m1'); }
+
+/* Collapsible "See all 10 questions" disclosure on the Memo intro page. */
+function toggleMintroQuestions() {
+  const list = document.getElementById('mintro-questions-list');
+  const btn  = document.getElementById('mintro-questions-toggle');
+  if (!list || !btn) return;
+  const lbl  = btn.querySelector('.mintro-disclosure-label');
+  const open = list.hasAttribute('hidden');
+  if (open) {
+    list.removeAttribute('hidden');
+    btn.setAttribute('aria-expanded', 'true');
+    if (lbl) lbl.textContent = 'Hide questions';
+  } else {
+    list.setAttribute('hidden', '');
+    btn.setAttribute('aria-expanded', 'false');
+    if (lbl) lbl.textContent = 'See all 10 questions';
+  }
+}
+
+/* ── Orientation acknowledgement flags ────────────────────────────────── */
+function loadMintroAck()    { try { return localStorage.getItem('mogo.calmemo.mintroAck')    === '1'; } catch (_) { return false; } }
+function persistMintroAck(v){ try { localStorage.setItem('mogo.calmemo.mintroAck',    v ? '1' : '0'); } catch (_) {} }
+function loadMresearchAck() { try { return localStorage.getItem('mogo.calmemo.mresearchAck') === '1'; } catch (_) { return false; } }
+function persistMresearchAck(v){ try { localStorage.setItem('mogo.calmemo.mresearchAck', v ? '1' : '0'); } catch (_) {} }
+function onMintroAckChange(checked)    { persistMintroAck(!!checked); }
+function onMresearchAckChange(checked) { persistMresearchAck(!!checked); }
+function hydrateAckCheckboxes() {
+  const a = document.getElementById('mintro-ack');
+  if (a) a.checked = loadMintroAck();
+  const b = document.getElementById('mresearch-ack');
+  if (b) b.checked = loadMresearchAck();
+}
+/* Dev-drawer reset — clears both ack flags so the user sees both orientation
+   pages on the next initial buy. */
+function resetMemoOrientation() {
+  persistMintroAck(false);
+  persistMresearchAck(false);
+  hydrateAckCheckboxes();
+  try { closeDrawer(); } catch (_) {}
+  showExampleToast('Memo orientation reset.');
+}
+
+/* ── AI research prompt — single source of truth + copy-to-clipboard ─── */
+const RESEARCH_PROMPT_TEXT = [
+  "I'm researching AAPL to write a short investment memo. Help me think through it in order. For each question, give me a short, opinionated answer first, then a one-paragraph rationale.",
+  "",
+  "1. Classification. Is this a Compounder (durable, long runway), an Emerging Compounder (execution risk), a Situational Mispricing (specific outcome bet), or Speculative (no edge)?",
+  "2. Intrinsic value. What's a defensible per-share intrinsic value? Show your assumptions on earnings, multiple, and growth.",
+  "3. Margin of safety. At today's price, is there enough room to be wrong about the details and still be right about the bet?",
+  "4. Thesis. In one sentence, why does this investment work?",
+  "5. Kill line. What specific event, metric, or quarter would prove the thesis broken — not just disappointing?",
+  "6. Probability + horizon. What probability would you assign to the thesis playing out over 3 years, and why that number?",
+  "",
+  "One rule: don't recall financials from memory. If you need numbers — earnings, margins, share count — ask me to paste them from fiscal.ai first."
+].join('\n');
+
+function copyResearchPrompt(where) {
+  const finish = (ok) => {
+    if (where === 'detail') {
+      const b = document.getElementById('prompt-detail-copy');
+      if (!b) return;
+      const orig = b.dataset._origLabel || b.textContent;
+      b.dataset._origLabel = orig;
+      b.textContent = ok ? 'Copied ✓' : 'Couldn\'t copy';
+      clearTimeout(b._t);
+      b._t = setTimeout(() => { b.textContent = orig; }, 1400);
+    } else {
+      const b = document.getElementById('mresearch-copy-btn');
+      if (!b) return;
+      const lbl   = b.querySelector('span:last-child');
+      const glyph = b.querySelector('.glyph');
+      if (!lbl || !glyph) return;
+      const origLbl   = b.dataset._origLbl   || lbl.textContent;
+      const origGlyph = b.dataset._origGlyph || glyph.textContent;
+      b.dataset._origLbl   = origLbl;
+      b.dataset._origGlyph = origGlyph;
+      b.classList.add('is-copied');
+      lbl.textContent   = ok ? 'Copied' : 'Failed';
+      glyph.textContent = ok ? '✓'      : '!';
+      clearTimeout(b._t);
+      b._t = setTimeout(() => {
+        lbl.textContent   = origLbl;
+        glyph.textContent = origGlyph;
+        b.classList.remove('is-copied');
+      }, 1400);
+    }
+  };
+  const tryAsync = () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(RESEARCH_PROMPT_TEXT);
+    }
+    return Promise.reject(new Error('no clipboard api'));
+  };
+  tryAsync().then(() => finish(true)).catch(() => {
+    // Fallback: hidden textarea + execCommand for non-secure contexts
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = RESEARCH_PROMPT_TEXT;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      finish(ok);
+    } catch (_) { finish(false); }
+  });
+}
+
+/* ── Example-memo mode for the AAPL stock page ───────────────────────── */
+/* Entered from the Memo intro "See a good memo" card. We stash the user's
+   current memo / hasMemo / persona, force-seed the returning-user AAPL
+   fixture, navigate to s0, and pin a banner indicating this is read-only.
+   On exit we restore the stashed state so the user's real session is
+   untouched. */
+function openExampleMemo() {
+  state._exampleRestore = {
+    memo:             JSON.parse(JSON.stringify(state.memo || {})),
+    hasMemo:          !!state.hasMemo,
+    usingSeedPersona: !!state.usingSeedPersona
+  };
+  try { hydrateAaplMemoFromSeed(); } catch (_) {}
+  state.hasMemo          = true;
+  state.usingSeedPersona = true;
+  state.exampleMode      = true;
+  go('s0');
+}
+function exitExampleMode() {
+  const r = state._exampleRestore;
+  if (r) {
+    state.memo             = r.memo;
+    state.hasMemo          = r.hasMemo;
+    state.usingSeedPersona = r.usingSeedPersona;
+  }
+  state._exampleRestore = null;
+  state.exampleMode     = false;
+  go('mintro');
+}
+/* ── Persistent memo context chip ─────────────────────────────────────
+   Shows the user's Classify (Type) + Size selections at the top of every
+   memo screen after they're picked. The chip stays hidden until at least
+   Type is set, then progressively reveals (Type alone → Type · Size) as
+   the user advances through the flow. Rendered into every element with
+   the [data-memo-context] hook on each memo-screen entry. */
+const MEMO_TYPE_LABELS = {
+  comp: 'Compounder',
+  emer: 'Emerging Compounder',
+  situ: 'Situational Mispricing',
+  spec: 'Speculative'
+};
+const MEMO_SIZE_LABELS = {
+  core:  'Core [10%+]',
+  conv:  'Conviction [5–10%]',
+  start: 'Starter [1–3%]',
+  sspc:  'Speculative [≤2%]'
+};
+function refreshMemoContextChip() {
+  const memo = state.memo || {};
+  const type = memo.type && MEMO_TYPE_LABELS[memo.type];
+  const size = memo.size && MEMO_SIZE_LABELS[memo.size];
+  const html = [type, size].filter(Boolean).map((v, i, arr) => {
+    if (i === 0) return `<span>${v}</span>`;
+    return `<span class="memo-context-chip-sep">·</span><span>${v}</span>`;
+  }).join('');
+  document.querySelectorAll('[data-memo-context]').forEach(el => {
+    if (html) { el.innerHTML = html; el.removeAttribute('hidden'); }
+    else      { el.innerHTML = '';   el.setAttribute('hidden', ''); }
+  });
+}
+
+/* Toggles the example banner on s0 — called from go() whenever s0 is shown.
+   Also hides the History / Market / News / Research nav block, which is
+   pure noise on a read-only example memo and adds dead-end taps. */
+function applyExampleMode() {
+  const banner = document.getElementById('s0-example-banner');
+  if (banner) banner.classList.toggle('is-on', !!state.exampleMode);
+  const navMenu = document.getElementById('s0-nav-menu');
+  if (navMenu) navMenu.style.display = state.exampleMode ? 'none' : '';
+}
+/* s0 back / exit hooks — when in example mode, hijack the chrome buttons to
+   exit cleanly rather than dumping the user on the dashboard with stashed
+   state. */
+function backFromS0() {
+  if (state.exampleMode) { exitExampleMode(); return; }
+  go('s10');
+}
+function exitS0() {
+  if (state.exampleMode) { exitExampleMode(); return; }
+  go('s10');
+}
+/* Small floating toast — used when example mode blocks a mutating action,
+   and reused by the dev-drawer reset confirmation. */
+function showExampleToast(message) {
+  let toast = document.getElementById('example-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'example-toast';
+    toast.className = 'example-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message || 'This is the example memo — actions are off.';
+  toast.classList.add('is-on');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('is-on'), 1600);
 }
 
 /* Draft-memo entry point — V5 routes through the new capture flow with the
    Save-as-draft branch on the confirmation screen. V1–V4 keeps the original
    m1 → m6 path (with commitMemo routing back to the stock page). */
 function startDraftMemo() {
+  if (state.exampleMode) { showExampleToast(); return; }
   state.cd = 'draft';
   if (state.version >= 5) {
     // V5 — open the measurement capture flow at the entry screen. The user
@@ -7280,7 +8099,7 @@ function startDraftMemo() {
   }
   // V1–V4 — reset memo draft and reuse the existing m1 → m6 flow
   state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
-  state.prob    = 50;
+  state.prob    = 0;             // user must move the slider on s12 to unlock Continue
   state.horizon = '3y';
   state._increaseSeeded = false;
   go('m1');
@@ -8170,7 +8989,7 @@ function setProb(scr, val) {
     range.setAttribute('value', v);
   }
   // Connector sentence on s12 + s20 updates in real time
-  if (scr === 's12') refreshCalibSummary();
+  if (scr === 's12') { refreshCalibSummary(); refreshMemoLocks(); }
   if (scr === 's20') {
     const d = v - 60;
     const chip = document.getElementById('s20-delta');
@@ -8236,6 +9055,9 @@ function refreshCalibSummary() {
 
 }
 function continueFromCalibration() {
+  // If user came here via m6's "Edit Probability/Horizon", treat Continue
+  // as "Save changes" and return to review instead of walking forward.
+  if (state.editingFromReview) { checkProbGuardrail(() => exitReviewEdit()); return; }
   checkProbGuardrail(() => go('m5'));
 }
 
@@ -8258,6 +9080,10 @@ document.addEventListener('click', e => {
   if (key === 'm4-mos')  state.memo.mos  = value;
   persistMemoDraft();
   refreshMemoLocks();
+  // Keep the persistent "your context" chip in sync the moment a Type or
+  // Size radio is tapped, so the chip on the current screen updates live
+  // instead of waiting for the next navigation.
+  if (key === 'm1-type' || key === 'm1-size') refreshMemoContextChip();
 });
 
 function pickYN(listKey, value, btn) {
@@ -8349,7 +9175,7 @@ function onM5NoteInput() {
    autocomplete suggests "@theo" the next time the user picks Twitter.
    ═════════════════════════════════════════════════ */
 const SOURCE_LABELS = {
-  twitter:    'Twitter',
+  twitter:    'Social media',
   screener:   'Screener',
   podcast:    'Podcast',
   newsletter: 'Newsletter',
@@ -8408,7 +9234,7 @@ document.addEventListener('click', e => {
 
 function sourcePlaceholderFor(source) {
   switch (source) {
-    case 'twitter':    return '@theo, @anon_hedge…';
+    case 'twitter':    return '@theo, r/SecurityAnalysis…';
     case 'screener':   return 'Net cash + ROIC > 15%, …';
     case 'podcast':    return 'Acquired, BG2, …';
     case 'newsletter': return 'Stratechery, The Diff, …';
@@ -8474,7 +9300,7 @@ function memoStepValid(stepId) {
     case 'm4':  return !!state.memo.marginEnough;
     case 'm2':  return state.memo.thesis.trim().length > 0;
     case 'm3':  return state.memo.kill.trim().length > 0;
-    case 's12': return true;
+    case 's12': return state.prob > 0;     // 0 = unmoved default; user must pick a probability
     case 'msrc': return !!state.memo.source;
     default:    return true;
   }
@@ -8488,7 +9314,85 @@ function refreshMemoLocks() {
   if (s12cont) s12cont.classList.toggle('locked', !memoStepValid('s12'));
   refreshMsrcLock();
 }
-function advanceMemo(target) { go(target); }
+function advanceMemo(target) {
+  // Edit-mode short-circuit: when the user came from m6's "Edit" affordance,
+  // any step's Continue should commit the field they just touched and bounce
+  // them back to the review screen rather than walking the full sequence.
+  if (state.editingFromReview) { exitReviewEdit(); return; }
+  go(target);
+}
+
+/* ── m6 "Edit" affordance — entry, exit, and per-step UI overrides ────── */
+/* User taps "Edit" next to a field on the m6 review page. We mark the
+   flag, then navigate to the relevant step. refreshEditModeUI() runs
+   on screen entry and swaps the Continue label + redirects the back
+   arrow to m6 so the user can't accidentally rewind through the rest
+   of the flow while in the middle of a single-field edit. */
+function editFromReview(stepId) {
+  state.editingFromReview = true;
+  // Mark the memo as having been touched this flow so the transaction
+  // snapshot logic knows this isn't a "carried-over" memo on commit.
+  state._memoEditedThisFlow = true;
+  go(stepId);
+}
+/* Commit the in-progress edit and return to the review screen. Field
+   values are already persisted via each step's existing onchange / oninput
+   handlers, so "save" is just navigation. */
+function exitReviewEdit() {
+  state.editingFromReview = false;
+  go('m6');
+}
+/* Stored "original" inline back-handlers per memo step so we can swap
+   them out when entering edit mode and restore on exit. Keyed by step id. */
+const _MEMO_STEP_BACK_HANDLERS = {
+  m1:    "backFromM1()",
+  m1b:   "go('m1')",
+  miv:   "go('m1b')",
+  m4:    "go('miv')",
+  m2:    "go('m4')",
+  m3:    "go('m2')",
+  s12:   "go('m3')",
+  m5:    "go('s12')",
+  msrc:  "go('m5')"
+};
+/* Per-step Continue button id — used to swap label between
+   "Continue" (normal flow) and "Save changes" (edit mode). */
+const _MEMO_STEP_CTA_IDS = {
+  m1:   'm1-next',
+  m1b:  'm1b-next',
+  miv:  'miv-next',
+  m4:   'm4-next',
+  m2:   'm2-next',
+  m3:   'm3-next',
+  s12:  's12-cont',
+  m5:   'm5-next',
+  msrc: 'msrc-next'
+};
+/* Called from go() whenever a memo step is rendered. Applies edit-mode
+   UI tweaks: re-route the back button to exitReviewEdit and swap the
+   Continue label. Idempotent — running it when editingFromReview is
+   false restores the originals. */
+function refreshEditModeUI(id) {
+  if (!_MEMO_STEP_CTA_IDS.hasOwnProperty(id)) return;
+  const section = document.querySelector(`.scr[data-id="${id}"]`);
+  if (!section) return;
+  const backBtn = section.querySelector('.back-btn');
+  const ctaBtn  = document.getElementById(_MEMO_STEP_CTA_IDS[id]);
+  if (state.editingFromReview) {
+    if (backBtn) backBtn.setAttribute('onclick', 'exitReviewEdit()');
+    if (ctaBtn && !ctaBtn.dataset._origLabel) {
+      ctaBtn.dataset._origLabel = ctaBtn.textContent;
+      ctaBtn.textContent = 'Save changes';
+    } else if (ctaBtn) {
+      ctaBtn.textContent = 'Save changes';
+    }
+  } else {
+    if (backBtn) backBtn.setAttribute('onclick', _MEMO_STEP_BACK_HANDLERS[id]);
+    if (ctaBtn && ctaBtn.dataset._origLabel) {
+      ctaBtn.textContent = ctaBtn.dataset._origLabel;
+    }
+  }
+}
 
 /* ═════════════════════════════════════════════════
    V4 — Intrinsic value (miv) + binary Margin of safety (m4)
@@ -8521,15 +9425,44 @@ function onMivMethodInput() {
   refreshMemoLocks();
 }
 function renderMivCompare() {
-  const disp = document.getElementById('miv-display');
-  if (!disp) return;
   const v = parseFloat(state.memo.intrinsicValue);
-  disp.textContent = isFinite(v) && v > 0 ? '$' + v.toFixed(2) : '$—';
+  const ok = isFinite(v) && v > 0;
+  const formatted = ok ? '$' + v.toFixed(2) : '$—';
+  // Top-strip "Your value" cell + delta vs market.
+  const top = document.getElementById('miv-display-top');
+  if (top) {
+    top.textContent = formatted;
+    top.classList.toggle('is-empty', !ok);
+  }
+  const delta = document.getElementById('miv-delta-top');
+  if (delta) {
+    const MARKET = 192.35;
+    if (!ok) {
+      delta.textContent = '—';
+      delta.classList.remove('is-up', 'is-down');
+    } else {
+      const pct = ((v - MARKET) / MARKET) * 100;
+      const sign = pct >= 0 ? '+' : '−';
+      const abs  = Math.abs(pct);
+      // Round to 1 decimal under 10%, whole-number above.
+      const formattedPct = abs < 10 ? abs.toFixed(1) : abs.toFixed(0);
+      const label = pct >= 0 ? 'upside vs market' : 'overvalued vs market';
+      delta.textContent = `${sign}${formattedPct}% · ${label}`;
+      delta.classList.toggle('is-up',   pct >  0);
+      delta.classList.toggle('is-down', pct <  0);
+      if (Math.abs(pct) < 0.05) { delta.classList.remove('is-up', 'is-down'); delta.textContent = '≈ market'; }
+    }
+  }
+  // Legacy bottom compare row — kept for any future caller that still
+  // references #miv-display (e.g. test scripts). Harmless no-op if absent.
+  const disp = document.getElementById('miv-display');
+  if (disp) disp.textContent = formatted;
 }
 function continueFromMiv() {
   const v = parseFloat(state.memo.intrinsicValue);
   if (!(isFinite(v) && v > 0) || !(state.memo.ivMethod || '').trim()) return;
   state.memo.cantValue = false;
+  if (state.editingFromReview) { exitReviewEdit(); return; }
   go('m4');
 }
 
@@ -8595,6 +9528,7 @@ function continueFromM4() {
     if (m) m.classList.add('is-on');
     return;
   }
+  if (state.editingFromReview) { exitReviewEdit(); return; }
   go('m2');
 }
 function m4SetPriceAlert() {
@@ -8610,6 +9544,7 @@ function m4SetPriceAlert() {
 function continueM4Anyway() {
   const m = document.getElementById('m4-thinmargin-modal');
   if (m) m.classList.remove('is-on');
+  if (state.editingFromReview) { exitReviewEdit(); return; }
   go('m2');
 }
 
@@ -8809,11 +9744,13 @@ function dismissMemoExit() {
   if (m) m.classList.remove('is-active');
 }
 function saveAndExitMemo() {
+  state.editingFromReview = false;   // user is leaving the memo entirely — drop any in-progress m6 edit flag
   persistMemoDraft();
   dismissMemoExit();
   go('s0');
 }
 function discardAndExitMemo() {
+  state.editingFromReview = false;   // user is discarding entirely — drop any in-progress m6 edit flag
   state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
   clearMemoDraft();
   // Also reset memo-screen DOM so a fresh entry doesn't show old values
@@ -8970,6 +9907,39 @@ function renderS8() {
   updateInputsDisplay();
   // Replay the AI calibration check animation each time the screen opens.
   renderAIInsight('s8-ai-body');
+  // Full memo display — only meaningful during the initial-buy flow when
+  // the user has just authored a memo. For increase / reduce / exit the
+  // user is referencing their existing position, not a fresh memo, so we
+  // hide the section to keep the share-entry surface clean.
+  const memoSec = document.getElementById('s8-memo-section');
+  if (!memoSec) return;
+  if (state.cd === 'initial' && state.memo) {
+    memoSec.style.display = 'block';
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v || '—'; };
+    set('s8-memo-type', TYPE_LBL[state.memo.type]);
+    set('s8-memo-size', SIZE_LBL[state.memo.size]);
+    // Intrinsic value — show $X / share if filled, "Not valued" if the
+    // user took the can't-value off-ramp, else em-dash placeholder.
+    const ivNum = parseFloat(state.memo.intrinsicValue);
+    let ivText = '—';
+    if (state.memo.cantValue)               ivText = "Couldn't value";
+    else if (isFinite(ivNum) && ivNum > 0)  ivText = '$' + ivNum.toFixed(2) + ' / share';
+    set('s8-memo-iv', ivText);
+    // Margin of safety binary — 'yes' / 'no' map onto reassuring vs alarming
+    // copy; otherwise fall back to the older 4-option MOS_LBL string.
+    let mosText = '—';
+    if (state.memo.marginEnough === 'yes')      mosText = 'Yes — enough room';
+    else if (state.memo.marginEnough === 'no')  mosText = 'No — too tight';
+    else if (state.memo.mos)                    mosText = MOS_LBL[state.memo.mos] || '—';
+    set('s8-memo-mos', mosText);
+    set('s8-memo-thesis', state.memo.thesis);
+    set('s8-memo-kill',   state.memo.kill);
+    // Calibration: e.g. "50% over 3 years"
+    const horizon = HORIZON_LBL[state.horizon] || state.horizon || '—';
+    set('s8-memo-calib', (state.prob > 0 ? state.prob + '%' : '—') + ' over ' + horizon);
+  } else {
+    memoSec.style.display = 'none';
+  }
 }
 
 function openNumpad(which) {
@@ -9193,7 +10163,7 @@ function resetFlow() {
   state._increaseSeeded = false;
   state.usingSeedPersona = false;
   state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
-  state.prob = 50;
+  state.prob = 0;                // user must move the slider on s12 to unlock Continue
   state.horizon = '3y';
   state.transactions = [];
   persistTransactions();
@@ -9212,7 +10182,7 @@ function resetFlow() {
   const ta2 = document.getElementById('m2-text'); if (ta2) ta2.value = '';
   const ta3 = document.getElementById('m3-text'); if (ta3) ta3.value = '';
   const taN = document.getElementById('m5-note'); if (taN) taN.value = '';
-  const r12 = document.getElementById('s12-prob-range'); if (r12) { r12.value = 50; setProb('s12', 50); }
+  const r12 = document.getElementById('s12-prob-range'); if (r12) { r12.value = 0; setProb('s12', 0); }
   setHorizon('s12','3y');
   const r20 = document.getElementById('s20-prob-range'); if (r20) { r20.value = 60; setProb('s20', 60); }
   setHorizon('s20','3y');
@@ -9286,9 +10256,12 @@ function refreshVersionVisibility() {
   });
 }
 
-/* Version picker chip — updates state, persists, and refreshes UI */
+/* Version picker chip — updates state, persists, and refreshes UI.
+   V1–V3 were retired; clamp anything below 4 up to the V4 baseline. */
 function setVersion(v) {
   v = parseInt(v, 10) || 4;
+  if (v < 4) v = 4;
+  if (v > 5) v = 5;
   state.version = v;
   persistVersion(v);
   refreshVersionUI();
@@ -10393,7 +11366,8 @@ function renderTxnList() {
 }
 
 function openTxnDetail(txnId) {
-  const txn = getTxnList().find(t => t.id === txnId);
+  const list = getTxnList();
+  const txn  = list.find(t => t.id === txnId);
   if (!txn) return;
   // Paper-trade banner visibility
   const banner = document.getElementById('s25-paper-banner');
@@ -10407,19 +11381,66 @@ function openTxnDetail(txnId) {
   document.getElementById('s25-horizon').textContent = HORIZON_LBL[txn.horizon] || txn.horizon;
   /* s25-top3 removed */
 
+  // Resolve the memo for this transaction. If this transaction recorded its
+  // own memo we use it directly. Otherwise we walk backwards through the
+  // list to find the most recent prior transaction with a memo on file —
+  // that's the memo the user was operating under at the time of THIS trade,
+  // so it's the right thing to display even though they didn't re-author it.
+  let memoForTxn = txn.memo;
+  let memoSource = txn.memo ? 'self' : 'inherited';
+  let memoSourceDate = null;
+  if (!memoForTxn) {
+    // SEED_TXNS is ordered newest-first in source, then the user's runtime
+    // transactions append in chronological order. We want any txn dated
+    // before this one with a memo. Search both directions of the array to
+    // be defensive about ordering.
+    const idx = list.indexOf(txn);
+    for (let i = idx + 1; i < list.length; i++) {
+      if (list[i].memo) { memoForTxn = list[i].memo; memoSourceDate = list[i].date; break; }
+    }
+    if (!memoForTxn) {
+      for (let i = idx - 1; i >= 0; i--) {
+        if (list[i].memo) { memoForTxn = list[i].memo; memoSourceDate = list[i].date; break; }
+      }
+    }
+  }
+
   const memoBlock = document.getElementById('s25-memo-block');
   const noMemo    = document.getElementById('s25-no-memo');
-  if (txn.memo) {
+  if (memoForTxn) {
     memoBlock.style.display = '';
     noMemo.style.display = 'none';
-    document.getElementById('s25-memo-type').textContent   = TYPE_LBL[txn.memo.type] || '—';
-    document.getElementById('s25-memo-size').textContent   = SIZE_LBL[txn.memo.size] || '—';
-    document.getElementById('s25-memo-thesis').textContent = txn.memo.thesis || '—';
-    document.getElementById('s25-memo-kill').textContent   = txn.memo.kill || '—';
-    document.getElementById('s25-memo-mos').textContent    = MOS_LBL[txn.memo.mos] || '—';
+    // Show a small attribution row at the top of the memo block when the
+    // memo wasn't authored at this transaction. Uses the same #s25-memo-source
+    // element if it exists; if not, creates one inline.
+    let srcLabel = document.getElementById('s25-memo-source-label');
+    if (!srcLabel) {
+      srcLabel = document.createElement('div');
+      srcLabel.id = 's25-memo-source-label';
+      srcLabel.style.cssText = 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--t);margin-bottom:12px;';
+      memoBlock.insertBefore(srcLabel, memoBlock.firstChild);
+    }
+    if (memoSource === 'inherited' && memoSourceDate) {
+      srcLabel.textContent = '· Memo carried over from ' + memoSourceDate;
+      srcLabel.style.display = '';
+    } else if (memoForTxn.carriedOver && memoForTxn !== txn.memo) {
+      srcLabel.textContent = '· Memo carried over — not edited at this trade';
+      srcLabel.style.display = '';
+    } else if (memoForTxn.carriedOver) {
+      // Snapshot itself is marked carried-over (saved on the txn but reused)
+      srcLabel.textContent = '· Memo carried over — not edited at this trade';
+      srcLabel.style.display = '';
+    } else {
+      srcLabel.style.display = 'none';
+    }
+    document.getElementById('s25-memo-type').textContent   = TYPE_LBL[memoForTxn.type] || '—';
+    document.getElementById('s25-memo-size').textContent   = SIZE_LBL[memoForTxn.size] || '—';
+    document.getElementById('s25-memo-thesis').textContent = memoForTxn.thesis || '—';
+    document.getElementById('s25-memo-kill').textContent   = memoForTxn.kill || '—';
+    document.getElementById('s25-memo-mos').textContent    = MOS_LBL[memoForTxn.mos] || '—';
     // Optional free-form note — only show the row when there's content
     const noteRow  = document.getElementById('s25-memo-note-row');
-    const noteText = (txn.memo.note || '').trim();
+    const noteText = (memoForTxn.note || '').trim();
     if (noteRow) {
       if (noteText) {
         noteRow.style.display = '';
@@ -10645,6 +11666,28 @@ function recordTransaction(opts) {
   const isBuy = state.cd === 'initial' || state.cd === 'increase';
   const limit = parseFloat(state.limitPrice) || 0;
   const priceUSD = (state.orderType === 'limit' && limit > 0) ? limit : MKTPRICE_USD;
+  // Snapshot the memo on every transaction — including increases / reduces
+  // — so the history view can show "what I believed at this moment" even if
+  // the user didn't change anything between trades. Adjustments-without-edit
+  // still get the most recent on-file memo recorded so the history reads
+  // self-contained per transaction.
+  const memoSnapshot = (state.memo && (state.memo.type || state.memo.thesis)) ? {
+    type:   state.memo.type,
+    size:   state.memo.size,
+    thesis: state.memo.thesis,
+    kill:   state.memo.kill,
+    mos:    state.memo.mos,
+    note:   state.memo.note,
+    source: state.memo.source,
+    intrinsicValue: state.memo.intrinsicValue,
+    ivMethod:       state.memo.ivMethod,
+    marginEnough:   state.memo.marginEnough,
+    // Flag set when the user just authored / edited this memo (initial buy
+    // or any flow that took them through m6). For adjustment-only flows
+    // (Increase / Reduce / Exit where the user didn't visit m6) the snapshot
+    // marks itself as carried-over so the detail view can label it accordingly.
+    carriedOver: state.cd !== 'initial' && !state._memoEditedThisFlow
+  } : null;
   const tx = {
     id: 't-' + Date.now(),
     date: fmtDate(),
@@ -10655,17 +11698,11 @@ function recordTransaction(opts) {
     horizon: state.horizon,
     top3: state.memo.top3,
     paper: !!opts.paper,
-    memo: state.cd === 'initial' ? {
-      type: state.memo.type,
-      size: state.memo.size,
-      thesis: state.memo.thesis,
-      kill: state.memo.kill,
-      mos:  state.memo.mos,
-      note: state.memo.note
-    } : null
+    memo: memoSnapshot
   };
   state.transactions.push(tx);
   persistTransactions();
+  state._memoEditedThisFlow = false;   // consumed — next flow starts clean
   return tx;
 }
 
@@ -10740,6 +11777,7 @@ function getCurrentMemo() {
 }
 
 function startThesisReview() {
+  if (state.exampleMode) { showExampleToast(); return; }
   // Reset draft for a fresh review
   state.review = { answer: null, addendum: '', newThesis: '', newKill: '', newProb: null };
   clearReviewComposerAttachments();
@@ -11280,8 +12318,9 @@ document.addEventListener('DOMContentLoaded', () => {
   populateHorizonDates();
   refreshVersionUI();           // builds drawer jumper (filtered) + applies version-gated visibility
   refreshModeButtons();
-  setProb('s12', 50);
+  setProb('s12', 0);            // initial-buy default — Continue stays locked until the user moves it
   setProb('s20', 60);
+  hydrateAckCheckboxes();       // reflect persisted "don't show again" flags on mintro + mresearch
   document.querySelectorAll('button:not([type])').forEach(b => b.type = 'button');
   fitScaler();
   go('s10');
