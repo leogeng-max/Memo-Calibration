@@ -376,6 +376,35 @@ body.is-fullscreen .zoom-toggle {
   min-height: 96px;
   line-height: 1.7;
 }
+/* Inline expand/collapse on the thesis prose — sits at the tail of the
+   collapsed text or at the very end of the expanded text. */
+.thesis-toggle {
+  display: inline;
+  background: transparent;
+  border: none;
+  color: var(--s);
+  font: inherit;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+.thesis-toggle:hover { color: var(--p); }
+.thesis-toggle-arrow {
+  display: inline-block;
+  color: var(--p);
+  margin: 0 1px;
+}
+.thesis-toggle.thesis-toggle-collapse {
+  display: block;
+  margin-top: 10px;
+  margin-left: 0;
+  font-size: 12px;
+  color: var(--t);
+}
+.thesis-toggle.thesis-toggle-collapse:hover { color: var(--s); }
 .thesis-version {
   font-size: 10px;
   color: var(--t-800);
@@ -1612,17 +1641,34 @@ body.is-fullscreen .zoom-toggle {
   gap: 32px;
   min-height: 100%;
 }
+/* V4 memo step indicator — restyled to match V5's compact mono step bar
+   ("THESIS                3 / 10"). The HTML stays the same; we just
+   render the label uppercased and small, with a divider line below. */
 .ticker-row.lite {
-  display: flex; align-items: flex-end; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--t);
+  text-transform: uppercase;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--divider);
+  margin-bottom: 24px;
 }
 .ticker-row.lite .ticker-step {
-  font-size: 20px; font-weight: 400; line-height: 1.2; letter-spacing: -0.04em;
-  color: var(--p);
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: 1;
 }
 .ticker-row.lite .ticker-meta {
-  font-size: 13px; font-weight: 400; letter-spacing: -0.02em; line-height: 1;
-  color: var(--t-700);
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: 1;
 }
 .title-md { font-size: 20px; line-height: 1.2; letter-spacing: -0.02em; color: var(--p); font-weight: 400; }
 .t-bsm  { font-size: 13px; font-weight: 400; line-height: 1.32; letter-spacing: -0.02em; color: var(--t-700); }
@@ -1681,6 +1727,33 @@ body.is-fullscreen .zoom-toggle {
   resize: none;
 }
 .bracket textarea::placeholder, .bracket input::placeholder { color: var(--t-800); }
+
+/* Source-attribution autocomplete (msrc step). Suggestions are scoped to the
+   currently-selected source, drawn from past entries the user has typed. */
+.msrc-suggestions {
+  margin-top: 8px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.025);
+  max-height: 180px;
+  overflow-y: auto;
+}
+.msrc-suggestion {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--divider);
+  color: var(--s);
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+.msrc-suggestion:last-child { border-bottom: none; }
+.msrc-suggestion:hover { background: rgba(255,255,255,0.03); color: var(--p); }
 
 /* Composer variant — bracket box that also holds a paste / attach toolbar
    at the bottom (used on the Notes page). Uses a flex column so the textarea
@@ -2327,6 +2400,39 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .met-v { font-size: 22px; font-weight: 400; color: var(--p); font-variant-numeric: tabular-nums; }
 
 .verdict { padding: 32px 0; }
+/* Calibration(Me) entry — sits between the metrics row and the verdict on s5.
+   Same rhythm as other s5 rows (padded between hr dividers) but with a chevron
+   so it reads as a tappable link to the scorecard surface. */
+.s5-me-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  cursor: pointer;
+  transition: opacity 150ms var(--ease);
+}
+.s5-me-entry:hover  { opacity: 0.92; }
+.s5-me-entry:active { opacity: 0.75; }
+.s5-me-entry-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.s5-me-entry-title {
+  font-size: 15px;
+  color: var(--p);
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+.s5-me-entry-sub {
+  font-size: 12px;
+  color: var(--t);
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+}
+.s5-me-entry-arrow {
+  font-size: 20px;
+  color: var(--t);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-left: 14px;
+}
 
 .exec-area { padding-top: 32px; padding-bottom: 16px; }
 .drow {
@@ -3286,23 +3392,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="mos-anchoring" id="s0-mos-anchoring">—</div>
               </div>
 
-              <!-- ─── Memo — structured slots ─── -->
-              <div class="position-section">
-                <div class="position-eyebrow">Memo</div>
-                <div class="memo-slot">
-                  <div class="memo-slot-label">Catalysts and timing</div>
-                  <div class="memo-slot-body" id="s0-catalysts">—</div>
-                </div>
-                <div class="memo-slot">
-                  <div class="memo-slot-label">Key metrics tracked</div>
-                  <div class="memo-slot-body" id="s0-metrics">—</div>
-                </div>
-                <div class="memo-slot">
-                  <div class="memo-slot-label">Position sizing rationale</div>
-                  <div class="memo-slot-body" id="s0-sizing">—</div>
-                </div>
-              </div>
-
               <hr class="s0-divider thin">
 
               <!-- ─── Confidence ─── -->
@@ -3402,7 +3491,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="go('m3')">‹</button>
-                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em"><span class="memo-ctx-ticker">AAPL</span> · 6 / 8</span>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em"><span class="memo-ctx-ticker">AAPL</span> · 7 / 10</span>
                 <button class="s0-exit" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -3451,10 +3540,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <div>
                     <span id="s12-prob-num" class="prob-num">50</span><span class="prob-num-pct">%</span>
                   </div>
-                  <input class="horiz-range" id="s12-prob-range" type="range" min="50" max="100" value="50" step="10"
+                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="50" step="10"
                          oninput="setProb('s12', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">50%</span><span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">Coin flip</span><span class="body-xs">100%</span>
+                    <span class="body-xs">0%</span><span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">Coin flip</span><span class="body-xs">100%</span>
                   </div>
                 </div>
 
@@ -3491,11 +3580,58 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn" id="s12-cont" onclick="continueFromCalibration()">
-                <span class="act-arrow">→</span>
-                <span>Continue</span>
-              </button>
+            <div class="v5-foot">
+              <button class="v5-primary" id="s12-cont" onclick="continueFromCalibration()">Continue</button>
+            </div>
+          </section>
+
+          <!-- ════════ mresearch — Research orientation (before Classify) ════════ -->
+          <section class="scr v5-screen" data-id="mresearch">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="backFromMResearch()">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll v5-body">
+              <div class="v5-step-bar"><span>RESEARCH</span><span>1 / 6</span></div>
+
+              <div class="v5-title">Before you commit, do the work.</div>
+
+              <hr class="v5-rule">
+
+              <div class="v5-section-eyebrow">Data</div>
+              <div class="v5-prose">Use fiscal.ai. It is the cleanest source for financial statements, segment economics, and history.</div>
+              <a class="v5-tool-card" href="https://fiscal.ai" target="_blank" rel="noopener" style="margin-top:12px">
+                <div class="v5-tool-card-text">
+                  <div class="v5-tool-card-title">Open fiscal.ai</div>
+                </div>
+                <span class="v5-tool-card-arrow">→</span>
+              </a>
+
+              <hr class="v5-rule">
+
+              <div class="v5-section-eyebrow">Analysis</div>
+              <div class="v5-prose">Use Claude or ChatGPT. Ask the questions a serious investor would ask — what the business actually does, how it makes money, what could break the thesis, what a fair price looks like.</div>
+              <a class="v5-tool-card" href="https://claude.ai" target="_blank" rel="noopener" style="margin-top:12px">
+                <div class="v5-tool-card-text"><div class="v5-tool-card-title">Open Claude</div></div>
+                <span class="v5-tool-card-arrow">→</span>
+              </a>
+              <a class="v5-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener" style="margin-top:8px">
+                <div class="v5-tool-card-text"><div class="v5-tool-card-title">Open ChatGPT</div></div>
+                <span class="v5-tool-card-arrow">→</span>
+              </a>
+
+              <hr class="v5-rule">
+
+              <div class="v5-section-eyebrow">One rule</div>
+              <div class="v5-prose">The AI does not know the latest financials and will invent them if you ask. For anything quantitative — earnings, margins, shares — paste the numbers from fiscal.ai. Don't ask the AI to recall them.</div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary" onclick="go('m1')">I'm ready to record my memo</button>
             </div>
           </section>
 
@@ -3516,7 +3652,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Classify</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·1 / 8</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·1 / 10</div>
                 </div>
 
                 <div>
@@ -3543,10 +3679,8 @@ and you mis-hold.</div>
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m1-next" onclick="advanceMemo('m1b')">
-                <span class="act-arrow">→</span>
-              </button>
+            <div class="v5-foot">
+              <button class="v5-primary locked" id="m1-next" onclick="advanceMemo('m1b')">Continue</button>
             </div>
           </section>
 
@@ -3567,7 +3701,7 @@ and you mis-hold.</div>
                 </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Size</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·2 / 8</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·2 / 10</div>
                 </div>
 
                 <div>
@@ -3593,10 +3727,8 @@ and how much you commit.</div>
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m1b-next" onclick="advanceMemo('m4')">
-                <span class="act-arrow">→</span>
-              </button>
+            <div class="v5-foot">
+              <button class="v5-primary locked" id="m1b-next" onclick="advanceMemo('miv')">Continue</button>
             </div>
           </section>
 
@@ -3616,16 +3748,8 @@ and how much you commit.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step" style="display:flex;align-items:center;gap:7px">
-                    <span>Thesis</span>
-                    <button class="label-info-btn" onclick="showInfoModal('thesis')" aria-label="What is a thesis?">
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 8</div>
+                  <div class="ticker-step">Thesis</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 10</div>
                 </div>
 
                 <div class="title-md">Why are you buying this?</div>
@@ -3676,10 +3800,14 @@ you don't understand it.</div>
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m2-next" onclick="advanceMemo('m3')">
-                <span class="act-arrow">→</span>
-              </button>
+            <div class="v5-foot">
+              <div class="v5-foot-secondary">
+                <button class="v5-secondary" onclick="showInfoModal('thesis')">
+                  <span class="act-arrow">→</span>
+                  <span>What makes a good thesis</span>
+                </button>
+              </div>
+              <button class="v5-primary locked" id="m2-next" onclick="advanceMemo('m3')">Continue</button>
             </div>
           </section>
 
@@ -3699,16 +3827,8 @@ you don't understand it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step" style="display:flex;align-items:center;gap:7px">
-                    <span>Kill line</span>
-                    <button class="label-info-btn" onclick="showInfoModal('killline')" aria-label="What is a kill line?">
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 8</div>
+                  <div class="ticker-step">Kill line</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·6 / 10</div>
                 </div>
 
                 <div class="title-md">What would prove the thesis wrong?</div>
@@ -3743,16 +3863,21 @@ to rewrite it.</div>
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m3-next" onclick="advanceMemo('s12')">
-                <span class="act-arrow">→</span>
-              </button>
+            <div class="v5-foot">
+              <div class="v5-foot-secondary">
+                <button class="v5-secondary" onclick="showInfoModal('killline')">
+                  <span class="act-arrow">→</span>
+                  <span>What makes a good kill line</span>
+                </button>
+              </div>
+              <button class="v5-primary locked" id="m3-next" onclick="advanceMemo('s12')">Continue</button>
             </div>
           </section>
 
-          <!-- ════════ m4 — Memo · Margin of safety (moved to step 3/8 so users
-               confront price-vs-value before authoring a thesis) ════════ -->
-          <section class="scr" data-id="m4">
+          <!-- ════════ miv — Memo · Intrinsic value (V5-style page added to V4 flow).
+               Replaces the 4-option radio Margin-of-safety question with the
+               two-page IV → binary MOS pair from V5. ════════ -->
+          <section class="scr" data-id="miv">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="go('m1b')">‹</button>
@@ -3767,32 +3892,125 @@ to rewrite it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step" style="display:flex;align-items:center;gap:7px">
-                    <span>Margin of safety</span>
-                    <button class="label-info-btn" onclick="showInfoModal('margin')" aria-label="What is margin of safety?">
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                  <div class="ticker-step">Intrinsic value</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 10</div>
+                </div>
+
+                <div class="title-md">What's it worth?</div>
+
+                <label class="v5-iv-input-row" for="miv-input">
+                  <span class="v5-iv-dollar">$</span>
+                  <input id="miv-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" oninput="onMivInput(event)" class="v5-iv-input">
+                </label>
+                <div class="v5-iv-suffix">per share, conservative</div>
+
+                <div class="v5-section-eyebrow" style="margin-top:32px">In one sentence, what method?</div>
+                <div class="bracket bracket--composer" style="margin-top:10px">
+                  <span class="c tl"></span><span class="c tr"></span>
+                  <span class="c bl"></span><span class="c br"></span>
+                  <textarea id="miv-method" rows="3" placeholder="e.g. 10x normalized EBIT, sum-of-parts, 20% haircut → ~$60" oninput="onMivMethodInput()"></textarea>
+                  <div class="composer-toolbar">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('miv-method')" type="button" aria-label="Paste from clipboard">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                        <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
                       </svg>
                     </button>
+                    <span class="composer-toolbar-spacer"></span>
+                    <span class="composer-hint">Paste from clipboard</span>
                   </div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 8</div>
                 </div>
 
-                <div class="title-md">What's your margin of safety here?</div>
-                <div class="t-bsm" style="margin-top:-20px">Use conservative assumptions — what the business is worth in a bad year, not a good one.</div>
+                <hr class="v5-rule">
 
-                <!-- Reference data — frames the question without prescribing an answer -->
-                <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--divider);font-size:12px;color:var(--t-700);line-height:1.55;letter-spacing:-0.01em">
-                  Current price <span style="color:var(--s)">192.35 USD</span>. Compare it to your own estimate of intrinsic value — there's no calculator for this.
+                <div class="v5-compare-row"><span>Current price</span><span class="v5-num">$192.35</span></div>
+                <div class="v5-compare-row"><span>Your value</span><span class="v5-num" id="miv-display">$—</span></div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <div class="v5-foot-secondary">
+                <button class="v5-secondary" onclick="showInfoModal('intrinsic_value')">
+                  <span class="act-arrow">→</span>
+                  <span>What is intrinsic value</span>
+                </button>
+                <button class="v5-secondary" onclick="openMivCantValue()">
+                  <span class="act-arrow">→</span>
+                  <span>I can't value this</span>
+                </button>
+              </div>
+              <button class="v5-primary locked" id="miv-next" onclick="continueFromMiv()">Continue</button>
+            </div>
+          </section>
+
+          <!-- "Can't value this" off-ramp for V4 -->
+          <div class="v5-modal" id="miv-cantvalue-modal">
+            <div class="v5-modal-sheet">
+              <div class="v5-modal-title">If you can't estimate what it's worth, you can't know if you're paying too much.</div>
+              <div class="v5-modal-body">
+                <p>That's not a failing. It's information.</p>
+              </div>
+              <div class="v5-modal-acts">
+                <button class="v5-secondary" onclick="mivAddToWatchlist()">
+                  <span class="act-arrow">→</span>
+                  <span>Add to Under Review</span>
+                </button>
+                <button class="v5-secondary" onclick="continueMivAnyway()">
+                  <span class="act-arrow" style="color:var(--t)">→</span>
+                  <span style="color:var(--t)">Continue anyway</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════ m4 — Memo · Margin of safety (V5-style binary). Computes
+               margin automatically from price + intrinsic value the user
+               entered on the miv step. ════════ -->
+          <section class="scr" data-id="m4">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('miv')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
+                <div class="ticker-row lite">
+                  <div class="ticker-step">Margin of safety</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 10</div>
                 </div>
 
-                <div class="field-list" data-list="m4-mos">
-                  <button class="radio-row" data-radio="below"><div class="lbl-block"><div class="head">Meaningfully below intrinsic value</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="around"><div class="lbl-block"><div class="head">Roughly around intrinsic value</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="above"><div class="lbl-block"><div class="head">Above intrinsic value</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="unclear"><div class="lbl-block"><div class="head">Unclear</div></div><div class="radio-dot"></div></button>
-                </div>
+                <div class="v5-compare-row"><span>Price</span><span class="v5-num">$192.35</span></div>
+                <div class="v5-compare-row"><span>Your value</span><span class="v5-num" id="m4-yourvalue">$—</span></div>
+                <div class="v5-compare-row" style="margin-top:14px"><span class="v5-num-lbl">Margin</span><span class="v5-num-big" id="m4-margin">—%</span></div>
+
+                <hr class="v5-rule">
+
+                <div class="v5-section-eyebrow" style="margin-bottom:14px">Is that enough room to be wrong?</div>
+
+                <button class="v5-radio-row" data-mos="yes" onclick="setM4Mos('yes')">
+                  <div class="v5-radio-dot"></div>
+                  <div class="v5-radio-text">
+                    <div class="v5-radio-head">Yes</div>
+                    <div class="v5-radio-sub">If my value is roughly right, the price is low enough that errors in my model don't ruin the position.</div>
+                  </div>
+                </button>
+
+                <button class="v5-radio-row" data-mos="no" onclick="setM4Mos('no')">
+                  <div class="v5-radio-dot"></div>
+                  <div class="v5-radio-text">
+                    <div class="v5-radio-head">No</div>
+                    <div class="v5-radio-sub">The margin is thinner than I'd want.</div>
+                  </div>
+                </button>
 
                 <div class="aphorism-block">
                   <div class="aphorism">Margin of safety exists
@@ -3801,10 +4019,34 @@ to protect against error.</div>
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn locked" id="m4-next" onclick="continueFromM4()">
-                <span class="act-arrow">→</span>
-              </button>
+            <!-- Thin-margin off-ramp for V4 -->
+            <div class="v5-modal" id="m4-thinmargin-modal">
+              <div class="v5-modal-sheet">
+                <div class="v5-modal-title">You said the margin is thin. Two options.</div>
+                <div class="v5-modal-body">
+                  <p>Wait for a better price and we'll let you know — or continue, and we'll record that you knew.</p>
+                </div>
+                <div class="v5-modal-acts">
+                  <button class="v5-secondary" onclick="m4SetPriceAlert()">
+                    <span class="act-arrow">→</span>
+                    <span>Wait for a better price (set alert)</span>
+                  </button>
+                  <button class="v5-secondary" onclick="continueM4Anyway()">
+                    <span class="act-arrow" style="color:var(--t)">→</span>
+                    <span style="color:var(--t)">Continue — I want the position anyway</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <div class="v5-foot-secondary">
+                <button class="v5-secondary" onclick="showInfoModal('margin')">
+                  <span class="act-arrow">→</span>
+                  <span>What is margin of safety</span>
+                </button>
+              </div>
+              <button class="v5-primary locked" id="m4-next" onclick="continueFromM4()">Continue</button>
             </div>
           </section>
 
@@ -3825,7 +4067,7 @@ to protect against error.</div>
                 </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Note</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·7 / 8</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·8 / 10</div>
                 </div>
 
                 <div class="title-md">Anything else?</div>
@@ -3874,11 +4116,67 @@ What's obvious now will be murky later.</div>
               </div>
             </div>
 
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn" id="m5-next" onclick="advanceMemo('m6')">
-                <span class="act-arrow">→</span>
-                <span>Continue</span>
-              </button>
+            <div class="v5-foot">
+              <button class="v5-primary" id="m5-next" onclick="advanceMemo('msrc')">Continue</button>
+            </div>
+          </section>
+
+          <!-- ════════ msrc — Source attribution (where did this come from?) ════════ -->
+          <section class="scr" data-id="msrc">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('m5')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="backfill-banner memo-backfill-banner" style="display:none">
+                  <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
+                </div>
+                <div class="ticker-row lite">
+                  <div class="ticker-step">Source</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·9 / 10</div>
+                </div>
+
+                <div class="title-md">Where did this come from?</div>
+                <div class="t-bsm" style="margin-top:-20px">Tracking source over time tells you which of your inputs actually translate into good positions — Twitter follow, podcast, gut, or your own screen.</div>
+
+                <div class="field-list" data-list="msrc-source">
+                  <button class="radio-row" data-radio="twitter"><div class="lbl-block"><div class="head">Twitter</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="screener"><div class="lbl-block"><div class="head">Screener</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="podcast"><div class="lbl-block"><div class="head">Podcast</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="newsletter"><div class="lbl-block"><div class="head">Newsletter</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="friend"><div class="lbl-block"><div class="head">Friend</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="13f"><div class="lbl-block"><div class="head">13F</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="gut"><div class="lbl-block"><div class="head">Gut</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="other"><div class="lbl-block"><div class="head">Other</div></div><div class="radio-dot"></div></button>
+                </div>
+
+                <!-- Source detail (optional) with autocomplete from prior entries.
+                     Per-source namespace: "Acquired" suggests for Podcast, not Twitter. -->
+                <div id="msrc-detail-block" style="margin-top:24px;display:none">
+                  <div class="lbl" style="margin-bottom:10px">Source detail <span style="color:var(--t-800);font-weight:400">(optional)</span></div>
+                  <div class="bracket" style="position:relative">
+                    <span class="c tl"></span><span class="c tr"></span>
+                    <span class="c bl"></span><span class="c br"></span>
+                    <input id="msrc-detail" type="text" autocomplete="off" placeholder="@theo, Acquired, BG2…" oninput="onSourceDetailInput()" onfocus="renderSourceSuggestions()" onblur="setTimeout(hideSourceSuggestions, 180)">
+                  </div>
+                  <div id="msrc-suggestions" class="msrc-suggestions" style="display:none"></div>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">Edge has a source.
+Tracking it tells you which one
+actually works for you.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary locked" id="msrc-next" onclick="advanceMemo('m6')">Continue</button>
             </div>
           </section>
 
@@ -3886,7 +4184,7 @@ What's obvious now will be murky later.</div>
           <section class="scr" data-id="m6">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('m5')">‹</button>
+                <button class="back-btn" onclick="go('msrc')">‹</button>
                 <button class="exit-btn" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -3899,7 +4197,7 @@ What's obvious now will be murky later.</div>
                 </div>
                 <div class="ticker-row lite">
                   <div class="ticker-step">Review</div>
-                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·8 / 8</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·10 / 10</div>
                 </div>
 
                 <div>
@@ -3915,6 +4213,7 @@ What's obvious now will be murky later.</div>
                   <div class="memo-row"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div></div>
                   <div class="memo-row"><div class="k">Margin</div><div class="v" id="m6-mos">—</div></div>
                   <div class="memo-row" id="m6-note-row" style="display:none"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
+                  <div class="memo-row" id="m6-source-row" style="display:none"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
                 </div>
 
                 <div>
@@ -4012,10 +4311,10 @@ What's obvious now will be murky later.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="s20-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="s20-prob-range" type="range" min="50" max="100" value="60" step="10"
+                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="10"
                          oninput="setProb('s20', this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">50%</span><span class="body-xs" id="s20-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
+                    <span class="body-xs">0%</span><span class="body-xs" id="s20-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
                   </div>
                 </div>
 
@@ -4362,6 +4661,19 @@ What's obvious now will be murky later.</div>
             <div class="s5-row">
               <span class="body-md" style="color:var(--s)">Awaiting judgment</span>
               <span class="body-md" id="s5-pending">2</span>
+            </div>
+
+            <hr class="div">
+
+            <!-- Calibration(Me) entry — links to the portfolio-vs-S&P + scored-positions
+                 scorecard. V5 originally hosted this surface; V4 now mirrors it here so
+                 users can drill into the verdict view from the analytics chart. -->
+            <div class="s5-me-entry" onclick="go('calib-me')">
+              <div class="s5-me-entry-text">
+                <div class="s5-me-entry-title">Calibration(Me)</div>
+                <div class="s5-me-entry-sub" id="s5-me-entry-sub">Portfolio vs S&amp;P · scored positions · post-mortems</div>
+              </div>
+              <span class="s5-me-entry-arrow">›</span>
             </div>
 
             <hr class="div">
@@ -5095,10 +5407,10 @@ Holding to a broken thesis is.</div>
                   <div style="text-align:center;margin-top:6px">
                     <span class="delta-chip" id="r3-delta" style="visibility:hidden">0%</span>
                   </div>
-                  <input class="horiz-range" id="r3-prob-range" type="range" min="50" max="100" value="60" step="10"
+                  <input class="horiz-range" id="r3-prob-range" type="range" min="0" max="100" value="60" step="10"
                          oninput="setReviewProb(this.value)" style="margin-top:18px">
                   <div class="horiz-ends">
-                    <span class="body-xs">50%</span><span class="body-xs" id="r3-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
+                    <span class="body-xs">0%</span><span class="body-xs" id="r3-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
                   </div>
                 </div>
               </div>
@@ -5868,10 +6180,10 @@ If you wrote your own without the prompts, paste that." oninput="onV5MemoInput()
                 <span id="v5-conf-value" class="prob-num">50</span><span class="prob-num-pct">%</span>
               </div>
 
-              <input id="v5-conf-slider" class="horiz-range" type="range" min="50" max="100" value="50" step="10" oninput="onV5ConfSlider(this.value)" style="margin-top:18px">
+              <input id="v5-conf-slider" class="horiz-range" type="range" min="0" max="100" value="50" step="10" oninput="onV5ConfSlider(this.value)" style="margin-top:18px">
 
               <div class="horiz-ends">
-                <span class="body-xs">50%</span>
+                <span class="body-xs">0%</span>
                 <span class="body-xs" id="v5-conf-msg" style="color:var(--t-700)">Coin flip</span>
                 <span class="body-xs">100%</span>
               </div>
@@ -5889,11 +6201,14 @@ If you wrote your own without the prompts, paste that." oninput="onV5MemoInput()
             </div>
           </section>
 
-          <!-- ════════ Calibration(Me) — V5 dashboard for portfolio vs S&P + scored positions ════════ -->
-          <section class="scr v5-screen" data-id="calib-me" data-min-version="5">
+          <!-- ════════ Calibration(Me) — portfolio vs S&P + scored positions.
+               Built for V5 but mirrored into V4's analytics page (s5) via the
+               "Calibration(Me)" entry, so V4 users can drill into the scorecard
+               surface and post-mortems from the chart view. ════════ -->
+          <section class="scr v5-screen" data-id="calib-me">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('s10')">‹</button>
+                <button class="back-btn" onclick="backFromCalibMe()">‹</button>
                 <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">Calibration(Me)</span>
                 <span style="width:22px"></span>
               </div>
@@ -5939,8 +6254,9 @@ If you wrote your own without the prompts, paste that." oninput="onV5MemoInput()
             </div>
           </section>
 
-          <!-- ════════ Post-mortem detail ════════ -->
-          <section class="scr v5-screen" data-id="postmortem" data-min-version="5">
+          <!-- ════════ Post-mortem detail — reachable from both V4 (via the
+               s5 Calibration(Me) entry → scored position cards) and V5. ════════ -->
+          <section class="scr v5-screen" data-id="postmortem">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="go('calib-me')">‹</button>
@@ -6233,9 +6549,15 @@ let state = {
     size:   null,
     thesis: '',
     kill:   '',
-    mos:    null,
+    mos:    null,        // legacy 4-option label (kept for backward compat; mirrors marginEnough)
     top3:   null,
-    note:   ''
+    note:   '',
+    source: null,        // 'twitter' | 'screener' | 'podcast' | 'newsletter' | 'friend' | '13f' | 'gut' | 'other'
+    sourceDetail: '',    // free-text attribution e.g. "@theo", "Acquired"
+    intrinsicValue: '',  // V4 IV input ($/share) — set on the miv step
+    ivMethod:       '',  // one-sentence valuation method
+    marginEnough:   null,// 'yes' | 'no' (set on the V4 binary m4 step)
+    cantValue:      false// true if user took the "I can't value this" off-ramp
   }),
   transactions:   loadTransactions(),
   notes:          loadNotes(),
@@ -6533,14 +6855,16 @@ const SCREENS = [
   { id: 's60', group: 'Backfill',      name: 'Positions without memos',      sub: 'list of stocks needing a memo',                        minVersion: 2 },
   { id: 's61', group: 'Backfill',      name: 'Memo saved',                   sub: 'backfill confirmation',                                minVersion: 2 },
   { id: 's6',  group: 'Capital decision', name: 'Capital decision',          sub: 'pick action',                                          minVersion: 2 },
-  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 8',                                                      minVersion: 2 },
-  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 8',                                                      minVersion: 2 },
-  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '3 / 8',                                                      minVersion: 2 },
-  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '4 / 8',                                                      minVersion: 2 },
-  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '5 / 8',                                                      minVersion: 2 },
-  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '6 / 8 · probability · horizon',                        minVersion: 2 },
-  { id: 'm5',  group: 'Memo',    name: 'Note',                         sub: '7 / 8 · optional context',                                  minVersion: 2 },
-  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '8 / 8 · memo + calibration',                           minVersion: 2 },
+  { id: 'm1',  group: 'Memo',    name: 'Classify',                     sub: '1 / 10',                                                     minVersion: 2 },
+  { id: 'm1b', group: 'Memo',    name: 'Size',                         sub: '2 / 10',                                                     minVersion: 2 },
+  { id: 'miv', group: 'Memo',    name: 'Intrinsic value',              sub: '3 / 10 · $ per share + method',                              minVersion: 2 },
+  { id: 'm4',  group: 'Memo',    name: 'Margin of safety',             sub: '4 / 10 · binary',                                            minVersion: 2 },
+  { id: 'm2',  group: 'Memo',    name: 'Thesis',                       sub: '5 / 10',                                                     minVersion: 2 },
+  { id: 'm3',  group: 'Memo',    name: 'Kill line',                    sub: '6 / 10',                                                     minVersion: 2 },
+  { id: 's12', group: 'Calibration',   name: 'Calibration · view',           sub: '7 / 10 · probability · horizon',                       minVersion: 2 },
+  { id: 'm5',  group: 'Memo',    name: 'Note',                         sub: '8 / 10 · optional context',                                  minVersion: 2 },
+  { id: 'msrc',group: 'Memo',    name: 'Source',                       sub: '9 / 10 · where did this come from?',                         minVersion: 2 },
+  { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '10 / 10 · memo + calibration',                         minVersion: 2 },
   { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why',                                                  minVersion: 2 },
   { id: 's20', group: 'Returning user',name: 'Updated probability',          sub: 'with delta',                                           minVersion: 2 },
   { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad',                                               minVersion: 2 },
@@ -6611,7 +6935,7 @@ function go(id) {
   if (id === 's60') renderBackfillList();
   if (id === 's61') renderBackfillSaved();
   // Backfill banner visibility on every memo screen
-  if (['m1','m1b','m2','m3','m4','s12','m5','m6'].indexOf(id) !== -1) refreshBackfillBanner();
+  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshBackfillBanner();
   // Test-scenario caption — shown on memo review screens during the returning
   // increase flow so reviewers know why the user is going through all 8 steps.
   refreshReviewCaption(id);
@@ -6632,7 +6956,7 @@ function go(id) {
   if (id === 'calib-me')        renderCalibMe();
   if (id === 'postmortem')      renderPostMortem();
   // Hydrate memo screens from the draft so resuming visibly fills in
-  if (['m1','m1b','m2','m3','m4','s12','m5','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
+  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
   // Apply current-version visibility to any dynamic content just rendered
   refreshVersionVisibility();
   // Highlight drawer entry
@@ -6644,6 +6968,47 @@ function go(id) {
 /* ═════════════════════════════════════════════════
    STOCK PAGE (s0)
    ═════════════════════════════════════════════════ */
+/* Render the thesis prose with a collapsed/expanded toggle. Default view is
+   collapsed at ~150 chars (cut to the nearest word boundary) followed by
+   "… →". Tapping the arrow expands to the full text + "Show less ←".
+   Always opens collapsed when the stock page renders, so the position
+   summary stays scannable on every entry. */
+const THESIS_COLLAPSE_LIMIT = 150;
+function renderThesisWithToggle(el, fullText) {
+  el.dataset.fullText  = fullText;
+  el.dataset.collapsed = '1';
+  paintThesis(el);
+}
+function paintThesis(el) {
+  const full = el.dataset.fullText || '';
+  const collapsed = el.dataset.collapsed === '1';
+  if (full.length <= THESIS_COLLAPSE_LIMIT) {
+    // Short thesis — no toggle needed
+    el.textContent = full;
+    return;
+  }
+  if (collapsed) {
+    let cut = full.slice(0, THESIS_COLLAPSE_LIMIT);
+    const space = cut.lastIndexOf(' ');
+    if (space > 100) cut = cut.slice(0, space);
+    el.innerHTML = `${escapeNote(cut).replace(/\n/g, '<br>')}<button class="thesis-toggle" onclick="expandThesis()" aria-label="Expand thesis">… <span class="thesis-toggle-arrow">→</span></button>`;
+  } else {
+    el.innerHTML = `${escapeNote(full).replace(/\n/g, '<br>')}<button class="thesis-toggle thesis-toggle-collapse" onclick="collapseThesis()" aria-label="Collapse thesis"><span class="thesis-toggle-arrow">←</span> Show less</button>`;
+  }
+}
+function expandThesis() {
+  const el = document.getElementById('s0-thesis');
+  if (!el) return;
+  el.dataset.collapsed = '0';
+  paintThesis(el);
+}
+function collapseThesis() {
+  const el = document.getElementById('s0-thesis');
+  if (!el) return;
+  el.dataset.collapsed = '1';
+  paintThesis(el);
+}
+
 function renderStock() {
   refreshReviewNotif();
 
@@ -6665,12 +7030,14 @@ function renderStock() {
   }
 
   // ── Thesis (hero) ──
+  //  Long-form theses get truncated to ~150 characters by default to keep the
+  //  position page scannable. A "… →" toggle expands to the full essay.
   const thesisEl = document.getElementById('s0-thesis');
   const thesisVer = document.getElementById('s0-version');
   if (thesisEl) {
     const t = (m.thesis || '').trim();
     if (t) {
-      thesisEl.textContent = t;
+      renderThesisWithToggle(thesisEl, t);
       thesisEl.classList.remove('is-empty');
     } else {
       thesisEl.textContent = 'No thesis yet. Write what has to be true for this position to work — in your own words, not the market\'s.';
@@ -6721,20 +7088,9 @@ function renderStock() {
     }
   }
 
-  // ── Memo slots ──
-  const fillSlot = (id, value, emptyMsg) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const v = (value || '').trim();
-    if (v) { el.textContent = v; el.classList.remove('is-empty'); }
-    else   { el.textContent = emptyMsg; el.classList.add('is-empty'); }
-  };
-  fillSlot('s0-catalysts', m.catalysts,
-    'What are you waiting for, and when? Name the print, the disclosure, the cycle.');
-  fillSlot('s0-metrics',   m.metrics,
-    'Pick the smallest set of leading indicators that, if they move, would force a price response.');
-  fillSlot('s0-sizing',    m.sizing,
-    'Why this size and not larger or smaller? Anchor the answer to your conviction and the kill line, not the price.');
+  // (Memo slots — Catalysts / Key metrics / Sizing rationale —
+  //  removed from s0 per design feedback. Data still lives on state.memo
+  //  if a future surface wants it.)
 
   // ── Confidence ──
   const confEl = document.getElementById('s0-confidence');
@@ -6836,7 +7192,7 @@ function renderCDOptions() {
     state.cd = 'initial';
     wrap.innerHTML = `
       <div class="radio-opt" onclick="selectCD('initial')">
-        <span class="body-lg">Initial position</span>
+        <span class="body-lg">Initiate position</span>
         <div class="radio-circle on" id="cd-initial"></div>
       </div>
       <div style="font-size:13px;color:var(--t);margin-top:24px;line-height:1.55">
@@ -6852,11 +7208,13 @@ function selectCD(choice) {
 }
 function onCapitalDecisionContinue() {
   // V5 routes first-time positions through the new entry screen + measurement
-  // capture flow. Increase / Reduce / Exit on an existing position keep V4's
-  // path so the demo's two flows stay independent.
+  // capture flow. V4 initial positions route through the Research orientation
+  // (mresearch) before the Classify step. Increase / Reduce / Exit on an
+  // existing position keep V4's review path so the demo's two flows stay
+  // independent.
   if (state.cd === 'initial') {
     if (state.version >= 5) go('v5-entry');
-    else                    go('m1');
+    else                    go('mresearch');
     return;
   }
   go('s19');
@@ -6883,12 +7241,19 @@ function continueFromS19() {
 }
 
 /* m1 back button — context-aware. For an initial buy the back target is the
-   Capital decision picker (s6). For an increase / reduce / exit, back returns
-   to the "Why are you increasing?" screen (s19). For a draft memo (writing
-   the artifact without buying) back returns to the stock page (s0). */
+   Research orientation (mresearch) which sits between s6 and m1. For an
+   increase / reduce / exit, back returns to the "Why are you increasing?"
+   screen (s19). For a draft memo (writing the artifact without buying) back
+   returns to the stock page (s0). */
 function backFromM1() {
   if (state.cd === 'draft')                   { go('s0');  return; }
   if (state.cd && state.cd !== 'initial')     { go('s19'); return; }
+  go('mresearch');
+}
+
+/* mresearch back button — Research orientation only fronts the initial-buy
+   path, so back always returns to the Capital decision picker (s6). */
+function backFromMResearch() {
   go('s6');
 }
 
@@ -6906,7 +7271,7 @@ function startDraftMemo() {
     return;
   }
   // V1–V4 — reset memo draft and reuse the existing m1 → m6 flow
-  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
   state.prob    = 50;
   state.horizon = '3y';
   state._increaseSeeded = false;
@@ -7195,16 +7560,16 @@ function onV5ConfSlider(v) {
 function applyV5ConfDisplay(n) {
   const val = document.getElementById('v5-conf-value');
   if (val) val.textContent = n;
-  // Conviction label under the slider — uses V4's PROB_LABELS map
+  // Conviction label — shared with V4 via the unified probLabel() helper
   const msgEl = document.getElementById('v5-conf-msg');
-  if (msgEl) msgEl.textContent = (typeof probLabel === 'function') ? probLabel(n) : '';
+  if (msgEl) msgEl.textContent = probLabel(n);
 }
 /* Paint the linear-gradient fill on the slider track so the filled
-   portion (from 50% to the current value) is visually distinct. */
+   portion (from 0% to the current value) is visually distinct. */
 function updateV5ConfSliderFill(n) {
   const range = document.getElementById('v5-conf-slider');
   if (!range) return;
-  const min = parseInt(range.min, 10) || 50;
+  const min = parseInt(range.min, 10) || 0;
   const max = parseInt(range.max, 10) || 100;
   const pct = ((n - min) / (max - min) * 100).toFixed(1);
   range.style.background = `linear-gradient(to right, var(--p) ${pct}%, var(--divider) ${pct}%)`;
@@ -7215,18 +7580,12 @@ function updateV5ConfQuestion() {
   const lbls = { '1y': '1 year', '3y': '3 years', '5y': '5 years', '10y': '10 years' };
   q.textContent = `How confident are you that this returns 20%+ annualized over ${lbls[state.v5.period] || '3 years'}?`;
 }
-/* Continue routes through the V4 confidence-band guardrail — 50% triggers
-   the "coin flip" warning; 80%+ triggers the "rare territory" warning;
-   anything in 60–70% proceeds straight through. */
+
 function continueFromV5Conf() {
-  // Mirror V5 confidence onto state.prob so checkProbGuardrail (which reads
-  // state.prob) fires against the right number.
+  // Mirror V5 confidence onto state.prob so the shared checkProbGuardrail
+  // (used by V4 too) reads the right number and fires the matching band.
   state.prob = state.v5.confidence;
-  if (typeof checkProbGuardrail === 'function') {
-    checkProbGuardrail(() => go('v5-confirm'));
-  } else {
-    go('v5-confirm');
-  }
+  checkProbGuardrail(() => go('v5-confirm'));
 }
 
 /* ── Confirmation ── */
@@ -7602,6 +7961,15 @@ function openCalibrationSurface() {
   else                    go('s5');
 }
 
+/* Back navigation from Calibration(Me). V4 users enter from the analytics
+   chart (s5) and should return there; V5 users enter from the dashboard
+   directly and should return there. */
+function backFromCalibMe() {
+  if (window._currentScreenIdPrev === 's5') go('s5');
+  else if (state.version < 5)               go('s5');
+  else                                       go('s10');
+}
+
 function renderCalibMe() {
   const usingSeed = !!state.usingSeedPersona;
   const scored = usingSeed ? SEED_SCORED_POSITIONS.slice() : [];
@@ -7755,8 +8123,15 @@ function closeResearchHub() {
    CALIBRATION
    ═════════════════════════════════════════════════ */
 /* Munger-flavored band labels — each slider stop carries a single phrase
-   describing what that conviction level actually means in practice. */
+   describing what that conviction level actually means in practice.
+   The 0–40% band covers sub-base-rate territory (long-shot / speculative
+   asymmetric-payoff bets). Shared by V4 (s12, s20, r3) and V5. */
 const PROB_LABELS = {
+  0:   'Near-impossible',
+  10:  'Long shot',
+  20:  'Speculative',
+  30:  'Long tail',
+  40:  'Sub coin-flip',
   50:  'Coin flip',
   60:  'Modest edge',
   70:  'Strong edge',
@@ -7918,11 +8293,16 @@ function hydrateMemoScreen(screenId) {
     const ta = document.getElementById('m3-text');
     if (ta && ta.value !== m.kill) ta.value = m.kill || '';
   }
+  if (screenId === 'miv') {
+    const iv = document.getElementById('miv-input');
+    const im = document.getElementById('miv-method');
+    if (iv) iv.value = m.intrinsicValue || '';
+    if (im) im.value = m.ivMethod || '';
+    renderMivCompare();
+  }
   if (screenId === 'm4') {
-    const list = document.querySelector('[data-list="m4-mos"]');
-    if (list) {
-      list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.mos));
-    }
+    // V5-style binary — render computed margin + reflect current yes/no
+    renderM4Screen();
   }
   if (screenId === 's12') {
     /* Top 3 question removed — no hydrate needed for s12 */
@@ -7930,6 +8310,20 @@ function hydrateMemoScreen(screenId) {
   if (screenId === 'm5') {
     const ta = document.getElementById('m5-note');
     if (ta && ta.value !== m.note) ta.value = m.note || '';
+  }
+  if (screenId === 'msrc') {
+    const list = document.querySelector('[data-list="msrc-source"]');
+    if (list) {
+      list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.source));
+    }
+    const detailBlock = document.getElementById('msrc-detail-block');
+    if (detailBlock) detailBlock.style.display = m.source ? '' : 'none';
+    const detailInput = document.getElementById('msrc-detail');
+    if (detailInput) {
+      detailInput.value       = m.sourceDetail || '';
+      detailInput.placeholder = sourcePlaceholderFor(m.source);
+    }
+    hideSourceSuggestions();
   }
   refreshMemoLocks();
 }
@@ -7940,60 +8334,275 @@ function onM5NoteInput() {
   state.memo.note = document.getElementById('m5-note')?.value || '';
   persistMemoDraft();
 }
+
+/* ═════════════════════════════════════════════════
+   SOURCE ATTRIBUTION (msrc) — where the idea came from
+   Stores a per-source history of detail values in localStorage so the
+   autocomplete suggests "@theo" the next time the user picks Twitter.
+   ═════════════════════════════════════════════════ */
+const SOURCE_LABELS = {
+  twitter:    'Twitter',
+  screener:   'Screener',
+  podcast:    'Podcast',
+  newsletter: 'Newsletter',
+  friend:     'Friend',
+  '13f':      '13F',
+  gut:        'Gut',
+  other:      'Other'
+};
+
+function loadSourceHistory() {
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.sourceHistory');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch (_) {}
+  return {};
+}
+function persistSourceHistory(hist) {
+  try { localStorage.setItem('mogo.calmemo.sourceHistory', JSON.stringify(hist)); } catch (_) {}
+}
+function addSourceHistoryEntry(source, detail) {
+  if (!source || !detail) return;
+  const hist = loadSourceHistory();
+  const list = Array.isArray(hist[source]) ? hist[source] : [];
+  // Don't dupe; case-insensitive comparison
+  const lower = detail.toLowerCase();
+  if (!list.some(x => String(x).toLowerCase() === lower)) {
+    list.unshift(detail);
+    if (list.length > 30) list.length = 30;   // cap so storage stays tiny
+  }
+  hist[source] = list;
+  persistSourceHistory(hist);
+}
+
+/* Radio selection on msrc */
+document.addEventListener('click', e => {
+  const row = e.target.closest('[data-list="msrc-source"] .radio-row');
+  if (!row) return;
+  const value = row.dataset.radio;
+  state.memo.source = value;
+  document.querySelectorAll('[data-list="msrc-source"] .radio-row').forEach(r => r.classList.toggle('is-on', r === row));
+  // Reveal the detail input now that we have a source
+  const detailBlock = document.getElementById('msrc-detail-block');
+  if (detailBlock) detailBlock.style.display = '';
+  refreshMsrcLock();
+  // Refresh placeholder + autocomplete to match the new source
+  const detailInput = document.getElementById('msrc-detail');
+  if (detailInput) {
+    detailInput.placeholder = sourcePlaceholderFor(value);
+    if (document.activeElement === detailInput) renderSourceSuggestions();
+  }
+  persistMemoDraft();
+});
+
+function sourcePlaceholderFor(source) {
+  switch (source) {
+    case 'twitter':    return '@theo, @anon_hedge…';
+    case 'screener':   return 'Net cash + ROIC > 15%, …';
+    case 'podcast':    return 'Acquired, BG2, …';
+    case 'newsletter': return 'Stratechery, The Diff, …';
+    case 'friend':     return "Name or initials";
+    case '13f':        return 'Pabrai, Akre, …';
+    case 'gut':        return 'Reading the 10-K myself';
+    case 'other':      return 'Where did this come from?';
+    default:           return '';
+  }
+}
+
+function onSourceDetailInput() {
+  const el = document.getElementById('msrc-detail');
+  if (!el) return;
+  state.memo.sourceDetail = el.value;
+  persistMemoDraft();
+  renderSourceSuggestions();
+}
+
+function renderSourceSuggestions() {
+  const wrap = document.getElementById('msrc-suggestions');
+  const el   = document.getElementById('msrc-detail');
+  if (!wrap || !el) return;
+  const source = state.memo.source;
+  if (!source) { wrap.style.display = 'none'; return; }
+  const q = (el.value || '').trim().toLowerCase();
+  const hist = loadSourceHistory()[source] || [];
+  // Filter by prefix match if user has typed; otherwise show all
+  const matches = (q ? hist.filter(x => String(x).toLowerCase().startsWith(q)) : hist).slice(0, 6);
+  if (!matches.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.innerHTML = matches.map(s =>
+    `<button class="msrc-suggestion" type="button" onmousedown="pickSourceSuggestion('${escapeNote(s).replace(/'/g, "\\'")}')">${escapeNote(s)}</button>`
+  ).join('');
+  wrap.style.display = 'block';
+}
+function hideSourceSuggestions() {
+  const wrap = document.getElementById('msrc-suggestions');
+  if (wrap) wrap.style.display = 'none';
+}
+function pickSourceSuggestion(val) {
+  const el = document.getElementById('msrc-detail');
+  if (!el) return;
+  el.value = val;
+  state.memo.sourceDetail = val;
+  hideSourceSuggestions();
+  persistMemoDraft();
+}
+
+function refreshMsrcLock() {
+  const btn = document.getElementById('msrc-next');
+  if (!btn) return;
+  btn.classList.toggle('locked', !state.memo.source);
+}
+
 function memoStepValid(stepId) {
   switch (stepId) {
     case 'm1':  return !!state.memo.type;
     case 'm1b': return !!state.memo.size;
+    case 'miv': {
+      const v = parseFloat(state.memo.intrinsicValue);
+      return isFinite(v) && v > 0 && (state.memo.ivMethod || '').trim().length > 0;
+    }
+    case 'm4':  return !!state.memo.marginEnough;
     case 'm2':  return state.memo.thesis.trim().length > 0;
     case 'm3':  return state.memo.kill.trim().length > 0;
-    case 'm4':  return !!state.memo.mos;
-    case 's12': return true;  // Top 3 idea question removed — no required field on s12
+    case 's12': return true;
+    case 'msrc': return !!state.memo.source;
     default:    return true;
   }
 }
 function refreshMemoLocks() {
-  ['m1','m1b','m2','m3','m4'].forEach(id => {
+  ['m1','m1b','miv','m4','m2','m3'].forEach(id => {
     const btn = document.getElementById(id + '-next');
     if (btn) btn.classList.toggle('locked', !memoStepValid(id));
   });
   const s12cont = document.getElementById('s12-cont');
   if (s12cont) s12cont.classList.toggle('locked', !memoStepValid('s12'));
+  refreshMsrcLock();
 }
 function advanceMemo(target) { go(target); }
 
-/* M4 (Margin of safety) soft-block. Only "below" advances freely; the
-   other three answers each surface a guardrail modal with bespoke copy
-   explaining why the answer represents a discipline risk. User can still
-   Proceed — this is friction, not a hard block. */
-function continueFromM4() {
-  const mos = state.memo.mos;
-  if (!mos) return;   // shouldn't happen — Next is locked until selection
-  // Margin of safety is now step 3/8 — it gates entry into the thesis step.
-  // The whole point of moving it forward: don't let a user spend energy
-  // writing a thesis on a position where the price/value gap doesn't deserve it.
-  if (mos === 'below') { go('m2'); return; }
+/* ═════════════════════════════════════════════════
+   V4 — Intrinsic value (miv) + binary Margin of safety (m4)
+   The V5-style two-page pair replaces V4's original single 4-option
+   margin-of-safety radio screen. The user enters a $ per share + a
+   one-sentence valuation method on miv, then the m4 screen shows the
+   computed margin and asks a binary yes/no "Is that enough room?".
+   ═════════════════════════════════════════════════ */
 
-  const messages = {
-    around: {
-      title: 'No margin of safety.',
-      body:  'Buying at fair value leaves no room for error. If the thesis is even slightly wrong, there’s nothing to cushion the downside. Reconsider whether this deserves capital at today’s price — before you spend energy writing the thesis.'
-    },
-    above: {
-      title: 'You’re paying a premium.',
-      body:  'Above intrinsic value means the thesis has to compound enough to overcome the overpayment — a much higher bar. Strong views deserve cheap prices. Wait, or trim size.'
-    },
-    unclear: {
-      title: 'Value is uncertain.',
-      body:  'Without an estimate of intrinsic value, there’s no margin of safety to measure against. You’re buying on conviction alone. Sharpen the valuation before committing capital.'
+/* miv — input handlers */
+function onMivInput(e) {
+  const el = (e && e.target) || document.getElementById('miv-input');
+  if (!el) return;
+  const cleaned = el.value.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1');
+  if (cleaned !== el.value) {
+    const pos = (el.selectionStart || 0) - (el.value.length - cleaned.length);
+    el.value = cleaned;
+    try { el.setSelectionRange(pos, pos); } catch (_) {}
+  }
+  state.memo.intrinsicValue = el.value;
+  persistMemoDraft();
+  renderMivCompare();
+  refreshMemoLocks();
+}
+function onMivMethodInput() {
+  const el = document.getElementById('miv-method');
+  if (!el) return;
+  state.memo.ivMethod = el.value;
+  persistMemoDraft();
+  refreshMemoLocks();
+}
+function renderMivCompare() {
+  const disp = document.getElementById('miv-display');
+  if (!disp) return;
+  const v = parseFloat(state.memo.intrinsicValue);
+  disp.textContent = isFinite(v) && v > 0 ? '$' + v.toFixed(2) : '$—';
+}
+function continueFromMiv() {
+  const v = parseFloat(state.memo.intrinsicValue);
+  if (!(isFinite(v) && v > 0) || !(state.memo.ivMethod || '').trim()) return;
+  state.memo.cantValue = false;
+  go('m4');
+}
+
+/* miv "I can't value this" off-ramp */
+function openMivCantValue() {
+  const m = document.getElementById('miv-cantvalue-modal');
+  if (m) m.classList.add('is-on');
+}
+function closeMivCantValue() {
+  const m = document.getElementById('miv-cantvalue-modal');
+  if (m) m.classList.remove('is-on');
+}
+function mivAddToWatchlist() {
+  closeMivCantValue();
+  showComposerToast && showComposerToast('Added to Under Review');
+  setTimeout(() => {
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
+    clearMemoDraft();
+    go('s10');
+  }, 600);
+}
+function continueMivAnyway() {
+  closeMivCantValue();
+  state.memo.cantValue = true;
+  // Skip the margin step since we have no IV to compute against — jump to m2
+  go('m2');
+}
+
+/* m4 — render the computed margin from price + miv intrinsic value */
+function renderM4Screen() {
+  const v = parseFloat(state.memo.intrinsicValue);
+  const yourV = document.getElementById('m4-yourvalue');
+  const margin = document.getElementById('m4-margin');
+  if (yourV)  yourV.textContent  = isFinite(v) && v > 0 ? '$' + v.toFixed(2) : '$—';
+  if (margin) {
+    if (isFinite(v) && v > 0) {
+      const pct = ((v - MKTPRICE_USD) / v * 100);
+      margin.textContent = (pct >= 0 ? '' : '−') + Math.abs(pct).toFixed(0) + '%';
+    } else {
+      margin.textContent = '—%';
     }
-  };
-  const m = messages[mos];
-  if (!m) { go('m2'); return; }
-  showGuardrail({
-    title:    m.title,
-    body:     m.body,
-    onProceed: () => go('m2')
+  }
+  // Reflect current binary selection on the rows
+  document.querySelectorAll('.scr[data-id="m4"] .v5-radio-row').forEach(row => {
+    row.classList.toggle('is-on', row.dataset.mos === state.memo.marginEnough);
   });
+}
+function setM4Mos(val) {
+  state.memo.marginEnough = val;
+  // Mirror into legacy state.memo.mos so downstream (s4, s9, AI insight,
+  // s0 position artifact) keeps reading something meaningful.
+  state.memo.mos = val === 'yes' ? 'below' : 'around';
+  persistMemoDraft();
+  renderM4Screen();
+  refreshMemoLocks();
+}
+
+/* New continueFromM4 — binary version. Yes → m2; No → thin-margin modal. */
+function continueFromM4() {
+  if (!state.memo.marginEnough) return;
+  if (state.memo.marginEnough === 'no') {
+    const m = document.getElementById('m4-thinmargin-modal');
+    if (m) m.classList.add('is-on');
+    return;
+  }
+  go('m2');
+}
+function m4SetPriceAlert() {
+  const m = document.getElementById('m4-thinmargin-modal');
+  if (m) m.classList.remove('is-on');
+  showComposerToast && showComposerToast('Price alert set');
+  setTimeout(() => {
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
+    clearMemoDraft();
+    go('s10');
+  }, 600);
+}
+function continueM4Anyway() {
+  const m = document.getElementById('m4-thinmargin-modal');
+  if (m) m.classList.remove('is-on');
+  go('m2');
 }
 
 function renderM6() {
@@ -8016,12 +8625,31 @@ function renderM6() {
   /* m6-top3 removed */
   document.getElementById('m6-date').textContent    = 'Drafted ' + fmtDate();
 
+  // Source row — only show when the user picked a source on msrc
+  const srcRow  = document.getElementById('m6-source-row');
+  const srcDisp = document.getElementById('m6-source-display');
+  if (srcRow && srcDisp) {
+    if (m.source) {
+      srcRow.style.display = '';
+      const label = SOURCE_LABELS[m.source] || m.source;
+      const detail = (m.sourceDetail || '').trim();
+      srcDisp.textContent = detail ? `${label} · ${detail}` : label;
+    } else {
+      srcRow.style.display = 'none';
+    }
+  }
+
   // Reset hold-to-commit progress fill in case the user came back from cancellation
   const fill = document.getElementById('m6-commit-fill');
   if (fill) fill.style.width = '0%';
 }
 
 function commitMemo() {
+  // Persist source attribution into the global per-source history so the
+  // detail field autocompletes next time the user picks the same source.
+  if (state.memo && state.memo.source && (state.memo.sourceDetail || '').trim()) {
+    addSourceHistoryEntry(state.memo.source, state.memo.sourceDetail.trim());
+  }
   // If we're backfilling an existing position, the memo finalizes against
   // that position — no order placement, route to s61 confirmation instead.
   if (state.backfillMode) {
@@ -8029,7 +8657,7 @@ function commitMemo() {
     if (stock) stock.hasMemo = true;
     clearMemoDraft();
     // Reset memo draft state so the next backfill starts fresh
-    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
     go('s61');
     return;
   }
@@ -8060,7 +8688,7 @@ function startBackfill(ticker) {
   state.activeStock = ticker;
   state.backfillMode = true;
   // Fresh memo for this position
-  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
   clearMemoDraft();
   refreshBackfillBanner();
   go('m1');
@@ -8088,7 +8716,7 @@ function refreshBackfillBanner() {
 function refreshReviewCaption(id) {
   const caption = document.getElementById('memo-review-caption');
   if (!caption) return;
-  const memoScreens = ['m1','m1b','m2','m3','m4','s12','m5','m6'];
+  const memoScreens = ['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'];
   const onMemoScreen = memoScreens.indexOf(id) !== -1;
   const isIncreaseReview = state.cd === 'increase' && !state.backfillMode;
   if (onMemoScreen && isIncreaseReview) {
@@ -8178,7 +8806,7 @@ function saveAndExitMemo() {
   go('s0');
 }
 function discardAndExitMemo() {
-  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
   clearMemoDraft();
   // Also reset memo-screen DOM so a fresh entry doesn't show old values
   ['m1-type','m1-size','m4-mos'].forEach(k => {
@@ -8531,7 +9159,7 @@ function setMode(m) {
     state.transactions = []; persistTransactions();
     state.notes = []; persistNotes();
     state.thesisReviews = []; persistThesisReviews();
-    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
     clearMemoDraft();
     state.reviewPending = false; persistReviewPending(false);
   } else {
@@ -8556,7 +9184,7 @@ function resetFlow() {
   state.reason = null;
   state._increaseSeeded = false;
   state.usingSeedPersona = false;
-  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'' };
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false };
   state.prob = 50;
   state.horizon = '3y';
   state.transactions = [];
@@ -8924,52 +9552,87 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
   },
   margin: {
     eyebrow: 'Margin of safety',
-    title:   'The price of being wrong about the details.',
+    title:   'The room you have to be wrong about the details and still be right about the bet.',
     bodyHtml: `
-<h4>What is margin of safety?</h4>
-<p>The gap between what you're paying and what the business is worth if you're roughly right. It is the price of being wrong about the details while still being right about the bet.</p>
-<p>Every thesis contains assumptions. Some will be off. Margin of safety is the buffer that absorbs the error.</p>
+<p>Margin of safety is the gap between what you're paying and what you think the business is worth.</p>
+<p><em>It is the room you have to be wrong about the details and still be right about the bet.</em></p>
 
-<h4>Why does it matter more than the thesis?</h4>
-<p>The thesis tells you what you believe. Margin of safety tells you what happens when you're wrong about it.</p>
-<p>A correct thesis bought at no margin of safety is a coin flip on execution. A flawed thesis bought at a wide margin of safety is often still a winning position. <em>Over a career, the second pattern compounds; the first does not.</em></p>
+<h4>Why it exists</h4>
+<p>Every valuation contains assumptions. Some will be wrong. The question is not whether you'll be wrong — you will — but whether being wrong costs you money.</p>
+<p>If you pay $42 for a business you think is worth $60, you have $18 of room. If your value estimate is off by 20% in the wrong direction, the business is still worth $48 and you still paid less than it's worth.</p>
+<p>If you pay $58 for the same business, the same error wipes you out.</p>
+<p>The margin is the difference between <strong>a mistake that costs you return</strong> and <strong>a mistake that costs you capital</strong>.</p>
 
-<h4>Isn't this just "buy cheap"?</h4>
-<p>No. Cheap is a multiple. Margin of safety is a relationship between price and intrinsic value under conservative assumptions. A 4× EBIT stock with deteriorating economics has no margin of safety. An 18× earnings stock priced as if growth stops tomorrow can have an enormous one.</p>
-<p>The number on the screen is not the input. The distance between that number and a defensible estimate of value — built on assumptions you would accept if you were the seller — is the input.</p>
-
-<h4>How do you size it?</h4>
-<p>Three ways, used together:</p>
+<h4>How to read the number</h4>
+<p>The margin shown on the value screen is the gap between the current price and your estimate of intrinsic value, expressed as a percentage.</p>
 <ul class="info-list">
-  <li><strong>Downside case.</strong> Model the business under pessimistic but plausible assumptions — not catastrophe, just disappointment. The price you'd pay to be flat in that scenario is the floor. Anything below it is margin.</li>
-  <li><strong>Asset coverage.</strong> What does the balance sheet underwrite if the income statement breaks? Net cash, hard assets, separable segments. This is the floor beneath the floor.</li>
-  <li><strong>Reflexivity check.</strong> If the stock fell 40% tomorrow on no specific news, would the thesis still hold? If yes, the margin was real. If no, the margin was a number, not a buffer.</li>
+  <li><strong>30% margin</strong> means you're paying 70 cents for a dollar of value, by your own estimate.</li>
+  <li><strong>10% margin</strong> means you're paying 90 cents. Less room. Less forgiveness.</li>
+  <li><strong>Negative margin</strong> means you're paying more than the business is worth. The bet is no longer about whether the price reflects the value — it's about whether the business grows into a price that already exceeds your estimate.</li>
 </ul>
 
-<h4>How much is enough?</h4>
-<p>Inversely proportional to the quality of the business and the durability of the mechanism.</p>
-<p>For a high-quality compounder with a mechanism that works across cycles, <strong>20–30%</strong> to intrinsic value can be sufficient — the business grows into the gap. For a cyclical, a turnaround, or any thesis that requires something specific to happen, <strong>40–50%</strong> is closer to the floor, because the range of outcomes is wider and the time to be proven right is longer.</p>
-<p>If you cannot estimate intrinsic value within a band, the margin of safety is undefined and the position is a guess. Pass.</p>
-
-<h4>What erodes margin of safety?</h4>
+<h4>How much is enough</h4>
+<p>There is no single right answer, but two principles apply.</p>
 <ul class="info-list">
-  <li><strong>Time.</strong> A 40% discount that takes seven years to close is a single-digit IRR. Margin of safety has a duration.</li>
-  <li><strong>Leverage at the company.</strong> Debt converts a wide range of outcomes into a narrow one. A levered business with a 40% discount can have less effective margin than an unlevered business at 20%.</li>
-  <li><strong>Multiple compression in the comp set.</strong> If the entire industry re-rates lower, the discount narrows without anything happening at the business. Always check whether the margin is to a stable comp or a frothy one.</li>
-  <li><strong>Optionality you didn't pay for evaporating.</strong> If part of the value was a non-core segment, a real estate footprint, or a litigation settlement, and that disappears, the margin disappears with it — even if the core business is fine.</li>
+  <li><strong>Higher quality business, smaller margin needed.</strong> A business with durable economics, consistent growth, and a wide moat is less likely to disappoint. A 20–25% margin can be enough. A business with volatile earnings, uncertain competitive position, or a thesis that requires something specific to happen needs a wider margin — typically 40% or more — because the range of outcomes is wider.</li>
+  <li><strong>Wider margin on your early estimates.</strong> The first hundred valuations you produce will be worse than the next hundred. Demand more margin while you're still calibrating. Three years from now, the calibration data will tell you whether your valuations are reliable. Until then, assume they aren't.</li>
 </ul>
 
-<h4>What does it look like in practice?</h4>
+<h4>What the margin is not</h4>
+<ul class="info-list">
+  <li><strong>Not a guarantee.</strong> A 50% margin doesn't mean you'll make 50%. It means you've left yourself room to be wrong, not room to be right.</li>
+  <li><strong>Not a price prediction.</strong> The market can pay less than intrinsic value for a long time. Sometimes a very long time. Margin of safety protects your downside; it doesn't accelerate your upside.</li>
+  <li><strong>Not the same as cheap.</strong> A low multiple is not a margin of safety if the business is deteriorating. The margin is the gap between price and value, and if value is falling, the gap can close from the wrong side.</li>
+</ul>
+
+<h4>What it requires of you</h4>
+<p>A margin of safety only exists if you have an independent estimate of value.</p>
+<p>Without that, the number on the screen is not a margin — it's a discount to a guess. The discipline of margin of safety begins one step earlier, with the discipline of valuing the business yourself.</p>
+<p><em>The number on the value screen is the input. The margin is the output. The output is only as good as the input.</em></p>
+`
+  },
+  intrinsic_value: {
+    eyebrow: 'Intrinsic value',
+    title:   'What a business is worth based on the cash it can generate.',
+    bodyHtml: `
+<p>Intrinsic value is what a business is worth based on the cash it can generate over its remaining life.</p>
+<p>It is a statement about <strong>the business</strong>, not about the stock. The market price moves every day. Intrinsic value moves only when the business itself changes.</p>
+
+<h4>Why it matters</h4>
+<p>Every position is an implicit bet that the price will eventually reflect the value.</p>
+<p>If you don't have an estimate of value, you have no way to know whether the price is cheap, expensive, or fair. You're just guessing about direction.</p>
+
+<h4>How to estimate it</h4>
+<p>There is no single right method. The two most common are:</p>
+
+<p><strong>Earnings-based.</strong> Take a normal year's operating earnings. Apply a multiple that reflects how durable and how profitable the business is. Subtract net debt. Divide by shares.</p>
 <div class="info-example">
-  <div class="info-example-title">Delta Air Lines</div>
-  <p>If loyalty and premium are worth a 12× EBIT multiple, and the rest of the business is worth 5×, blended intrinsic value sits around 8.5×. Current price implies 6×. The margin of safety is the gap between 6× and 8.5× — roughly 30% — plus the asset coverage from the fleet and the optionality on credit upgrade.</p>
-  <p>The thesis is the re-rate. The margin of safety is what protects the position if the re-rate takes three years instead of one.</p>
+  <div class="info-example-title">Worked example</div>
+  <p>$4B in normal operating income × 12× multiple = $48B enterprise value. Minus $8B net debt = $40B equity. Divided by 500M shares = <strong>$80 per share</strong>.</p>
 </div>
-<p><em>The thesis is the upside. The margin is the permission to be patient.</em></p>
 
-<h4>When is margin of safety a trap?</h4>
-<p>When the discount is the thesis. "It's cheap" is not a mechanism. Cheap things stay cheap, or get cheaper, when nothing forces the gap to close.</p>
-<p>Margin of safety is necessary, not sufficient. It buys time for a mechanism to work. Without a mechanism, it buys nothing.</p>
+<p><strong>Cash-flow-based.</strong> Estimate the free cash flow the business will produce over the next ten years, plus a terminal value. Discount back at a rate that reflects the risk.</p>
+<p>This is more rigorous and more error-prone. Small changes in growth or discount-rate assumptions produce large changes in value.</p>
+
+<p>For most businesses, the earnings-based approach is enough. Reach for cash-flow modeling only when the business is growing fast enough that current earnings understate its economics, or when capital intensity varies meaningfully from one year to the next.</p>
+
+<h4>What makes an estimate good</h4>
+<ul class="info-list">
+  <li><strong>Conservative.</strong> Use the lower end of plausible ranges. Apply a haircut at the end — typically 20% — to reflect what you don't know.</li>
+  <li><strong>Defensible.</strong> The multiple you apply should be grounded in what comparable businesses trade at, not what this business has traded at historically.</li>
+  <li><strong>Auditable.</strong> You should be able to write down your method in one sentence. If you can't, you don't really have an estimate — you have a guess wearing arithmetic.</li>
+</ul>
+
+<h4>What it is not</h4>
+<ul class="info-list">
+  <li><strong>Not a price target.</strong> A price target predicts where the stock will go. Intrinsic value describes what the business is worth. The stock may take years to reflect it. It may never reflect it.</li>
+  <li><strong>Not a precise number.</strong> Anyone who tells you a business is worth exactly $63.42 per share is wrong about precision. Intrinsic value is a range; the single number you write down is the lower bound you would defend.</li>
+  <li><strong>Not the market's opinion.</strong> The whole point of estimating it yourself is that the market's number is the one you're betting against.</li>
+</ul>
+
+<h4>The margin of safety</h4>
+<p>The gap between your estimate and the current price is your margin of safety. It is the room you have to be wrong about the details and still be right about the bet.</p>
+<p><em>A wide margin lets you be sloppy. A narrow one requires you to be exactly right. Real investors stay alive by demanding wide margins, because they know they will be wrong.</em></p>
 `
   },
   killline: {
@@ -10553,12 +11216,31 @@ function proceedFromGuardrail() {
 }
 
 /* Confidence-band guardrail — fires whenever the user proceeds from a
-   probability adjustment. Two bands trigger a bottom-sheet warning:
-     · prob < 50%  → "barely an edge" / not confident
-     · prob > 80%  → "rare territory" / be cautious
-   Anything in 50–80% proceeds without interruption. */
+   probability adjustment. Four bands trigger a bottom-sheet warning:
+     · prob < 30%   → speculative bet (low confidence, asymmetric payoff)
+     · 30 ≤ prob<50 → sub coin-flip (negative base rate)
+     · prob === 50  → coin flip — no edge stated
+     · prob ≥ 80%   → rare territory — most 80%+ resolve at 60–65%
+   Anything in 51–79% proceeds without interruption.
+   Shared by V4 (s12 → m5, s20 → s8) and V5 (v5-conf → v5-confirm). */
 function checkProbGuardrail(onProceed) {
   const prob = state.prob;
+  if (prob < 30) {
+    showGuardrail({
+      title: `${prob}% — speculative bet.`,
+      body:  `At ${prob}% you're explicitly betting against the base rate. That's rational only when the payoff is genuinely asymmetric — a small bounded loss against a large potential gain — and the position is sized to match. A speculative bet at 5%+ portfolio weight is gambling, not investing. Continue only if you've sized this small.`,
+      onProceed: onProceed
+    });
+    return;
+  }
+  if (prob < 50) {
+    showGuardrail({
+      title: `${prob}% — sub coin-flip.`,
+      body:  `At ${prob}% you think this is more likely to lose than win. Most investors should pass at this confidence level. Continue only if the asymmetric payoff justifies the negative base rate, and size the position accordingly.`,
+      onProceed: onProceed
+    });
+    return;
+  }
   if (prob === 50) {
     showGuardrail({
       title: `50% — that's a coin flip.`,
@@ -10569,7 +11251,7 @@ function checkProbGuardrail(onProceed) {
   }
   if (prob >= 80) {
     showGuardrail({
-      title: `80% or higher — proceed with caution.`,
+      title: `${prob}% — proceed with caution.`,
       body:  `Stated probabilities above 80% on individual stocks are extremely rare. Most calibrated investors find their 80%+ predictions resolve closer to 60–65% in practice. Double-check that the evidence supports this level of certainty before placing the order.`,
       onProceed: onProceed
     });
