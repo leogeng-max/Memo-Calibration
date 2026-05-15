@@ -60,7 +60,7 @@ body {
 .device-label {
   font-size: 10px;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t-800);
   font-weight: 500;
 }
@@ -206,13 +206,13 @@ body.is-fullscreen .zoom-toggle {
 
 /* ═══════════════ TYPE ═══════════════ */
 .lbl { font-size: 11px; letter-spacing: 0.06em; color: var(--t); font-weight: 400; line-height: 1; }
-.h1  { font-size: 20px; font-weight: 400; letter-spacing: -0.04em; color: var(--p); line-height: 1.2; }
-.h2  { font-size: 20px; font-weight: 400; letter-spacing: -0.02em; color: var(--p); line-height: 1.2; }
+.h1  { font-size: 18px; font-weight: 400; letter-spacing: -0.03em; color: var(--p); line-height: 1.25; }
+.h2  { font-size: 18px; font-weight: 400; letter-spacing: -0.02em; color: var(--p); line-height: 1.25; }
 .body-lg { font-size: 15px; line-height: 1.45; color: var(--p); }
 .body-md { font-size: 14px; line-height: 1.45; color: var(--p); }
 .body-sm { font-size: 13px; line-height: 1.45; color: var(--s); }
 .body-xs { font-size: 11px; line-height: 1.45; color: var(--t); }
-.flow-h  { font-size: 20px; font-weight: 400; letter-spacing: -0.03em; color: var(--p); line-height: 1.25; }
+.flow-h  { font-size: 18px; font-weight: 400; letter-spacing: -0.02em; color: var(--p); line-height: 1.3; }
 .flow-sub{ font-size: 13px; color: var(--t); line-height: 1.55; margin-top: 10px; }
 
 .div { height: 1px; background: var(--divider); border: none; }
@@ -299,7 +299,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 10px;
   letter-spacing: 0.14em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .s0-company-name {
@@ -340,41 +340,184 @@ body.is-fullscreen .zoom-toggle {
   margin: 12px 0 0;
 }
 
-/* Draft-memo CTA — surfaces the "write a position artifact without buying"
-   path for users who land on a stock they haven't purchased yet. */
-.s0-draft-cta {
+/* Draft-memo cluster — single bordered wrapper containing the BEGIN MEMO
+   action and a FIELD REFERENCE sub-block. Two visually attached rows. */
+.s0-draft-cluster {
   margin-top: 22px;
-  padding: 14px 16px;
   border: 1px solid var(--divider);
   border-radius: 3px;
   background: rgba(255,255,255,0.025);
+  overflow: hidden;
+}
+.s0-draft-cta {
+  padding: 14px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   cursor: pointer;
-  transition: background 150ms var(--ease), border-color 150ms var(--ease);
+  transition: background 150ms var(--ease);
 }
-.s0-draft-cta:hover  { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); }
+.s0-draft-cta:hover  { background: rgba(255,255,255,0.04); }
 .s0-draft-cta:active { background: rgba(255,255,255,0.06); }
 .s0-draft-cta-text { flex: 1; min-width: 0; }
 .s0-draft-cta-title {
+  font-family: var(--font);
   font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: none;
   color: var(--p);
   font-weight: 500;
-  letter-spacing: -0.01em;
 }
 .s0-draft-cta-sub {
   font-size: 11.5px;
   color: var(--t);
   line-height: 1.5;
-  margin-top: 4px;
+  margin-top: 6px;
   letter-spacing: -0.01em;
 }
 .s0-draft-cta .act-arrow {
   color: var(--s);
   font-size: 18px;
   flex-shrink: 0;
+  line-height: 1;
+}
+/* Aux sub-block — sits attached beneath the CTA. Inner top divider, smaller
+   font size, single label + chevron. Taps through to the FIELD REFERENCE
+   screen (mfields). */
+.s0-draft-cta-aux {
+  padding: 11px 16px;
+  border-top: 1px solid var(--divider);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 150ms var(--ease);
+}
+.s0-draft-cta-aux:hover  { background: rgba(255,255,255,0.04); }
+.s0-draft-cta-aux:active { background: rgba(255,255,255,0.06); }
+.s0-draft-cta-aux-text {
+  font-size: 12px;
+  color: var(--t);
+  letter-spacing: -0.005em;
+}
+.s0-draft-cta-aux:hover .s0-draft-cta-aux-text { color: var(--p); }
+.s0-draft-cta-aux-arrow {
+  font-size: 18px;
+  color: var(--s);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.s0-draft-cta-aux:hover .s0-draft-cta-aux-arrow { color: var(--p); }
+
+/* ── Field reference screen (mfields) ─────────────────────────────────
+   10 numbered rows. Each: mono uppercase label (01 / CLASSIFY), the
+   field's plain-language description, and an example value pulled from
+   a reference AAPL memo. Copy-all button at bottom right pushes the
+   whole block to clipboard formatted for paste into any LLM. */
+.mfields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 28px 0 32px;
+}
+.mfield-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mfield-head {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: none;
+  color: var(--t);
+}
+.mfield-question {
+  font-size: 13.5px;
+  color: var(--p);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+.mfield-note {
+  font-size: 11.5px;
+  color: var(--t-800);
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+  font-style: italic;
+  margin-top: 2px;
+}
+.mfield-answers {
+  padding-left: 12px;
+  border-left: 0.5px solid rgba(255,255,255,0.15);
+  margin-top: 8px;
+}
+.mfield-answers-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: none;
+  color: var(--t-800);
+  margin-bottom: 6px;
+}
+.mfield-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.mfield-options li {
+  font-size: 12.5px;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+  position: relative;
+  padding-left: 14px;
+}
+.mfield-options li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--t-800);
+  font-weight: 500;
+}
+.mfield-input-desc {
+  font-size: 12.5px;
+  color: var(--s);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+.mfields-foot {
+  flex-shrink: 0;
+  padding: 14px 16px 18px;
+  display: flex;
+  justify-content: flex-end;
+  background: var(--bg);
+  border-top: 0.5px solid rgba(255,255,255,0.06);
+}
+.mfields-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 3px;
+  font-family: var(--font);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--p);
+  cursor: pointer;
+  transition: background 150ms var(--ease), border-color 150ms var(--ease);
+}
+.mfields-copy-btn:hover  { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
+.mfields-copy-btn:active { background: rgba(255,255,255,0.08); }
+.mfields-copy-btn .copy-icon {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
   line-height: 1;
 }
 
@@ -386,8 +529,6 @@ body.is-fullscreen .zoom-toggle {
 .s0-perf-panel {
   margin-top: 16px;
   padding: 14px 0;
-  border-top: 0.5px solid #232627;
-  border-bottom: 0.5px solid #232627;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -419,16 +560,7 @@ body.is-fullscreen .zoom-toggle {
 }
 .s0-perf-row--alpha {
   position: relative;
-  margin-top: 10px;
-}
-.s0-perf-row--alpha::before {
-  content: '';
-  position: absolute;
-  top: -12px;
-  left: 0;
-  right: 0;
-  height: 0;
-  border-top: 0.5px solid #232627;
+  margin-top: 4px;
 }
 .s0-perf-row--alpha .s0-perf-row-val { color: var(--p); }
 .s0-perf-row-pp {
@@ -534,7 +666,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 12px;
 }
@@ -809,19 +941,19 @@ body.is-fullscreen .zoom-toggle {
   font-size: 12px;
   letter-spacing: 0.14em;
   color: var(--s);
-  text-transform: uppercase;
+  text-transform: none;
   padding: 28px 0 22px;
   border-bottom: 1px solid var(--divider);
   margin-bottom: 26px;
 }
 
 .v5-title {
-  font-size: 20px;
+  font-size: 18px;
   color: var(--p);
   letter-spacing: -0.02em;
   line-height: 1.3;
   font-weight: 400;
-  margin: 0 0 18px;
+  margin: 0 0 14px;
 }
 
 .v5-rule {
@@ -834,7 +966,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 11px;
   letter-spacing: 0.14em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 10px;
 }
 
@@ -913,6 +1045,58 @@ body.is-fullscreen .zoom-toggle {
 .v5-primary:hover  { background: #222; }
 .v5-primary:active { background: #2a2a2a; }
 .v5-primary.locked { opacity: 0.4; pointer-events: none; }
+
+/* Memo-step primary CTA — bare right-arrow variant. Replaces the typed
+   per-step verbs ("Confirm classification", etc.) which were navigation
+   masquerading as commits. Typed verbs are reserved for the real commit
+   moment (m6 → SEAL). */
+.v5-primary.is-arrow {
+  height: 64px;
+  justify-content: flex-end;
+  padding: 0 22px;
+  font-size: 22px;
+  font-weight: 300;
+  background: transparent;
+}
+.v5-primary.is-arrow:hover  { background: rgba(255,255,255,0.02); }
+.v5-primary.is-arrow:active { background: rgba(255,255,255,0.04); }
+
+/* ─── s6 Capital decision — minimal "moment" page treatment ───
+   The page is a deliberate threshold. Sparse layout + sequenced fade-ups
+   on enter elevates the moment without making the type bigger. Both
+   first-time and returning variants share the same eyebrow + headline
+   pattern; returning user adds a radio picker below. */
+.s6-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin: 56px 0 36px;
+}
+.s6-eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: none;
+  color: var(--t);
+  margin-bottom: 18px;
+  animation: s6-fade-up 400ms 0ms ease-out both;
+}
+.s6-headline {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--p);
+  line-height: 1.25;
+  animation: s6-fade-up 500ms 150ms ease-out both;
+}
+.s6-options-wrap {
+  margin-top: 40px;
+  animation: s6-fade-up 400ms 320ms ease-out both;
+}
+@keyframes s6-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 /* Secondary / help link — transparent, inline, arrow + text. Sits muted by
    default so it reads as supporting affordance, not primary action. Brightens
@@ -1158,7 +1342,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .mresearch-prompt-preview {
@@ -1257,7 +1441,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .example-banner.is-on { display: flex; }
@@ -1383,7 +1567,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 11px;
   color: var(--t);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   margin-top: 6px;
 }
 
@@ -1417,7 +1601,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .miv-price-val {
@@ -1444,7 +1628,7 @@ body.is-fullscreen .zoom-toggle {
   color: var(--t);
   margin-top: 1px;
   min-height: 14px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 /* Monochrome — no semantic up/down coloring on the delta caption. The
    class names stay so the JS toggles continue working, but they no longer
@@ -1487,7 +1671,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 13px;
   color: var(--t);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .v5-num-big {
   font-size: 28px;
@@ -1573,7 +1757,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 11px;
   letter-spacing: 0.16em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 18px;
 }
 .v5-confirm-prose {
@@ -1630,7 +1814,7 @@ body.is-fullscreen .zoom-toggle {
 .v5-modal-eyebrow {
   font-size: 10px;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 14px;
 }
@@ -1798,7 +1982,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 11px;
   letter-spacing: 0.12em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
 }
 .cm-position-name {
   font-size: 14px;
@@ -1853,7 +2037,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 11px;
   letter-spacing: 0.16em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   margin: 24px 0 16px;
 }
 .pm-verdict-card {
@@ -1899,7 +2083,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 11px;
   letter-spacing: 0.14em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 8px;
 }
 
@@ -1993,7 +2177,76 @@ body.is-fullscreen .zoom-toggle {
   content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--p);
 }
 
-/* ═══════════════ CALIBRATION ═══════════════ */
+/* ═══════════════ FORECAST CAPTURE (s12) ═══════════════
+   Three-component schema: claim + probability + horizon. The page is a
+   forecast, not a thesis prompt — it has a known structure (claim,
+   probability, horizon) and is empirically scoreable post-resolution. */
+.forecast-section { margin-top: 32px; }
+.forecast-eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--t);
+  margin-bottom: 14px;
+}
+.forecast-claim-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 8px;
+  font-size: 17px;
+  color: var(--s);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+.forecast-claim-line .forecast-ticker {
+  font-family: var(--font);
+  font-size: 17px;
+  color: var(--p);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.forecast-threshold-input {
+  width: 56px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  color: var(--p);
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 4px;
+  outline: none;
+  letter-spacing: -0.01em;
+  transition: border-color 150ms var(--ease);
+}
+.forecast-threshold-input::placeholder { color: var(--t-800); }
+.forecast-threshold-input:focus { border-bottom-color: var(--p); }
+.forecast-prob-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+.forecast-ev {
+  border-top: 0.5px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  margin-top: 40px;
+}
+.forecast-ev-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  color: var(--s);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+.forecast-ev-text .ev-irr {
+  color: var(--p);
+  font-weight: 500;
+}
+
+/* ═══════════════ CALIBRATION (legacy — kept for r1/r2/r3 review flow) ═══════════════ */
 .calib-section { padding: 4px 0; margin-top: 24px; }
 .calib-eyebrow {
   font-size: 11px;
@@ -2035,7 +2288,7 @@ body.is-fullscreen .zoom-toggle {
   background: var(--bg);
   font-size: 10px;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 
@@ -2147,7 +2400,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 4px;
 }
@@ -2182,7 +2435,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 12px;
 }
@@ -2250,7 +2503,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 10px;
 }
@@ -2285,7 +2538,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 10px;
 }
@@ -2515,7 +2768,7 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 10px;
 }
@@ -2703,7 +2956,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 12px;
   letter-spacing: 0.14em;
   color: var(--s);
-  text-transform: uppercase;
+  text-transform: none;
   padding: 28px 0 22px;
   border-bottom: 1px solid var(--divider);
   margin-bottom: 26px;
@@ -2714,6 +2967,45 @@ body.is-fullscreen .zoom-toggle {
   letter-spacing: inherit;
   line-height: 1;
 }
+/* Tappable step label — when the step has an info modal, the label itself
+   becomes the affordance. Subtle underline signals "tap for more"; replaces
+   the now-removed secondary "What is X?" CTAs from the foot. */
+.ticker-row.lite .ticker-step.is-info {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255,255,255,0.18);
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 150ms var(--ease), color 150ms var(--ease);
+}
+.ticker-row.lite .ticker-step.is-info:hover {
+  text-decoration-color: rgba(255,255,255,0.55);
+  color: var(--p);
+}
+/* Small in-flow re-access link on m1 — opens mintro & mresearch for
+   re-reading without exiting the memo. Subtle utility row, not a CTA. */
+.m1-protocol-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  margin-top: 10px;
+  font-family: var(--font);
+  font-size: 11.5px;
+  color: var(--t);
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: color 150ms var(--ease);
+}
+.m1-protocol-link:hover { color: var(--p); }
+.m1-protocol-link-arrow {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--t-800);
+}
+.m1-protocol-link:hover .m1-protocol-link-arrow { color: var(--p); }
 .ticker-row.lite .ticker-meta {
   font: inherit;
   color: inherit;
@@ -2732,7 +3024,7 @@ body.is-fullscreen .zoom-toggle {
   font-size: 10.5px;
   letter-spacing: 0.12em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   margin: -18px 0 22px;
   padding: 0;
   line-height: 1.4;
@@ -2743,7 +3035,7 @@ body.is-fullscreen .zoom-toggle {
 .t-bsm  { font-size: 13px; font-weight: 400; line-height: 1.32; letter-spacing: -0.02em; color: var(--t-700); }
 .section-eyebrow {
   font-size: 13px; color: var(--t-800);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.04em;
   margin-bottom: 12px;
 }
@@ -2984,7 +3276,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t-700);
   background: transparent;
   border: none;
@@ -3041,7 +3333,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .memo-row-edit {
@@ -3054,7 +3346,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   cursor: pointer;
   align-self: start;
@@ -3182,7 +3474,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .s8-memo-row {
@@ -3298,7 +3590,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .drawer-body::-webkit-scrollbar { display: none; }
 .drawer-group {
   padding: 16px 20px 8px;
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: none;
   color: var(--t-800); font-weight: 500;
 }
 .drawer-row {
@@ -3315,7 +3607,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border: 1px solid rgba(255,255,255,0.08);
   color: var(--t-700);
   font-size: 12px; letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   font-family: var(--font);
   cursor: pointer;
 }
@@ -3355,7 +3647,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border: 1px dashed rgba(255,255,255,0.14);
   color: var(--t-700);
   font-size: 12px; letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   font-family: var(--font);
   text-align: left;
   cursor: pointer;
@@ -3494,7 +3786,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .dash-today-stamp {
@@ -3585,9 +3877,117 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border-top: 0.5px solid #232627;
 }
 
-/* ── Today sub-blocks (material moves / thesis review / missing memos)
-      Each notification follows the same focal + // + rows pattern,
-      stacked inside #s10-today with hairline dividers between. ── */
+/* ── Today notification cards — bordered, monochrome, one per open question.
+      Reference: Palantir-style bordered card with ticker · tag header, body,
+      inner divider, and primary/secondary action row. Strict monochrome —
+      borders, tags, text all in white/grey ladder, no chromatic accents. ── */
+.todaycard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+.todaycard {
+  border: 0.5px solid rgba(255,255,255,0.14);
+  border-radius: 6px;
+  padding: 14px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(255,255,255,0.015);
+}
+.todaycard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+/* Tag — mono uppercase tracked, matches the dashboard's eyebrow convention
+   (YOUR BOOK TODAY, CONCENTRATION, LOGGED, etc.). */
+.todaycard-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: none;
+  color: var(--t);
+}
+/* Count — sans-serif tabular numeric, matches the dashboard's tile-count
+   pattern (Active Positions · 9, Open Orders · 2, etc.). */
+.todaycard-count {
+  font-size: 13px;
+  color: var(--p);
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+}
+.todaycard-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.todaycard-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 3px 0;
+}
+/* Ticker — sans-serif, matches .dash-meta-key style used in the
+   Active Positions list. Mono was a mismatch with the rest of the dashboard. */
+.todaycard-item-tkr {
+  font-size: 13px;
+  color: var(--p);
+  letter-spacing: -0.005em;
+  font-weight: 500;
+}
+/* Meta — sans-serif, matches .dash-meta-val. */
+.todaycard-item-meta {
+  font-size: 13px;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.todaycard-divider {
+  height: 0;
+  border-top: 0.5px solid rgba(255,255,255,0.08);
+  margin: 2px 0;
+}
+.todaycard-actions {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.todaycard-primary,
+.todaycard-secondary {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font);
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  text-align: left;
+}
+.todaycard-primary {
+  color: var(--p);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.todaycard-primary .arr {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: var(--p);
+  line-height: 1;
+}
+.todaycard-secondary {
+  color: var(--t-800);
+}
+.todaycard-primary:hover   { opacity: 0.65; }
+.todaycard-secondary:hover { color: var(--t); }
+
+/* ── Today sub-blocks (legacy — kept for any non-card layouts). Each
+      notification followed the same focal + // + rows pattern. ── */
 .dash-today-block {
   display: flex;
   flex-direction: column;
@@ -3602,6 +4002,37 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* Bordered panel treatment — sets the block apart from the right-aligned
+     column it sits inside (Value, Cash, Active Positions all justify right;
+     concentration spans full width as a system-level meta panel). */
+  border: 0.5px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  padding: 14px 14px 12px;
+  background: rgba(255,255,255,0.02);
+  /* Entry animation — sequenced reveal on first dashboard render. */
+  animation: dash-conc-enter 500ms 0ms ease-out both;
+}
+.dash-conc > .dash-conc-head {
+  animation: dash-conc-fade-up 400ms 80ms ease-out both;
+}
+.dash-conc > .dash-conc-bar {
+  transform-origin: left center;
+  animation: dash-conc-bar-fill 700ms 220ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.dash-conc > .dash-today-note {
+  animation: dash-conc-fade-up 400ms 500ms ease-out both;
+}
+@keyframes dash-conc-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes dash-conc-fade-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes dash-conc-bar-fill {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
 }
 .dash-conc-head {
   display: flex;
@@ -3613,7 +4044,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .dash-conc-meta {
@@ -3657,6 +4088,13 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-right: 4px;
   vertical-align: middle;
   transform: translateY(-1px);
+  /* Breathing pulse — signals threshold-crossing positions are "live".
+     Opacity-only so the existing translateY transform stays intact. */
+  animation: dash-pos-dot-pulse 2.4s ease-in-out infinite;
+}
+@keyframes dash-pos-dot-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1;   }
 }
 
 /* ── Under Review pipeline stage tag ── */
@@ -3664,7 +4102,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-right: 8px;
   display: inline-block;
@@ -3682,7 +4120,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10.5px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--p);
 }
 .dash-open-pending-detail {
@@ -3977,7 +4415,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 /* "ORIGINAL · {date}" eyebrow above a locked bracket */
 .locked-eyebrow {
   display: flex; align-items: center; gap: 8px;
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: none;
   color: var(--t-700);
   margin-bottom: 10px;
 }
@@ -4033,7 +4471,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   padding: 4px 10px;
   border: 1px solid var(--t-800);
   font-size: 11px; letter-spacing: 0.06em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--s);
 }
 .status-pill.intact  { color: var(--p); border-color: var(--s); }
@@ -4071,7 +4509,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-top: 18px;
 }
 .paper-banner .eyebrow {
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: none;
   color: var(--t); font-weight: 500;
 }
 .paper-banner .body  {
@@ -4111,7 +4549,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   line-height: 1; padding: 4px;
 }
 .info-modal-eyebrow {
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: none;
   color: var(--t); margin-bottom: 8px;
 }
 .info-modal-title {
@@ -4136,7 +4574,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .info-modal-body.is-html h4 {
   font-size: 11px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   font-weight: 500;
   margin: 22px 0 10px;
@@ -4202,7 +4640,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .info-chart-stat-lbl {
   font-size: 10px; letter-spacing: 0.06em;
   color: var(--t); margin-top: 2px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .info-chart-bar {
   position: relative;
@@ -4277,7 +4715,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border: 1px solid rgba(255,255,255,0.06);
   font-size: 11px;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t-700);
 }
 .backfill-banner .icon { color: var(--p); }
@@ -4334,7 +4772,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .section-header {
   display: flex; align-items: center; gap: 8px;
   font-size: 12px; letter-spacing: 0.16em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--p); font-weight: 500;
   margin-bottom: 14px;
 }
@@ -4368,7 +4806,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .txn-meta { display: flex; flex-direction: column; gap: 4px; }
 .txn-action { font-size: 15px; color: var(--p); letter-spacing: -0.01em; }
-.txn-shares { font-size: 11px; color: var(--t); letter-spacing: 0.04em; text-transform: uppercase; }
+.txn-shares { font-size: 11px; color: var(--t); letter-spacing: 0.04em; text-transform: none; }
 .txn-side { text-align: right; display: flex; flex-direction: column; gap: 4px; }
 .txn-cost  { font-size: 13px; color: var(--s); font-variant-numeric: tabular-nums; }
 .txn-date  { font-size: 11px; color: var(--t); }
@@ -4506,7 +4944,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
 <!-- Test-scenario badge — shows next to the hamburger only when a reviewer
      is walking the returning-user increase flow through the memo screens. -->
-<div class="memo-review-caption" id="memo-review-caption" title="Returning user · 2 weeks since last AAPL memo · full re-review before increase">TEST SCENARIO</div>
+<div class="memo-review-caption" id="memo-review-caption" title="Returning user · 2 weeks since last AAPL memo · full re-review before increase">Test scenario</div>
 
 <!-- ═════════════ Zoom toggle (top-right) ═════════════ -->
 <button class="zoom-toggle" id="zoomToggle" aria-label="Toggle phone zoom" title="Toggle phone zoom">
@@ -4562,9 +5000,14 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
       </div>
     </div>
 
+    <div class="drawer-group">Reference</div>
+    <div class="drawer-row">
+      <button class="drawer-action" onclick="openProtocolReference('mintro')">Memo protocol</button>
+      <button class="drawer-action" onclick="openProtocolReference('mresearch')">Research notes</button>
+    </div>
+
     <div class="drawer-group">Demo</div>
     <div class="drawer-row">
-      <button class="drawer-action" onclick="triggerReviewNotif()" data-min-version="4">Trigger earnings review prompt</button>
       <button class="drawer-action" onclick="resetMemoOrientation()">Reset memo orientation</button>
       <button class="drawer-action" onclick="resetFlow()">Reset to stock page</button>
     </div>
@@ -4622,74 +5065,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                    notification reads with the same visual grammar. Sub-blocks
                    self-hide when empty; _refreshTodayDividers() hides the divider
                    on whichever block is the first visible one. -->
+              <!-- "Your book today" — unified notification feed. One total count
+                   at the top, one bordered card per open question below. Every
+                   notification type (price alerts, material moves, thesis reviews,
+                   missing memos) collapses into the same card grammar so the
+                   surface reads as a single ledger of "things to look at." -->
               <div class="dash-today" id="s10-today">
                 <div class="dash-today-head">
                   <div class="dash-today-eyebrow">Your book today</div>
                   <div class="dash-today-stamp" id="s10-today-stamp">—</div>
                 </div>
-
-                <!-- Alerts — single-session moves ≥5%. Higher-tier attention than
-                     the regular material-moves block; self-hides on quiet days. -->
-                <div class="dash-today-block" id="s10-alerts-block" style="display:none">
-                  <div class="dash-today-divider"></div>
-                  <div class="dash-today-focal">
-                    <span class="dash-today-focal-num is-active" id="s10-alerts-num">0</span>
-                    <span class="dash-today-focal-lbl" id="s10-alerts-lbl">alerts</span>
-                  </div>
-                  <div class="dash-today-note">
-                    <span class="pref">//</span><span id="s10-alerts-note">Big single-session moves on your book. Read the reason before you trade.</span>
-                  </div>
-                  <div id="s10-alerts-rows" class="dash-today-mover-list"></div>
+                <div class="dash-today-focal">
+                  <span class="dash-today-focal-num" id="s10-today-count">0</span>
+                  <span class="dash-today-focal-lbl">open questions</span>
                 </div>
-
-                <!-- Material moves — names that crossed the 2% daily threshold. -->
-                <div class="dash-today-block" id="s10-moves-block">
-                  <div class="dash-today-divider"></div>
-                  <div class="dash-today-focal">
-                    <span class="dash-today-focal-num" id="s10-today-num">0</span>
-                    <span class="dash-today-focal-lbl" id="s10-today-lbl">open questions</span>
-                  </div>
-                  <div class="dash-today-note">
-                    <span class="pref">//</span><span id="s10-today-note">Scanned holdings and review names. Nothing crossed your thresholds.</span>
-                  </div>
-                  <div id="s10-today-movers" class="dash-today-mover-list" style="display:none"></div>
-                </div>
-
-                <!-- Thesis review (was s10-review-notif) — quarterly review prompt when
-                     earnings land on a held name. V4+. -->
-                <div class="dash-today-block dash-tap" id="s10-review-notif" onclick="startThesisReview()" style="display:none" data-min-version="4">
-                  <div class="dash-today-divider"></div>
-                  <div class="dash-today-focal">
-                    <span class="dash-today-focal-num is-active">1</span>
-                    <span class="dash-today-focal-lbl">thesis review</span>
-                  </div>
-                  <div class="dash-today-note">
-                    <span class="pref">//</span><span>Earnings just landed on a name you hold. Revisit your investment case before the next print.</span>
-                  </div>
-                  <div class="dash-today-mover-list">
-                    <div class="dash-today-mover">
-                      <div class="dash-today-mover-left">
-                        <span class="dash-today-mover-tkr">AAPL</span>
-                        <span class="dash-today-mover-reason">Q1 2026 earnings released</span>
-                      </div>
-                      <span class="dash-today-mover-arrow">→</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Missing memos (was s10-backfill-notif) — positions held without a
-                     written thesis. Routes to s60 backfill list. V2+. -->
-                <div class="dash-today-block dash-tap" id="s10-backfill-notif" onclick="go('s60')" style="display:none" data-min-version="2">
-                  <div class="dash-today-divider"></div>
-                  <div class="dash-today-focal">
-                    <span class="dash-today-focal-num is-active" id="s10-backfill-num">0</span>
-                    <span class="dash-today-focal-lbl" id="s10-backfill-lbl">memos to write</span>
-                  </div>
-                  <div class="dash-today-note">
-                    <span class="pref">//</span><span>Positions you hold without a written thesis. Memo them so you have something to review against later.</span>
-                  </div>
-                  <div id="s10-backfill-rows" class="dash-today-mover-list"></div>
-                </div>
+                <div id="s10-today-cards" class="todaycard-list"></div>
               </div>
 
               <!-- Total value -->
@@ -4756,6 +5146,33 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     </div>
                   </div>
 
+                  <!-- Annualized return panel — portfolio vs S&P 500 over the
+                       accumulated holding period. Reuses the .s0-perf-panel
+                       grammar from the stock page so both surfaces read with
+                       the same visual rhythm (hairline top/bottom, alpha row
+                       set apart by an inner separator). -->
+                  <div class="s0-perf-panel dash-tap" style="margin-top:0;cursor:pointer" onclick="onAnnualizedTap()">
+                    <div class="s0-perf-eyebrow" style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                      <span>Annualized · 3 years 2 months</span>
+                      <span style="color:var(--t);font-size:14px;line-height:1">›</span>
+                    </div>
+                    <div class="s0-perf-row">
+                      <span class="s0-perf-row-lbl">Portfolio</span>
+                      <span class="s0-perf-row-val" style="color:var(--p);font-weight:500">+18.2%</span>
+                    </div>
+                    <div class="s0-perf-row">
+                      <span class="s0-perf-row-lbl">S&amp;P 500</span>
+                      <span class="s0-perf-row-val" style="color:var(--p);font-weight:500">+24.0%</span>
+                    </div>
+                    <div class="s0-perf-row s0-perf-row--alpha">
+                      <span class="s0-perf-row-lbl">Alpha</span>
+                      <span class="s0-perf-row-val" style="font-weight:500">
+                        <span style="color:var(--p)">−5.8</span>
+                        <span class="s0-perf-row-pp">pp</span>
+                      </span>
+                    </div>
+                  </div>
+
                   <div class="dash-block" style="width:auto">
                     <div class="dash-meta-key">Cash (10%)</div>
                     <div class="dash-val-sm">4,677.72</div>
@@ -4818,17 +5235,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     <div style="font-size:13px;color:var(--s);letter-spacing:-0.26px;cursor:pointer">View All</div>
                   </div>
 
-                  <!-- Open Orders — elevated to surface the live pending order
-                       above the tally. A pending limit is a live decision. -->
-                  <div class="dash-block" style="gap:6px;align-items:flex-end">
+                  <!-- Open Orders — per-stock summary. Scales 1→50+ orders: each
+                       stock collapses to one line "TKR · N orders · X CAD", top 3
+                       by notional are shown inline, the rest fold into a +N more
+                       link that opens s52 (All Open Orders). Tap the tile to open
+                       the full list directly. V3+. -->
+                  <div class="dash-block dash-tap" style="gap:8px;align-items:flex-end;width:auto" onclick="openAllOpenOrders()" data-min-version="3">
                     <div class="dash-meta-row" style="width:auto">
                       <span class="dash-val-sm">Open Orders</span>
-                      <span class="dash-val-sm">2</span>
+                      <span class="dash-val-sm" id="s10-oo-count">0</span>
                     </div>
-                    <div class="dash-open-pending">
-                      <span class="dash-open-pending-label">Limit buy</span>
-                      <span class="dash-open-pending-detail">AAPL @ 185.00 USD</span>
+                    <div class="dash-meta-row" style="width:auto">
+                      <span class="dash-meta-key" id="s10-oo-notional">— CAD pending</span>
                     </div>
+                    <div id="s10-oo-bystock" style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:4px"></div>
+                    <div id="s10-oo-more" style="font-size:12px;color:var(--t);letter-spacing:-0.01em;margin-top:2px;display:none"></div>
                   </div>
 
                   <!-- Paper Trades — decisions logged but not executed. Taps
@@ -4909,15 +5330,23 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               </div>
               <hr class="s0-divider">
 
-              <!-- Draft-memo CTA — first-time users can author the position artifact
-                   (thesis, kill line, MOS, memo) without placing an order. Hidden
-                   once a memo exists on file. -->
-              <div class="s0-draft-cta" id="s0-draft-cta" onclick="startDraftMemo()" data-min-version="2">
-                <div class="s0-draft-cta-text">
-                  <div class="s0-draft-cta-title">Start a memo on AAPL</div>
-                  <div class="s0-draft-cta-sub">Write the thesis, kill line, and margin of safety without placing an order. The artifact lives on this page — the buy can come later, or never.</div>
+              <!-- Draft-memo cluster — first-time users see this on a stock they
+                   haven't memo'd yet. Two stacked blocks share a single bordered
+                   wrapper: BEGIN MEMO (primary action) + FIELD REFERENCE (preview
+                   of the 10 fields with example answers + copy-all for AI research).
+                   Hidden once a memo exists on file. -->
+              <div class="s0-draft-cluster" id="s0-draft-cluster" data-min-version="2" style="display:none">
+                <div class="s0-draft-cta" id="s0-draft-cta" onclick="startDraftMemo()">
+                  <div class="s0-draft-cta-text">
+                    <div class="s0-draft-cta-title">Begin memo · AAPL</div>
+                    <div class="s0-draft-cta-sub">Walk the protocol before committing capital. Exit any step. SEAL writes the record.</div>
+                  </div>
+                  <span class="act-arrow">→</span>
                 </div>
-                <span class="act-arrow">→</span>
+                <div class="s0-draft-cta-aux" onclick="openMemoFields()">
+                  <span class="s0-draft-cta-aux-text">Field reference · 10 questions</span>
+                  <span class="s0-draft-cta-aux-arrow">→</span>
+                </div>
               </div>
 
               <!-- ─── First-time-only: About Apple Inc. — promoted up from the
@@ -4943,7 +5372,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <div id="s0-firsttime-research" class="s0-item" style="display:none" onclick="openMresearchPromptFromS0()">Research</div>
 
               <!-- ─── Thesis — hero ─── -->
-              <div class="position-section">
+              <div class="position-section" id="s0-thesis-section">
                 <div class="position-eyebrow">Thesis</div>
                 <div class="thesis-prose" id="s0-thesis">—</div>
                 <div class="thesis-version" id="s0-version" style="display:none">v3 · Mar 12, 2026 · 2 prior</div>
@@ -4976,7 +5405,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               </div>
 
               <!-- ─── Kill line — its own bordered treatment ─── -->
-              <div class="position-section" style="padding-top:8px">
+              <div class="position-section" id="s0-killline-section" style="padding-top:8px">
                 <div class="kill-line-block">
                   <div class="position-eyebrow">Kill line</div>
                   <div class="kill-line-text" id="s0-kill-line">—</div>
@@ -4984,7 +5413,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               </div>
 
               <!-- ─── Margin of safety — price-anchored ─── -->
-              <div class="position-section">
+              <div class="position-section" id="s0-mos-section">
                 <div class="position-eyebrow">Margin of safety</div>
                 <div class="mos-rows" id="s0-mos-rows">
                   <div class="mos-row"><span>at entry</span><span id="s0-mos-entry">—</span></div>
@@ -4994,29 +5423,29 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="mos-anchoring" id="s0-mos-anchoring">—</div>
               </div>
 
-              <hr class="s0-divider thin">
+              <hr class="s0-divider thin" id="s0-divider-before-confidence">
 
               <!-- ─── Confidence ─── -->
-              <div class="position-section" style="padding-bottom:8px">
+              <div class="position-section" id="s0-confidence-section" style="padding-bottom:8px">
                 <div class="position-eyebrow">Confidence</div>
                 <div class="confidence-line" id="s0-confidence">—</div>
                 <div class="category-tag" id="s0-category" style="display:none">category: —</div>
               </div>
 
-              <!-- ─── Attached research — research-only list; user Notes preview lives in its own block below ─── -->
-              <div class="position-section">
-                <div class="position-eyebrow">Attached research</div>
-                <div class="research-list" id="s0-research-list"></div>
-                <div class="research-empty" id="s0-research-empty" style="display:none">
-                  Attach a Claude conversation, a filing, or a note. Each item carries one line of your own summary.
+              <!-- ─── Notes & research — consolidated entry point. Both list
+                   types render inside one tappable block that routes to s30.
+                   Single CTA (block-level), no standalone button. ─── -->
+              <div class="position-section" style="cursor:pointer" onclick="openNotes()">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                  <div class="position-eyebrow">Notes &amp; research</div>
+                  <span style="font-size:18px;color:var(--t);line-height:1">›</span>
                 </div>
-                <button class="research-add-btn" onclick="openNotes()" type="button">
-                  <span class="act-arrow">→</span>
-                  <span>Add note or research</span>
-                </button>
+                <div class="research-list" id="s0-research-list"></div>
+                <div id="s0-notes-list"></div>
+                <div id="s0-nr-empty" style="font-size:13px;color:var(--t);padding:8px 0;display:none">No notes or research on record.</div>
               </div>
 
-              <hr class="s0-divider thin">
+              <hr class="s0-divider thin" id="s0-divider-before-tx">
 
               <!-- ─── Transaction record — visually subordinate ─── -->
               <div class="position-tx-strip" id="s0-tx-strip">—</div>
@@ -5055,17 +5484,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <span style="color:var(--p);font-size:14px;margin-left:4px">→</span>
               </div>
 
-              <!-- Notes preview — track thoughts on this stock at any time · V1 -->
-              <div style="margin-top:36px;cursor:pointer" onclick="openNotes()" data-min-version="1">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-                  <div class="lbl">Notes</div>
-                  <span style="font-size:18px;color:var(--t);line-height:1">›</span>
-                </div>
-                <div id="s0-notes-empty" style="font-size:13px;color:var(--t);padding:8px 0">
-                  No notes yet. Track your thoughts on AAPL — even before you buy.
-                </div>
-                <div id="s0-notes-list"></div>
-              </div>
 
               <!-- Menu items — History opens the unified memo + transactions page · V3
                    NOTE: In production, History should only render when the user has
@@ -5103,12 +5521,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
             <hr class="div">
 
-            <div style="text-align:right;margin:48px 0 52px">
-              <div class="body-sm" style="color:var(--t);margin-bottom:6px">AAPL</div>
-              <div class="h1" style="font-size:26px;letter-spacing:-0.04em">What are you doing with AAPL?</div>
-            </div>
-
-            <div id="s6-options"></div>
+            <!-- s6 body is fully data-driven — renderCDOptions() builds it. -->
+            <div id="s6-content" class="s6-content"></div>
+            <div id="s6-options" style="display:none"></div>
 
             <div style="margin-top:auto">
               <div class="act-row" style="justify-content:flex-end">
@@ -5137,76 +5552,80 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <div class="memo-context-chip" data-memo-context hidden style="margin:14px 0 0;padding-top:6px"></div>
 
+              <!-- Page title: Forecast capture (three-component schema: claim,
+                   probability, horizon). The institutional convention for a
+                   forecast — claim + probability + horizon — replaces the prior
+                   conversational "Will Apple compound at 20%?" question form. -->
               <div style="margin-top:36px">
-                <div class="lbl" style="margin-bottom:12px">Your view</div>
-                <div class="flow-h" style="display:flex;align-items:flex-start;gap:8px">
-                  <span>Will Apple compound at over 20% annually?</span>
-                  <button class="label-info-btn" onclick="showInfoModal('compound20')" aria-label="Why 20% per year?" style="margin-top:6px;flex-shrink:0">
-                    <svg width="15" height="15" viewBox="0 0 13 13" fill="none">
+                <div class="flow-h">Forecast</div>
+              </div>
+
+              <!-- CLAIM — proposition the user is forecasting against. The
+                   threshold is an inline numeric input so the user declares
+                   their own bar (no hardcoded 20%). -->
+              <div class="forecast-section">
+                <div class="forecast-eyebrow">Claim</div>
+                <div class="forecast-claim-line">
+                  <span class="forecast-ticker"><span class="memo-ctx-ticker">AAPL</span></span>
+                  <span>compounds at</span>
+                  <input id="s12-threshold-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0" maxlength="4" oninput="onForecastThresholdInput(event)" class="forecast-threshold-input" />
+                  <span>% annually.</span>
+                  <button class="label-info-btn" onclick="showInfoModal('compound20')" aria-label="About thresholds" type="button" style="margin-left:6px">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                       <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
                       <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
                     </svg>
                   </button>
                 </div>
-                <div style="font-size:13px;color:var(--t);line-height:1.55;letter-spacing:-0.005em;margin-top:14px">
-                  Until you have a track record of calibrated decisions, size down. High conviction without a proven record of conviction being right is enthusiasm.
+              </div>
+
+              <!-- PROBABILITY — user's assessed likelihood, captured by the
+                   existing slider control + band label. -->
+              <div class="forecast-section" id="s12-prob-block">
+                <div class="forecast-eyebrow" style="display:flex;align-items:center">
+                  <span>Probability</span>
+                  <button class="label-info-btn" onclick="showInfoModal('probability')" aria-label="About probability">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                      <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                      <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                    </svg>
+                  </button>
+                </div>
+                <div class="forecast-prob-display">
+                  <span id="s12-prob-num" class="prob-num">0</span><span class="prob-num-pct">%</span>
+                </div>
+                <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="0" step="10"
+                       oninput="setProb('s12', this.value)" style="margin-top:18px">
+                <div class="horiz-ends">
+                  <span class="body-xs">0%</span><span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">Coin flip</span><span class="body-xs">100%</span>
                 </div>
               </div>
 
-              <!-- Live answer sentence — the prediction takes shape as the controls below change.
-                   This is THE single calibration statement; the two controls underneath fill it in. -->
-              <div class="calib-statement">
-                <span class="calib-statement-lead">Yes — with</span>
-                <span class="calib-statement-slot" id="s12-summary-prob" onclick="document.getElementById('s12-prob-block')?.scrollIntoView({behavior:'smooth',block:'center'})">50%</span>
-                <span class="calib-statement-lead">probability over</span>
-                <span class="calib-statement-slot" id="s12-summary-horizon" onclick="document.getElementById('s12-horizon-block')?.scrollIntoView({behavior:'smooth',block:'center'})">3 years</span><span class="calib-statement-lead">.</span>
+              <!-- HORIZON — window over which the claim resolves. -->
+              <div class="forecast-section" id="s12-horizon-block">
+                <div class="forecast-eyebrow" style="display:flex;align-items:center">
+                  <span>Horizon</span>
+                  <button class="label-info-btn" onclick="showInfoModal('horizon')" aria-label="About horizon">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                      <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
+                      <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
+                    </svg>
+                  </button>
+                </div>
+                <div class="period-wrap">
+                  <button class="period-btn period-btn-multi"    id="s12-h-1y" onclick="setHorizon('s12','1y')"><span class="period-btn-year">1Y</span><span class="period-btn-date" data-h-date="1y">—</span></button>
+                  <button class="period-btn period-btn-multi"    id="s12-h-2y" onclick="setHorizon('s12','2y')"><span class="period-btn-year">2Y</span><span class="period-btn-date" data-h-date="2y">—</span></button>
+                  <button class="period-btn period-btn-multi on" id="s12-h-3y" onclick="setHorizon('s12','3y')"><span class="period-btn-year">3Y</span><span class="period-btn-date" data-h-date="3y">—</span></button>
+                  <button class="period-btn period-btn-multi"    id="s12-h-4y" onclick="setHorizon('s12','4y')"><span class="period-btn-year">4Y</span><span class="period-btn-date" data-h-date="4y">—</span></button>
+                  <button class="period-btn period-btn-multi"    id="s12-h-5y" onclick="setHorizon('s12','5y')"><span class="period-btn-year">5Y</span><span class="period-btn-date" data-h-date="5y">—</span></button>
+                </div>
               </div>
 
-              <!-- Single unified block: probability + horizon are one prediction, not two questions -->
-              <div class="calib-section calib-section--unified">
-                <!-- "Your signal" footer is appended dynamically below the horizon row -->
-                <div class="calib-row calib-row--tight" id="s12-prob-block">
-                  <div class="calib-row-label" style="display:flex;align-items:center">
-                    <span>Probability</span>
-                    <button class="label-info-btn" onclick="showInfoModal('probability')" aria-label="What is probability?">
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                      </svg>
-                    </button>
-                  </div>
-                  <div>
-                    <span id="s12-prob-num" class="prob-num">50</span><span class="prob-num-pct">%</span>
-                  </div>
-                  <input class="horiz-range" id="s12-prob-range" type="range" min="0" max="100" value="0" step="10"
-                         oninput="setProb('s12', this.value)" style="margin-top:18px">
-                  <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">Coin flip</span><span class="body-xs">100%</span>
-                  </div>
-                </div>
-
-                <!-- Visual link between the two — a single thin line, like an "=" between two halves of one equation -->
-                <div class="calib-link" aria-hidden="true"></div>
-
-                <div class="calib-row calib-row--tight" id="s12-horizon-block">
-                  <div class="calib-row-label" style="display:flex;align-items:center">
-                    <span>Time horizon</span>
-                    <button class="label-info-btn" onclick="showInfoModal('horizon')" aria-label="What is time horizon?">
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                        <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                        <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="period-wrap">
-                    <button class="period-btn period-btn-multi"    id="s12-h-1y" onclick="setHorizon('s12','1y')"><span class="period-btn-year">1Y</span><span class="period-btn-date" data-h-date="1y">—</span></button>
-                    <button class="period-btn period-btn-multi"    id="s12-h-2y" onclick="setHorizon('s12','2y')"><span class="period-btn-year">2Y</span><span class="period-btn-date" data-h-date="2y">—</span></button>
-                    <button class="period-btn period-btn-multi on" id="s12-h-3y" onclick="setHorizon('s12','3y')"><span class="period-btn-year">3Y</span><span class="period-btn-date" data-h-date="3y">—</span></button>
-                    <button class="period-btn period-btn-multi"    id="s12-h-4y" onclick="setHorizon('s12','4y')"><span class="period-btn-year">4Y</span><span class="period-btn-date" data-h-date="4y">—</span></button>
-                    <button class="period-btn period-btn-multi"    id="s12-h-5y" onclick="setHorizon('s12','5y')"><span class="period-btn-year">5Y</span><span class="period-btn-date" data-h-date="5y">—</span></button>
-                  </div>
-                </div>
-
+              <!-- EXPECTED VALUE — derived line. Renders only when claim
+                   threshold + probability + horizon are all set. -->
+              <div class="forecast-section forecast-ev" id="s12-ev" style="display:none">
+                <div class="forecast-eyebrow">Expected value</div>
+                <div class="forecast-ev-text" id="s12-ev-text">—</div>
               </div>
 
               <!-- Past calibrations link (V3+) — only shows when there are recorded reviews -->
@@ -5219,7 +5638,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <div class="v5-foot">
-              <button class="v5-primary locked" id="s12-cont" onclick="continueFromCalibration()">Continue</button>
+              <button class="v5-primary is-arrow locked" id="s12-cont" onclick="continueFromCalibration()">→</button>
             </div>
           </section>
 
@@ -5234,53 +5653,63 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <div class="body-scroll v5-body">
-              <div class="v5-step-bar"><span>MEMO · INTRO</span></div>
+              <div class="v5-step-bar"><span>Memo · Intro</span></div>
 
               <div class="v5-title">An investing memo, scored.</div>
-              <div class="v5-prose" style="margin-top:14px">Every position you open here starts with a memo — what the business is, why you're buying it, what would prove you wrong, and how confident you are. Each one gets dated, stored, and measured against the S&amp;P 500 over the horizon you set, so in a few years you'll know — with proof — whether your judgment beats the index.</div>
+              <div class="v5-prose" style="margin-top:14px">Every position opened here begins with a memo. Each memo is dated, stored, and benchmarked against the S&amp;P 500 over the stated horizon. The record either confirms the judgment, or refutes it.</div>
 
               <hr class="v5-rule">
 
-              <div class="v5-section-eyebrow">The questions</div>
-              <div class="v5-prose">A preview of the memo you're about to write.</div>
-
-              <button type="button" class="mintro-disclosure" id="mintro-questions-toggle" onclick="toggleMintroQuestions()" aria-expanded="false">
-                <span class="mintro-disclosure-label">See all 10 questions</span>
-                <span class="mintro-disclosure-chev" aria-hidden="true">▾</span>
-              </button>
-              <ol class="mintro-questions" id="mintro-questions-list" hidden>
-                <li><span class="mintro-q-head">Classify</span><span class="mintro-q-sub">What kind of business is this?</span></li>
-                <li><span class="mintro-q-head">Size</span><span class="mintro-q-sub">What role in your portfolio?</span></li>
-                <li><span class="mintro-q-head">Intrinsic value</span><span class="mintro-q-sub">What's a share worth?</span></li>
-                <li><span class="mintro-q-head">Margin of safety</span><span class="mintro-q-sub">Is there enough room to be wrong?</span></li>
-                <li><span class="mintro-q-head">Thesis</span><span class="mintro-q-sub">The one-sentence reason this works.</span></li>
-                <li><span class="mintro-q-head">Kill line</span><span class="mintro-q-sub">What would prove you wrong?</span></li>
-                <li><span class="mintro-q-head">Calibration</span><span class="mintro-q-sub">Probability + horizon.</span></li>
-                <li><span class="mintro-q-head">Note</span><span class="mintro-q-sub">Optional context.</span></li>
-                <li><span class="mintro-q-head">Source</span><span class="mintro-q-sub">Where this idea came from.</span></li>
-                <li><span class="mintro-q-head">Review</span><span class="mintro-q-sub">Confirm and commit.</span></li>
-              </ol>
-
-              <hr class="v5-rule">
-
-              <div class="v5-section-eyebrow">See a good memo</div>
-              <div class="v5-prose">Browse a finished AAPL memo so you know what the end product looks like.</div>
+              <div class="v5-section-eyebrow">Reference</div>
+              <div class="v5-prose">A finished AAPL memo. Read-only artifact — no state changes.</div>
               <a class="v5-tool-card" href="javascript:void(0)" onclick="openExampleMemo()" style="margin-top:12px">
                 <div class="v5-tool-card-text">
                   <div class="v5-tool-card-title">AAPL · example memo</div>
-                  <div class="v5-tool-card-sub">Read-only. Won't touch your data.</div>
+                  <div class="v5-tool-card-sub">Read-only reference for the protocol output.</div>
                 </div>
                 <span class="v5-tool-card-arrow">→</span>
               </a>
+
+              <div style="margin-top:32px;padding:14px 0;border-top:0.5px solid rgba(255,255,255,0.08);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:0.14em;text-transform:none;color:var(--t-800);text-align:center">
+                Exit any step · Nothing saves until SEAL
+              </div>
             </div>
 
-            <div class="v5-foot">
-              <label class="ack-row" for="mintro-ack">
-                <input type="checkbox" id="mintro-ack" class="ack-check" onchange="onMintroAckChange(this.checked)">
-                <span class="ack-box" aria-hidden="true"></span>
-                <span class="ack-label">Got it. Don't show me this again.</span>
-              </label>
-              <button class="v5-primary" onclick="continueFromMintro()">Continue</button>
+            <div class="v5-foot" id="mintro-foot" style="padding:14px 16px 12px;align-items:flex-end">
+              <button class="act-btn" onclick="continueFromMintro()" type="button">
+                <span class="act-arrow">→</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- ════════ mfields — Field reference. Read-only preview of the 10
+               memo fields with example answers. Reachable from the s0 draft
+               cluster's aux block. Copy-all button at bottom right serializes
+               every field + example to clipboard for paste into an LLM. ════════ -->
+          <section class="scr" data-id="mfields">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s0')">‹</button>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">Field reference</span>
+                <span style="width:22px"></span>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll" style="padding:0 16px">
+              <div style="padding:32px 0 0">
+                <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:0.14em;text-transform:none;color:var(--t);margin-bottom:10px">10-field protocol</div>
+                <div style="font-size:14px;color:var(--p);letter-spacing:-0.01em;line-height:1.4">Every memo captures these ten fields.</div>
+                <div style="font-size:12.5px;color:var(--t);line-height:1.55;margin-top:8px;letter-spacing:-0.005em">Each row carries the question and its answer format. Copy lifts the block to clipboard for research.</div>
+              </div>
+              <div id="mfields-list" class="mfields-list"></div>
+            </div>
+
+            <div class="mfields-foot">
+              <button class="mfields-copy-btn" onclick="copyMemoFields()" type="button">
+                <span class="copy-icon">⧉</span>
+                <span class="copy-label">Copy all</span>
+              </button>
             </div>
           </section>
 
@@ -5345,13 +5774,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               </a>
             </div>
 
-            <div class="v5-foot">
-              <label class="ack-row" for="mresearch-ack">
-                <input type="checkbox" id="mresearch-ack" class="ack-check" onchange="onMresearchAckChange(this.checked)">
-                <span class="ack-box" aria-hidden="true"></span>
-                <span class="ack-label">Got it. Don't show me this again.</span>
-              </label>
-              <button class="v5-primary" onclick="continueFromMresearch()">I'm ready to record my memo</button>
+            <div class="v5-foot" id="mresearch-foot" style="padding:14px 16px 12px;align-items:flex-end">
+              <button class="act-btn" onclick="continueFromMresearch()" type="button">
+                <span class="act-arrow">→</span>
+              </button>
             </div>
           </section>
 
@@ -5366,7 +5792,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <div class="body-scroll v5-body">
-              <div class="v5-step-bar"><span>SUGGESTED PROMPTS</span></div>
+              <div class="v5-step-bar"><span>Suggested prompts</span></div>
 
               <div class="v5-title">Use these to get moving, not to get to an answer.</div>
               <div class="v5-prose" style="margin-top:14px">The AI accelerates the first hour of research — summarizing filings, surfacing bear cases, mapping competitors. It does not replace reading the 10-K. It will state wrong numbers with full confidence. Treat its output as a junior analyst's first draft: useful, fast, and not to be trusted without verification.</div>
@@ -5421,14 +5847,17 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Classify</div>
+                  <div class="ticker-step is-info" onclick="showInfoModal('business_type')">Classify</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·1 / 10</div>
                 </div>
+                <button type="button" class="m1-protocol-link" onclick="openMemoIntroFromFlow()">
+                  <span class="m1-protocol-link-arrow">↗</span>
+                  <span>Re-read intro &amp; research</span>
+                </button>
                 <div class="memo-context-chip" data-memo-context hidden></div>
 
                 <div>
-                  <div class="title-md">What kind of business is this?</div>
-                  <div class="t-bsm" style="margin-top:8px">Type sets the bar for the rest of the memo.</div>
+                  <div class="title-md">Classification</div>
                 </div>
 
                 <div>
@@ -5451,13 +5880,7 @@ and you mis-hold.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary">
-                <button class="v5-secondary" onclick="showInfoModal('business_type')">
-                  <span class="act-arrow">→</span>
-                  <span>What kind of business is this?</span>
-                </button>
-              </div>
-              <button class="v5-primary locked" id="m1-next" onclick="advanceMemo('m1b')">Continue</button>
+              <button class="v5-primary is-arrow locked" id="m1-next" onclick="advanceMemo('m1b')">→</button>
             </div>
           </section>
 
@@ -5477,7 +5900,7 @@ and you mis-hold.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Size</div>
+                  <div class="ticker-step is-info" onclick="showInfoModal('position_size')">Size</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·2 / 10</div>
                 </div>
                 <div class="memo-context-chip" data-memo-context hidden></div>
@@ -5507,13 +5930,7 @@ and how much you commit.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary">
-                <button class="v5-secondary" onclick="showInfoModal('position_size')">
-                  <span class="act-arrow">→</span>
-                  <span>What role does this position play?</span>
-                </button>
-              </div>
-              <button class="v5-primary locked" id="m1b-next" onclick="advanceMemo('miv')">Continue</button>
+              <button class="v5-primary is-arrow locked" id="m1b-next" onclick="advanceMemo('miv')">→</button>
             </div>
           </section>
 
@@ -5533,12 +5950,12 @@ and how much you commit.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Thesis</div>
+                  <div class="ticker-step is-info" onclick="showInfoModal('thesis')">Thesis</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 10</div>
                 </div>
                 <div class="memo-context-chip" data-memo-context hidden></div>
 
-                <div class="title-md">Why are you buying this?</div>
+                <div class="title-md">The reason this position exists.</div>
                 <div class="t-bsm" style="margin-top:-20px">A few sentences. Why the market is mispricing this business today — and what assumptions you're making for it to compound. Be specific enough that you'd know later whether you were right or wrong.</div>
 
                 <div class="bracket bracket--composer">
@@ -5587,13 +6004,7 @@ you don't understand it.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary">
-                <button class="v5-secondary" onclick="showInfoModal('thesis')">
-                  <span class="act-arrow">→</span>
-                  <span>What makes a good thesis</span>
-                </button>
-              </div>
-              <button class="v5-primary locked" id="m2-next" onclick="advanceMemo('m3')">Continue</button>
+              <button class="v5-primary is-arrow locked" id="m2-next" onclick="advanceMemo('m3')">→</button>
             </div>
           </section>
 
@@ -5613,12 +6024,12 @@ you don't understand it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Kill line</div>
+                  <div class="ticker-step is-info" onclick="showInfoModal('killline')">Kill line</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·6 / 10</div>
                 </div>
                 <div class="memo-context-chip" data-memo-context hidden></div>
 
-                <div class="title-md">What would prove the thesis wrong?</div>
+                <div class="title-md">The condition under which this position is exited.</div>
                 <div class="t-bsm" style="margin-top:-20px">Short. Factual. No forecasts.</div>
 
                 <div class="bracket bracket--composer">
@@ -5665,13 +6076,7 @@ to rewrite it.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary">
-                <button class="v5-secondary" onclick="showInfoModal('killline')">
-                  <span class="act-arrow">→</span>
-                  <span>What makes a good kill line</span>
-                </button>
-              </div>
-              <button class="v5-primary locked" id="m3-next" onclick="advanceMemo('s12')">Continue</button>
+              <button class="v5-primary is-arrow locked" id="m3-next" onclick="advanceMemo('s12')">→</button>
             </div>
           </section>
 
@@ -5693,7 +6098,7 @@ to rewrite it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Estimated intrinsic value</div>
+                  <div class="ticker-step is-info" onclick="showInfoModal('intrinsic_value')">Intrinsic value</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 10</div>
                 </div>
                 <div class="memo-context-chip" data-memo-context hidden></div>
@@ -5747,17 +6152,13 @@ to rewrite it.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary stack">
-                <button class="v5-secondary" onclick="showInfoModal('intrinsic_value')">
-                  <span class="act-arrow">→</span>
-                  <span>What is intrinsic value</span>
-                </button>
+              <div class="v5-foot-secondary">
                 <button class="v5-secondary" onclick="openMivCantValue()">
                   <span class="act-arrow">→</span>
-                  <span>I can't value this</span>
+                  <span>Can't value this</span>
                 </button>
               </div>
-              <button class="v5-primary locked" id="miv-next" onclick="continueFromMiv()">Continue</button>
+              <button class="v5-primary is-arrow locked" id="miv-next" onclick="continueFromMiv()">→</button>
             </div>
           </section>
 
@@ -5810,7 +6211,7 @@ to rewrite it.</div>
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
                 <div class="ticker-row lite">
-                  <div class="ticker-step">Margin of safety</div>
+                  <div class="ticker-step is-info" onclick="showInfoModal('margin')">Margin of safety</div>
                   <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 10</div>
                 </div>
                 <div class="memo-context-chip" data-memo-context hidden></div>
@@ -5824,23 +6225,6 @@ to rewrite it.</div>
 
                 <hr class="v5-rule">
 
-                <div class="v5-section-eyebrow" style="margin-bottom:14px">Is that enough room to be wrong?</div>
-
-                <button class="v5-radio-row" data-mos="yes" onclick="setM4Mos('yes')">
-                  <div class="v5-radio-dot"></div>
-                  <div class="v5-radio-text">
-                    <div class="v5-radio-head">Yes</div>
-                    <div class="v5-radio-sub">If my value is roughly right, the price is low enough that errors in my model don't ruin the position.</div>
-                  </div>
-                </button>
-
-                <button class="v5-radio-row" data-mos="no" onclick="setM4Mos('no')">
-                  <div class="v5-radio-dot"></div>
-                  <div class="v5-radio-text">
-                    <div class="v5-radio-head">No</div>
-                    <div class="v5-radio-sub">The margin is thinner than I'd want.</div>
-                  </div>
-                </button>
 
                 <div class="aphorism-block">
                   <div class="aphorism">Margin of safety exists
@@ -5870,13 +6254,7 @@ to protect against error.</div>
             </div>
 
             <div class="v5-foot">
-              <div class="v5-foot-secondary">
-                <button class="v5-secondary" onclick="showInfoModal('margin')">
-                  <span class="act-arrow">→</span>
-                  <span>What is margin of safety</span>
-                </button>
-              </div>
-              <button class="v5-primary locked" id="m4-next" onclick="continueFromM4()">Continue</button>
+              <button class="v5-primary is-arrow locked" id="m4-next" onclick="continueFromM4()">→</button>
             </div>
           </section>
 
@@ -5948,7 +6326,7 @@ What's obvious now will be murky later.</div>
             </div>
 
             <div class="v5-foot">
-              <button class="v5-primary" id="m5-next" onclick="advanceMemo('msrc')">Continue</button>
+              <button class="v5-primary is-arrow" id="m5-next" onclick="advanceMemo('msrc')">→</button>
             </div>
           </section>
 
@@ -6007,7 +6385,7 @@ actually works for you.</div>
             </div>
 
             <div class="v5-foot">
-              <button class="v5-primary locked" id="msrc-next" onclick="advanceMemo('m6')">Continue</button>
+              <button class="v5-primary is-arrow locked" id="msrc-next" onclick="advanceMemo('m6')">→</button>
             </div>
           </section>
 
@@ -7057,7 +7435,7 @@ actually works for you.</div>
               <!-- Locked kill line -->
               <div style="margin-top:24px">
                 <div class="locked-eyebrow">
-<span>ORIGINAL KILL LINE</span>
+<span>Original kill line</span>
                 </div>
                 <div class="bracket is-locked">
                   <span class="c tl"></span><span class="c tr"></span>
@@ -7140,7 +7518,7 @@ actually works for you.</div>
               <!-- Original (locked, condensed) -->
               <div style="margin-top:24px">
                 <div class="locked-eyebrow">
-<span>ORIGINAL · STAYS</span>
+<span>Original · Stays</span>
                 </div>
                 <div class="bracket is-locked" style="min-height:48px">
                   <span class="c tl"></span><span class="c tr"></span>
@@ -7152,7 +7530,7 @@ actually works for you.</div>
               <!-- Addendum input -->
               <div style="margin-top:24px">
                 <div class="locked-eyebrow" style="color:var(--s)">
-                  <span>NEW ADDENDUM · TODAY</span>
+                  <span>New addendum · today</span>
                 </div>
                 <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
@@ -7212,7 +7590,7 @@ Write the change down.</div>
               <!-- Original (locked, archived) -->
               <div style="margin-top:24px">
                 <div class="locked-eyebrow" style="color:var(--t-800)">
-<span>ARCHIVED · ORIGINAL</span>
+<span>Archived · Original</span>
                 </div>
                 <div class="bracket is-locked" style="min-height:48px;opacity:0.55">
                   <span class="c tl"></span><span class="c tr"></span>
@@ -7223,7 +7601,7 @@ Write the change down.</div>
 
               <!-- New thesis -->
               <div style="margin-top:24px">
-                <div class="locked-eyebrow" style="color:var(--s)"><span>NEW THESIS · TODAY</span></div>
+                <div class="locked-eyebrow" style="color:var(--s)"><span>New thesis · today</span></div>
                 <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
@@ -7263,7 +7641,7 @@ Write the change down.</div>
 
               <!-- New kill line -->
               <div style="margin-top:24px">
-                <div class="locked-eyebrow" style="color:var(--s)"><span>NEW KILL LINE</span></div>
+                <div class="locked-eyebrow" style="color:var(--s)"><span>New kill line</span></div>
                 <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
@@ -7319,7 +7697,7 @@ Holding to a broken thesis is.</div>
               <!-- Original locked baseline -->
               <div style="margin-top:24px;padding:16px 0;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)">
                 <div class="locked-eyebrow" style="margin-bottom:6px">
-<span>ORIGINAL · WHEN BOUGHT</span>
+<span>Original · when bought</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:6px 0">
                   <span class="body-sm" style="color:var(--s)">Probability of compounding ≥20%/yr</span>
@@ -7454,7 +7832,7 @@ Holding to a broken thesis is.</div>
             <div class="tl-overlay" id="tl-overlay" onclick="hideTlInfo()"></div>
             <div class="tl-info" id="tl-info">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                <span class="lbl" id="tl-eyebrow">EVENT · DATE</span>
+                <span class="lbl" id="tl-eyebrow">Event · date</span>
                 <button class="tl-close" onclick="hideTlInfo()">×</button>
               </div>
               <div style="display:flex;align-items:baseline;gap:14px">
@@ -7462,6 +7840,32 @@ Holding to a broken thesis is.</div>
                 <span class="body-sm" style="color:var(--s)" id="tl-label">Buy</span>
               </div>
               <div class="tl-detail" id="tl-detail">—</div>
+            </div>
+          </section>
+
+          <!-- ════════ s52 — All Open Orders (per-stock grouped) ════════ -->
+          <section class="scr" data-id="s52">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s10')">‹</button>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">Open orders</span>
+                <span style="width:22px"></span>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll" style="padding:0 16px 24px">
+              <div style="padding:36px 0 14px">
+                <div class="section-header">Open orders <span class="meta" id="s52-count">—</span></div>
+                <div style="font-size:13px;color:var(--t);margin-top:0;line-height:1.5;letter-spacing:-0.01em" id="s52-blurb">
+                  Pending limits across your book. Each entry holds capital aside until it fills or is cancelled.
+                </div>
+                <div style="font-size:12px;color:var(--t);margin-top:8px;letter-spacing:-0.01em" id="s52-total">— CAD pending</div>
+              </div>
+              <div id="s52-list"></div>
+              <div id="s52-empty" style="font-size:13px;color:var(--t);padding:24px 0;line-height:1.55;display:none">
+                No open orders. Pending limits and stops surface here once placed.
+              </div>
             </div>
           </section>
 
@@ -7494,7 +7898,7 @@ Holding to a broken thesis is.</div>
           <div class="tl-overlay" id="r-overlay" onclick="hideReviewDetail()"></div>
           <div class="tl-info" id="r-info">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-              <span class="lbl" id="r-detail-eyebrow">REVIEW · DATE</span>
+              <span class="lbl" id="r-detail-eyebrow">Review · date</span>
               <button class="tl-close" onclick="hideReviewDetail()">×</button>
             </div>
             <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
@@ -7921,7 +8325,10 @@ let state = {
   notifPrefs: loadNotifPrefs(),
   paperTradeFilter: null,    // null = all; 'AAPL' = filtered to one ticker (set when entering s51)
   paperTradeFrom:   null,    // origin screen for s51, used by its back arrow
-  txnDetailFrom:    's24'    // origin screen for s25, used by its back arrow ('s24' history or 's51' paper-trades list)
+  txnDetailFrom:    's24',   // origin screen for s25, used by its back arrow ('s24' history or 's51' paper-trades list)
+  viewingProtocolReference: false, // transient flag: true while reading mintro / mresearch via drawer (hides foot CTA)
+  protocolFromM1: false,           // transient flag: true when re-reading the orientation pages mid-memo (back routes return to m1)
+  forecastThreshold: 20            // user-declared compounding threshold (%) on s12 — defaults to 20, drives the derived EV line
 };
 
 const SEED_THESIS_REVIEWS = [
@@ -8166,6 +8573,34 @@ function memoHasContent(m) {
   return !!(m.type || m.size || (m.thesis || '').trim() || (m.kill || '').trim() || m.mos || m.top3 || (m.note || '').trim());
 }
 
+/* Open orders — seeded across 4 names so the dashboard tile demonstrates
+   per-stock grouping at scale. Each entry carries side, type, limit price,
+   share count, and a notional figure already in CAD so the dashboard can
+   sum without re-running FX. Real implementation would derive notional
+   from price × shares × FX at fetch time. */
+const SEED_OPEN_ORDERS = [
+  { id: 'oo-1',  ticker: 'AAPL',    action: 'Buy',  type: 'Limit', price: 185.00, currency: 'USD', shares: 30,  notionalCAD: 7548.00,  placed: 'Apr 28, 2026' },
+  { id: 'oo-2',  ticker: 'AAPL',    action: 'Sell', type: 'Limit', price: 220.00, currency: 'USD', shares: 5,   notionalCAD: 1496.00,  placed: 'May 02, 2026' },
+  { id: 'oo-3',  ticker: 'NVDA',    action: 'Buy',  type: 'Limit', price: 450.00, currency: 'USD', shares: 8,   notionalCAD: 4896.00,  placed: 'Apr 15, 2026' },
+  { id: 'oo-4',  ticker: 'NVDA',    action: 'Buy',  type: 'Limit', price: 440.00, currency: 'USD', shares: 5,   notionalCAD: 2992.00,  placed: 'Apr 20, 2026' },
+  { id: 'oo-5',  ticker: 'NVDA',    action: 'Buy',  type: 'Limit', price: 425.00, currency: 'USD', shares: 4,   notionalCAD: 2312.00,  placed: 'Apr 22, 2026' },
+  { id: 'oo-6',  ticker: 'NVDA',    action: 'Buy',  type: 'Limit', price: 410.00, currency: 'USD', shares: 3,   notionalCAD: 1672.80, placed: 'Apr 25, 2026' },
+  { id: 'oo-7',  ticker: 'NVDA',    action: 'Sell', type: 'Limit', price: 520.00, currency: 'USD', shares: 2,   notionalCAD: 1414.40, placed: 'May 04, 2026' },
+  { id: 'oo-8',  ticker: 'ORIO.TO', action: 'Buy',  type: 'Limit', price: 7.50,   currency: 'CAD', shares: 200, notionalCAD: 1500.00,  placed: 'Apr 18, 2026' },
+  { id: 'oo-9',  ticker: 'ORIO.TO', action: 'Buy',  type: 'Limit', price: 7.20,   currency: 'CAD', shares: 150, notionalCAD: 1080.00,  placed: 'Apr 26, 2026' },
+  { id: 'oo-10', ticker: 'BWEN',    action: 'Sell', type: 'Limit', price: 7.50,   currency: 'USD', shares: 100, notionalCAD: 1020.00,  placed: 'May 05, 2026' }
+];
+function getOpenOrders() { return SEED_OPEN_ORDERS.slice(); }
+function getOpenOrdersByStock() {
+  const grouped = {};
+  getOpenOrders().forEach(o => {
+    if (!grouped[o.ticker]) grouped[o.ticker] = { ticker: o.ticker, orders: [], notionalCAD: 0 };
+    grouped[o.ticker].orders.push(o);
+    grouped[o.ticker].notionalCAD += o.notionalCAD;
+  });
+  return Object.values(grouped).sort((a, b) => b.notionalCAD - a.notionalCAD);
+}
+
 function loadHasMemo() {
   try { return localStorage.getItem(STORE_KEYS.memo) === '1'; } catch(_) { return false; }
 }
@@ -8250,6 +8685,8 @@ const SCREENS = [
   { id: 's25', group: 'Stock',         name: 'Transaction detail',           sub: 'memo + calibration snapshot',                          minVersion: 3 },
   { id: 's50', group: 'Stock',          name: 'Calibration timeline',         sub: 'probability moves on AAPL over time',                  minVersion: 3 },
   { id: 's51', group: 'Stock',          name: 'Paper trades',                 sub: 'logged decisions across your book',                    minVersion: 3 },
+  { id: 's52', group: 'Stock',          name: 'Open orders',                  sub: 'pending limits across your book',                      minVersion: 3 },
+  { id: 'mfields', group: 'Memo',       name: 'Field reference',              sub: '10-field protocol with example answers',               minVersion: 2 },
   { id: 's40', group: 'Order',         name: 'Saved as paper trade',         sub: 'logged · no capital committed',                        minVersion: 3 },
 
   // V4 — reflection
@@ -8312,8 +8749,11 @@ function go(id) {
   if (id === 'r4')  renderR4();
   if (id === 's50') renderTimeline();
   if (id === 's51') renderS51();
+  if (id === 's52') renderS52();
+  if (id === 'mfields') renderMemoFields();
+  refreshProtocolReferenceMode(id);
   if (id === 's12' || id === 'm6') refreshMemoLocks();
-  if (id === 's12') refreshCalibSummary();
+  if (id === 's12') { hydrateForecastThreshold(); refreshCalibSummary(); }
   if (id === 's20') refreshS20Summary();
   if (id === 'research-prompt') renderResearchPromptDetail();
   if (id === 'mresearch-prompt') renderMresearchPromptList();
@@ -8439,11 +8879,11 @@ function renderStock() {
   // Draft-memo CTA — shown only when there's no memo on file. Once the user
   // has authored anything (or hasMemo is true) the position artifact above
   // makes the CTA redundant.
-  const draftCta = document.getElementById('s0-draft-cta');
+  const draftCluster = document.getElementById('s0-draft-cluster');
   const hasAnyMemoContent = !!(m.thesis || m.kill || m.mos || m.type || m.size);
   const isFirstTimeOnStock = !state.hasMemo && !hasAnyMemoContent;
-  if (draftCta) {
-    draftCta.style.display = isFirstTimeOnStock ? 'flex' : 'none';
+  if (draftCluster) {
+    draftCluster.style.display = isFirstTimeOnStock ? 'block' : 'none';
   }
   // First-time-user surfaces (About, Market, News, Research) sit between
   // the Start-memo CTA and the empty memo placeholders. They give a brand-
@@ -8471,12 +8911,28 @@ function renderStock() {
   if (navNews)     navNews.style.display     = isFirstTimeOnStock ? 'none' : '';
   if (navResearch) navResearch.style.display = isFirstTimeOnStock ? 'none' : '';
 
-  // The empty Thesis / Kill line / MOS / Confidence / Attached research
-  // placeholders are shown on s0 for both V4 and V4.5 first-time users.
-  // (Earlier we hid them on V4.5 — that's now reverted so the two flows
-  // show the same memo skeleton.)
-  document.querySelectorAll('.scr[data-id="s0"] .position-section').forEach(el => {
-    el.style.display = '';
+  // For first-time users (no memo on file), hide the empty-scaffold sections.
+  // The placeholder italic copy in Thesis / Kill line / MOS / Confidence reads
+  // as confusing void; the Performance panel has nothing to compare against;
+  // the tx strip and Position summary are em-dash deserts. We keep only the
+  // entry-point CTA, the firsttime About/Market/News/Research surfaces, and
+  // the Attached research block (notes pre-memo are legitimate pre-work).
+  const positionSections = document.querySelectorAll('.scr[data-id="s0"] .position-section');
+  const hideForFirstTime = [
+    's0-thesis-section',
+    's0-killline-section',
+    's0-mos-section',
+    's0-confidence-section',
+    's0-divider-before-confidence',
+    's0-divider-before-tx',
+    's0-perf-vs-spx',
+    's0-tx-strip',
+    's0-position-summary'
+  ];
+  positionSections.forEach(el => { el.style.display = ''; });
+  hideForFirstTime.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isFirstTimeOnStock ? 'none' : '';
   });
 
   // ── Thesis (hero) ──
@@ -8571,17 +9027,15 @@ function renderStock() {
     }
   }
 
-  // ── Attached research — research entries only; the user-facing Notes
-  //    preview below has its own block, so keep these two surfaces distinct. ──
+  // ── Attached research — renders into the consolidated "Notes & research"
+  //    block on s0. The combined empty state is owned by renderNotesPreview
+  //    (which has the notes array context too). ──
   const listEl  = document.getElementById('s0-research-list');
-  const emptyEl = document.getElementById('s0-research-empty');
-  if (listEl && emptyEl) {
+  if (listEl) {
     const items = Array.isArray(m.research) ? m.research.slice() : [];
     if (!items.length) {
       listEl.innerHTML = '';
-      emptyEl.style.display = '';
     } else {
-      emptyEl.style.display = 'none';
       listEl.innerHTML = items.map(it => {
         const head = it.source ? `${escapeNote(it.source)} · ${escapeNote(it.title || '')}` : escapeNote(it.title || '');
         return `
@@ -8739,9 +9193,21 @@ function onCapitalDecision() {
    CAPITAL DECISION (s6)
    ═════════════════════════════════════════════════ */
 function renderCDOptions() {
-  const wrap = document.getElementById('s6-options');
+  const content = document.getElementById('s6-content');
+  const wrap    = document.getElementById('s6-options');
+  if (!content || !wrap) return;
+
+  // The eyebrow + headline are the same shape for both variants. Returning
+  // adds a radio picker below; first-time renders nothing else — the headline
+  // IS the declared action.
   if (state.hasMemo) {
     state.cd = 'increase';
+    content.innerHTML = `
+      <div class="s6-eyebrow">AAPL · NASDAQ</div>
+      <div class="s6-headline">Position action.</div>
+    `;
+    wrap.style.display = '';
+    wrap.className = 's6-options-wrap';
     wrap.innerHTML = `
       <div class="radio-opt" onclick="selectCD('increase')">
         <span class="body-lg">Increase exposure</span>
@@ -8757,11 +9223,12 @@ function renderCDOptions() {
       </div>`;
   } else {
     state.cd = 'initial';
-    wrap.innerHTML = `
-      <div class="radio-opt" onclick="selectCD('initial')">
-        <span class="body-lg">Initiate position</span>
-        <div class="radio-circle on" id="cd-initial"></div>
-      </div>`;
+    content.innerHTML = `
+      <div class="s6-eyebrow">AAPL · NASDAQ</div>
+      <div class="s6-headline">Initiate position.</div>
+    `;
+    wrap.style.display = 'none';
+    wrap.innerHTML = '';
   }
 }
 function selectCD(choice) {
@@ -8783,8 +9250,10 @@ function onCapitalDecisionContinue() {
     // The user must actively move the slider on this buy.
     state.prob = 0;
     state._memoEditedThisFlow = false;
-    if (!loadMintroAck())    { go('mintro');    return; }
-    if (!loadMresearchAck()) { go('mresearch'); return; }
+    // Orientation pages auto-show until the user has completed at least one
+    // memo (real or paper — state.hasMemo flips true at SEAL). After that
+    // they're skipped from the flow; re-access lives on m1 + the drawer.
+    if (!state.hasMemo) { go('mintro'); return; }
     go('m1');
     return;
   }
@@ -8825,16 +9294,26 @@ function continueFromS19() {
 function backFromM1() {
   if (state.cd === 'draft')                   { go('s0');  return; }
   if (state.cd && state.cd !== 'initial')     { go('s19'); return; }
-  if (!loadMresearchAck())                    { go('mresearch'); return; }
-  if (!loadMintroAck())                       { go('mintro');    return; }
+  // Initial-buy flow: if user hasn't completed a memo yet, the orientation
+  // pages were just shown — step back through them.
+  if (!state.hasMemo) { go('mresearch'); return; }
   go('s6');
 }
 
-/* mresearch back button — orientation pages only front the initial-buy path.
-   Back goes to mintro if it's still unacknowledged, otherwise straight to s6. */
+/* mresearch back button — flow mode goes back to mintro; in-flow re-access
+   from m1 returns to m1; drawer reference mode returns to s10. */
 function backFromMResearch() {
-  if (!loadMintroAck()) { go('mintro'); return; }
-  go('s6');
+  if (state.viewingProtocolReference) {
+    state.viewingProtocolReference = false;
+    go('s10');
+    return;
+  }
+  if (state.protocolFromM1) {
+    state.protocolFromM1 = false;
+    go('m1');
+    return;
+  }
+  go('mintro');
 }
 
 /* mresearch-prompt is reachable from two entry points:
@@ -8898,9 +9377,19 @@ function backFromResearchPrompt() {
   go('research-hub');
 }
 
-/* mintro back button — Memo intro is the first orientation page, so back
-   always returns to the Capital decision picker (s6). */
+/* mintro back button — drawer reference mode returns to s10; in-flow
+   re-access from m1 returns to m1; otherwise returns to s6 (start of flow). */
 function backFromMintro() {
+  if (state.viewingProtocolReference) {
+    state.viewingProtocolReference = false;
+    go('s10');
+    return;
+  }
+  if (state.protocolFromM1) {
+    state.protocolFromM1 = false;
+    go('m1');
+    return;
+  }
   go('s6');
 }
 
@@ -8913,11 +9402,213 @@ function backFromM6() {
   go('msrc');
 }
 
-/* Forward navigation from each orientation page. The checkbox writes its
-   value on-change (see onMintroAckChange / onMresearchAckChange), so the
-   Continue handler just routes forward. */
+/* Forward navigation from each orientation page. After the user completes
+   their first memo (state.hasMemo flips at SEAL), these pages stop auto-
+   showing. Re-access lives on m1 and in the drawer under "Reference". */
 function continueFromMintro()    { go('mresearch'); }
-function continueFromMresearch() { go('m1'); }
+function continueFromMresearch() {
+  // If the user came from m1 (in-flow re-read), return to m1 instead of
+  // entering the memo for the first time.
+  if (state.protocolFromM1) { state.protocolFromM1 = false; go('m1'); return; }
+  go('m1');
+}
+
+/* In-flow re-access — small link on m1 lets the user re-read the intro
+   and research orientation pages without exiting the memo. The flag tells
+   backFromMintro / backFromMResearch / continueFromMresearch to route
+   back to m1 instead of forward through the flow. */
+function openMemoIntroFromFlow() {
+  state.protocolFromM1 = true;
+  go('mintro');
+}
+
+/* ── Field reference (mfields) ────────────────────────────────────────
+   Read-only preview of the 10 fields a complete memo captures. Each row
+   shows the field label, a plain-language description of what it asks,
+   and an example value from a reference AAPL memo. Copy-all serializes
+   the whole list to clipboard formatted for paste into an LLM. */
+/* Generic, stock-agnostic. Each field declares its answerType so the render
+   knows whether to list options (multiple choice) or describe the input
+   format (free-text / numeric / slider). Review is a no-input confirmation. */
+const MEMO_FIELDS = [
+  {
+    label: 'Classify',
+    question: 'Business type.',
+    answerType: 'choice',
+    options: ['Compounder', 'Cyclical', 'Cigar butt', 'Speculative']
+  },
+  {
+    label: 'Size',
+    question: 'Position weight class.',
+    answerType: 'choice',
+    options: ['Core (10%+)', 'Conviction (5–10%)', 'Initial (1–3%)', 'Speculative (≤2%)']
+  },
+  {
+    label: 'Intrinsic value',
+    question: 'Fair value per share, and the method.',
+    answerType: 'compound',
+    components: ['Numeric input — value per share (USD)', 'Free-text input — one-sentence method']
+  },
+  {
+    label: 'Margin of safety',
+    question: 'Discount from intrinsic value at entry.',
+    answerType: 'choice',
+    options: ['Enough', 'Not enough'],
+    note: 'Margin is auto-calculated from intrinsic value and entry price.'
+  },
+  {
+    label: 'Thesis',
+    question: 'The mispricing claim and what must hold for it to compound.',
+    answerType: 'text',
+    inputDescription: 'Free-text input — a few sentences, falsifiable on its terms.'
+  },
+  {
+    label: 'Kill line',
+    question: 'The condition that invalidates the thesis.',
+    answerType: 'text',
+    inputDescription: 'Free-text input — one sentence, factual, no forecasts.'
+  },
+  {
+    label: 'Calibration',
+    question: 'Probability and horizon.',
+    answerType: 'compound',
+    components: ['Probability slider (0–100%)', 'Horizon picker (1y / 3y / 5y / 10y)']
+  },
+  {
+    label: 'Note',
+    question: 'Optional context.',
+    answerType: 'text',
+    inputDescription: 'Free-text input — optional.'
+  },
+  {
+    label: 'Source',
+    question: 'Where the idea came from.',
+    answerType: 'choice',
+    options: ['Filing', 'Screener', 'Twitter', 'Podcast', 'Newsletter', 'Friend', '13F', 'Other']
+  },
+  {
+    label: 'Review',
+    question: 'Final check before SEAL.',
+    answerType: 'review',
+    inputDescription: 'Confirmation step. No input. SEAL commits the memo.'
+  }
+];
+function openMemoFields() { go('mfields'); }
+function renderMemoFields() {
+  const listEl = document.getElementById('mfields-list');
+  if (!listEl) return;
+  listEl.innerHTML = MEMO_FIELDS.map((f, i) => {
+    const idx  = String(i + 1).padStart(2, '0');
+    const head = `<div class="mfield-head">${idx} / ${escapeNote(f.label)}</div>`;
+    const q    = `<div class="mfield-question">${escapeNote(f.question)}</div>`;
+    const note = f.note
+      ? `<div class="mfield-note">${escapeNote(f.note)}</div>`
+      : '';
+
+    let block = '';
+    if (f.answerType === 'choice') {
+      const items = f.options.map(o => `<li>${escapeNote(o)}</li>`).join('');
+      block = `
+        <div class="mfield-answers">
+          <div class="mfield-answers-label">Options</div>
+          <ul class="mfield-options">${items}</ul>
+        </div>`;
+    } else if (f.answerType === 'compound') {
+      const items = f.components.map(c => `<li>${escapeNote(c)}</li>`).join('');
+      block = `
+        <div class="mfield-answers">
+          <div class="mfield-answers-label">Inputs</div>
+          <ul class="mfield-options">${items}</ul>
+        </div>`;
+    } else if (f.answerType === 'text') {
+      block = `
+        <div class="mfield-answers">
+          <div class="mfield-answers-label">Input</div>
+          <div class="mfield-input-desc">${escapeNote(f.inputDescription)}</div>
+        </div>`;
+    } else if (f.answerType === 'review') {
+      block = `
+        <div class="mfield-answers">
+          <div class="mfield-answers-label">Format</div>
+          <div class="mfield-input-desc">${escapeNote(f.inputDescription)}</div>
+        </div>`;
+    }
+    return `<div class="mfield-row">${head}${q}${note}${block}</div>`;
+  }).join('');
+}
+function copyMemoFields() {
+  const lines = ['10-field memo protocol.', ''];
+  MEMO_FIELDS.forEach((f, i) => {
+    const idx = String(i + 1).padStart(2, '0');
+    const block = [`${idx}. ${f.label}`, `   ${f.question}`];
+    if (f.note) block.push(`   Note: ${f.note}`);
+    if (f.answerType === 'choice') {
+      block.push('   Options:');
+      f.options.forEach(o => block.push(`     - ${o}`));
+    } else if (f.answerType === 'compound') {
+      block.push('   Inputs:');
+      f.components.forEach(c => block.push(`     - ${c}`));
+    } else if (f.answerType === 'text') {
+      block.push(`   Input: ${f.inputDescription}`);
+    } else if (f.answerType === 'review') {
+      block.push(`   Format: ${f.inputDescription}`);
+    }
+    lines.push(block.join('\n'));
+  });
+  const text = lines.join('\n\n');
+
+  const flashLabel = (msg) => {
+    const lbl = document.querySelector('.mfields-copy-btn .copy-label');
+    if (!lbl) return;
+    const original = lbl.textContent;
+    lbl.textContent = msg;
+    setTimeout(() => { lbl.textContent = original; }, 1500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(
+      () => flashLabel('Copied'),
+      () => flashLabel('Copy failed')
+    );
+    return;
+  }
+  // Fallback for browsers without async clipboard API
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    flashLabel('Copied');
+  } catch (_) {
+    flashLabel('Copy failed');
+  }
+}
+
+/* Open mintro / mresearch in reference mode — called from the drawer.
+   Sets a transient flag so the page renders without the foot CTA; the
+   header back arrow becomes the only exit (back to s10). */
+function openProtocolReference(targetId) {
+  state.viewingProtocolReference = true;
+  try { closeDrawer(); } catch (_) {}
+  go(targetId);
+}
+/* Render hook — toggles the v5-foot on the orientation pages based on the
+   reference-mode flag. Called from go() whenever mintro/mresearch renders. */
+function refreshProtocolReferenceMode(id) {
+  const inRef = !!state.viewingProtocolReference;
+  if (id === 'mintro' || id === 'mresearch') {
+    const foot = document.getElementById(id + '-foot');
+    if (foot) foot.style.display = inRef ? 'none' : 'flex';
+  } else {
+    // Navigating away from the orientation pages — clear the flag so a
+    // later flow entry shows the foot CTA as normal.
+    state.viewingProtocolReference = false;
+  }
+}
 
 /* Collapsible "See all 10 questions" disclosure on the Memo intro page. */
 function toggleMintroQuestions() {
@@ -9337,7 +10028,7 @@ function renderResearchPromptDetail() {
   const idx = RESEARCH_PROMPTS.indexOf(p);
   const setText = (elId, txt) => { const e = document.getElementById(elId); if (e) e.textContent = txt; };
   setText('research-prompt-eyebrow', p.title);
-  setText('research-prompt-step',    p.title.toUpperCase());
+  setText('research-prompt-step',    p.title);
   setText('research-prompt-count',   `${idx + 1} of ${RESEARCH_PROMPTS.length}`);
   setText('research-prompt-title',   p.title);
   setText('research-prompt-intent',  p.intent);
@@ -9565,7 +10256,7 @@ function renderPostMortem() {
   if (!p) return;
   const setText = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
   setText('pm-eyebrow', 'Post-mortem · ' + p.ticker);
-  setText('pm-ticker',  p.ticker + ' · ' + p.name.toUpperCase());
+  setText('pm-ticker',  p.ticker + ' · ' + p.name);
 
   // Verdict card
   const card = document.getElementById('pm-verdict-card');
@@ -9712,6 +10403,8 @@ function refreshS20Summary() {
 /* Connector sentence on s12: ties probability + horizon into one declarative
    line. Also refreshes the "Past calibrations" link visibility. */
 function refreshCalibSummary() {
+  // Legacy live-sentence elements removed in the forecast-schema redesign;
+  // these writes no-op safely when the IDs don't exist.
   const probEl    = document.getElementById('s12-summary-prob');
   const horizonEl = document.getElementById('s12-summary-horizon');
   if (probEl)    probEl.textContent    = state.prob + '%';
@@ -9730,6 +10423,54 @@ function refreshCalibSummary() {
     }
   }
 
+  // Forecast schema (s12 redesign) — derived EV line below the three inputs.
+  refreshExpectedValue();
+}
+
+/* Threshold input handler — captures the user's compounding threshold and
+   refreshes the derived expected-value line. Persisted on state so the
+   value survives navigation away and back. */
+function onForecastThresholdInput(e) {
+  const raw = (e && e.target && e.target.value) || '';
+  // Strip anything non-numeric (allow a single decimal point)
+  const cleaned = raw.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+  if (cleaned !== raw && e && e.target) e.target.value = cleaned;
+  const n = parseFloat(cleaned);
+  state.forecastThreshold = isFinite(n) ? n : 0;
+  refreshExpectedValue();
+  if (typeof refreshMemoLocks === 'function') refreshMemoLocks();
+}
+
+/* Hydrate the threshold input from state when entering s12. */
+function hydrateForecastThreshold() {
+  const inp = document.getElementById('s12-threshold-input');
+  if (!inp) return;
+  const v = state.forecastThreshold;
+  inp.value = (typeof v === 'number' && isFinite(v) && v > 0) ? String(v) : '';
+}
+
+/* Expected value — probability-weighted annual IRR. Shows only when
+   threshold > 0 AND probability > 0 AND a horizon is selected. Formula:
+     expected IRR = prob × threshold (per-year)
+   The simple form assumes return = 0 in the "no" case; downstream can
+   extend with an explicit downside input if/when introduced. */
+function refreshExpectedValue() {
+  const block = document.getElementById('s12-ev');
+  const text  = document.getElementById('s12-ev-text');
+  if (!block || !text) return;
+  const threshold = Number(state.forecastThreshold) || 0;
+  const prob      = Number(state.prob) || 0;
+  const horizon   = state.horizon || '';
+  if (threshold <= 0 || prob <= 0 || !horizon) {
+    block.style.display = 'none';
+    return;
+  }
+  const expectedIRR = (prob / 100) * threshold;
+  const horizonYears = parseInt(horizon, 10) || '';
+  const horizonLbl   = horizonYears ? `${horizonYears}y` : horizon;
+  const entryStr = (typeof MKTPRICE_USD === 'number') ? `${MKTPRICE_USD.toFixed(2)} USD` : '—';
+  block.style.display = '';
+  text.innerHTML = `Entry ${entryStr} · ${prob}% × ${threshold}% over ${horizonLbl} → <span class="ev-irr">${expectedIRR.toFixed(1)}%</span> probability-weighted annual IRR.`;
 }
 
 /* Compute and render the Expected Value block on s12 (V4.5 only).
@@ -10468,21 +11209,15 @@ function renderM6() {
 
 /* V4.5 — Verb-specific Continue labels on each memo step CTA. Each Continue
    is a different commitment; naming it names what the user just did. */
+/* Step CTAs are now bare arrows. Per the voice standard, navigation between
+   steps gets a bare arrow; typed verbs are reserved for the moment state
+   actually changes (m6 → SEAL). The label map is kept (one source of truth)
+   so any step-specific override can be reintroduced without restructuring. */
 const V45_STEP_CTA_LABELS = {
-  m1:    'Confirm classification',
-  m1b:   'Lock in sizing',
-  miv:   'Save intrinsic value',
-  m4:    'Confirm margin of safety',
-  m2:    'Save thesis',
-  m3:    'Save kill line',
-  s12:   'Record probability',
-  m5:    'Save context',
-  msrc:  'Save source'
+  m1: '→', m1b: '→', miv: '→', m4: '→', m2: '→', m3: '→', s12: '→', m5: '→', msrc: '→'
 };
 const V4_STEP_CTA_LABELS = {
-  m1:    'Continue', m1b:   'Continue', miv:   'Continue', m4:    'Continue',
-  m2:    'Continue', m3:    'Continue', s12:   'Continue', m5:    'Continue',
-  msrc:  'Continue'
+  m1: '→', m1b: '→', miv: '→', m4: '→', m2: '→', m3: '→', s12: '→', m5: '→', msrc: '→'
 };
 function refreshStepCtaLabel(stepId) {
   const btnId = ({
@@ -10495,8 +11230,9 @@ function refreshStepCtaLabel(stepId) {
   // Don't override "Save changes" used by m6 Edit mode
   if (state.editingFromReview) return;
   btn.textContent = (state.version >= 4.5)
-    ? (V45_STEP_CTA_LABELS[stepId] || 'Continue')
-    : (V4_STEP_CTA_LABELS[stepId]  || 'Continue');
+    ? (V45_STEP_CTA_LABELS[stepId] || '→')
+    : (V4_STEP_CTA_LABELS[stepId]  || '→');
+  btn.classList.add('is-arrow');
 }
 
 /* V4.5 — Track time on each memo step. Stored on state.memoTimings.
@@ -11584,6 +12320,108 @@ function renderDashboard() {
   refreshPendingChip();
   // Paper Trades dashboard block — count + detail line reflect runtime state
   refreshPaperTradesBlock();
+  // Open Orders dashboard tile — per-stock summary with total notional
+  refreshOpenOrdersTile();
+}
+
+/* Dashboard "Open Orders" tile — per-stock grouping that scales 1→50+.
+   Top 3 stocks by notional rendered inline as TKR · N orders · X CAD rows,
+   anything beyond folds into a "+N more →" hint. Whole tile taps through
+   to s52 (All Open Orders) for the full grouped list. */
+function refreshOpenOrdersTile() {
+  const countEl    = document.getElementById('s10-oo-count');
+  const notionalEl = document.getElementById('s10-oo-notional');
+  const listEl     = document.getElementById('s10-oo-bystock');
+  const moreEl     = document.getElementById('s10-oo-more');
+  if (!countEl || !notionalEl || !listEl) return;
+
+  const orders = getOpenOrders();
+  const grouped = getOpenOrdersByStock();
+  const totalNotional = orders.reduce((s, o) => s + o.notionalCAD, 0);
+
+  countEl.textContent = String(orders.length);
+  if (orders.length === 0) {
+    notionalEl.textContent = 'no orders pending';
+    listEl.innerHTML = '';
+    if (moreEl) moreEl.style.display = 'none';
+    return;
+  }
+  notionalEl.textContent = `${totalNotional.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD pending`;
+
+  const TOP_N = 3;
+  const inline = grouped.slice(0, TOP_N);
+  const rest   = grouped.slice(TOP_N);
+
+  listEl.innerHTML = inline.map(g => {
+    const cad = g.notionalCAD.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    const label = g.orders.length === 1 ? 'order' : 'orders';
+    return `<div class="dash-meta-row" style="width:auto;gap:10px">
+      <span class="dash-meta-key" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:0.02em;color:var(--p)">${g.ticker}</span>
+      <span class="dash-meta-val" style="font-variant-numeric:tabular-nums">${g.orders.length} ${label} · ${cad} CAD</span>
+    </div>`;
+  }).join('');
+
+  if (moreEl) {
+    if (rest.length === 0) {
+      moreEl.style.display = 'none';
+    } else {
+      moreEl.style.display = '';
+      const restCount = rest.reduce((s, g) => s + g.orders.length, 0);
+      moreEl.textContent = `+${restCount} more across ${rest.length} ${rest.length === 1 ? 'name' : 'names'} →`;
+    }
+  }
+}
+function openAllOpenOrders() { go('s52'); }
+function renderS52() {
+  const orders = getOpenOrders();
+  const grouped = getOpenOrdersByStock();
+  const total = orders.reduce((s, o) => s + o.notionalCAD, 0);
+
+  const countEl = document.getElementById('s52-count');
+  if (countEl) countEl.textContent = orders.length ? String(orders.length) : '';
+  const totalEl = document.getElementById('s52-total');
+  if (totalEl) {
+    totalEl.textContent = orders.length === 0
+      ? '0 CAD pending'
+      : `${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD pending`;
+  }
+
+  const listEl = document.getElementById('s52-list');
+  const empty  = document.getElementById('s52-empty');
+  if (!listEl || !empty) return;
+  if (orders.length === 0) {
+    listEl.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  listEl.innerHTML = grouped.map(g => {
+    const groupCAD = g.notionalCAD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const label = g.orders.length === 1 ? 'order' : 'orders';
+    const rows = g.orders.map(o => {
+      const priceStr = o.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const cadStr   = o.notionalCAD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const tag = `${o.action} · ${o.type}`;
+      return `<div class="txn-item">
+        <div class="txn-meta">
+          <div class="txn-action">${o.shares} sh @ ${priceStr} ${o.currency}</div>
+          <div class="txn-shares">${tag}</div>
+        </div>
+        <div class="txn-side">
+          <div class="txn-cost">${cadStr} CAD</div>
+          <div class="txn-date">${o.placed}</div>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="margin-top:28px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 0 8px;border-bottom:0.5px solid #232627;margin-bottom:4px">
+        <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;letter-spacing:0.04em;color:var(--p);font-weight:500">${g.ticker}</span>
+        <span style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:none">${g.orders.length} ${label} · ${groupCAD} CAD</span>
+      </div>
+      ${rows}
+    </div>`;
+  }).join('');
 }
 
 /* Dashboard "Paper Trades" tile — counts logged-but-not-executed decisions
@@ -11605,78 +12443,108 @@ function refreshPaperTradesBlock() {
   }
 }
 
-/* "Your book today" — threshold-gated daily pulse at the top of the dash.
-   On a quiet day (no tickers crossed the daily move threshold) it renders
-   a zero state with an explanatory note. On an active day, it surfaces
-   per-ticker mover rows with a one-line reason hook so the user reads
-   *why* something moved, not just by how much. Demo seeds an active day
-   so the design is visible by default. */
+/* "Your book today" — unified notification feed, GROUPED by category.
+   One bordered card per category (BIG MOVE, MATERIAL MOVE, THESIS REVIEW,
+   MEMO PENDING). Every affected ticker is listed inside its category's
+   card. Total count = number of categories with open items, NOT total
+   item count — so 4 missing memos + 2 movers + 1 alert = 3 open
+   questions on the dashboard, not 7. */
 function refreshTodayBlock() {
   const stamp = document.getElementById('s10-today-stamp');
   if (stamp) stamp.textContent = _formatTodayStamp();
 
-  // Seeded movers — kept here as the demo's daily-pulse signal. Real
-  // implementation would derive from holdings + market data. Threshold tiers:
-  //   ≥5%  → alerts block (self-hides on quiet days)
-  //   2-5% → material moves block (renders zero state on quiet days)
+  const countEl = document.getElementById('s10-today-count');
+  const listEl  = document.getElementById('s10-today-cards');
+  if (!countEl || !listEl) return;
+
+  const prefs = (state && state.notifPrefs) || loadNotifPrefs();
+
+  // Bucket every notification into its category. Each category becomes
+  // one card with a list of affected tickers inside.
+  const groups = {
+    bigMove:   { tag: 'Big move',       items: [], primary: 'Review thesis', primaryFn: "startThesisReview()" },
+    matMove:   { tag: 'Material move',  items: [], primary: 'Investigate',   primaryFn: "go('s0')" },
+    review:    { tag: 'Thesis review',  items: [], primary: 'Start review',  primaryFn: "startThesisReview()", secondary: 'Snooze' },
+    backfill:  { tag: 'Memo pending',   items: [], primary: 'Write memo',    primaryFn: "go('s60')" }
+  };
+
   const movers = [
-    { ticker: 'NVDA',    pct: '−6.8%', dir: 'down', reason: 'guidance miss · after-hours' },
-    { ticker: 'AAPL',    pct: '+4.2%', dir: 'up',   reason: 'Q1 earnings · pre-mkt' },
-    { ticker: 'EOSCR',   pct: '−3.8%', dir: 'down', reason: 'no headline · vol +3σ' }
+    { ticker: 'NVDA',  pct: '−6.8%', dir: 'down', reason: 'guidance miss · after-hours' },
+    { ticker: 'AAPL',  pct: '+4.2%', dir: 'up',   reason: 'Q1 earnings · pre-mkt' },
+    { ticker: 'EOSCR', pct: '−3.8%', dir: 'down', reason: 'no headline · vol +3σ' }
   ];
-
-  const _abs = m => Math.abs(parseFloat(m.pct.replace(/[^\d.-]/g, '')));
-  const alerts  = movers.filter(m => _abs(m) >= 5);
-  const regular = movers.filter(m => _abs(m) < 5);
-  const prefs   = (state && state.notifPrefs) || loadNotifPrefs();
-
-  // Alerts block (≥5% moves)
-  const alertsBlock = document.getElementById('s10-alerts-block');
-  const alertsNum   = document.getElementById('s10-alerts-num');
-  const alertsLbl   = document.getElementById('s10-alerts-lbl');
-  const alertsRows  = document.getElementById('s10-alerts-rows');
-  if (alertsBlock && alertsRows) {
-    if (!prefs.alerts || alerts.length === 0) {
-      alertsBlock.style.display = 'none';
-      alertsRows.innerHTML = '';
-    } else {
-      alertsBlock.style.display = '';
-      if (alertsNum) alertsNum.textContent = String(alerts.length);
-      if (alertsLbl) alertsLbl.textContent = alerts.length === 1 ? 'alert' : 'alerts';
-      alertsRows.innerHTML = alerts.map(_renderMoverRow).join('');
+  movers.forEach(m => {
+    const absPct = Math.abs(parseFloat(m.pct.replace(/[^\d.-]/g, '')));
+    const meta = `${m.pct} · ${m.reason}`;
+    if (absPct >= 5 && prefs.alerts) {
+      groups.bigMove.items.push({ ticker: m.ticker, meta });
+    } else if (absPct >= 2 && prefs.moves) {
+      groups.matMove.items.push({ ticker: m.ticker, meta });
     }
+  });
+
+  if (prefs.review && state.hasMemo && state.reviewPending) {
+    groups.review.items.push({ ticker: 'AAPL', meta: 'Q1 2026 earnings released' });
   }
 
-  // Material moves block (2-5% moves)
-  const movesBlock = document.getElementById('s10-moves-block');
-  const num     = document.getElementById('s10-today-num');
-  const lbl     = document.getElementById('s10-today-lbl');
-  const note    = document.getElementById('s10-today-note');
-  const moversWrap = document.getElementById('s10-today-movers');
-  if (movesBlock && !prefs.moves) {
-    movesBlock.style.display = 'none';
-  } else if (num && lbl && note && moversWrap) {
-    if (movesBlock) movesBlock.style.display = '';
-    if (regular.length === 0) {
-      // Quiet-day variant
-      num.textContent = '0';
-      num.classList.remove('is-active');
-      lbl.textContent = 'open questions';
-      note.textContent = 'Scanned holdings and review names. Nothing crossed your thresholds.';
-      moversWrap.style.display = 'none';
-      moversWrap.innerHTML = '';
-    } else {
-      // Active-day variant
-      num.textContent = String(regular.length);
-      num.classList.add('is-active');
-      lbl.textContent = regular.length === 1 ? 'material move' : 'material moves';
-      note.textContent = 'Names that crossed your daily threshold. Read the reason, not the number.';
-      moversWrap.style.display = 'flex';
-      moversWrap.innerHTML = regular.map(_renderMoverRow).join('');
-    }
+  if (prefs.backfill && typeof getBackfillPending === 'function') {
+    getBackfillPending().forEach(p => {
+      groups.backfill.items.push({ ticker: p.ticker, meta: `${p.weight || ''} of book` });
+    });
   }
 
-  _refreshTodayDividers();
+  const activeGroups = Object.values(groups).filter(g => g.items.length > 0);
+  countEl.textContent = String(activeGroups.length);
+
+  // Hide the whole today section on quiet days — no notifications means no
+  // section. Avoids the empty-state "0 open questions" header taking screen
+  // real estate when there's nothing to surface.
+  const todayBlock = document.getElementById('s10-today');
+  if (activeGroups.length === 0) {
+    if (todayBlock) todayBlock.style.display = 'none';
+    listEl.innerHTML = '';
+    return;
+  }
+  if (todayBlock) todayBlock.style.display = '';
+
+  listEl.innerHTML = activeGroups.map(g => {
+    const rows = g.items.map(it => `
+      <div class="todaycard-item">
+        <span class="todaycard-item-tkr">${escapeNote(it.ticker)}</span>
+        <span class="todaycard-item-meta">${escapeNote(it.meta)}</span>
+      </div>
+    `).join('');
+    const secondary = g.secondary || 'Dismiss';
+    return `
+      <div class="todaycard">
+        <div class="todaycard-head">
+          <span class="todaycard-tag">${escapeNote(g.tag)}</span>
+          <span class="todaycard-count">${g.items.length}</span>
+        </div>
+        <div class="todaycard-items">${rows}</div>
+        <div class="todaycard-divider"></div>
+        <div class="todaycard-actions">
+          <button class="todaycard-primary" onclick="${g.primaryFn}"><span class="arr">→</span><span>${escapeNote(g.primary)}</span></button>
+          <button class="todaycard-secondary" onclick="dismissTodayCard(this)">${escapeNote(secondary)}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* Stub dismiss — removes the card visually. Real implementation would
+   persist a "dismissed" flag against the notification ID and re-fetch. */
+function dismissTodayCard(btn) {
+  const card = btn && btn.closest && btn.closest('.todaycard');
+  if (!card) return;
+  card.style.transition = 'opacity 150ms ease';
+  card.style.opacity = '0';
+  setTimeout(() => {
+    card.remove();
+    const countEl = document.getElementById('s10-today-count');
+    const remaining = document.querySelectorAll('#s10-today-cards .todaycard').length;
+    if (countEl) countEl.textContent = String(remaining);
+  }, 160);
 }
 
 /* Shared mover-row template (used by alerts + material moves). */
@@ -11719,6 +12587,15 @@ function _formatTodayStamp() {
   const hh    = String(d.getHours()).padStart(2, '0');
   const mm    = String(d.getMinutes()).padStart(2, '0');
   return `${month} ${day} · ${hh}:${mm}`;
+}
+
+/* Annualized return panel tap — placeholder stub. Future detail screen
+   would expose the full performance time series (portfolio vs S&P 500),
+   per-period decomposition, and the inputs feeding the alpha calculation. */
+function onAnnualizedTap() {
+  if (typeof showComposerToast === 'function') {
+    showComposerToast('Performance detail — coming soon');
+  }
 }
 
 /* Concentration bar tap — placeholder stub. Future detail screen would
@@ -12220,7 +13097,7 @@ function showInfoModal(key) {
     body  = dyn.body;
   }
 
-  document.getElementById('info-modal-eyebrow').textContent = m.eyebrow.toUpperCase();
+  document.getElementById('info-modal-eyebrow').textContent = m.eyebrow;
   document.getElementById('info-modal-title').textContent   = title;
   // Body supports either plain text (default, pre-line) or rich HTML
   // for long-form explainers like the Thesis modal.
@@ -12776,7 +13653,7 @@ function renderTxnList() {
         ];
         let html = rows.map(([k, v]) => `
           <div style="display:flex;gap:16px;align-items:baseline">
-            <span style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:uppercase;flex-shrink:0;width:88px">${k}</span>
+            <span style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:none;flex-shrink:0;width:88px">${k}</span>
             <span style="font-size:13px;color:var(--s);line-height:1.5;letter-spacing:-0.01em">${v}</span>
           </div>`).join('');
         // Optional free-form note — quoted, italic, only if present
@@ -12784,7 +13661,7 @@ function renderTxnList() {
         if (note) {
           html += `
           <div style="margin-top:6px;padding-top:14px;border-top:1px solid var(--divider)">
-            <div style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px">Note</div>
+            <div style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:none;margin-bottom:6px">Note</div>
             <div style="font-size:13px;color:var(--s);line-height:1.55;letter-spacing:-0.01em;font-style:italic">"${note}"</div>
           </div>`;
         }
@@ -12839,7 +13716,7 @@ function renderTxnList() {
   empty.style.display = 'none';
   list.innerHTML = txns.slice().reverse().map(t => {
     const cost = (t.cost || (t.shares * 192.35 * 1.36)).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
-    const tag  = t.paper ? 'PAPER TRADE' : (t.memo ? 'WITH MEMO' : 'ADJUSTMENT');
+    const tag  = t.paper ? 'Paper trade' : (t.memo ? 'With memo' : 'Adjustment');
     const tagCls = t.paper ? 'txn-shares paper-tag' : 'txn-shares';
     const itemCls = t.paper ? 'txn-item paper' : 'txn-item';
     return `<div class="${itemCls}" onclick="openTxnDetail('${t.id}')">
@@ -12911,7 +13788,7 @@ function openTxnDetail(txnId) {
     if (!srcLabel) {
       srcLabel = document.createElement('div');
       srcLabel.id = 's25-memo-source-label';
-      srcLabel.style.cssText = 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--t);margin-bottom:12px;';
+      srcLabel.style.cssText = 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:0.14em;text-transform:none;color:var(--t);margin-bottom:12px;';
       memoBlock.insertBefore(srcLabel, memoBlock.firstChild);
     }
     if (memoSource === 'inherited' && memoSourceDate) {
@@ -12964,21 +13841,25 @@ function escapeNote(s) {
 }
 
 function renderNotesPreview() {
-  const empty = document.getElementById('s0-notes-empty');
-  const list  = document.getElementById('s0-notes-list');
-  if (!empty || !list) return;
+  const list   = document.getElementById('s0-notes-list');
+  const nrEmpty = document.getElementById('s0-nr-empty');
+  if (!list) return;
   const notes = getNotesList();
   if (!notes.length) {
-    empty.style.display = 'block';
     list.innerHTML = '';
   } else {
-    empty.style.display = 'none';
     // Newest first; show 2 most recent on s0
     list.innerHTML = notes.slice().reverse().slice(0, 2).map(n => `
       <div class="note-item">
         <div class="text">${escapeNote(n.text)}</div>
         <div class="date">${n.date}</div>
       </div>`).join('');
+  }
+  // Combined empty state — shown only when notes AND research are both empty,
+  // since they now live in one consolidated section on s0.
+  if (nrEmpty) {
+    const research = Array.isArray(state.memo && state.memo.research) ? state.memo.research : [];
+    nrEmpty.style.display = (notes.length === 0 && research.length === 0) ? '' : 'none';
   }
 }
 
@@ -13308,7 +14189,7 @@ function renderS51() {
     return `<div class="txn-item paper" onclick="openTxnDetail('${t.id}')">
       <div class="txn-meta">
         <div class="txn-action">${tickerChip}${t.action} · ${t.shares} shares</div>
-        <div class="txn-shares paper-tag">PAPER TRADE</div>
+        <div class="txn-shares paper-tag">Paper trade</div>
       </div>
       <div class="txn-side">
         <div class="txn-cost">— ${cost} CAD</div>
@@ -13366,7 +14247,7 @@ function renderR1() {
   // Eyebrow date — for demo, use the most recent transaction date or seed
   const txns = getTxnList();
   const originalDate = txns.length ? txns[0].date : 'Apr 1, 2026';
-  document.getElementById('r1-thesis-eyebrow').textContent = `ORIGINAL THESIS · ${originalDate.toUpperCase()}`;
+  document.getElementById('r1-thesis-eyebrow').textContent = `Original thesis · ${originalDate}`;
   document.getElementById('r1-thesis-body').textContent = m.thesis || '—';
   document.getElementById('r1-kill-body').textContent   = m.kill   || '—';
 
@@ -13562,7 +14443,7 @@ function showReviewDetail(reviewId) {
   else if (r.answer === 'partial') { pill.classList.add('partial'); pillLabel.textContent = 'Partial'; }
   else                              { pill.classList.add('broken');  pillLabel.textContent = 'Broken'; }
 
-  eyebrow.textContent = `THESIS REVIEW · ${r.date.toUpperCase()}`;
+  eyebrow.textContent = `Thesis review · ${r.date}`;
   probEl.textContent  = r.newProb !== r.prevProb
     ? `${r.prevProb}% → ${r.newProb}%`
     : `${r.newProb}% · unchanged`;
@@ -13782,7 +14663,7 @@ function renderTimeline() {
 }
 
 function showTlInfo(e) {
-  document.getElementById('tl-eyebrow').textContent = (e.label || 'EVENT').toUpperCase() + ' · ' + e.date.toUpperCase();
+  document.getElementById('tl-eyebrow').textContent = (e.label || 'Event') + ' · ' + e.date;
   document.getElementById('tl-prob').textContent    = e.prob + '%';
   document.getElementById('tl-label').textContent   = e.label || '—';
   document.getElementById('tl-detail').textContent  = e.detail || '—';
