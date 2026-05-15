@@ -384,13 +384,13 @@ body.is-fullscreen .zoom-toggle {
    muted row labels, light-grey row values; Alpha row pops with white
    value + small grey "pp" suffix + light grey chevron. */
 .s0-perf-panel {
-  margin-top: 32px;
-  padding: 16px 0;
+  margin-top: 16px;
+  padding: 14px 0;
   border-top: 0.5px solid #232627;
   border-bottom: 0.5px solid #232627;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 .s0-perf-eyebrow {
   font-size: 13px;
@@ -419,12 +419,12 @@ body.is-fullscreen .zoom-toggle {
 }
 .s0-perf-row--alpha {
   position: relative;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 .s0-perf-row--alpha::before {
   content: '';
   position: absolute;
-  top: -16px;
+  top: -12px;
   left: 0;
   right: 0;
   height: 0;
@@ -562,7 +562,7 @@ body.is-fullscreen .zoom-toggle {
 .s0-firsttime-readmore:hover { color: var(--s); }
 
 /* Base for each position section (thesis, kill line, MOS, memo, confidence, research) */
-.position-section { padding: 28px 0; }
+.position-section { padding: 20px 0; }
 .position-eyebrow {
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -587,7 +587,7 @@ body.is-fullscreen .zoom-toggle {
   font-style: italic;
   color: var(--t-800);
   font-size: 13.5px;
-  min-height: 96px;
+  min-height: 56px;
   line-height: 1.7;
 }
 /* Inline expand/collapse on the thesis prose — sits at the tail of the
@@ -631,10 +631,10 @@ body.is-fullscreen .zoom-toggle {
 /* Kill line — set apart. Left rule + indent reads as a document clause. */
 .kill-line-block {
   border-left: 2px solid var(--t-800);
-  padding: 6px 0 6px 20px;
-  margin: 4px 0;
+  padding: 4px 0 4px 14px;
+  margin: 0;
 }
-.kill-line-block .position-eyebrow { margin-bottom: 10px; }
+.kill-line-block .position-eyebrow { margin-bottom: 8px; }
 .kill-line-text {
   font-size: 14px;
   color: var(--p);
@@ -646,7 +646,7 @@ body.is-fullscreen .zoom-toggle {
   font-style: italic;
   color: var(--t-800);
   font-size: 13px;
-  min-height: 64px;
+  min-height: 36px;
 }
 
 /* Margin of safety — three rows + anchoring caption */
@@ -914,11 +914,12 @@ body.is-fullscreen .zoom-toggle {
 .v5-primary:active { background: #2a2a2a; }
 .v5-primary.locked { opacity: 0.4; pointer-events: none; }
 
-/* Secondary / help link — V4 .act-btn style: transparent, inline,
-   arrow + text. Use the .act-arrow span inside for the arrow glyph. */
+/* Secondary / help link — transparent, inline, arrow + text. Sits muted by
+   default so it reads as supporting affordance, not primary action. Brightens
+   to white on hover/active for affordance feedback. */
 .v5-secondary, .v5-link {
   background: none;
-  color: var(--s);
+  color: var(--t);
   font-family: var(--font);
   font-size: 14px;
   padding: 4px 0;
@@ -930,9 +931,14 @@ body.is-fullscreen .zoom-toggle {
   cursor: pointer;
   border: none;
 }
+.v5-secondary:hover, .v5-link:hover { color: var(--s); }
 .v5-secondary:active, .v5-link:active { color: var(--p); }
 .v5-secondary span:last-child,
-.v5-link      span:last-child { color: var(--p); }
+.v5-link      span:last-child { color: var(--t); }
+.v5-secondary:hover  span:last-child,
+.v5-link:hover       span:last-child { color: var(--s); }
+.v5-secondary:active span:last-child,
+.v5-link:active      span:last-child { color: var(--p); }
 .v5-secondary.locked, .v5-link.locked { opacity: 0.3; pointer-events: none; }
 
 /* Outline button — used inside body content (not footer) for prompt-hub /
@@ -1440,8 +1446,11 @@ body.is-fullscreen .zoom-toggle {
   min-height: 14px;
   text-transform: uppercase;
 }
-.miv-price-delta.is-up   { color: #6ec48f; }
-.miv-price-delta.is-down { color: #d68a8a; }
+/* Monochrome — no semantic up/down coloring on the delta caption. The
+   class names stay so the JS toggles continue working, but they no longer
+   change the colour. */
+.miv-price-delta.is-up,
+.miv-price-delta.is-down { color: var(--t); }
 
 /* Compare rows used on IV, MOS, and Confirmation */
 .v5-compare-row {
@@ -3008,15 +3017,33 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
    simply leave the third column empty (auto sizes to 0). */
 .memo-row {
   display: grid;
-  grid-template-columns: 92px 1fr auto;
+  grid-template-columns: 92px 1fr;
   gap: 16px;
   padding: 14px 0;
   align-items: start;
   border-top: 1px solid var(--c-1000);
+  cursor: pointer;
+  transition: background 150ms var(--ease);
 }
+.memo-row:hover  { background: rgba(255,255,255,0.02); }
+.memo-row:active { background: rgba(255,255,255,0.05); }
 .memo-row:last-of-type { border-bottom: 1px solid var(--c-1000); }
 .memo-row .k { color: var(--t-700); font-size: 14px; }
 .memo-row .v { color: #E3E2E2; font-size: 14px; line-height: 1.5; min-width: 0; }
+/* Memo-section head — eyebrow on the left + small "tap to edit" hint on the right */
+.m6-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.m6-tap-hint {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t);
+}
 .memo-row-edit {
   appearance: none;
   background: transparent;
@@ -3334,6 +3361,63 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   cursor: pointer;
 }
 .drawer-action:hover { color: var(--p); border-color: rgba(255,255,255,0.3); }
+
+/* ── Notification on/off switches (drawer Notifications group) ── */
+.drawer-switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+.drawer-switch-row + .drawer-switch-row {
+  border-top: 0.5px solid rgba(255,255,255,0.05);
+}
+.drawer-switch-label {
+  font-size: 12px;
+  color: var(--s);
+  letter-spacing: -0.01em;
+  flex: 1;
+  min-width: 0;
+}
+.drawer-switch-sub {
+  display: block;
+  font-size: 10.5px;
+  color: var(--t-800);
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+.drawer-switch {
+  width: 32px;
+  height: 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.drawer-switch::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--t);
+  transition: transform 140ms ease, background 140ms ease;
+}
+.drawer-switch.is-on {
+  background: var(--p);
+  border-color: var(--p);
+}
+.drawer-switch.is-on::before {
+  background: #000;
+  transform: translateX(14px);
+}
 .drawer-jumper {
   display: flex; flex-direction: column;
 }
@@ -3395,10 +3479,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
 /* ── Threshold-gated dashboard additions (sits at top, above existing chrome) ── */
 .dash-today {
-  padding: 18px 0 24px;
+  padding: 12px 0 18px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 .dash-today-head {
   display: flex;
@@ -3422,27 +3506,27 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .dash-today-focal {
   display: flex;
   align-items: baseline;
-  gap: 14px;
-  margin-top: 2px;
+  gap: 10px;
+  margin-top: 0;
 }
 .dash-today-focal-num {
-  font-size: 40px;
+  font-size: 26px;
   line-height: 1;
   color: var(--p);
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   font-weight: 300;
 }
-.dash-today-focal-num.is-active { color: var(--accent-amber); }
+.dash-today-focal-num.is-active { color: var(--p); }
 .dash-today-focal-lbl {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--s);
   letter-spacing: -0.005em;
 }
 .dash-today-note {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--t);
-  line-height: 1.55;
+  line-height: 1.45;
   letter-spacing: -0.005em;
 }
 .dash-today-note .pref {
@@ -3455,7 +3539,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 .dash-today-mover-left {
   display: flex;
@@ -3464,30 +3548,54 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .dash-today-mover-tkr {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--p);
   letter-spacing: 0.02em;
   font-weight: 500;
 }
 .dash-today-mover-reason {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--t);
   letter-spacing: -0.005em;
 }
 .dash-today-mover-pct {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 14px;
-  color: var(--accent-amber);
+  font-size: 13px;
+  color: var(--p);
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
 }
+.dash-today-mover-arrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  color: var(--t);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.dash-today-mover-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 .dash-today-divider {
   height: 0;
   border-top: 0.5px solid #232627;
 }
+
+/* ── Today sub-blocks (material moves / thesis review / missing memos)
+      Each notification follows the same focal + // + rows pattern,
+      stacked inside #s10-today with hairline dividers between. ── */
+.dash-today-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-today-block.dash-tap { cursor: pointer; }
+.dash-today-block.dash-tap:active { opacity: 0.55; }
+.dash-today-block.dash-tap:hover .dash-today-mover-arrow { color: var(--p); }
 
 /* ── Concentration block ── */
 .dash-conc {
@@ -3532,7 +3640,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   height: 100%;
   border-radius: 1px;
 }
-.dash-conc-seg.is-dominant { background: var(--accent-amber); }
+.dash-conc-seg.is-dominant { background: var(--p); }
 
 /* ── Position threshold dot (Active positions list) ── */
 .dash-pos-dot-slot {
@@ -3545,7 +3653,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--accent-amber);
+  background: var(--p);
   margin-right: 4px;
   vertical-align: middle;
   transform: translateY(-1px);
@@ -3575,7 +3683,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent-amber);
+  color: var(--p);
 }
 .dash-open-pending-detail {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -4417,7 +4525,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
     </div>
     <div>
       <div class="version-picker" id="versionPicker">
-        <button data-version="4" onclick="setVersion(4)">V4</button>
         <button data-version="4.5" onclick="setVersion(4.5)">V4.5</button>
       </div>
       <div class="version-meta">
@@ -4432,6 +4539,26 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
       <div class="drawer-toggle">
         <button id="mode-first"  onclick="setMode('first')">First-time</button>
         <button id="mode-return" onclick="setMode('return')">Returning</button>
+      </div>
+    </div>
+
+    <div class="drawer-group">Notifications</div>
+    <div class="drawer-row" style="gap:0">
+      <div class="drawer-switch-row">
+        <span class="drawer-switch-label">Alerts<span class="drawer-switch-sub">Single-session moves ≥5%</span></span>
+        <button class="drawer-switch" data-notif="alerts" aria-label="Toggle alerts" onclick="toggleNotifPref('alerts')"></button>
+      </div>
+      <div class="drawer-switch-row">
+        <span class="drawer-switch-label">Material moves<span class="drawer-switch-sub">Names that crossed the daily threshold</span></span>
+        <button class="drawer-switch" data-notif="moves" aria-label="Toggle material moves" onclick="toggleNotifPref('moves')"></button>
+      </div>
+      <div class="drawer-switch-row">
+        <span class="drawer-switch-label">Thesis reviews<span class="drawer-switch-sub">Earnings on names you hold</span></span>
+        <button class="drawer-switch" data-notif="review" aria-label="Toggle thesis reviews" onclick="toggleNotifPref('review')"></button>
+      </div>
+      <div class="drawer-switch-row">
+        <span class="drawer-switch-label">Memos to write<span class="drawer-switch-sub">Positions without a written thesis</span></span>
+        <button class="drawer-switch" data-notif="backfill" aria-label="Toggle memo backfill" onclick="toggleNotifPref('backfill')"></button>
       </div>
     </div>
 
@@ -4489,65 +4616,80 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <div class="dash-body">
-              <!-- Backfill memos banner — fires when state.hasMemo on existing positions is false. V2+. -->
-              <div id="s10-backfill-notif" class="review-notif" onclick="go('s60')" style="display:none;margin-top:8px" data-min-version="2">
-                <div class="label">
-                  <span class="pulse-dot"></span>
-                  <span><b style="font-weight:500" id="s10-backfill-count">4 positions</b> don't have memos yet · Add them</span>
-                </div>
-                <span class="arrow">→</span>
-              </div>
-
-              <!-- Review-pending notification (hidden when state.reviewPending = false) — V4 -->
-              <div id="s10-review-notif" class="review-notif" onclick="startThesisReview()" style="display:none;margin-top:8px" data-min-version="4">
-                <div class="label">
-                  <span class="pulse-dot"></span>
-                  <span><b style="font-weight:500">AAPL</b> · Q1 2026 earnings released · Time for your quarterly review</span>
-                </div>
-                <span class="arrow">→</span>
-              </div>
-
-              <!-- Threshold-gated "Your book today" block — focal pulse showing
-                   what (if anything) crossed your daily threshold. Quiet days
-                   render the zero state with an explanatory note; active days
-                   render the mover count + per-ticker rows. -->
+              <!-- Threshold-gated "Your book today" block — stacks sub-blocks
+                   (alerts / material moves / thesis reviews / missing memos), each
+                   using the same focal-num + // note + rows pattern so every
+                   notification reads with the same visual grammar. Sub-blocks
+                   self-hide when empty; _refreshTodayDividers() hides the divider
+                   on whichever block is the first visible one. -->
               <div class="dash-today" id="s10-today">
                 <div class="dash-today-head">
                   <div class="dash-today-eyebrow">Your book today</div>
                   <div class="dash-today-stamp" id="s10-today-stamp">—</div>
                 </div>
-                <div class="dash-today-focal">
-                  <span class="dash-today-focal-num" id="s10-today-num">0</span>
-                  <span class="dash-today-focal-lbl" id="s10-today-lbl">open questions</span>
-                </div>
-                <div class="dash-today-note">
-                  <span class="pref">//</span><span id="s10-today-note">Scanned holdings and review names. Nothing crossed your thresholds.</span>
-                </div>
-                <!-- Active-day mover rows render here (hidden on quiet days) -->
-                <div id="s10-today-movers" style="display:none;flex-direction:column;gap:0"></div>
 
-                <div class="dash-today-divider"></div>
-
-                <!-- Concentration sub-block: bar + plain-language interpretation -->
-                <div class="dash-conc">
-                  <div class="dash-conc-head">
-                    <div class="dash-conc-lbl">Concentration</div>
-                    <div class="dash-conc-meta">Effective N<span class="num" id="s10-effective-n">2.4</span></div>
-                  </div>
-                  <div class="dash-conc-bar" onclick="onConcentrationTap()" id="s10-conc-bar">
-                    <span class="dash-conc-seg is-dominant" style="flex:63"></span>
-                    <span class="dash-conc-seg" style="flex:7"></span>
-                    <span class="dash-conc-seg" style="flex:6"></span>
-                    <span class="dash-conc-seg" style="flex:4"></span>
-                    <span class="dash-conc-seg" style="flex:3"></span>
-                    <span class="dash-conc-seg" style="flex:17"></span>
+                <!-- Alerts — single-session moves ≥5%. Higher-tier attention than
+                     the regular material-moves block; self-hides on quiet days. -->
+                <div class="dash-today-block" id="s10-alerts-block" style="display:none">
+                  <div class="dash-today-divider"></div>
+                  <div class="dash-today-focal">
+                    <span class="dash-today-focal-num is-active" id="s10-alerts-num">0</span>
+                    <span class="dash-today-focal-lbl" id="s10-alerts-lbl">alerts</span>
                   </div>
                   <div class="dash-today-note">
-                    <span class="pref">//</span><span id="s10-conc-note">Your largest position drives most of the book. A 30% drawdown in it would move the whole book ~19%.</span>
+                    <span class="pref">//</span><span id="s10-alerts-note">Big single-session moves on your book. Read the reason before you trade.</span>
+                  </div>
+                  <div id="s10-alerts-rows" class="dash-today-mover-list"></div>
+                </div>
+
+                <!-- Material moves — names that crossed the 2% daily threshold. -->
+                <div class="dash-today-block" id="s10-moves-block">
+                  <div class="dash-today-divider"></div>
+                  <div class="dash-today-focal">
+                    <span class="dash-today-focal-num" id="s10-today-num">0</span>
+                    <span class="dash-today-focal-lbl" id="s10-today-lbl">open questions</span>
+                  </div>
+                  <div class="dash-today-note">
+                    <span class="pref">//</span><span id="s10-today-note">Scanned holdings and review names. Nothing crossed your thresholds.</span>
+                  </div>
+                  <div id="s10-today-movers" class="dash-today-mover-list" style="display:none"></div>
+                </div>
+
+                <!-- Thesis review (was s10-review-notif) — quarterly review prompt when
+                     earnings land on a held name. V4+. -->
+                <div class="dash-today-block dash-tap" id="s10-review-notif" onclick="startThesisReview()" style="display:none" data-min-version="4">
+                  <div class="dash-today-divider"></div>
+                  <div class="dash-today-focal">
+                    <span class="dash-today-focal-num is-active">1</span>
+                    <span class="dash-today-focal-lbl">thesis review</span>
+                  </div>
+                  <div class="dash-today-note">
+                    <span class="pref">//</span><span>Earnings just landed on a name you hold. Revisit your investment case before the next print.</span>
+                  </div>
+                  <div class="dash-today-mover-list">
+                    <div class="dash-today-mover">
+                      <div class="dash-today-mover-left">
+                        <span class="dash-today-mover-tkr">AAPL</span>
+                        <span class="dash-today-mover-reason">Q1 2026 earnings released</span>
+                      </div>
+                      <span class="dash-today-mover-arrow">→</span>
+                    </div>
                   </div>
                 </div>
 
-                <div class="dash-today-divider"></div>
+                <!-- Missing memos (was s10-backfill-notif) — positions held without a
+                     written thesis. Routes to s60 backfill list. V2+. -->
+                <div class="dash-today-block dash-tap" id="s10-backfill-notif" onclick="go('s60')" style="display:none" data-min-version="2">
+                  <div class="dash-today-divider"></div>
+                  <div class="dash-today-focal">
+                    <span class="dash-today-focal-num is-active" id="s10-backfill-num">0</span>
+                    <span class="dash-today-focal-lbl" id="s10-backfill-lbl">memos to write</span>
+                  </div>
+                  <div class="dash-today-note">
+                    <span class="pref">//</span><span>Positions you hold without a written thesis. Memo them so you have something to review against later.</span>
+                  </div>
+                  <div id="s10-backfill-rows" class="dash-today-mover-list"></div>
+                </div>
               </div>
 
               <!-- Total value -->
@@ -4627,6 +4769,27 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     <div class="dash-meta-row"><span class="dash-meta-key">Next judgment</span><span class="dash-meta-val">Apr 1, 2027</span></div>
                   </div>
 
+                  <!-- Concentration sub-block: bar + plain-language interpretation.
+                       Sits as a header above Active Positions so the bar visually
+                       maps to the weighted list directly below it. -->
+                  <div class="dash-conc">
+                    <div class="dash-conc-head">
+                      <div class="dash-conc-lbl">Concentration</div>
+                      <div class="dash-conc-meta">Effective N<span class="num" id="s10-effective-n">2.4</span></div>
+                    </div>
+                    <div class="dash-conc-bar" onclick="onConcentrationTap()" id="s10-conc-bar">
+                      <span class="dash-conc-seg is-dominant" style="flex:63"></span>
+                      <span class="dash-conc-seg" style="flex:7"></span>
+                      <span class="dash-conc-seg" style="flex:6"></span>
+                      <span class="dash-conc-seg" style="flex:4"></span>
+                      <span class="dash-conc-seg" style="flex:3"></span>
+                      <span class="dash-conc-seg" style="flex:17"></span>
+                    </div>
+                    <div class="dash-today-note">
+                      <span class="pref">//</span><span id="s10-conc-note">Your largest position drives most of the book. A 30% drawdown in it would move the whole book ~19%.</span>
+                    </div>
+                  </div>
+
                   <!-- Active positions — 5 listed. Threshold-crossing tickers
                        get a 5px amber dot prefix; non-movers reserve the same
                        width so the column scans vertically. -->
@@ -4665,6 +4828,19 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     <div class="dash-open-pending">
                       <span class="dash-open-pending-label">Limit buy</span>
                       <span class="dash-open-pending-detail">AAPL @ 185.00 USD</span>
+                    </div>
+                  </div>
+
+                  <!-- Paper Trades — decisions logged but not executed. Taps
+                       through to s51 (cross-stock list). V3+. -->
+                  <div class="dash-block dash-tap" style="gap:6px;align-items:flex-end" onclick="openPaperTrades()" data-min-version="3">
+                    <div class="dash-meta-row" style="width:auto">
+                      <span class="dash-val-sm">Paper Trades</span>
+                      <span class="dash-val-sm" id="s10-paper-count">—</span>
+                    </div>
+                    <div class="dash-open-pending">
+                      <span class="dash-open-pending-label">Logged</span>
+                      <span class="dash-open-pending-detail" id="s10-paper-detail">no capital committed</span>
                     </div>
                   </div>
                 </div>
@@ -4773,6 +4949,32 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="thesis-version" id="s0-version" style="display:none">v3 · Mar 12, 2026 · 2 prior</div>
               </div>
 
+              <!-- ─── Performance vs S&P 500 — sits between Thesis and Kill line
+                   so the user reads the position's actual return against the
+                   index right after re-reading what they wrote, before they
+                   re-read what would prove them wrong. Visible on both
+                   first-time (em-dash placeholders) and returning user. ─── -->
+              <div id="s0-perf-vs-spx" class="s0-perf-panel">
+                <div class="s0-perf-eyebrow">Performance vs S&amp;P 500</div>
+                <div class="s0-perf-row">
+                  <span class="s0-perf-row-lbl">AAPL</span>
+                  <span class="s0-perf-row-val" id="s0-perf-aapl">—</span>
+                </div>
+                <div class="s0-perf-row">
+                  <span class="s0-perf-row-lbl">S&amp;P 500</span>
+                  <span class="s0-perf-row-val" id="s0-perf-spx">—</span>
+                </div>
+                <div class="s0-perf-row s0-perf-row--alpha">
+                  <span class="s0-perf-row-lbl">Alpha</span>
+                  <span class="s0-perf-row-val">
+                    <span id="s0-perf-alpha-amt">—</span>
+                    <span class="s0-perf-row-pp" id="s0-perf-alpha-pp"></span>
+                    <span class="s0-perf-row-arrow">›</span>
+                  </span>
+                </div>
+                <div class="s0-perf-caption" id="s0-perf-caption">Since purchase · <span id="s0-perf-since-date">—</span></div>
+              </div>
+
               <!-- ─── Kill line — its own bordered treatment ─── -->
               <div class="position-section" style="padding-top:8px">
                 <div class="kill-line-block">
@@ -4818,31 +5020,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <!-- ─── Transaction record — visually subordinate ─── -->
               <div class="position-tx-strip" id="s0-tx-strip">—</div>
-
-              <!-- ─── Performance vs S&P 500 — sits on top of the position
-                   summary per reference design. Actual return vs index return
-                   over the holding period, with alpha as the take-home
-                   number. ─── -->
-              <div id="s0-perf-vs-spx" class="s0-perf-panel">
-                <div class="s0-perf-eyebrow">Performance vs S&amp;P 500</div>
-                <div class="s0-perf-row">
-                  <span class="s0-perf-row-lbl">AAPL</span>
-                  <span class="s0-perf-row-val" id="s0-perf-aapl">—</span>
-                </div>
-                <div class="s0-perf-row">
-                  <span class="s0-perf-row-lbl">S&amp;P 500</span>
-                  <span class="s0-perf-row-val" id="s0-perf-spx">—</span>
-                </div>
-                <div class="s0-perf-row s0-perf-row--alpha">
-                  <span class="s0-perf-row-lbl">Alpha</span>
-                  <span class="s0-perf-row-val">
-                    <span id="s0-perf-alpha-amt">—</span>
-                    <span class="s0-perf-row-pp" id="s0-perf-alpha-pp"></span>
-                    <span class="s0-perf-row-arrow">›</span>
-                  </span>
-                </div>
-                <div class="s0-perf-caption" id="s0-perf-caption">Since purchase · <span id="s0-perf-since-date">—</span></div>
-              </div>
 
               <!-- ─── Position summary panel — sits below the Performance
                    panel. Big-number stack: Market Value, Portfolio Weight,
@@ -4899,6 +5076,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <span>History</span>
                   <span class="s0-test-tag">Test only · normally hidden until first purchase</span>
                 </div>
+                <div class="s0-item" style="display:flex;justify-content:space-between;align-items:baseline;cursor:pointer" onclick="openPaperTrades('AAPL')" data-min-version="3">
+                  <span>Paper trades</span>
+                  <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em;font-variant-numeric:tabular-nums" id="s0-paper-count">—</span>
+                </div>
                 <div class="s0-item" id="s0-nav-market">Market</div>
                 <div class="s0-item" id="s0-nav-news">News</div>
                 <div class="s0-item" id="s0-nav-research" onclick="onResearchMenuTap()">Research</div>
@@ -4924,8 +5105,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
             <div style="text-align:right;margin:48px 0 52px">
               <div class="body-sm" style="color:var(--t);margin-bottom:6px">AAPL</div>
-              <div class="h1" style="font-size:26px;letter-spacing:-0.04em" data-max-version="4">Capital Decision</div>
-              <div class="h1" style="font-size:26px;letter-spacing:-0.04em;display:none" data-min-version="4.5">What are you doing with AAPL?</div>
+              <div class="h1" style="font-size:26px;letter-spacing:-0.04em">What are you doing with AAPL?</div>
             </div>
 
             <div id="s6-options"></div>
@@ -5025,20 +5205,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     <button class="period-btn period-btn-multi"    id="s12-h-4y" onclick="setHorizon('s12','4y')"><span class="period-btn-year">4Y</span><span class="period-btn-date" data-h-date="4y">—</span></button>
                     <button class="period-btn period-btn-multi"    id="s12-h-5y" onclick="setHorizon('s12','5y')"><span class="period-btn-year">5Y</span><span class="period-btn-date" data-h-date="5y">—</span></button>
                   </div>
-                </div>
-
-                <!-- V4.5 only: Expected-value derivation + Kelly sizing
-                     suggestion. EV translates probability + horizon into
-                     concrete portfolio drag. Kelly compares the user's
-                     sized tier to what the math actually justifies. -->
-                <div id="s12-ev-block" class="calib-ev-block" data-min-version="4.5">
-                  <div class="calib-ev-eyebrow">Expected value</div>
-                  <div class="calib-ev-line" id="s12-ev-base">—</div>
-                  <div class="calib-ev-sub"  id="s12-ev-bear">—</div>
-                  <div class="calib-ev-divider"></div>
-                  <div class="calib-ev-eyebrow">Sizing math</div>
-                  <div class="calib-ev-line" id="s12-kelly-base">—</div>
-                  <div class="calib-ev-sub"  id="s12-kelly-sub">—</div>
                 </div>
 
               </div>
@@ -5330,19 +5496,6 @@ and you mis-hold.</div>
                     <button class="radio-row" data-radio="sspc"><div class="lbl-block"><div class="head">Speculative [≤2%]</div><div class="sub">May go to zero.</div></div><div class="radio-dot"></div></button>
                   </div>
 
-                  <!-- V4.5 only: current-portfolio composition anchor.
-                       Shows the user's current sizing breakdown so they can
-                       see concentration risk at the moment they're picking. -->
-                  <div id="m1b-portfolio-anchor" class="portfolio-anchor" data-min-version="4.5">
-                    <div class="portfolio-anchor-eyebrow">Your current sizing</div>
-                    <div class="portfolio-anchor-grid">
-                      <div class="portfolio-anchor-cell"><span class="num">2</span><span class="lbl">Core</span></div>
-                      <div class="portfolio-anchor-cell"><span class="num">5</span><span class="lbl">Conviction</span></div>
-                      <div class="portfolio-anchor-cell"><span class="num">8</span><span class="lbl">Starter</span></div>
-                      <div class="portfolio-anchor-cell"><span class="num">3</span><span class="lbl">Speculative</span></div>
-                    </div>
-                    <div class="portfolio-anchor-note" id="m1b-portfolio-note">Pick a size to see concentration impact.</div>
-                  </div>
                 </div>
 
                 <div class="aphorism-block">
@@ -5570,24 +5723,6 @@ to rewrite it.</div>
                 <div class="v5-iv-cad" id="miv-input-cad">—</div>
                 <div class="v5-iv-suffix">per share, conservative central estimate</div>
 
-                <!-- V4.5 only: optional low / high range so the user expresses
-                     the uncertainty in their valuation. Single-point estimates
-                     lie; forcing a range trains probabilistic thinking. -->
-                <div class="miv-range-block" data-min-version="4.5">
-                  <div class="miv-range-eyebrow">Range <span style="color:var(--t-800);font-weight:400">(optional)</span></div>
-                  <div class="miv-range-row">
-                    <label class="miv-range-cell" for="miv-low">
-                      <span class="miv-range-lbl">Low</span>
-                      <span class="miv-range-input-wrap"><input id="miv-low" type="text" inputmode="decimal" autocomplete="off" placeholder="—" oninput="onMivRangeInput('low', event)"><span class="miv-range-ccy">USD</span></span>
-                    </label>
-                    <label class="miv-range-cell" for="miv-high">
-                      <span class="miv-range-lbl">High</span>
-                      <span class="miv-range-input-wrap"><input id="miv-high" type="text" inputmode="decimal" autocomplete="off" placeholder="—" oninput="onMivRangeInput('high', event)"><span class="miv-range-ccy">USD</span></span>
-                    </label>
-                  </div>
-                  <div class="miv-range-note" id="miv-range-note">A wider range is more honest. Most first-time valuations should span ±30%.</div>
-                </div>
-
                 <div class="v5-section-eyebrow" style="margin-top:32px">In one sentence, what method?</div>
                 <div class="bracket bracket--composer" style="margin-top:10px">
                   <span class="c tl"></span><span class="c tr"></span>
@@ -5682,7 +5817,7 @@ to rewrite it.</div>
 
                 <div class="v5-compare-row"><span>Price</span><span class="v5-num-stack"><span class="v5-num">192.35 USD</span><span class="v5-num-cad">≈ 261.60 CAD</span></span></div>
                 <div class="v5-compare-row"><span>Your estimated intrinsic value</span><span class="v5-num-stack"><span class="v5-num" id="m4-yourvalue">—</span><span class="v5-num-cad" id="m4-yourvalue-cad">—</span></span></div>
-                <div class="v5-compare-row" style="margin-top:14px"><span class="v5-num-lbl">Margin</span><span class="v5-num-big" id="m4-margin">—%</span></div>
+                <div class="v5-compare-row" style="margin-top:14px"><span class="v5-num-lbl">Margin of safety</span><span class="v5-num-big" id="m4-margin">—%</span></div>
                 <!-- V4.5 only: dollar-amount framing of the margin so the %
                      translates to a concrete cushion on a 5% position. -->
                 <div id="m4-margin-cad" class="m4-margin-cad" data-min-version="4.5">—</div>
@@ -5768,7 +5903,6 @@ to protect against error.</div>
 
                 <div class="title-md">The work behind it</div>
                 <div class="t-bsm" style="margin-top:-20px">The model, memo, filings, transcripts, or notes the thesis is built on. If the kill line trips, this is what you'll re-read to figure out whether the thesis was wrong or the world was.</div>
-                <div class="t-bsm" style="margin-top:8px;color:var(--t-700)">Optional.</div>
 
                 <div class="bracket bracket--composer">
                   <span class="c tl"></span><span class="c tr"></span>
@@ -5910,21 +6044,24 @@ actually works for you.</div>
                 <div id="m6-health" class="m6-health" data-min-version="4.5"></div>
 
                 <div>
-                  <div class="section-eyebrow" style="margin-bottom:0">Memo</div>
-                  <div class="memo-row"><div class="k">Type</div><div class="v" id="m6-type">—</div><button class="memo-row-edit" onclick="editFromReview('m1')">Edit</button></div>
-                  <div class="memo-row"><div class="k">Size</div><div class="v" id="m6-size">—</div><button class="memo-row-edit" onclick="editFromReview('m1b')">Edit</button></div>
-                  <div class="memo-row"><div class="k">Intrinsic value</div><div class="v" id="m6-iv">—</div><button class="memo-row-edit" onclick="editFromReview('miv')">Edit</button></div>
-                  <div class="memo-row"><div class="k">Margin of safety</div><div class="v" id="m6-mos">—</div><button class="memo-row-edit" onclick="editFromReview('m4')">Edit</button></div>
-                  <div class="memo-row"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div><button class="memo-row-edit" onclick="editFromReview('m2')">Edit</button></div>
-                  <div class="memo-row"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div><button class="memo-row-edit" onclick="editFromReview('m3')">Edit</button></div>
-                  <div class="memo-row" id="m6-note-row" style="display:none"><div class="k">Note</div><div class="v" id="m6-note-display">—</div><button class="memo-row-edit" onclick="editFromReview('m5')">Edit</button></div>
-                  <div class="memo-row" id="m6-source-row" style="display:none"><div class="k">Source</div><div class="v" id="m6-source-display">—</div><button class="memo-row-edit" onclick="editFromReview('msrc')">Edit</button></div>
+                  <div class="m6-section-head">
+                    <div class="section-eyebrow" style="margin-bottom:0">Memo</div>
+                    <div class="m6-tap-hint">Tap a row to edit</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('m1b')"><div class="k">Size</div><div class="v" id="m6-size">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">Intrinsic value</div><div class="v" id="m6-iv">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('m4')"><div class="k">Margin of safety</div><div class="v" id="m6-mos">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('m2')"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div></div>
+                  <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
+                  <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
                 </div>
 
                 <div>
                   <div class="section-eyebrow" style="margin-bottom:0">Calibration</div>
-                  <div class="memo-row"><div class="k">Probability ≥20%/yr</div><div class="v" id="m6-prob">—</div><button class="memo-row-edit" onclick="editFromReview('s12')">Edit</button></div>
-                  <div class="memo-row"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div><button class="memo-row-edit" onclick="editFromReview('s12')">Edit</button></div>
+                  <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Probability ≥20%/yr</div><div class="v" id="m6-prob">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
                 </div>
 
                 <div class="t-bsm" style="line-height:1.55">
@@ -5933,22 +6070,9 @@ actually works for you.</div>
               </div>
             </div>
 
-            <!-- V4.5 only: Sleep-on-it path. Saves the memo as a pending
-                 order surfaced as a notification on s10 next session. Lets
-                 the user lock in the analysis without locking in the trade. -->
-            <div data-min-version="4.5" style="padding:0 16px 12px">
-              <button type="button" class="m6-sleep-link" onclick="saveAsPendingOvernight()">
-                <span class="act-arrow">→</span>
-                <span>Save and review tomorrow</span>
-              </button>
-            </div>
-
-            <!-- V4 — tap-to-commit (existing baseline behaviour) -->
-            <button class="lpb" onclick="commitMemo()" data-max-version="4">Confirm memo</button>
-
-            <!-- V4.5 — hold-to-commit (1.8s). Mirrors the s4 hold-to-execute
-                 pattern; creates a deliberate beat for hesitation. -->
-            <button class="lpb m6-hold-btn" data-min-version="4.5"
+            <!-- Hold-to-commit (1.8s). Mirrors the s4 hold-to-execute pattern;
+                 creates a deliberate beat for hesitation. -->
+            <button class="lpb m6-hold-btn"
                     onmousedown="holdCommitStart(event)" onmouseup="holdCommitCancel()" onmouseleave="holdCommitCancel()"
                     ontouchstart="holdCommitStart(event)" ontouchend="holdCommitCancel()" ontouchcancel="holdCommitCancel()">
               <div class="m6-hold-fill" id="m6-commit-fill"></div>
@@ -6737,7 +6861,7 @@ actually works for you.</div>
           <section class="scr" data-id="s25">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('s24')">‹</button>
+                <button class="back-btn" onclick="backFromTxnDetail()">‹</button>
                 <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">Transaction detail</span>
                 <span style="width:22px"></span>
               </div>
@@ -7341,6 +7465,31 @@ Holding to a broken thesis is.</div>
             </div>
           </section>
 
+          <!-- ════════ s51 — Paper Trades list (cross-stock, or filtered per ticker) ════════ -->
+          <section class="scr" data-id="s51">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="backFromPaperTrades()">‹</button>
+                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em" id="s51-eyebrow">Paper trades</span>
+                <span style="width:22px"></span>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll" style="padding:0 16px 24px">
+              <div style="padding:36px 0 14px">
+                <div class="section-header">Paper trades <span class="meta" id="s51-count">—</span></div>
+                <div style="font-size:13px;color:var(--t);margin-top:0;line-height:1.5;letter-spacing:-0.01em" id="s51-blurb">
+                  Decisions you logged but didn't execute. Compare against actual price action to audit your timing.
+                </div>
+              </div>
+              <div id="s51-list"></div>
+              <div id="s51-empty" style="font-size:13px;color:var(--t);padding:24px 0;line-height:1.55;display:none">
+                No paper trades yet. Use "Log as paper trade" on the order review step to record a decision without committing capital.
+              </div>
+            </div>
+          </section>
+
           <!-- Thesis review detail sheet (used from s24 review rows) -->
           <div class="tl-overlay" id="r-overlay" onclick="hideReviewDetail()"></div>
           <div class="tl-info" id="r-info">
@@ -7676,8 +7825,7 @@ Holding to a broken thesis is.</div>
                 </button>
                 <button class="act-btn" onclick="discardAndExitMemo()" style="padding:10px 0;gap:8px">
                   <span class="act-arrow" style="color:var(--t)">→</span>
-                  <span style="color:var(--t)" data-max-version="4">Discard</span>
-                  <span style="color:var(--t)" data-min-version="4.5">Discard memo (irreversible)</span>
+                  <span style="color:var(--t)">Discard memo (irreversible)</span>
                 </button>
               </div>
             </div>
@@ -7768,8 +7916,12 @@ let state = {
     newProb:   null
   },
   // (V5 measurement-system slices removed — V5 retired)
-  v5ScoredPositions: []     // legacy — kept (without v5 capture flow) since
-                            // Calibration(Me) still reads from it on V4
+  v5ScoredPositions: [],     // legacy — kept (without v5 capture flow) since
+                             // Calibration(Me) still reads from it on V4
+  notifPrefs: loadNotifPrefs(),
+  paperTradeFilter: null,    // null = all; 'AAPL' = filtered to one ticker (set when entering s51)
+  paperTradeFrom:   null,    // origin screen for s51, used by its back arrow
+  txnDetailFrom:    's24'    // origin screen for s25, used by its back arrow ('s24' history or 's51' paper-trades list)
 };
 
 const SEED_THESIS_REVIEWS = [
@@ -7888,6 +8040,25 @@ const SEED_TXNS = [
     horizon: '3y',
     top3:  'no',
     memo: null   // adjustment to existing position; reuses earlier memo
+  },
+  {
+    // Seeded paper trade — gives the dashboard "Paper Trades" entry and the
+    // s51 list page something to render on the returning persona.
+    id: 't-seed-paper-1',
+    date: 'Apr 8, 2026',
+    action: 'Buy',
+    shares: 12,
+    cost:  3137.28,     // 12 × 192 USD × 1.36 — logged near current mkt to test "would-have-been"
+    prob:  45,
+    horizon: '3y',
+    top3:  'no',
+    paper: true,
+    memo: {
+      type: 'comp', size: 'starter',
+      thesis: 'Wanted to add on the dip but valuation already stretched. Logging to audit my pricing instinct.',
+      kill:   'Services growth drops below 8% for two consecutive quarters.',
+      mos:    'around'
+    }
   }
 ];
 
@@ -7939,20 +8110,11 @@ function findStock(ticker) {
 }
 
 const VERSIONS = {
-  4:   { label: 'V4',   title: 'Calibration + Memo',     blurb: 'Memo flow + thesis review + calibration analytics' },
-  4.5: { label: 'V4.5', title: 'Intelligent investor',   blurb: 'V4 + pre-commit kill-line, EV math, sleep-on-it, devil\'s advocate, sizing math' }
+  4.5: { label: 'V4.5', title: 'Intelligent investor',   blurb: 'Memo flow + pre-commit kill-line, EV math, sleep-on-it, devil\'s advocate, sizing math' }
 };
 function loadVersion() {
-  // Two supported versions: V4 (baseline) and V4.5 (V4 + intelligent-investor
-  // improvements). Persisted value can be either; default is 4.5 so the demo
-  // shows the latest by default.
-  try {
-    const raw = localStorage.getItem('mogo.calmemo.version');
-    if (raw) {
-      const v = parseFloat(raw);
-      if (v === 4 || v === 4.5) return v;
-    }
-  } catch (_) {}
+  // V4.5 is the only supported version. Any legacy persisted value is
+  // silently normalized.
   return 4.5;
 }
 function persistVersion(v) {
@@ -8014,6 +8176,42 @@ function persistHasMemo(v) {
   } catch(_) {}
 }
 
+/* Notification on/off preferences. Each key gates one today-sub-block:
+     alerts   → ≥5% movers
+     moves    → 2-5% movers (material moves)
+     review   → thesis review prompt
+     backfill → memos-to-write block
+   Defaults to all-on; persisted in localStorage. Defaults inlined inside
+   loadNotifPrefs so it can be called during state init (the const at module
+   scope would be in the TDZ at that point and crash the whole script). */
+function loadNotifPrefs() {
+  const defaults = { alerts: true, moves: true, review: true, backfill: true };
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.notifPrefs');
+    if (!raw) return { ...defaults };
+    return { ...defaults, ...JSON.parse(raw) };
+  } catch (_) { return { ...defaults }; }
+}
+function persistNotifPrefs(prefs) {
+  try { localStorage.setItem('mogo.calmemo.notifPrefs', JSON.stringify(prefs)); } catch (_) {}
+}
+function toggleNotifPref(key) {
+  if (!state.notifPrefs) state.notifPrefs = loadNotifPrefs();
+  state.notifPrefs[key] = !state.notifPrefs[key];
+  persistNotifPrefs(state.notifPrefs);
+  refreshNotifSwitches();
+  // Re-render every today-sub-block so the toggle takes effect immediately
+  if (typeof refreshTodayBlock     === 'function') refreshTodayBlock();
+  if (typeof refreshReviewNotif    === 'function') refreshReviewNotif();
+  if (typeof refreshBackfillNotif  === 'function') refreshBackfillNotif();
+}
+function refreshNotifSwitches() {
+  const prefs = (state && state.notifPrefs) || loadNotifPrefs();
+  document.querySelectorAll('.drawer-switch[data-notif]').forEach(btn => {
+    btn.classList.toggle('is-on', !!prefs[btn.dataset.notif]);
+  });
+}
+
 /* ═════════════════════════════════════════════════
    NAVIGATION
    ═════════════════════════════════════════════════ */
@@ -8051,6 +8249,7 @@ const SCREENS = [
   { id: 's24', group: 'Stock',         name: 'History',                      sub: 'memo + all AAPL trades',                               minVersion: 3 },
   { id: 's25', group: 'Stock',         name: 'Transaction detail',           sub: 'memo + calibration snapshot',                          minVersion: 3 },
   { id: 's50', group: 'Stock',          name: 'Calibration timeline',         sub: 'probability moves on AAPL over time',                  minVersion: 3 },
+  { id: 's51', group: 'Stock',          name: 'Paper trades',                 sub: 'logged decisions across your book',                    minVersion: 3 },
   { id: 's40', group: 'Order',         name: 'Saved as paper trade',         sub: 'logged · no capital committed',                        minVersion: 3 },
 
   // V4 — reflection
@@ -8112,6 +8311,7 @@ function go(id) {
   if (id === 'r3')  renderR3();
   if (id === 'r4')  renderR4();
   if (id === 's50') renderTimeline();
+  if (id === 's51') renderS51();
   if (id === 's12' || id === 'm6') refreshMemoLocks();
   if (id === 's12') refreshCalibSummary();
   if (id === 's20') refreshS20Summary();
@@ -8221,6 +8421,12 @@ function collapseKill() {
 
 function renderStock() {
   refreshReviewNotif();
+  // Paper-trades count in the s0 nav menu
+  const paperCountEl = document.getElementById('s0-paper-count');
+  if (paperCountEl) {
+    const n = getPaperTrades().filter(t => (t.ticker || 'AAPL') === 'AAPL').length;
+    paperCountEl.textContent = n > 0 ? `${n} logged` : 'none yet';
+  }
 
   // Pull from state.memo. For the returning persona we hydrate from the seed
   // so the page actually shows a populated position artifact in the demo.
@@ -9524,10 +9730,6 @@ function refreshCalibSummary() {
     }
   }
 
-  // V4.5 only: live-derived expected-value block. Translates the user's
-  // probability + horizon picks into a concrete +X% / -Y% range expressed
-  // in portfolio drag, so the abstract slider math becomes legible.
-  refreshCalibEV();
 }
 
 /* Compute and render the Expected Value block on s12 (V4.5 only).
@@ -9546,86 +9748,6 @@ function pickKillAction(action) {
   refreshMemoLocks();
 }
 
-function refreshCalibEV() {
-  const block = document.getElementById('s12-ev-block');
-  if (!block || state.version < 4.5) return;
-  const baseEl = document.getElementById('s12-ev-base');
-  const bearEl = document.getElementById('s12-ev-bear');
-  const p = (state.prob || 0) / 100;
-  const horizonYears = parseFloat(String(state.horizon || '3y').replace('y', '')) || 3;
-  // If user hasn't moved the slider yet, show a prompt-style placeholder
-  if (state.prob <= 0) {
-    if (baseEl) baseEl.textContent = 'Pick a probability above to see the math.';
-    if (bearEl) bearEl.textContent = '';
-    return;
-  }
-  // Sizing assumption: Core tier (10%) if memo says so, otherwise 5%
-  const sizing = state.memo && state.memo.size === 'core' ? 0.10
-              : state.memo && state.memo.size === 'conv' ? 0.075
-              : state.memo && state.memo.size === 'start' ? 0.02
-              : state.memo && state.memo.size === 'sspc' ? 0.015
-              : 0.05;
-  // Upside: 20%/yr compounded over horizon. Downside: ~-25% cumulative.
-  const upsideRet = Math.pow(1.20, horizonYears) - 1;
-  const downsideRet = -0.25;
-  // Index baseline: 10%/yr over the same horizon
-  const indexRet = Math.pow(1.10, horizonYears) - 1;
-  // Expected return = p × upside + (1-p) × downside
-  const evRet = p * upsideRet + (1 - p) * downsideRet;
-  // EV relative to staying in index
-  const evVsIndex = evRet - indexRet;
-  // Portfolio impact at chosen sizing
-  const evPortfolioPct = evVsIndex * sizing * 100;
-  const bearPortfolioPct = downsideRet * sizing * 100;
-  const sign = evPortfolioPct >= 0 ? '+' : '−';
-  const probPct = state.prob;
-  const upsidePct = (upsideRet * 100).toFixed(0);
-  if (baseEl) {
-    baseEl.textContent =
-      `At ${probPct}% × ${upsidePct}% over ${horizonYears} year${horizonYears === 1 ? '' : 's'} ` +
-      `on a ${(sizing * 100).toFixed(1)}% position: expected ${sign}${Math.abs(evPortfolioPct).toFixed(1)}% vs index.`;
-  }
-  if (bearEl) {
-    bearEl.textContent =
-      `If wrong (${100 - probPct}%): position drops ~25%, portfolio drag ` +
-      `${bearPortfolioPct.toFixed(1)}%.`;
-  }
-
-  // ── Kelly-fractional sizing suggestion ──
-  // Kelly = (p × b − q) / b, where b = win/loss ratio.
-  // Use half-Kelly (conservative) for the recommendation.
-  const kBase = document.getElementById('s12-kelly-base');
-  const kSub  = document.getElementById('s12-kelly-sub');
-  const winRatio = upsideRet / 0.25;   // b = expected gain / expected loss
-  const kellyRaw = (p * winRatio - (1 - p)) / winRatio;
-  const halfKelly = Math.max(0, kellyRaw / 2);
-  const halfKellyPct = halfKelly * 100;
-  const sizingLabel = state.memo && state.memo.size === 'core'  ? 'Core (10%+)'
-                    : state.memo && state.memo.size === 'conv'  ? 'Conviction (5–10%)'
-                    : state.memo && state.memo.size === 'start' ? 'Starter (1–3%)'
-                    : state.memo && state.memo.size === 'sspc'  ? 'Speculative (≤2%)'
-                    : 'no size set';
-  const userSizingPct = sizing * 100;
-  if (kBase) {
-    if (halfKellyPct <= 0) {
-      kBase.textContent = 'At this probability, the math says don\'t open the position.';
-    } else {
-      kBase.textContent = `Half-Kelly suggests ~${halfKellyPct.toFixed(1)}% of portfolio at this confidence.`;
-    }
-  }
-  if (kSub) {
-    const delta = userSizingPct - halfKellyPct;
-    if (halfKellyPct <= 0) {
-      kSub.textContent = `Your size (${sizingLabel}) commits real capital to a bet the EV doesn't justify.`;
-    } else if (Math.abs(delta) < 1) {
-      kSub.textContent = `Your size (${sizingLabel}, ~${userSizingPct.toFixed(1)}%) matches the suggestion.`;
-    } else if (delta > 0) {
-      kSub.textContent = `Your size (${sizingLabel}, ~${userSizingPct.toFixed(1)}%) is ${delta.toFixed(1)}pp larger than the math suggests.`;
-    } else {
-      kSub.textContent = `Your size (${sizingLabel}, ~${userSizingPct.toFixed(1)}%) is ${Math.abs(delta).toFixed(1)}pp smaller than the math suggests.`;
-    }
-  }
-}
 function continueFromCalibration() {
   // If user came here via m6's "Edit Probability/Horizon", treat Continue
   // as "Save changes" and return to review instead of walking forward.
@@ -9650,7 +9772,6 @@ document.addEventListener('click', e => {
   if (key === 'm1-type') state.memo.type = value;
   if (key === 'm1-size') state.memo.size = value;
   if (key === 'm4-mos')  state.memo.mos  = value;
-  if (key === 'm1-size' && state.version >= 4.5) refreshPortfolioAnchorNote();
   // V4.5: rotate the aphorism on m1 based on the type pick
   if (key === 'm1-type' && state.version >= 4.5) {
     const aph = document.getElementById('m1-aphorism');
@@ -9733,11 +9854,6 @@ function hydrateMemoScreen(screenId) {
     const im = document.getElementById('miv-method');
     if (iv) iv.value = m.intrinsicValue || '';
     if (im) im.value = m.ivMethod || '';
-    // V4.5 — hydrate optional range inputs + recompute the note
-    const lo = document.getElementById('miv-low');
-    const hi = document.getElementById('miv-high');
-    if (lo) lo.value = m.ivLow  || '';
-    if (hi) hi.value = m.ivHigh || '';
     renderMivCompare();
   }
   if (screenId === 'm4') {
@@ -10091,33 +10207,6 @@ function onMivMethodInput() {
   persistMemoDraft();
   refreshMemoLocks();
 }
-/* V4.5 — optional low / high range inputs on miv */
-function onMivRangeInput(which, e) {
-  const el = (e && e.target) || document.getElementById(which === 'low' ? 'miv-low' : 'miv-high');
-  if (!el) return;
-  const cleaned = el.value.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '1');
-  if (cleaned !== el.value) el.value = cleaned;
-  if (which === 'low')  state.memo.ivLow  = el.value;
-  if (which === 'high') state.memo.ivHigh = el.value;
-  // Live note: comment on the range width relative to the central estimate
-  const note = document.getElementById('miv-range-note');
-  if (note) {
-    const lo = parseFloat(state.memo.ivLow);
-    const hi = parseFloat(state.memo.ivHigh);
-    const central = parseFloat(state.memo.intrinsicValue);
-    if (isFinite(lo) && isFinite(hi) && isFinite(central) && central > 0) {
-      const widthPct = ((hi - lo) / central) * 100;
-      note.textContent = widthPct < 20
-        ? `Range width is ${widthPct.toFixed(0)}% — narrower than most honest first-pass valuations.`
-        : widthPct < 60
-        ? `Range width is ${widthPct.toFixed(0)}% — reasonable uncertainty acknowledged.`
-        : `Range width is ${widthPct.toFixed(0)}% — wide. Either the business is genuinely hard to value or the work isn't done yet.`;
-    } else {
-      note.textContent = 'A wider range is more honest. Most first-time valuations should span ±30%.';
-    }
-  }
-  persistMemoDraft();
-}
 function renderMivCompare() {
   const v = parseFloat(state.memo.intrinsicValue);
   const ok = isFinite(v) && v > 0;
@@ -10305,10 +10394,12 @@ function continueM4Anyway() {
 
 function renderM6() {
   const m = state.memo;
-  // V4.5: render memo-quality checklist + devil's advocate panel + personalized title
+  // V4.5: render memo-quality checklist + personalized title
   if (state.version >= 4.5) renderM6Health(m);
-  if (state.version >= 4.5) renderM6Devil(m);
   if (state.version >= 4.5) renderM6Title();
+  // Remove the devil's-advocate panel if a previous render injected it
+  const oldDevil = document.getElementById('m6-devil');
+  if (oldDevil) oldDevil.remove();
   // V4.5: returning-user (increase) flow skips the numbered 10 steps —
   // drop the "10 / 10" counter to just "Memo review" so the indicator
   // matches what the user actually did.
@@ -10375,30 +10466,13 @@ function renderM6() {
   if (fill) fill.style.width = '0%';
 }
 
-/* V4.5 — Refresh the portfolio composition note on m1b after a size pick.
-   Seed-data context: Core[2], Conviction[5], Starter[8], Speculative[3].
-   Adding the new position shifts that and the note calls out the concentration. */
-function refreshPortfolioAnchorNote() {
-  const note = document.getElementById('m1b-portfolio-note');
-  if (!note || !state.memo || !state.memo.size) return;
-  const sizeLabel = SIZE_LBL[state.memo.size] || '';
-  // Seed assumption: portfolio has 18 positions, weights add up cleanly.
-  // Adding a new Core tilts the top-3 Core concentration meaningfully.
-  const msg = state.memo.size === 'core'   ? 'Adding a 3rd Core position concentrates the top tier — your largest 3 holdings would be ~38% of portfolio.'
-           : state.memo.size === 'conv'    ? 'Adding a 6th Conviction position puts the Conviction tier near 40% of portfolio.'
-           : state.memo.size === 'start'   ? 'A 9th Starter — common bucket for under-developed ideas. Consider why this isn\'t graduating to Conviction.'
-           : state.memo.size === 'sspc'    ? 'A 4th Speculative bucket position. Speculative sized at ≤2% total should stay under 10% of portfolio collectively.'
-           : 'Pick a size to see concentration impact.';
-  note.textContent = msg;
-}
-
 /* V4.5 — Verb-specific Continue labels on each memo step CTA. Each Continue
    is a different commitment; naming it names what the user just did. */
 const V45_STEP_CTA_LABELS = {
   m1:    'Confirm classification',
   m1b:   'Lock in sizing',
   miv:   'Save intrinsic value',
-  m4:    'Confirm margin call',
+  m4:    'Confirm margin of safety',
   m2:    'Save thesis',
   m3:    'Save kill line',
   s12:   'Record probability',
@@ -10797,18 +10871,38 @@ function finishBackfill() {
   go('s10');
 }
 
-/* Dashboard render needs to count the pending positions */
+/* Dashboard render counts the pending positions; the row list is collapsed
+   to a single summary tap target (tickers comma-joined + arrow), routing
+   to s60 where the user sees the full list. Block self-hides at 0 pending. */
 function refreshBackfillNotif() {
   const banner = document.getElementById('s10-backfill-notif');
-  const count  = document.getElementById('s10-backfill-count');
-  if (!banner) return;
+  const numEl  = document.getElementById('s10-backfill-num');
+  const lblEl  = document.getElementById('s10-backfill-lbl');
+  const rowsEl = document.getElementById('s10-backfill-rows');
   const pending = getBackfillPending();
-  if (pending.length === 0) {
-    banner.style.display = 'none';
-  } else {
-    banner.style.display = '';
-    if (count) count.textContent = `${pending.length} position${pending.length === 1 ? '' : 's'}`;
+  const prefs = (state && state.notifPrefs) || loadNotifPrefs();
+  if (banner) {
+    if (!prefs.backfill || pending.length === 0) {
+      banner.style.display = 'none';
+      if (rowsEl) rowsEl.innerHTML = '';
+    } else {
+      banner.style.display = '';
+      if (numEl) numEl.textContent = String(pending.length);
+      if (lblEl) lblEl.textContent = pending.length === 1 ? 'memo to write' : 'memos to write';
+      if (rowsEl) {
+        const tickers = pending.map(p => p.ticker).join(' · ');
+        rowsEl.innerHTML = `
+          <div class="dash-today-mover">
+            <div class="dash-today-mover-left">
+              <span class="dash-today-mover-tkr">${escapeNote(tickers)}</span>
+            </div>
+            <span class="dash-today-mover-arrow">→</span>
+          </div>
+        `;
+      }
+    }
   }
+  if (typeof _refreshTodayDividers === 'function') _refreshTodayDividers();
 }
 
 /* Exit from any memo screen — confirm if there's content to lose */
@@ -11383,9 +11477,8 @@ function refreshVersionVisibility() {
 /* Version picker chip — updates state, persists, and refreshes UI.
    V1–V3 were retired; clamp anything below 4 up to the V4 baseline. */
 function setVersion(v) {
-  // Two supported versions: 4 and 4.5. Anything else snaps to 4.
-  v = parseFloat(v);
-  if (v !== 4 && v !== 4.5) v = 4;
+  // V4.5 is the only supported version — any legacy input snaps to it.
+  v = 4.5;
   state.version = v;
   persistVersion(v);
   refreshVersionUI();
@@ -11489,6 +11582,27 @@ function renderDashboard() {
   refreshBackfillNotif();
   // V4.5: surface a chip if the user has memos in "sleep on it" overnight queue
   refreshPendingChip();
+  // Paper Trades dashboard block — count + detail line reflect runtime state
+  refreshPaperTradesBlock();
+}
+
+/* Dashboard "Paper Trades" tile — counts logged-but-not-executed decisions
+   across the book. Detail line carries the latest entry as a teaser, or
+   stays generic when the list is empty. */
+function refreshPaperTradesBlock() {
+  const trades = getPaperTrades();
+  const countEl  = document.getElementById('s10-paper-count');
+  const detailEl = document.getElementById('s10-paper-detail');
+  if (countEl)  countEl.textContent = trades.length ? String(trades.length) : '0';
+  if (detailEl) {
+    if (trades.length === 0) {
+      detailEl.textContent = 'no capital committed';
+    } else {
+      const latest = trades[trades.length - 1];
+      const ticker = latest.ticker || 'AAPL';
+      detailEl.textContent = `${ticker} · ${latest.action} ${latest.shares} sh · ${latest.date}`;
+    }
+  }
 }
 
 /* "Your book today" — threshold-gated daily pulse at the top of the dash.
@@ -11502,47 +11616,98 @@ function refreshTodayBlock() {
   if (stamp) stamp.textContent = _formatTodayStamp();
 
   // Seeded movers — kept here as the demo's daily-pulse signal. Real
-  // implementation would derive from holdings + market data; threshold
-  // for inclusion is |move| ≥ 2%.
+  // implementation would derive from holdings + market data. Threshold tiers:
+  //   ≥5%  → alerts block (self-hides on quiet days)
+  //   2-5% → material moves block (renders zero state on quiet days)
   const movers = [
+    { ticker: 'NVDA',    pct: '−6.8%', dir: 'down', reason: 'guidance miss · after-hours' },
     { ticker: 'AAPL',    pct: '+4.2%', dir: 'up',   reason: 'Q1 earnings · pre-mkt' },
     { ticker: 'EOSCR',   pct: '−3.8%', dir: 'down', reason: 'no headline · vol +3σ' }
   ];
 
+  const _abs = m => Math.abs(parseFloat(m.pct.replace(/[^\d.-]/g, '')));
+  const alerts  = movers.filter(m => _abs(m) >= 5);
+  const regular = movers.filter(m => _abs(m) < 5);
+  const prefs   = (state && state.notifPrefs) || loadNotifPrefs();
+
+  // Alerts block (≥5% moves)
+  const alertsBlock = document.getElementById('s10-alerts-block');
+  const alertsNum   = document.getElementById('s10-alerts-num');
+  const alertsLbl   = document.getElementById('s10-alerts-lbl');
+  const alertsRows  = document.getElementById('s10-alerts-rows');
+  if (alertsBlock && alertsRows) {
+    if (!prefs.alerts || alerts.length === 0) {
+      alertsBlock.style.display = 'none';
+      alertsRows.innerHTML = '';
+    } else {
+      alertsBlock.style.display = '';
+      if (alertsNum) alertsNum.textContent = String(alerts.length);
+      if (alertsLbl) alertsLbl.textContent = alerts.length === 1 ? 'alert' : 'alerts';
+      alertsRows.innerHTML = alerts.map(_renderMoverRow).join('');
+    }
+  }
+
+  // Material moves block (2-5% moves)
+  const movesBlock = document.getElementById('s10-moves-block');
   const num     = document.getElementById('s10-today-num');
   const lbl     = document.getElementById('s10-today-lbl');
   const note    = document.getElementById('s10-today-note');
   const moversWrap = document.getElementById('s10-today-movers');
-  if (!num || !lbl || !note || !moversWrap) return;
-
-  if (movers.length === 0) {
-    // Quiet-day variant
-    num.textContent = '0';
-    num.classList.remove('is-active');
-    lbl.textContent = 'open questions';
-    note.textContent = 'Scanned holdings and review names. Nothing crossed your thresholds.';
-    moversWrap.style.display = 'none';
-    moversWrap.innerHTML = '';
-  } else {
-    // Active-day variant
-    num.textContent = String(movers.length);
-    num.classList.add('is-active');
-    lbl.textContent = movers.length === 1 ? 'material move' : 'material moves';
-    note.textContent = 'Names that crossed your daily threshold. Read the reason, not the number.';
-    moversWrap.style.display = 'flex';
-    moversWrap.innerHTML = movers.map(m => {
-      const arrow = m.dir === 'up' ? '▲' : '▼';
-      return `
-        <div class="dash-today-mover">
-          <div class="dash-today-mover-left">
-            <span class="dash-today-mover-tkr">${escapeNote(m.ticker)}</span>
-            <span class="dash-today-mover-reason">${escapeNote(m.reason)}</span>
-          </div>
-          <span class="dash-today-mover-pct"><span>${arrow}</span><span>${escapeNote(m.pct.replace(/^[+−]/, ''))}</span></span>
-        </div>
-      `;
-    }).join('');
+  if (movesBlock && !prefs.moves) {
+    movesBlock.style.display = 'none';
+  } else if (num && lbl && note && moversWrap) {
+    if (movesBlock) movesBlock.style.display = '';
+    if (regular.length === 0) {
+      // Quiet-day variant
+      num.textContent = '0';
+      num.classList.remove('is-active');
+      lbl.textContent = 'open questions';
+      note.textContent = 'Scanned holdings and review names. Nothing crossed your thresholds.';
+      moversWrap.style.display = 'none';
+      moversWrap.innerHTML = '';
+    } else {
+      // Active-day variant
+      num.textContent = String(regular.length);
+      num.classList.add('is-active');
+      lbl.textContent = regular.length === 1 ? 'material move' : 'material moves';
+      note.textContent = 'Names that crossed your daily threshold. Read the reason, not the number.';
+      moversWrap.style.display = 'flex';
+      moversWrap.innerHTML = regular.map(_renderMoverRow).join('');
+    }
   }
+
+  _refreshTodayDividers();
+}
+
+/* Shared mover-row template (used by alerts + material moves). */
+function _renderMoverRow(m) {
+  const arrow = m.dir === 'up' ? '▲' : '▼';
+  return `
+    <div class="dash-today-mover">
+      <div class="dash-today-mover-left">
+        <span class="dash-today-mover-tkr">${escapeNote(m.ticker)}</span>
+        <span class="dash-today-mover-reason">${escapeNote(m.reason)}</span>
+      </div>
+      <span class="dash-today-mover-pct"><span>${arrow}</span><span>${escapeNote(m.pct.replace(/^[+−\-]/, ''))}</span></span>
+    </div>
+  `;
+}
+
+/* Hide the top divider on whichever today-sub-block is the first visible
+   one (alerts block may collapse on quiet days, in which case material
+   moves becomes the visual head). */
+function _refreshTodayDividers() {
+  const today = document.getElementById('s10-today');
+  if (!today) return;
+  const blocks = today.querySelectorAll('.dash-today-block');
+  let isFirstVisible = true;
+  blocks.forEach(b => {
+    const divider = b.querySelector(':scope > .dash-today-divider');
+    const hidden = b.style.display === 'none';
+    if (hidden) return;
+    if (divider) divider.style.display = isFirstVisible ? 'none' : '';
+    isFirstVisible = false;
+  });
 }
 
 /* Stamp formatter for the "Your book today" eyebrow. Mirrors the brand's
@@ -11645,13 +11810,15 @@ function triggerReviewNotif() {
 }
 
 function refreshReviewNotif() {
-  const show = !!(state.hasMemo && state.reviewPending);
+  const prefs = (state && state.notifPrefs) || loadNotifPrefs();
+  const show = !!(state.hasMemo && state.reviewPending && prefs.review);
   const banner10 = document.getElementById('s10-review-notif');
   const banner0  = document.getElementById('s0-review-notif');
   const badge    = document.getElementById('s10-aapl-badge');
   if (banner10) banner10.style.display = show ? '' : 'none';
   if (banner0)  banner0.style.display  = show ? '' : 'none';
   if (badge)    badge.style.display    = show ? '' : 'none';
+  if (typeof _refreshTodayDividers === 'function') _refreshTodayDividers();
 }
 
 /* ═════════════════════════════════════════════════
@@ -12689,6 +12856,10 @@ function renderTxnList() {
 }
 
 function openTxnDetail(txnId) {
+  // Record which screen the user came from so s25's back button routes
+  // correctly (s24 history, or s51 paper-trades list).
+  const prev = window._currentScreenId;
+  if (prev === 's24' || prev === 's51') state.txnDetailFrom = prev;
   const list = getTxnList();
   const txn  = list.find(t => t.id === txnId);
   if (!txn) return;
@@ -13077,6 +13248,74 @@ function finishPaper() {
   state.limitPrice = '';
   state.reason = null;
   go('s0');
+}
+
+/* ─── Paper trades list (s51) ────────────────────────────────────────
+   Tapped from the dashboard (cross-stock view) or from the stock page
+   menu (per-ticker view). state.paperTradeFilter controls the variant:
+     null    → show every paper trade across the book
+     'AAPL'  → show only paper trades on that ticker
+   Each row routes to s25 (transaction detail), which already handles
+   the paper-trade banner. backFromTxnDetail() returns to s51 or s24
+   depending on where the user opened the detail from. */
+function getPaperTrades() {
+  const list = (typeof getTxnList === 'function') ? getTxnList() : (state.transactions || []);
+  return list.filter(t => t.paper);
+}
+function openPaperTrades(filter) {
+  state.paperTradeFilter = filter || null;
+  state.paperTradeFrom   = window._currentScreenId || (filter ? 's0' : 's10');
+  go('s51');
+}
+function backFromPaperTrades() {
+  const dest = state.paperTradeFrom || (state.paperTradeFilter ? 's0' : 's10');
+  state.paperTradeFilter = null;
+  go(dest);
+}
+function backFromTxnDetail() {
+  const from = state.txnDetailFrom || 's24';
+  go(from);
+}
+function renderS51() {
+  const filter = state.paperTradeFilter;
+  const all    = getPaperTrades();
+  const list   = filter ? all.filter(t => (t.ticker || 'AAPL') === filter) : all;
+
+  const eyebrow = document.getElementById('s51-eyebrow');
+  if (eyebrow) eyebrow.textContent = filter ? `${filter} · Paper trades` : 'Paper trades';
+  const blurb = document.getElementById('s51-blurb');
+  if (blurb) {
+    blurb.textContent = filter
+      ? `Every ${filter} decision you logged but didn't execute. Compare against the actual price action to audit your timing.`
+      : `Decisions you logged but didn't execute. Compare against actual price action to audit your timing.`;
+  }
+  const countEl = document.getElementById('s51-count');
+  if (countEl) countEl.textContent = list.length ? String(list.length) : '';
+
+  const listEl = document.getElementById('s51-list');
+  const empty  = document.getElementById('s51-empty');
+  if (!listEl || !empty) return;
+  if (list.length === 0) {
+    listEl.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  listEl.innerHTML = list.slice().reverse().map(t => {
+    const ticker = t.ticker || 'AAPL';
+    const cost = (t.cost || (t.shares * 192.35 * 1.36)).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
+    const tickerChip = filter ? '' : `<span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--t);letter-spacing:0.04em;margin-right:8px">${ticker}</span>`;
+    return `<div class="txn-item paper" onclick="openTxnDetail('${t.id}')">
+      <div class="txn-meta">
+        <div class="txn-action">${tickerChip}${t.action} · ${t.shares} shares</div>
+        <div class="txn-shares paper-tag">PAPER TRADE</div>
+      </div>
+      <div class="txn-side">
+        <div class="txn-cost">— ${cost} CAD</div>
+        <div class="txn-date">${t.date}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 /* ═════════════════════════════════════════════════
@@ -13642,6 +13881,7 @@ document.addEventListener('DOMContentLoaded', () => {
   populateHorizonDates();
   refreshVersionUI();           // builds drawer jumper (filtered) + applies version-gated visibility
   refreshModeButtons();
+  refreshNotifSwitches();       // sync drawer on/off switches to persisted notifPrefs
   setProb('s12', 0);            // initial-buy default — Continue stays locked until the user moves it
   setProb('s20', 60);
   hydrateAckCheckboxes();       // reflect persisted "don't show again" flags on mintro + mresearch
