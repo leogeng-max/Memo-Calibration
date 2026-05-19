@@ -194,6 +194,22 @@ body.is-fullscreen .zoom-toggle {
 .scr.padded { padding: 72px 26px 36px; }
 .scr.padded.is-active { display: flex; }
 
+/* ─── Page entry animation — every screen fades up on entry. Re-fires on
+   each navigation because go() removes/re-adds .is-active. Tuned to feel
+   institutional: short, soft, deliberate — not bouncy. ─── */
+@keyframes scr-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.scr.is-active {
+  animation: scr-enter 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+/* s0 example mode runs its own cascaded entrance — suppress the global
+   page-enter animation so the two don't double up. */
+.scr[data-id="s0"].is-example-entering.is-active {
+  animation: none;
+}
+
 /* shared scroll body */
 .body-scroll {
   flex: 1 1 auto;
@@ -541,6 +557,12 @@ body.is-fullscreen .zoom-toggle {
   flex-direction: column;
   gap: 14px;
 }
+/* When nested inside the collapsible card body, drop the legacy outer
+   margin/padding so the panel sits flush against the card frame. */
+.position-card-body .s0-perf-panel {
+  margin-top: 0;
+  padding: 0;
+}
 .s0-perf-eyebrow {
   font-size: 13px;
   color: var(--t);
@@ -625,6 +647,11 @@ body.is-fullscreen .zoom-toggle {
   display: flex;
   flex-direction: column;
   gap: 25px;
+}
+/* When nested inside the collapsible card body, drop the legacy 64px top
+   margin so the rows open flush below the card head. */
+.position-card-body .s0-summary-panel {
+  margin-top: 0;
 }
 .s0-summary-row {
   display: flex;
@@ -1557,7 +1584,7 @@ body.is-fullscreen .zoom-toggle {
    know they're reading a reference, not their live position. */
 .scr[data-id="s0"].is-example-mode #s0-delta,
 .scr[data-id="s0"].is-example-mode #s0-price-cad,
-.scr[data-id="s0"].is-example-mode #s0-perf-vs-spx,
+.scr[data-id="s0"].is-example-mode #s0-perf-section,
 .scr[data-id="s0"].is-example-mode #s0-tx-strip,
 .scr[data-id="s0"].is-example-mode #s0-position-summary,
 .scr[data-id="s0"].is-example-mode #s0-bottom-about,
@@ -1569,13 +1596,18 @@ body.is-fullscreen .zoom-toggle {
 }
 
 /* Visual differentiation — subtle vertical accent line on the left and a
-   faint scan-line gradient overlay so the page reads as a "specimen". */
+   faint scan-line gradient overlay so the page reads as a "specimen".
+   (Keep .scr's existing position:absolute — adding relative here collapses
+   the height and kills scroll.) */
 .scr[data-id="s0"].is-example-mode {
-  position: relative;
   background:
     linear-gradient(180deg, rgba(217,164,65,0.02) 0%, transparent 30%),
     var(--bg, #0a0a0a);
 }
+/* Hide the live price (and the whole right-side header column since the
+   delta + CAD line are already removed) — the example page is a memo
+   artifact, not a live position. */
+.scr[data-id="s0"].is-example-mode .s0-header-right { display: none !important; }
 .scr[data-id="s0"].is-example-mode::before {
   content: '';
   position: absolute;
@@ -2606,23 +2638,39 @@ body.is-fullscreen .zoom-toggle {
 }
 .ex-annot:hover { background: rgba(110, 196, 143, 0.25); }
 
-/* V4.5 only — First-memo celebration ribbon on s9 Order filled */
+/* V4.5 only — First-memo ribbon on s9 Order filled. Monochrome —
+   no chromatic celebration. Tap to view the memo on s0. */
 .s9-firstmemo-ribbon {
   margin: 18px 0 22px;
-  padding: 14px;
-  border: 1px solid rgba(110, 196, 143, 0.35);
-  border-radius: 2px;
-  background: rgba(110, 196, 143, 0.06);
+  padding: 14px 16px;
+  border: 0.5px solid rgba(255,255,255,0.18);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.02);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
+  cursor: pointer;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease);
+}
+.s9-firstmemo-ribbon:hover {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.04);
 }
 .s9-firstmemo-mark {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 14px;
-  color: #6ec48f;
-  margin-top: 1px;
+  color: var(--p);
+  flex-shrink: 0;
 }
+.s9-firstmemo-arrow {
+  color: var(--s);
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-left: 4px;
+  transition: color 150ms var(--ease);
+}
+.s9-firstmemo-ribbon:hover .s9-firstmemo-arrow { color: var(--p); }
 .s9-firstmemo-text { flex: 1; min-width: 0; }
 .s9-firstmemo-title {
   font-size: 13.5px;
@@ -3232,38 +3280,46 @@ body.is-fullscreen .zoom-toggle {
   line-height: 1;
 }
 /* Tappable step label — when the step has an info modal, the label itself
-   becomes the affordance. Subtle bordered box signals "tap for more" —
-   institutional button feel without being loud. */
-.ticker-row.lite .ticker-step.is-info {
-  cursor: pointer;
-  display: inline-block;
-  border: 0.5px solid rgba(255,255,255,0.18);
-  border-radius: 3px;
-  padding: 3px 9px;
-  text-decoration: none;
-  transition: border-color 150ms var(--ease), background 150ms var(--ease), color 150ms var(--ease);
-}
-.ticker-row.lite .ticker-step.is-info:hover {
-  border-color: rgba(255,255,255,0.45);
-  background: rgba(255,255,255,0.04);
-  color: var(--p);
-}
-
-/* Forecast section eyebrows that open info modals — same boxed affordance
-   so Claim / Probability / Horizon read as identical tappable labels. */
+   becomes the affordance. Bordered pill signals "tap for more" —
+   institutional button feel, slightly lifted with a soft glow on hover.
+   The subtle border-breath animation marks the pill as alive without
+   being loud. */
+.ticker-row.lite .ticker-step.is-info,
 .forecast-eyebrow.is-info {
   cursor: pointer;
   display: inline-block;
-  border: 0.5px solid rgba(255,255,255,0.18);
-  border-radius: 3px;
-  padding: 3px 9px;
-  margin-bottom: 14px;
-  transition: border-color 150ms var(--ease), background 150ms var(--ease), color 150ms var(--ease);
+  border: 0.5px solid rgba(255,255,255,0.22);
+  border-radius: 4px;
+  padding: 6px 14px;
+  text-decoration: none;
+  background: rgba(255,255,255,0.012);
+  transition:
+    border-color 220ms var(--ease),
+    background 220ms var(--ease),
+    color 220ms var(--ease),
+    transform 240ms var(--ease),
+    box-shadow 280ms var(--ease),
+    letter-spacing 240ms var(--ease);
+  animation: pill-breath 4.2s ease-in-out infinite;
 }
+.forecast-eyebrow.is-info { margin-bottom: 14px; }
+.ticker-row.lite .ticker-step.is-info:hover,
 .forecast-eyebrow.is-info:hover {
-  border-color: rgba(255,255,255,0.45);
-  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.05);
   color: var(--p);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -8px rgba(255,255,255,0.18);
+  animation-play-state: paused;
+}
+.ticker-row.lite .ticker-step.is-info:active,
+.forecast-eyebrow.is-info:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+@keyframes pill-breath {
+  0%, 100% { border-color: rgba(255,255,255,0.18); }
+  50%      { border-color: rgba(255,255,255,0.34); }
 }
 /* Small in-flow re-access link on m1 — opens mintro & mresearch for
    re-reading without exiting the memo. Subtle utility row, not a CTA. */
@@ -3526,6 +3582,164 @@ body.is-fullscreen .zoom-toggle {
 .memo-review-caption.is-on { display: inline-block; }
 /* Hidden in fullscreen — meta context is reviewer-only. */
 body.is-fullscreen .memo-review-caption { display: none !important; }
+
+/* ═══════════════ SELL MEMO — prior-data anchors + pct slider ═══════════════
+   Visual elements unique to the sell flow. The "prior block" surfaces what
+   the user wrote at entry (thesis text, kill line text) so the sell decision
+   grades against the original record rather than re-deciding from scratch.
+   The "anchor row" stacks IV-at-entry alongside today's price for the IV
+   re-estimate. */
+.sm-prior-block {
+  padding: 14px 16px;
+  border: 0.5px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.015);
+  margin-top: 8px;
+}
+.sm-prior-eyebrow {
+  font-size: 11px;
+  color: var(--t);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.sm-prior-body {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--s);
+  letter-spacing: -0.01em;
+}
+.sm-anchor-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+}
+.sm-anchor-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sm-anchor-lbl {
+  font-size: 11px;
+  color: var(--t);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sm-anchor-val {
+  font-size: 17px;
+  color: var(--p);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.sm-iv-compare {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--t);
+  letter-spacing: -0.01em;
+  min-height: 18px;
+}
+.sm-iv-compare .delta-up   { color: var(--p); }
+.sm-iv-compare .delta-down { color: var(--accent-amber); }
+.sm-pct-display {
+  font-size: 28px;
+  color: var(--p);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin: 12px 0 4px;
+}
+.sm-pct-pct { color: var(--t); font-size: 18px; margin-left: 2px; }
+
+/* Generic text input + textarea used by the sell memo flow. Bordered field
+   that matches the institutional aesthetic — thin border, dim placeholder,
+   crisp white text. Used on sm2/sm3/sm5/sm7 note fields and sm5 ticker. */
+.text-input {
+  width: 100%;
+  background: rgba(255,255,255,0.012);
+  border: 0.5px solid rgba(255,255,255,0.14);
+  border-radius: 4px;
+  padding: 12px 14px;
+  color: var(--p);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  resize: vertical;
+  outline: none;
+  transition: border-color 200ms var(--ease), background 200ms var(--ease);
+  box-sizing: border-box;
+}
+.text-input::placeholder {
+  color: var(--t-800);
+  font-style: italic;
+}
+.text-input:focus {
+  border-color: rgba(255,255,255,0.32);
+  background: rgba(255,255,255,0.02);
+}
+
+/* sm-exec sealed-memo chip — surfaces the committed action at the top of
+   the trade-execution screen so the discipline of the prior 7 fields stays
+   visible during share entry. Subtle bordered card, slightly elevated. */
+.sm-exec-memo-chip {
+  padding: 12px 14px;
+  border: 0.5px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.015);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.sm-exec-memo-chip-lbl {
+  font-size: 11px;
+  color: var(--t);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sm-exec-memo-chip-val {
+  font-size: 13px;
+  color: var(--p);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  text-align: right;
+}
+
+/* sm4 IV input — dollar prefix + numeric input on a single bordered row. */
+.miv-input-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 0.5px solid rgba(255,255,255,0.14);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.012);
+  margin-top: 10px;
+  transition: border-color 200ms var(--ease);
+}
+.miv-input-wrap:focus-within { border-color: rgba(255,255,255,0.32); }
+.miv-prefix {
+  color: var(--t);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.miv-input {
+  flex: 1 1 auto;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--p);
+  font-family: var(--font);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  padding: 0;
+}
+.miv-input::placeholder { color: var(--t-800); }
 
 /* Aphorism (tail body text in lower right) */
 .aphorism-block { margin-top: auto; }
@@ -5741,30 +5955,38 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 </div>
               </div>
 
-              <!-- ─── Performance vs S&P 500 — sits between Thesis and Kill line
-                   so the user reads the position's actual return against the
-                   index right after re-reading what they wrote, before they
-                   re-read what would prove them wrong. Visible on both
-                   first-time (em-dash placeholders) and returning user. ─── -->
-              <div id="s0-perf-vs-spx" class="s0-perf-panel">
-                <div class="s0-perf-eyebrow">Performance vs S&amp;P 500 · since <span id="s0-perf-since-date">—</span></div>
-                <div class="s0-perf-row">
-                  <span class="s0-perf-row-lbl">AAPL</span>
-                  <span class="s0-perf-row-val" id="s0-perf-aapl">—</span>
+              <!-- ─── Performance vs S&P 500 — collapsible card. Sits between
+                   Thesis and Kill line so the position's actual return against
+                   the index reads right after the thesis, before the kill line.
+                   Visible on both first-time (em-dash placeholders) and
+                   returning user. ─── -->
+              <div class="position-section is-collapsible is-collapsed" id="s0-perf-section">
+                <div class="position-card-head" onclick="toggleCard(this.parentElement)">
+                  <div class="position-eyebrow">Performance vs S&amp;P 500</div>
+                  <span class="position-card-chevron">›</span>
                 </div>
-                <div class="s0-perf-row">
-                  <span class="s0-perf-row-lbl">S&amp;P 500</span>
-                  <span class="s0-perf-row-val" id="s0-perf-spx">—</span>
-                </div>
-                <div class="s0-perf-row s0-perf-row--alpha">
-                  <span class="s0-perf-row-lbl">Alpha</span>
-                  <span class="s0-perf-row-val">
-                    <span class="s0-perf-alpha-stack">
-                      <span class="s0-perf-alpha-amt-line"><span id="s0-perf-alpha-amt">—</span> <span class="s0-perf-alpha-vs">vs SPY</span></span>
-                      <span class="s0-perf-alpha-pp-line" id="s0-perf-alpha-pp">—</span>
-                    </span>
-                    <span class="s0-perf-row-arrow">›</span>
-                  </span>
+                <div class="position-card-body">
+                  <div id="s0-perf-vs-spx" class="s0-perf-panel">
+                    <div class="s0-perf-eyebrow">since <span id="s0-perf-since-date">—</span></div>
+                    <div class="s0-perf-row">
+                      <span class="s0-perf-row-lbl">AAPL</span>
+                      <span class="s0-perf-row-val" id="s0-perf-aapl">—</span>
+                    </div>
+                    <div class="s0-perf-row">
+                      <span class="s0-perf-row-lbl">S&amp;P 500</span>
+                      <span class="s0-perf-row-val" id="s0-perf-spx">—</span>
+                    </div>
+                    <div class="s0-perf-row s0-perf-row--alpha">
+                      <span class="s0-perf-row-lbl">Alpha</span>
+                      <span class="s0-perf-row-val">
+                        <span class="s0-perf-alpha-stack">
+                          <span class="s0-perf-alpha-amt-line"><span id="s0-perf-alpha-amt">—</span> <span class="s0-perf-alpha-vs">vs SPY</span></span>
+                          <span class="s0-perf-alpha-pp-line" id="s0-perf-alpha-pp">—</span>
+                        </span>
+                        <span class="s0-perf-row-arrow">›</span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -5834,10 +6056,12 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <!-- ─── Transaction record — visually subordinate ─── -->
               <div class="position-tx-strip" id="s0-tx-strip">—</div>
 
-              <!-- ─── Position summary panel — sits below the Performance
-                   panel. Big-number stack: Market Value, Portfolio Weight,
-                   Unrealized P/L, Held since. Renders em-dash placeholders
-                   when there's no position on file. ─── -->
+              <!-- ─── Position summary panel — always open. Big-number stack:
+                   Market Value, Portfolio Weight, Unrealized P/L, Held since.
+                   Renders em-dash placeholders when there's no position on
+                   file. Kept non-collapsible because the position summary is
+                   the most-read element on the page; folding it adds friction
+                   to the most common task (glancing at current value). ─── -->
               <div id="s0-position-summary" class="s0-summary-panel">
                 <div class="s0-summary-row">
                   <div class="s0-summary-num"><span id="s0-sum-mktval">—</span><span class="s0-summary-num-suffix">USD</span></div>
@@ -5907,6 +6131,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
             <!-- s6 body is fully data-driven — renderCDOptions() builds it. -->
             <div id="s6-content" class="s6-content"></div>
+
+            <!-- Re-read intro & research — surfaces only for returning users
+                 (hasMemo === true). Sits between the headline and the radio
+                 cluster so it reads as "refresh before deciding" rather than
+                 a stranded utility below the options. First-time users see
+                 mintro/mresearch inline as part of the initial buy flow, so
+                 this link is noise there. Tap routes to mintro with
+                 state.protocolFromS6 = true so the back/continue chain
+                 unwinds to s6 instead of m1. -->
+            <button type="button" class="m1-protocol-link" id="s6-protocol-link"
+                    onclick="openMemoIntroFromS6()" style="display:none;margin-top:14px;margin-bottom:18px">
+              <span class="m1-protocol-link-arrow">↗</span>
+              <span>Re-read intro &amp; research</span>
+            </button>
+
             <div id="s6-options" style="display:none"></div>
 
             <div style="margin-top:auto">
@@ -6106,9 +6345,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <hr class="v5-rule">
 
-              <div class="v5-section-eyebrow">Underwriting frameworks</div>
+              <div class="v5-section-eyebrow">One note</div>
               <div class="v5-prose">LLMs invent financials when asked. For anything quantitative — earnings, margins, shares — paste from fiscal.ai. Never request recall.</div>
 
+              <div class="v5-section-eyebrow" style="margin-top:24px">Underwriting frameworks</div>
               <div class="v5-prose" style="margin-top:14px">Structured prompts designed to support independent analysis and more disciplined capital allocation decisions.</div>
 
               <div class="v5-prose" style="margin-top:14px;font-size:11px;color:var(--t-800);line-height:1.55;font-style:italic">These frameworks are intended to assist research and critical thinking. They are not recommendations or investment advice.</div>
@@ -7197,12 +7437,13 @@ actually works for you.</div>
             <div class="body-scroll" style="padding:0 16px">
               <!-- V4.5 only: first-memo ribbon. Marks the moment the
                    measurement system actually begins working for the user. -->
-              <div id="s9-firstmemo-ribbon" class="s9-firstmemo-ribbon" data-min-version="4.5" style="display:none">
+              <div id="s9-firstmemo-ribbon" class="s9-firstmemo-ribbon" data-min-version="4.5" style="display:none" onclick="go('s0')">
                 <span class="s9-firstmemo-mark">✓</span>
                 <div class="s9-firstmemo-text">
                   <div class="s9-firstmemo-title">First memo on file.</div>
                   <div class="s9-firstmemo-sub">Calibration tracking starts today.</div>
                 </div>
+                <span class="s9-firstmemo-arrow">→</span>
               </div>
 
               <div class="form-row"><span class="body-md" style="color:var(--s)">Type</span><span class="body-md" id="s9-type">Market Buy</span></div>
@@ -8619,6 +8860,611 @@ Holding to a broken thesis is.</div>
             </div>
           </section>
 
+          <!-- ════════════════════════════════════════════════════════════════
+               SELL MEMO FLOW (sm1–sm7 → sm-review → SEAL → sm-exec)
+
+               Entry: s6 capital decision picker · "Reduce exposure" or "Exit
+               position" → sm1. The buy memo proves the thesis at entry; the
+               sell memo tests whether that thesis still holds at exit. Seven
+               fields, mirroring the buy memo's discipline but compressed —
+               the sell decision is testing an existing claim, not building
+               a new one, so fewer fields with sharper edges.
+
+               Field map:
+                 sm1 / Trigger          — proximate cause of the decision
+                 sm2 / Thesis status    — intact / weakened / broken
+                 sm3 / Kill line        — was the pre-committed exit hit
+                 sm4 / Value today      — re-estimated intrinsic value
+                 sm5 / Opportunity cost — where the freed capital goes
+                 sm6 / Action           — full exit or partial trim
+                 sm7 / Inversion        — would-buy-today, the Munger filter
+               ════════════════════════════════════════════════════════════════ -->
+
+          <!-- ════════ sm1 — Sell memo · Trigger ════════ -->
+          <section class="scr" data-id="sm1">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s6')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_trigger')">Trigger</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·1 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">What changed</div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Proximate cause</div>
+                  <div class="field-list" data-list="sm1-trigger">
+                    <button class="radio-row" data-radio="thesis"><div class="lbl-block"><div class="head">Thesis fact change</div><div class="sub">Specific operating data invalidated the original story.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="killline"><div class="lbl-block"><div class="head">Kill line hit</div><div class="sub">Pre-committed exit condition triggered.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="value"><div class="lbl-block"><div class="head">Margin of safety eliminated</div><div class="sub">Price has caught up to intrinsic value.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="opportunity"><div class="lbl-block"><div class="head">Better idea elsewhere</div><div class="sub">Capital should rotate to a higher-conviction position.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="rebalance"><div class="lbl-block"><div class="head">Position too concentrated</div><div class="sub">Sizing has compounded past tolerance.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="external"><div class="lbl-block"><div class="head">Capital needed elsewhere</div><div class="sub">Outside the portfolio — not an investment call.</div></div><div class="radio-dot"></div></button>
+                  </div>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">When the facts change,
+the mind changes.
+When the price moves,
+nothing changes.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm1-next" onclick="advanceSellMemo('sm2')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm2 — Sell memo · Thesis status ════════ -->
+          <section class="scr" data-id="sm2">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm1')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_thesis')">Thesis</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·2 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Thesis status</div>
+                </div>
+
+                <!-- Original thesis pulled from the buy memo — reminds the
+                     user what they actually wrote at entry before grading it. -->
+                <div class="sm-prior-block">
+                  <div class="sm-prior-eyebrow">Original thesis · on file</div>
+                  <div class="sm-prior-body" id="sm2-prior-thesis">—</div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Verdict today</div>
+                  <div class="field-list" data-list="sm2-status">
+                    <button class="radio-row" data-radio="intact"><div class="lbl-block"><div class="head">Intact</div><div class="sub">The original story still holds. Selling for another reason.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="weakened"><div class="lbl-block"><div class="head">Weakened</div><div class="sub">Partial erosion. Probability lower, not zero.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="broken"><div class="lbl-block"><div class="head">Broken</div><div class="sub">Facts have invalidated the original claim.</div></div><div class="radio-dot"></div></button>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow" style="margin-top:24px">What invalidated it · optional</div>
+                  <textarea class="text-input" id="sm2-note" placeholder="Specific facts. Not feelings."
+                            oninput="onSellMemoInput('thesisNote', this.value)"
+                            style="min-height:96px"></textarea>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">Selling a stock
+with the thesis intact
+demands a stronger reason
+than selling a stock
+with the thesis broken.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm2-next" onclick="advanceSellMemo('sm3')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm3 — Sell memo · Kill line check ════════ -->
+          <section class="scr" data-id="sm3">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm2')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_killline')">Kill line</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·3 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Kill line check</div>
+                </div>
+
+                <!-- Original kill line pulled from the buy memo — surfaces
+                     the pre-commitment so the user can grade against it
+                     rather than re-deciding from scratch. -->
+                <div class="sm-prior-block">
+                  <div class="sm-prior-eyebrow">Kill line · written at entry</div>
+                  <div class="sm-prior-body" id="sm3-prior-kill">—</div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Status</div>
+                  <div class="field-list" data-list="sm3-status">
+                    <button class="radio-row" data-radio="yes"><div class="lbl-block"><div class="head">Triggered</div><div class="sub">Pre-committed condition fired. This is a disciplined exit.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="no"><div class="lbl-block"><div class="head">Not triggered</div><div class="sub">Discretionary exit. The bar is higher — note required.</div></div><div class="radio-dot"></div></button>
+                  </div>
+                </div>
+
+                <div id="sm3-note-wrap" style="display:none">
+                  <div class="section-eyebrow" style="margin-top:24px">Discretionary justification</div>
+                  <textarea class="text-input" id="sm3-note" placeholder="Why exit when the kill line has not been hit."
+                            oninput="onSellMemoInput('killLineNote', this.value)"
+                            style="min-height:96px"></textarea>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">A kill line written cold
+in clear thought
+is worth more
+than a thousand judgments
+made in real time.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm3-next" onclick="advanceSellMemo('sm4')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm4 — Sell memo · Intrinsic value today ════════ -->
+          <section class="scr" data-id="sm4">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm3')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_iv')">Value</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·4 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Intrinsic value today</div>
+                </div>
+
+                <!-- Anchors: original IV (from the buy memo) + current market
+                     price. The new IV becomes meaningful only against these
+                     two reference points. -->
+                <div class="sm-anchor-row">
+                  <div class="sm-anchor-cell">
+                    <div class="sm-anchor-lbl">IV at entry</div>
+                    <div class="sm-anchor-val" id="sm4-iv-entry">—</div>
+                  </div>
+                  <div class="sm-anchor-cell">
+                    <div class="sm-anchor-lbl">Price today</div>
+                    <div class="sm-anchor-val" id="sm4-price-today">—</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Re-estimate · USD per share</div>
+                  <div class="miv-input-wrap">
+                    <span class="miv-prefix">$</span>
+                    <input class="miv-input" type="text" inputmode="decimal" id="sm4-iv-input" placeholder="0.00"
+                           oninput="onSellIvInput(this.value)">
+                  </div>
+                  <div class="sm-iv-compare" id="sm4-compare">—</div>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">The price moves daily.
+Intrinsic value moves rarely.
+Trade the gap,
+not the noise.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm4-next" onclick="advanceSellMemo('sm5')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm5 — Sell memo · Opportunity cost ════════ -->
+          <section class="scr" data-id="sm5">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm4')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_opportunity')">Capital</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·5 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Opportunity cost</div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Where the freed capital goes</div>
+                  <textarea class="text-input" id="sm5-text" placeholder="A specific destination. Cash for dry powder counts only with a thesis on what it will be deployed into."
+                            oninput="onSellMemoInput('opportunityCost', this.value)"
+                            style="min-height:120px"></textarea>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">Selling without a destination
+is just fear
+dressed in discipline.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm5-next" onclick="advanceSellMemo('sm6')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm6 — Sell memo · Action size ════════ -->
+          <section class="scr" data-id="sm6">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm5')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_action')">Action</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·6 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Size of exit</div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Action type</div>
+                  <div class="field-list" data-list="sm6-action">
+                    <button class="radio-row" data-radio="full"><div class="lbl-block"><div class="head">Full exit</div><div class="sub">Position closes. Thesis broken or replacement confirmed.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="partial"><div class="lbl-block"><div class="head">Partial trim</div><div class="sub">Position size reduced. Exact share count picked on the trade screen.</div></div><div class="radio-dot"></div></button>
+                  </div>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">The size of the exit
+reveals the conviction
+in the diagnosis.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm6-next" onclick="advanceSellMemo('sm7')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm7 — Sell memo · Inversion check ════════ -->
+          <section class="scr" data-id="sm7">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm6')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="ticker-row lite">
+                  <div class="ticker-step is-info" onclick="showInfoModal('sell_inversion')">Invert</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> ·7 / 7</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Inversion check</div>
+                </div>
+
+                <div class="sm-prior-block">
+                  <div class="sm-prior-eyebrow">The Munger filter</div>
+                  <div class="sm-prior-body">Pretend the position is not on the books. The cash is in hand. AAPL trades at <span id="sm7-price-today">$192.35</span> today. Buy it at this price.</div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow">Verdict</div>
+                  <div class="field-list" data-list="sm7-answer">
+                    <button class="radio-row" data-radio="no"><div class="lbl-block"><div class="head">No — would not buy today</div><div class="sub">Confirmed sell. Holding is loss aversion or anchoring, not analysis.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="yes"><div class="lbl-block"><div class="head">Yes — would buy today</div><div class="sub">Selling is tape-watching, not investing. Reconsider before sealing.</div></div><div class="radio-dot"></div></button>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="section-eyebrow" style="margin-top:24px">Note · optional</div>
+                  <textarea class="text-input" id="sm7-note" placeholder="Honest read on the decision. Future-self will read this back."
+                            oninput="onSellMemoInput('inversionNote', this.value)"
+                            style="min-height:96px"></textarea>
+                </div>
+
+                <div class="aphorism-block">
+                  <div class="aphorism">Invert. Always invert.
+The strongest sell signal
+is the one that survives
+the inverted question.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="sm7-next" onclick="advanceSellMemo('sm-review')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ sm-review — Sell memo · Q+A review · hold to SEAL ════════ -->
+          <section class="scr" data-id="sm-review">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('sm7')">‹</button>
+                <button class="exit-btn" onclick="exitSellMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+
+            <div class="body-scroll">
+              <div class="memo-page" style="gap:24px">
+                <div class="ticker-row lite">
+                  <div class="ticker-step">Review</div>
+                  <div class="ticker-meta"><span class="memo-ctx-ticker">AAPL</span> · sell memo</div>
+                </div>
+
+                <div>
+                  <div class="title-md">Sell memo</div>
+                  <div class="t-bsm" id="sm-review-date" style="margin-top:8px">Drafted today</div>
+                </div>
+
+                <!-- Immutability notice — same discipline as the buy memo. -->
+                <div class="m6-immutability">
+                  Sell memos are immutable once sealed. The record survives the trade.
+                </div>
+
+                <div>
+                  <div class="m6-section-head">
+                    <div class="section-eyebrow" style="margin-bottom:0">Memo</div>
+                    <div class="m6-tap-hint">Tap a row to edit</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm1')">
+                    <div class="k">Trigger</div>
+                    <div class="v" id="sm-review-trigger">—</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm2')">
+                    <div class="k">Thesis status</div>
+                    <div class="v" id="sm-review-thesis">—</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm3')">
+                    <div class="k">Kill line</div>
+                    <div class="v" id="sm-review-kill">—</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm4')">
+                    <div class="k">Intrinsic value today</div>
+                    <div class="v" id="sm-review-iv">—</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm5')">
+                    <div class="k">Opportunity cost</div>
+                    <div class="v" id="sm-review-opportunity">—</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm6')">
+                    <div class="k">Action</div>
+                    <div class="v" id="sm-review-action">—</div>
+                  </div>
+                  <div class="memo-row" onclick="editFromSellReview('sm7')">
+                    <div class="k">Inversion</div>
+                    <div class="v" id="sm-review-inversion">—</div>
+                  </div>
+                </div>
+
+                <div class="t-bsm" style="line-height:1.55">
+                  The memo records the sell decision. Sealing writes the record to the position's history. The trade executes on the next screen.
+                </div>
+              </div>
+            </div>
+
+            <!-- Hold-to-commit (1.8s) — same pattern as m6 buy memo SEAL. -->
+            <button class="lpb m6-hold-btn"
+                    onmousedown="holdSellCommitStart(event)" onmouseup="holdSellCommitCancel()" onmouseleave="holdSellCommitCancel()"
+                    ontouchstart="holdSellCommitStart(event)" ontouchend="holdSellCommitCancel()" ontouchcancel="holdSellCommitCancel()">
+              <div class="m6-hold-fill" id="sm-review-fill"></div>
+              <span class="m6-hold-label">Hold to SEAL</span>
+            </button>
+          </section>
+
+          <!-- ════════ sm-exec — Sell trade execution · Limit Order ════════
+               Post-SEAL trade screen. Defaults to Limit Order: limit price
+               pre-fills to the live market price, share count pre-fills from
+               the sealed memo's Action field (Full = all on-file; Partial =
+               blank, entered fresh). Below the form rows sits a recap of
+               every answer from the 7-field sell memo so the discipline of
+               those commitments stays in view at the moment of execution.
+
+               Order-type dropdown is cosmetic in this build — Market Order
+               variant can land later by swapping the limit row for a
+               static market-price row. ═══════════════════════════════════ -->
+          <section class="scr" data-id="sm-exec" onclick="if(state.activeInput) closeSellNumpad()">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px">
+                <button class="back-btn" onclick="event.stopPropagation();go('s0')">‹</button>
+                <button style="background:none;border:none;color:var(--s);font-family:var(--font);font-size:13px;display:flex;align-items:center;gap:4px;padding:0">
+                  Limit Order <span style="font-size:9px;color:var(--t)">⌄</span>
+                </button>
+              </div>
+              <hr class="div">
+
+              <div style="text-align:right;margin:24px 16px 6px">
+                <span style="font-size:13px;color:var(--t)">AAPL</span>
+                <span class="h2" style="margin-left:10px">Sell</span>
+              </div>
+              <div style="text-align:right;margin:0 16px 22px">
+                <span style="font-size:13px;color:var(--t)">Brokerage</span>
+                <span style="font-size:13px;color:var(--t);margin-left:10px"><span id="sm-exec-onfile">35</span> shares on file</span>
+              </div>
+            </div>
+
+            <div class="s8-scroll">
+
+              <!-- Sealed-memo chip — surfaces the action the user just
+                   committed to (Full exit / Partial trim) directly above
+                   the share entry. -->
+              <div class="sm-exec-memo-chip" style="margin:0 16px 18px">
+                <div class="sm-exec-memo-chip-lbl">Sealed memo · action</div>
+                <div class="sm-exec-memo-chip-val" id="sm-exec-action-chip">—</div>
+              </div>
+
+              <div style="padding:0 16px">
+                <div class="form-row">
+                  <span class="body-md" style="color:var(--s)">Portfolio weight</span>
+                  <span class="body-md s8-value" id="sm-exec-weight" style="color:var(--t)">7.2%</span>
+                </div>
+
+                <div class="form-row s8-tap" id="sm-exec-limit-row" onclick="event.stopPropagation();openSellNumpad('sellLimit')" style="align-items:flex-start">
+                  <div>
+                    <span class="body-md" style="color:var(--s)">Limit Price</span>
+                    <div class="s8-sub">
+                      <span class="s8-sub-text">Market Price</span>
+                      <span class="s8-sub-text" style="color:var(--s)">192.35 USD</span>
+                    </div>
+                  </div>
+                  <span class="body-md s8-value" id="sm-exec-limit-disp" style="color:var(--p)">0.00</span>
+                </div>
+
+                <div class="form-row s8-tap" id="sm-exec-shares-row" onclick="event.stopPropagation();openSellNumpad('sellShares')" style="align-items:flex-start">
+                  <div>
+                    <span class="body-md" style="color:var(--s)">Shares</span>
+                    <div class="s8-sub">
+                      <span class="s8-sub-text">Recommended</span>
+                      <span class="s8-sub-text" style="color:var(--s)" id="sm-exec-recommended">—</span>
+                    </div>
+                  </div>
+                  <span class="body-md s8-value" id="sm-exec-shares-disp" style="color:var(--p)">0</span>
+                </div>
+
+                <div class="form-row">
+                  <span class="body-md" style="color:var(--s)">Value</span>
+                  <span class="body-md s8-value" id="sm-exec-value" style="color:var(--t)">0.00 USD</span>
+                </div>
+              </div>
+
+              <!-- Sealed-memo recap — every answer from the 7-field sell
+                   memo, rendered as read-only stacked rows. The discipline
+                   of the prior commitments stays visible while the user
+                   sizes and prices the trade. Each row maps 1:1 to a sm
+                   step so the operator can scan the full record without
+                   leaving the trade surface. -->
+              <div id="sm-exec-recap" class="s8-memo-section">
+                <div class="lbl" style="margin-bottom:14px">Sealed memo · on file</div>
+                <div class="s8-memo-row">
+                  <span class="body-sm" style="color:var(--s);flex-shrink:0">Trigger</span>
+                  <span class="body-md" id="sm-exec-recap-trigger" style="text-align:right">—</span>
+                </div>
+                <div class="s8-memo-row">
+                  <span class="body-sm" style="color:var(--s);flex-shrink:0">Thesis status</span>
+                  <span class="body-md" id="sm-exec-recap-thesis" style="text-align:right">—</span>
+                </div>
+                <div class="s8-memo-row s8-memo-row--stacked">
+                  <span class="body-sm" style="color:var(--s)">Kill line</span>
+                  <span class="body-md" id="sm-exec-recap-kill" style="line-height:1.5">—</span>
+                </div>
+                <div class="s8-memo-row">
+                  <span class="body-sm" style="color:var(--s);flex-shrink:0">Intrinsic value today</span>
+                  <span class="body-md" id="sm-exec-recap-iv" style="text-align:right">—</span>
+                </div>
+                <div class="s8-memo-row s8-memo-row--stacked">
+                  <span class="body-sm" style="color:var(--s)">Opportunity cost</span>
+                  <span class="body-md" id="sm-exec-recap-opportunity" style="line-height:1.5">—</span>
+                </div>
+                <div class="s8-memo-row">
+                  <span class="body-sm" style="color:var(--s);flex-shrink:0">Action</span>
+                  <span class="body-md" id="sm-exec-recap-action" style="text-align:right">—</span>
+                </div>
+                <div class="s8-memo-row s8-memo-row--stacked" style="border-bottom:none">
+                  <span class="body-sm" style="color:var(--s)">Inversion check</span>
+                  <span class="body-md" id="sm-exec-recap-inversion" style="line-height:1.5">—</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="act-row" style="flex-shrink:0;padding:0 26px 18px;justify-content:space-between">
+              <button class="act-btn" onclick="event.stopPropagation();go('s0')">
+                <span class="act-arrow">→</span>
+                <span>Cancel</span>
+              </button>
+              <button class="act-btn locked" id="sm-exec-review-btn" onclick="event.stopPropagation();reviewSellExec()">
+                <span class="act-arrow">→</span>
+                <span>Review</span>
+              </button>
+            </div>
+
+            <!-- iOS-style numpad — routes to whichever row is active
+                 (Limit Price or Shares). Separate id from the buy s8
+                 numpad so the two screens hold independent open-state.
+                 Limit allows one decimal point; Shares is integer-only. -->
+            <div class="ios-numpad" id="sm-exec-numpad" onclick="event.stopPropagation()">
+              <div class="ios-key" onclick="sellNumpadTap('1')"><span class="num">1</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('2')"><span class="num">2</span><span class="sub">ABC</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('3')"><span class="num">3</span><span class="sub">DEF</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('4')"><span class="num">4</span><span class="sub">GHI</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('5')"><span class="num">5</span><span class="sub">JKL</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('6')"><span class="num">6</span><span class="sub">MNO</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('7')"><span class="num">7</span><span class="sub">PQRS</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('8')"><span class="num">8</span><span class="sub">TUV</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('9')"><span class="num">9</span><span class="sub">WXYZ</span></div>
+              <div class="ios-key is-decimal" onclick="sellNumpadTap('.')"><span class="num">.</span></div>
+              <div class="ios-key" onclick="sellNumpadTap('0')"><span class="num">0</span></div>
+              <div class="ios-key is-action" onclick="sellNumpadTap('del')"><span class="num">⌫</span></div>
+            </div>
+          </section>
+
 
           <!-- ════════ Generic info modal (used by label info icons) ════════ -->
           <div class="info-modal" id="info-modal">
@@ -8744,8 +9590,71 @@ let state = {
   txnDetailFrom:    's24',   // origin screen for s25, used by its back arrow ('s24' history or 's51' paper-trades list)
   viewingProtocolReference: false, // transient flag: true while reading mintro / mresearch via drawer (hides foot CTA)
   protocolFromM1: false,           // transient flag: true when re-reading the orientation pages mid-memo (back routes return to m1)
-  forecastThreshold: 20            // user-declared compounding threshold (%) on s12 — defaults to 20, drives the derived EV line
+  protocolFromS6: false,           // transient flag: true when re-reading the orientation pages from the capital-decision picker (back routes return to s6)
+  forecastThreshold: 20,           // user-declared compounding threshold (%) on s12 — defaults to 20, drives the derived EV line
+
+  /* ── Sell memo draft (sm1–sm7 → sm-review) ─────────────────────────────
+     Live values as the user walks the sell flow. Sealed at sm-review and
+     appended to state.sellMemos for the position's history. The Object.assign
+     merge ensures new fields added later don't break old persisted drafts. */
+  sellMemo: Object.assign(
+    (typeof makeEmptySellMemo === 'function')
+      ? makeEmptySellMemo()
+      : {
+          trigger:'', triggerNote:'',
+          thesisStatus:'', thesisNote:'',
+          killLineTriggered:'', killLineNote:'',
+          ivToday:'',
+          opportunityCost:'', opportunityTicker:'',
+          actionType:'', actionPct:50,
+          inversionAnswer:'', inversionNote:''
+        },
+    (typeof loadSellMemoDraft === 'function' && loadSellMemoDraft()) || {}
+  ),
+  sellMemoEditingFromReview: false,  // true while user is editing a single sm field via sm-review's tap-to-edit
+  sellMemos:                 (typeof loadSellMemos === 'function' && loadSellMemos()) || [],  // sealed sell memos, append-only
+  sellShares:                '',      // share-count string the user is typing on sm-exec (numpad-edited, integer-only)
+  sellLimitPrice:            ''       // limit-price string on sm-exec (numpad-edited, supports one decimal)
 };
+
+/* ── Sell memo persistence ────────────────────────────────────────────────
+   Draft survives reload (in case the user backs out mid-flow and resumes).
+   Sealed sell memos are kept per-ticker in localStorage so the s0 timeline
+   can render them alongside buy transactions. */
+function loadSellMemoDraft() {
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.AAPL.sellDraft');
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return null;
+}
+function persistSellMemoDraft() {
+  try { localStorage.setItem('mogo.calmemo.AAPL.sellDraft', JSON.stringify(state.sellMemo)); } catch (_) {}
+}
+function clearSellMemoDraft() {
+  try { localStorage.removeItem('mogo.calmemo.AAPL.sellDraft'); } catch (_) {}
+}
+function loadSellMemos() {
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.AAPL.sellMemos');
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return [];
+}
+function persistSellMemos() {
+  try { localStorage.setItem('mogo.calmemo.AAPL.sellMemos', JSON.stringify(state.sellMemos)); } catch (_) {}
+}
+function makeEmptySellMemo() {
+  return {
+    trigger:'', triggerNote:'',
+    thesisStatus:'', thesisNote:'',
+    killLineTriggered:'', killLineNote:'',
+    ivToday:'',
+    opportunityCost:'', opportunityTicker:'',
+    actionType:'', actionPct:50,
+    inversionAnswer:'', inversionNote:''
+  };
+}
 
 const SEED_THESIS_REVIEWS = [
   // Returning persona: one prior review, recorded as "intact" after Q4 earnings
@@ -9139,8 +10048,12 @@ function go(id) {
   document.getElementById('pageName').textContent = meta ? meta.name : id;
   document.getElementById('pageSub').textContent  = meta ? meta.sub  : '';
   // Refresh dynamic content
-  if (id === 's0')  { renderStock(); applyExampleMode(); }
+  if (id === 's0')  { collapseAllS0Cards(); renderStock(); applyExampleMode(); }
   if (id === 's6')  renderCDOptions();
+  // Sell-memo screen entries — hydrate the relevant inputs/radios + lock state
+  if (['sm1','sm2','sm3','sm4','sm5','sm6','sm7'].indexOf(id) !== -1) hydrateSellMemoScreen(id);
+  if (id === 'sm-review') renderSmReview();
+  if (id === 'sm-exec')   renderSmExec();
   if (id === 's8')  renderS8();
   if (id === 's4')  renderS4();
   if (id === 's9')  renderS9();
@@ -9363,7 +10276,7 @@ function renderStock() {
     's0-confidence-section',
     's0-divider-before-confidence',
     's0-divider-before-tx',
-    's0-perf-vs-spx',
+    's0-perf-section',
     's0-tx-strip',
     's0-position-summary'
   ];
@@ -9635,6 +10548,12 @@ function renderCDOptions() {
   const wrap    = document.getElementById('s6-options');
   if (!content || !wrap) return;
 
+  // Re-read intro & research link — visible only for returning users. The
+  // first-time flow walks through mintro / mresearch inline before reaching
+  // m1, so the in-place re-access is noise there.
+  const protoLink = document.getElementById('s6-protocol-link');
+  if (protoLink) protoLink.style.display = state.hasMemo ? '' : 'none';
+
   // The eyebrow + headline are the same shape for both variants. Returning
   // adds a radio picker below; first-time renders nothing else — the headline
   // IS the declared action.
@@ -9695,6 +10614,15 @@ function onCapitalDecisionContinue() {
     go('m1');
     return;
   }
+  // Reduce / Exit — route into the new sell memo flow. The buy memo proves
+  // a thesis at entry; the sell memo tests whether that thesis still holds
+  // at exit. Preserves the in-progress draft if the user returns to s6 →
+  // reduce mid-flow.
+  if (state.cd === 'reduce' || state.cd === 'exit') {
+    if (state.usingSeedPersona) hydrateAaplMemoFromSeed();
+    go('sm1');
+    return;
+  }
   go('s19');
 }
 
@@ -9739,11 +10667,17 @@ function backFromM1() {
 }
 
 /* mresearch back button — flow mode goes back to mintro; in-flow re-access
-   from m1 returns to m1; drawer reference mode returns to s10. */
+   from m1 returns to m1; re-access from s6 returns to s6; drawer reference
+   mode returns to s10. */
 function backFromMResearch() {
   if (state.viewingProtocolReference) {
     state.viewingProtocolReference = false;
     go('s10');
+    return;
+  }
+  if (state.protocolFromS6) {
+    state.protocolFromS6 = false;
+    go('s6');
     return;
   }
   if (state.protocolFromM1) {
@@ -9816,11 +10750,17 @@ function backFromResearchPrompt() {
 }
 
 /* mintro back button — drawer reference mode returns to s10; in-flow
-   re-access from m1 returns to m1; otherwise returns to s6 (start of flow). */
+   re-access from m1 returns to m1; re-access from s6 returns to s6;
+   otherwise returns to s6 (start of flow). */
 function backFromMintro() {
   if (state.viewingProtocolReference) {
     state.viewingProtocolReference = false;
     go('s10');
+    return;
+  }
+  if (state.protocolFromS6) {
+    state.protocolFromS6 = false;
+    go('s6');
     return;
   }
   if (state.protocolFromM1) {
@@ -9845,8 +10785,10 @@ function backFromM6() {
    showing. Re-access lives on m1 and in the drawer under "Reference". */
 function continueFromMintro()    { go('mresearch'); }
 function continueFromMresearch() {
-  // If the user came from m1 (in-flow re-read), return to m1 instead of
-  // entering the memo for the first time.
+  // Re-read flows route forward back to their origin instead of entering
+  // the memo. s6 takes precedence (user is on the capital-decision picker
+  // and wants to return there); m1 covers the mid-memo re-read path.
+  if (state.protocolFromS6) { state.protocolFromS6 = false; go('s6'); return; }
   if (state.protocolFromM1) { state.protocolFromM1 = false; go('m1'); return; }
   go('m1');
 }
@@ -9857,6 +10799,17 @@ function continueFromMresearch() {
    back to m1 instead of forward through the flow. */
 function openMemoIntroFromFlow() {
   state.protocolFromM1 = true;
+  state.protocolFromS6 = false;
+  go('mintro');
+}
+
+/* Same re-access pattern, but originating from s6 (capital decision
+   picker). The returning user wants to refresh on the protocol before
+   committing to increase / reduce / exit. Sets the s6 flag so the back +
+   continue chain unwinds back to s6, not m1. */
+function openMemoIntroFromS6() {
+  state.protocolFromS6 = true;
+  state.protocolFromM1 = false;
   go('mintro');
 }
 
@@ -10977,6 +11930,22 @@ document.addEventListener('click', e => {
   if (key === 'm1-type') state.memo.type = value;
   if (key === 'm1-size') state.memo.size = value;
   if (key === 'm4-mos')  state.memo.mos  = value;
+  // ── Sell memo field-lists. Each radio pick writes the sm slice and
+  // refreshes the per-step Continue lock so the arrow unlocks the moment
+  // a valid value lands. sm3 also reveals the discretionary-justification
+  // textarea when the user picks "Not triggered"; sm6 reveals the trim
+  // percentage slider when they pick "Partial".
+  if (key === 'sm1-trigger') { state.sellMemo.trigger = value; persistSellMemoDraft(); refreshSellMemoLocks(); }
+  if (key === 'sm2-status')  { state.sellMemo.thesisStatus = value; persistSellMemoDraft(); refreshSellMemoLocks(); }
+  if (key === 'sm3-status')  {
+    state.sellMemo.killLineTriggered = value;
+    const wrap = document.getElementById('sm3-note-wrap');
+    if (wrap) wrap.style.display = value === 'no' ? '' : 'none';
+    persistSellMemoDraft();
+    refreshSellMemoLocks();
+  }
+  if (key === 'sm6-action')  { state.sellMemo.actionType = value; persistSellMemoDraft(); refreshSellMemoLocks(); }
+  if (key === 'sm7-answer')  { state.sellMemo.inversionAnswer = value; persistSellMemoDraft(); refreshSellMemoLocks(); }
   // V4.5: rotate the aphorism on m1 based on the type pick
   if (key === 'm1-type' && state.version >= 4.5) {
     const aph = document.getElementById('m1-aphorism');
@@ -11116,6 +12085,497 @@ function onM6NoteInput() {
 function onM5NoteInput() {
   state.memo.note = document.getElementById('m5-note')?.value || '';
   persistMemoDraft();
+}
+
+/* ═════════════════════════════════════════════════
+   SELL MEMO (sm1–sm7 → sm-review → SEAL → sm-exec)
+
+   Mirrors the buy memo's discipline but compressed. The buy memo proves a
+   thesis at entry; the sell memo tests whether that thesis still holds at
+   exit. Seven fields with sharper edges: trigger, thesis status, kill line
+   check, IV today, opportunity cost, action size, inversion check.
+
+   State lives at state.sellMemo (draft) and state.sellMemos (sealed
+   history, append-only). Persistence functions are colocated with the
+   state slice.
+   ═════════════════════════════════════════════════ */
+
+/* Per-step Continue unlock predicates. Same shape as memoStepValid for
+   the buy flow. */
+function sellMemoStepValid(stepId) {
+  const sm = state.sellMemo || {};
+  switch (stepId) {
+    case 'sm1': return !!sm.trigger;
+    case 'sm2': return !!sm.thesisStatus;
+    case 'sm3': {
+      // Triggered = pre-committed exit, unlocks immediately.
+      // Not triggered = discretionary, requires the justification note.
+      if (!sm.killLineTriggered) return false;
+      if (sm.killLineTriggered === 'no') return (sm.killLineNote || '').trim().length > 0;
+      return true;
+    }
+    case 'sm4': {
+      const v = parseFloat(sm.ivToday);
+      return isFinite(v) && v > 0;
+    }
+    case 'sm5': return (sm.opportunityCost || '').trim().length > 0;
+    case 'sm6': return !!sm.actionType;
+    case 'sm7': return !!sm.inversionAnswer;
+    default:    return true;
+  }
+}
+
+function refreshSellMemoLocks() {
+  ['sm1','sm2','sm3','sm4','sm5','sm6','sm7'].forEach(id => {
+    const btn = document.getElementById(id + '-next');
+    if (btn) btn.classList.toggle('locked', !sellMemoStepValid(id));
+  });
+}
+
+/* Text input handler — generic; receives the field key + new value. */
+function onSellMemoInput(field, value) {
+  if (!state.sellMemo) state.sellMemo = makeEmptySellMemo();
+  state.sellMemo[field] = value;
+  persistSellMemoDraft();
+  refreshSellMemoLocks();
+}
+
+/* sm4 — IV numeric input + live comparison vs entry IV. */
+function onSellIvInput(value) {
+  const cleaned = String(value || '').replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1');
+  state.sellMemo.ivToday = cleaned;
+  const el = document.getElementById('sm4-iv-input');
+  if (el && el.value !== cleaned) el.value = cleaned;
+  renderSellIvCompare();
+  persistSellMemoDraft();
+  refreshSellMemoLocks();
+}
+
+function renderSellIvCompare() {
+  const cmp = document.getElementById('sm4-compare');
+  if (!cmp) return;
+  const today = parseFloat(state.sellMemo.ivToday);
+  const entry = parseFloat(state.memo && state.memo.intrinsicValue);
+  if (!isFinite(today) || today <= 0) { cmp.textContent = ''; return; }
+  if (!isFinite(entry) || entry <= 0) {
+    cmp.textContent = 'No entry IV on record.';
+    return;
+  }
+  const delta = today - entry;
+  const pct = (delta / entry) * 100;
+  const sign = delta > 0 ? '+' : '';
+  const cls = delta >= 0 ? 'delta-up' : 'delta-down';
+  cmp.innerHTML = `<span class="${cls}">${sign}${delta.toFixed(2)} USD (${sign}${pct.toFixed(1)}%)</span> vs entry IV of ${entry.toFixed(2)} USD`;
+}
+
+/* sm6 — trim percentage slider. Label varies with magnitude. */
+function onSellPctInput(value) {
+  const n = parseInt(value, 10);
+  if (!isFinite(n)) return;
+  state.sellMemo.actionPct = n;
+  const num = document.getElementById('sm6-pct-num');
+  if (num) num.textContent = n;
+  const msg = document.getElementById('sm6-pct-msg');
+  if (msg) {
+    if (n <= 25)       msg.textContent = 'Light trim';
+    else if (n <= 50)  msg.textContent = 'Half off';
+    else if (n <= 75)  msg.textContent = 'Heavy trim';
+    else               msg.textContent = 'Near full exit';
+  }
+  persistSellMemoDraft();
+  refreshSellMemoLocks();
+}
+
+/* Hydrate inputs/radios on screen entry so a resumed draft visibly fills
+   in. Also pulls reference data from state.memo so the user grades against
+   the original commitments rather than re-deciding from scratch. */
+function hydrateSellMemoScreen(screenId) {
+  // Ensure AAPL memo data is loaded so prior-thesis / kill-line / IV
+  // references render in the prior-blocks. Returning persona is the only
+  // legitimate entry point for the sell flow.
+  if (state.usingSeedPersona) hydrateAaplMemoFromSeed();
+  const sm = state.sellMemo;
+  const m  = state.memo || {};
+
+  if (screenId === 'sm1') {
+    const list = document.querySelector('[data-list="sm1-trigger"]');
+    if (list) list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === sm.trigger));
+  }
+  if (screenId === 'sm2') {
+    const list = document.querySelector('[data-list="sm2-status"]');
+    if (list) list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === sm.thesisStatus));
+    const note = document.getElementById('sm2-note');
+    if (note && note.value !== sm.thesisNote) note.value = sm.thesisNote || '';
+    const prior = document.getElementById('sm2-prior-thesis');
+    if (prior) prior.textContent = (m.thesis || '—').trim();
+  }
+  if (screenId === 'sm3') {
+    const list = document.querySelector('[data-list="sm3-status"]');
+    if (list) list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === sm.killLineTriggered));
+    const note = document.getElementById('sm3-note');
+    if (note && note.value !== sm.killLineNote) note.value = sm.killLineNote || '';
+    const wrap = document.getElementById('sm3-note-wrap');
+    if (wrap) wrap.style.display = sm.killLineTriggered === 'no' ? '' : 'none';
+    const prior = document.getElementById('sm3-prior-kill');
+    if (prior) prior.textContent = (m.kill || '—').trim();
+  }
+  if (screenId === 'sm4') {
+    const inp = document.getElementById('sm4-iv-input');
+    if (inp && inp.value !== sm.ivToday) inp.value = sm.ivToday || '';
+    const entryEl = document.getElementById('sm4-iv-entry');
+    if (entryEl) {
+      const entry = parseFloat(m.intrinsicValue);
+      entryEl.textContent = isFinite(entry) && entry > 0 ? entry.toFixed(2) + ' USD' : '—';
+    }
+    const priceEl = document.getElementById('sm4-price-today');
+    if (priceEl) priceEl.textContent = '192.35 USD';  // matches the live AAPL price used throughout the demo
+    renderSellIvCompare();
+  }
+  if (screenId === 'sm5') {
+    const ta = document.getElementById('sm5-text');
+    if (ta && ta.value !== sm.opportunityCost) ta.value = sm.opportunityCost || '';
+  }
+  if (screenId === 'sm6') {
+    const list = document.querySelector('[data-list="sm6-action"]');
+    if (list) list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === sm.actionType));
+  }
+  if (screenId === 'sm7') {
+    const list = document.querySelector('[data-list="sm7-answer"]');
+    if (list) list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === sm.inversionAnswer));
+    const note = document.getElementById('sm7-note');
+    if (note && note.value !== sm.inversionNote) note.value = sm.inversionNote || '';
+  }
+  refreshSellMemoLocks();
+}
+
+/* Navigation between sell-memo steps. Mirrors advanceMemo for the buy
+   flow — short-circuits back to sm-review when the user is editing a
+   single field via the review screen's tap-to-edit. */
+function advanceSellMemo(target) {
+  if (state.sellMemoEditingFromReview) {
+    state.sellMemoEditingFromReview = false;
+    go('sm-review');
+    return;
+  }
+  go(target);
+}
+
+function editFromSellReview(stepId) {
+  state.sellMemoEditingFromReview = true;
+  go(stepId);
+}
+
+/* Render the sm-review screen — populate every Q+A row with the user's
+   current draft values, in human-readable form. */
+const SM_TRIGGER_LBL = {
+  thesis:      'Thesis fact change',
+  killline:    'Kill line hit',
+  value:       'Margin of safety eliminated',
+  opportunity: 'Better idea elsewhere',
+  rebalance:   'Position too concentrated',
+  external:    'Capital needed elsewhere'
+};
+const SM_STATUS_LBL = { intact: 'Intact', weakened: 'Weakened', broken: 'Broken' };
+const SM_KILL_LBL   = { yes: 'Triggered', no: 'Not triggered' };
+const SM_ACTION_LBL = { full: 'Full exit', partial: 'Partial trim' };
+const SM_INVERT_LBL = { no: 'Would not buy today — confirmed sell', yes: 'Would buy today — reconsider' };
+
+function renderSmReview() {
+  const sm = state.sellMemo || {};
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v || '—'; };
+  set('sm-review-trigger',  SM_TRIGGER_LBL[sm.trigger]);
+  set('sm-review-thesis',   SM_STATUS_LBL[sm.thesisStatus]);
+  set('sm-review-kill',     SM_KILL_LBL[sm.killLineTriggered]);
+  // IV — show user's re-estimate alongside delta vs entry where available
+  const ivToday = parseFloat(sm.ivToday);
+  const ivEntry = parseFloat((state.memo || {}).intrinsicValue);
+  let ivStr = '—';
+  if (isFinite(ivToday) && ivToday > 0) {
+    ivStr = ivToday.toFixed(2) + ' USD';
+    if (isFinite(ivEntry) && ivEntry > 0) {
+      const delta = ivToday - ivEntry;
+      const sign = delta >= 0 ? '+' : '';
+      ivStr += ' (' + sign + delta.toFixed(2) + ' vs entry)';
+    }
+  }
+  set('sm-review-iv', ivStr);
+  set('sm-review-opportunity', sm.opportunityCost || '—');
+  set('sm-review-action', SM_ACTION_LBL[sm.actionType] || '—');
+  set('sm-review-inversion', SM_INVERT_LBL[sm.inversionAnswer]);
+  // Date stamp
+  const dt = document.getElementById('sm-review-date');
+  if (dt) {
+    try {
+      const today = new Date();
+      const mm = today.toLocaleString('en-US', { month: 'short' });
+      dt.textContent = 'Drafted ' + mm + ' ' + today.getDate() + ', ' + today.getFullYear();
+    } catch (_) {}
+  }
+}
+
+/* ── Hold-to-SEAL on sm-review. Same 1.8s discipline as the m6 buy memo
+   SEAL: deliberate beat, no celebratory copy, status flips silently. ── */
+function holdSellCommitStart(e) {
+  if (e) e.preventDefault();
+  const fill = document.getElementById('sm-review-fill');
+  if (!fill) return;
+  fill.style.transition = `width ${COMMIT_HOLD_MS}ms linear`;
+  fill.style.width = '100%';
+  _commitTimer = setTimeout(() => { holdSellCommitCancel(); commitSellMemo(); }, COMMIT_HOLD_MS);
+}
+function holdSellCommitCancel() {
+  if (_commitTimer) { clearTimeout(_commitTimer); _commitTimer = null; }
+  const fill = document.getElementById('sm-review-fill');
+  if (!fill) return;
+  fill.style.transition = 'width 280ms ease-out';
+  fill.style.width = '0%';
+}
+
+/* SEAL — appends the draft to state.sellMemos with an id + timestamp,
+   clears the draft, and routes to the sell-quantity execution screen.
+   The sealed record is what s0's history surface will render. */
+function commitSellMemo() {
+  const sealed = Object.assign({
+    id:        'sm-' + Date.now(),
+    sealedAt:  new Date().toISOString().slice(0, 10),
+    ticker:    state.activeStock || 'AAPL'
+  }, state.sellMemo);
+  if (!state.sellMemos) state.sellMemos = [];
+  state.sellMemos.push(sealed);
+  persistSellMemos();
+  state._lastSealedSellMemoId = sealed.id;
+  // Reset the draft for the next sell flow
+  state.sellMemo = makeEmptySellMemo();
+  clearSellMemoDraft();
+  go('sm-exec');
+}
+
+/* ── sm-exec — sell trade execution screen ──────────────────────────────
+   Reads the most-recently-sealed sell memo to (a) display the committed
+   action as a chip above the share entry, and (b) pre-fill the Shares
+   field with the recommended count. The user can override the share
+   count via the numpad before tapping Review. ───────────────────────── */
+
+const SM_EXEC_PRICE   = 192.35;   // matches the live AAPL quote elsewhere
+const SM_EXEC_ONFILE  = 35;       // shares the returning persona holds (25 + 10)
+
+function renderSmExec() {
+  const last = (state.sellMemos || []).slice(-1)[0];
+  if (!last) { go('s0'); return; }
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v || '—'; };
+
+  // Sealed-memo chip — Full exit / Partial trim
+  set('sm-exec-action-chip', SM_ACTION_LBL[last.actionType] || '—');
+
+  // Shares-on-file caption + recommended pre-fill. Full exit pre-fills the
+  // entire on-file share count; Partial leaves the field blank because the
+  // exact count is intentionally decided here on the trade screen.
+  set('sm-exec-onfile', SM_EXEC_ONFILE);
+  if (last.actionType === 'full') {
+    state.sellShares = String(SM_EXEC_ONFILE);
+    set('sm-exec-recommended', SM_EXEC_ONFILE + ' / ' + SM_EXEC_ONFILE);
+  } else {
+    state.sellShares = '';
+    set('sm-exec-recommended', '—');
+  }
+
+  // Limit price — default to the live market price so a user who doesn't
+  // want to override can tap Review immediately. The caption keeps the
+  // market price visible alongside, mirroring the s8 buy numpad pattern.
+  state.sellLimitPrice = SM_EXEC_PRICE.toFixed(2);
+
+  // ── Sealed-memo recap ── render each of the 7 sm fields' answers in the
+  // stacked-row block beneath the form. Read-only — to edit, the user
+  // would have to start a new sell flow (memos are append-only).
+  set('sm-exec-recap-trigger',  SM_TRIGGER_LBL[last.trigger]);
+  set('sm-exec-recap-thesis',   SM_STATUS_LBL[last.thesisStatus]);
+
+  // Kill line row — show the triggered/not-triggered verdict, with the
+  // discretionary justification appended when present.
+  let killStr = SM_KILL_LBL[last.killLineTriggered] || '—';
+  if (last.killLineTriggered === 'no' && (last.killLineNote || '').trim()) {
+    killStr += ' · ' + last.killLineNote.trim();
+  }
+  set('sm-exec-recap-kill', killStr);
+
+  // IV row — show today's re-estimate alongside the entry IV delta.
+  const ivToday = parseFloat(last.ivToday);
+  const ivEntry = parseFloat((state.memo || {}).intrinsicValue);
+  let ivStr = '—';
+  if (isFinite(ivToday) && ivToday > 0) {
+    ivStr = ivToday.toFixed(2) + ' USD';
+    if (isFinite(ivEntry) && ivEntry > 0) {
+      const delta = ivToday - ivEntry;
+      const sign = delta >= 0 ? '+' : '';
+      ivStr += ' (' + sign + delta.toFixed(2) + ' vs entry)';
+    }
+  }
+  set('sm-exec-recap-iv', ivStr);
+
+  set('sm-exec-recap-opportunity', last.opportunityCost || '—');
+  set('sm-exec-recap-action',      SM_ACTION_LBL[last.actionType]);
+
+  // Inversion row — show the verdict, with the operator's note appended
+  // when present.
+  let invStr = SM_INVERT_LBL[last.inversionAnswer] || '—';
+  if ((last.inversionNote || '').trim()) {
+    invStr += ' · ' + last.inversionNote.trim();
+  }
+  set('sm-exec-recap-inversion', invStr);
+
+  // Repaint the live shares + limit displays + dependent fields with
+  // whatever values were set above.
+  updateSellExecDisplay();
+
+  // Ensure the numpad isn't lingering open from a previous visit
+  closeSellNumpad();
+}
+
+/* Numpad open/close — separate ids from the buy s8 numpad so the two
+   screens hold independent visual state. activeInput is shared because
+   the user is never on both screens simultaneously.
+
+   Opening the numpad clears the targeted field so the user can type
+   fresh without backspacing. The sub-caption keeps the prior value
+   visible alongside (Recommended share count, Market Price). */
+function openSellNumpad(which) {
+  if (which !== 'sellShares' && which !== 'sellLimit') which = 'sellShares';
+  state.activeInput = which;
+  if (which === 'sellShares')      state.sellShares     = '';
+  else if (which === 'sellLimit')  state.sellLimitPrice = '';
+  updateSellExecDisplay();
+  const pad = document.getElementById('sm-exec-numpad');
+  if (pad) pad.classList.add('is-open');
+  const sharesRow = document.getElementById('sm-exec-shares-row');
+  const limitRow  = document.getElementById('sm-exec-limit-row');
+  if (sharesRow) sharesRow.classList.toggle('is-active', which === 'sellShares');
+  if (limitRow)  limitRow.classList.toggle('is-active',  which === 'sellLimit');
+}
+function closeSellNumpad() {
+  state.activeInput = null;
+  const pad = document.getElementById('sm-exec-numpad');
+  if (pad) pad.classList.remove('is-open');
+  const sharesRow = document.getElementById('sm-exec-shares-row');
+  const limitRow  = document.getElementById('sm-exec-limit-row');
+  if (sharesRow) sharesRow.classList.remove('is-active');
+  if (limitRow)  limitRow.classList.remove('is-active');
+}
+
+/* Numpad keystroke router. Routes to whichever field is active.
+     Shares — integer only, decimal key no-op, capped at 6 digits.
+     Limit  — one decimal point, capped at 2 digits past the point, capped
+              at 8 total chars. */
+function sellNumpadTap(val) {
+  const which = state.activeInput;
+  if (which !== 'sellShares' && which !== 'sellLimit') return;
+
+  if (which === 'sellShares') {
+    if (val === '.') return;
+    if (!state.sellShares) state.sellShares = '';
+    if (val === 'del') {
+      state.sellShares = state.sellShares.slice(0, -1);
+    } else if (state.sellShares.length < 6) {
+      state.sellShares = (state.sellShares + val).replace(/^0+(\d)/, '$1');
+    }
+  } else if (which === 'sellLimit') {
+    if (!state.sellLimitPrice) state.sellLimitPrice = '';
+    if (val === 'del') {
+      state.sellLimitPrice = state.sellLimitPrice.slice(0, -1);
+    } else if (val === '.') {
+      if (state.sellLimitPrice.indexOf('.') === -1) {
+        state.sellLimitPrice = (state.sellLimitPrice || '0') + '.';
+      }
+    } else {
+      const dot = state.sellLimitPrice.indexOf('.');
+      if (dot !== -1 && state.sellLimitPrice.length - dot > 2) return;
+      if (state.sellLimitPrice.length >= 8) return;
+      state.sellLimitPrice = (state.sellLimitPrice + val).replace(/^0+(\d)/, '$1');
+    }
+  }
+  updateSellExecDisplay();
+}
+
+function updateSellExecDisplay() {
+  const n = parseInt(state.sellShares || '', 10) || 0;
+  const limit = parseFloat(state.sellLimitPrice || '') || 0;
+
+  // Live displays for the two editable rows
+  const sharesDisp = document.getElementById('sm-exec-shares-disp');
+  if (sharesDisp) sharesDisp.textContent = state.sellShares && state.sellShares.length > 0 ? state.sellShares : '0';
+
+  const limitDisp = document.getElementById('sm-exec-limit-disp');
+  if (limitDisp) limitDisp.textContent = state.sellLimitPrice && state.sellLimitPrice.length > 0 ? state.sellLimitPrice : '0.00';
+
+  // Value — uses limit price when present, falls back to market.
+  const priceUSD = limit > 0 ? limit : SM_EXEC_PRICE;
+  const val = n * priceUSD;
+  const valEl = document.getElementById('sm-exec-value');
+  if (valEl) valEl.textContent = val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
+
+  // Portfolio weight after the sell — current 7.2% scales down by the
+  // fraction sold. Approximate: weight × (1 - sold/onfile).
+  const weightEl = document.getElementById('sm-exec-weight');
+  if (weightEl) {
+    const before = 7.2;
+    const after = before * Math.max(0, (SM_EXEC_ONFILE - n)) / SM_EXEC_ONFILE;
+    weightEl.textContent = after.toFixed(2) + '%';
+  }
+
+  // Review unlocks when shares is 1..onfile AND limit price > 0.
+  const reviewBtn = document.getElementById('sm-exec-review-btn');
+  if (reviewBtn) {
+    if (n >= 1 && n <= SM_EXEC_ONFILE && limit > 0) reviewBtn.classList.remove('locked');
+    else                                            reviewBtn.classList.add('locked');
+  }
+}
+
+/* Review — records the sell transaction against the position and returns
+   to s0. The sealed memo (already on state.sellMemos) is linked via
+   sellMemoId so the position's history can render them together later. */
+function reviewSellExec() {
+  const n = parseInt(state.sellShares || '', 10) || 0;
+  const limit = parseFloat(state.sellLimitPrice || '') || 0;
+  if (n < 1 || n > SM_EXEC_ONFILE || limit <= 0) return;
+
+  const last = (state.sellMemos || []).slice(-1)[0];
+  const proceeds = n * limit;
+  const today = new Date();
+  const dateStr = today.toLocaleString('en-US', { month: 'short' }) + ' ' + today.getDate() + ', ' + today.getFullYear();
+
+  const tx = {
+    id:          'tx-sell-' + Date.now(),
+    date:        dateStr,
+    action:      'Sell',
+    shares:      n,
+    cost:        proceeds,        // proceeds for sells; keeps the same numeric column shape as buys
+    price:       limit,
+    orderType:   'Limit',
+    sellMemoId:  last ? last.id : null,
+    sellAction:  last ? last.actionType : null
+  };
+  if (!state.transactions) state.transactions = [];
+  state.transactions.push(tx);
+  try { persistTransactions(); } catch (_) {}
+
+  // Clean up screen-local state and return to the position page
+  state.sellShares     = '';
+  state.sellLimitPrice = '';
+  state.activeInput    = null;
+  go('s0');
+}
+
+/* Legacy alias kept in case any earlier wiring still references the
+   placeholder name. New code uses reviewSellExec. */
+function finalizeSellExit() { reviewSellExec(); }
+
+/* Lightweight exit handler — drops the draft and returns to s0. Unlike
+   the buy memo's save-or-discard sheet, the sell flow is shorter and the
+   user can resume any time from s6 → reduce, so a quiet exit suffices. */
+function exitSellMemo() {
+  // Keep the draft on disk (persistSellMemoDraft already runs on every
+  // input) so backing out and re-entering preserves the in-progress flow.
+  go('s0');
 }
 
 /* ═════════════════════════════════════════════════
@@ -13608,6 +15068,184 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p>Theses are not static. Revise when the mechanism evolves — new segment, new capital structure, new competitive dynamic. Do not revise to accommodate a falling price. The line between updating your model and rationalizing a loss is whether the business changed or only the quote did.</p>
 <p><em>Every revision should be dated. The history is the asset.</em></p>
 `
+  },
+
+  /* ── Sell memo info modals ─────────────────────────────────────────────
+     One entry per sm1–sm7 tappable pill. Each explains the field's purpose
+     and surfaces the operator-grade thinking behind it — same long-form
+     style as the buy memo info modals (Classify, Size, Thesis, Kill line). */
+
+  sell_trigger: {
+    eyebrow: 'Trigger',
+    title:   'What surfaced this decision.',
+    bodyHtml: `
+<p>Naming the proximate cause does most of the work. The sell decision starts here because most bad sells happen when the cause is unnamed — a vague unease, a falling tape, a news cycle — and the sell is rationalized after the fact.</p>
+
+<h4>Thesis fact change</h4>
+<p>Specific operating data has invalidated the original story. A segment growth rate broke. Margins compressed for a reason inconsistent with the thesis. Management said something that contradicts a load-bearing assumption. This is the cleanest sell catalyst — the bet was on facts, the facts changed, the bet ends.</p>
+
+<h4>Kill line hit</h4>
+<p>The pre-committed exit condition fired. The work that matters happened at entry, when a clear-headed version of the operator wrote down what would invalidate the thesis. This trigger defers to that prior judgment.</p>
+
+<h4>Margin of safety eliminated</h4>
+<p>Price has caught up to intrinsic value. The asymmetry that made the position attractive — paying $X for $Y of value — is gone. The thesis can still be intact and the sell still correct: holding fairly-priced businesses is a different bet than holding mispriced ones.</p>
+
+<h4>Better idea elsewhere</h4>
+<p>Capital should rotate. Another position offers a materially higher expected return per unit of risk. This trigger requires a specific named alternative, not "I'll find something later."</p>
+
+<h4>Position too concentrated</h4>
+<p>Sizing has compounded past tolerance. The thesis may still be correct, but the position's success has made it too large a fraction of the portfolio. A trim here is a sizing decision, not a thesis call.</p>
+
+<h4>Capital needed elsewhere</h4>
+<p>Outside the portfolio. House purchase, business investment, life event. This is the only sell trigger that has nothing to do with the position or the market — and it deserves explicit acknowledgment so it doesn't get dressed up as analysis.</p>
+
+<p><em>If the trigger doesn't fit any of these, the trigger is probably "the stock went down." That is not a sell signal. It is a feeling. Close the flow and re-read the thesis.</em></p>
+`
+  },
+
+  sell_thesis: {
+    eyebrow: 'Thesis',
+    title:   'Grade the original story.',
+    bodyHtml: `
+<p>Before deciding what to do, decide what is true. The thesis written at entry is the document being tested — not the price chart since.</p>
+
+<h4>Intact</h4>
+<p>The original story still holds. Selling here requires another reason — margin of safety eliminated, capital needed, sizing rebalance. Selling a stock with an intact thesis is a legitimate decision but a high-bar one.</p>
+
+<h4>Weakened</h4>
+<p>Partial erosion. The mechanism is impaired but not broken. Probability of the thesis playing out is lower than at entry, the expected payoff is smaller, the path is murkier. A trim is often the right response — full exit overweights what changed.</p>
+
+<h4>Broken</h4>
+<p>Facts have invalidated the original claim. Not "the stock is down." The specific operating data that the thesis was built on no longer reads the way it did. Full exit is the default here; trimming a broken thesis is sentimentality.</p>
+
+<p><strong>The honest test:</strong> if a colleague read the original thesis and today's facts side by side, would they reach the same verdict? If the answer requires explanation, the verdict needs to be more honest.</p>
+
+<p><em>The thesis status is the gravity of the rest of the memo. An "intact" thesis with a "broken" trigger is incoherent — pick one. A "broken" thesis with a small partial trim is incoherent too. Let the verdict size the action.</em></p>
+`
+  },
+
+  sell_killline: {
+    eyebrow: 'Kill line',
+    title:   'The trip-wire written at entry.',
+    bodyHtml: `
+<p>The kill line is a pre-commitment. Its purpose is to make the exit decision before the position has any emotional weight — when capital is at risk in the abstract rather than in real-time.</p>
+
+<h4>Triggered</h4>
+<p>The pre-committed condition has fired. Defer to the prior judgment. The version of the operator who wrote the kill line was thinking clearly; the version reading this screen has a position to defend. The asymmetry of those two states is exactly why kill lines exist.</p>
+<p>Execute. Do not re-litigate. If the kill line is wrong in retrospect, that is information for the next memo — not a reason to override this one.</p>
+
+<h4>Not triggered</h4>
+<p>This is a discretionary exit. The kill line was the cleanest pre-commitment available; ignoring it requires a justification that survives written scrutiny. The note field is mandatory for this branch because the future self reading the record needs to understand what other consideration overrode the pre-commitment.</p>
+<p>Common legitimate cases: margin of safety eliminated, capital needed externally, a materially better idea. Common illegitimate cases: news cycle, recent volatility, social pressure, FOMO.</p>
+
+<h4>The drift problem</h4>
+<p>Most thesis breakage doesn't trigger a hard kill line. Margins drift down. The mechanism quietly stops working. No metric snaps. The discretionary-exit branch is built for this — it accepts that the kill line is necessary but not sufficient, and it forces a written record of the override so the discipline of pre-commitment isn't quietly eroded.</p>
+
+<p><em>A kill line ignored without writing down why isn't a kill line. It's a comfort object.</em></p>
+`
+  },
+
+  sell_iv: {
+    eyebrow: 'Value',
+    title:   'Re-estimate the intrinsic value.',
+    bodyHtml: `
+<p>The price moves daily. Intrinsic value moves rarely. The sell decision is about the gap between the two, not about either one in isolation.</p>
+
+<p>Re-estimate now — at the moment of decision — even if nothing has changed. The act of writing down a new IV forces honesty about what has actually moved versus what feels like it has.</p>
+
+<h4>Three patterns surface here</h4>
+<ul class="info-list">
+  <li><strong>IV unchanged, price up.</strong> Margin of safety eliminated. The original thesis is being paid for in full. Selling is a sizing call, not a thesis call.</li>
+  <li><strong>IV down, price down more.</strong> Asymmetry has improved, not worsened. The market is paying attention to the same data points but discounting them more aggressively. This is often a buy signal disguised as a sell signal.</li>
+  <li><strong>IV down materially, price barely moved.</strong> The market hasn't caught up. The sell here is on a thesis change, not a price change — and the timing window may be short.</li>
+</ul>
+
+<h4>The discipline</h4>
+<p>The re-estimate must be defensible against the original. If the new IV is dramatically different, name the specific input that changed — a margin assumption, a growth rate, a multiple. "I just think it's worth less now" is not an estimate; it is a feeling with a number attached.</p>
+
+<p><em>Trade the gap, not the noise.</em></p>
+`
+  },
+
+  sell_opportunity: {
+    eyebrow: 'Capital',
+    title:   'Name the destination.',
+    bodyHtml: `
+<p>Selling without a destination is fear dressed in discipline. Cash is not a destination unless there is an explicit thesis for what the cash will be deployed into and when.</p>
+
+<h4>Legitimate destinations</h4>
+<ul class="info-list">
+  <li><strong>A named alternative position</strong> with materially better expected return per unit of risk. The new bet replaces the old one in the portfolio — not in spirit, but in the actual capital allocation.</li>
+  <li><strong>Dry powder with a deployment thesis.</strong> Cash held because the operator has a specific catalyst they expect to act on — a market drawdown, an earnings event, a forthcoming opportunity. The cash is itself a position.</li>
+  <li><strong>Debt paydown.</strong> Removing portfolio leverage when the cost of debt exceeds the expected return of the marginal position.</li>
+  <li><strong>External need.</strong> Capital allocated outside the portfolio for a non-investment purpose. Honest, named, recorded.</li>
+</ul>
+
+<h4>Illegitimate destinations</h4>
+<ul class="info-list">
+  <li><strong>"Cash for safety."</strong> Without a deployment thesis, cash is just a slower-burning loss of purchasing power.</li>
+  <li><strong>"I'll figure it out."</strong> The most common rationalization. Translates to: I am exiting because the position has been uncomfortable, and I do not have a plan for what comes next.</li>
+  <li><strong>The unspecified portfolio rebalance.</strong> Selling "to reduce concentration" without naming what gets bought instead is just selling.</li>
+</ul>
+
+<p><em>If the destination cannot be named in a sentence, the position should probably continue to be held.</em></p>
+`
+  },
+
+  sell_action: {
+    eyebrow: 'Action',
+    title:   'The size of the exit reveals the conviction in the diagnosis.',
+    bodyHtml: `
+<p>A full exit and a partial trim are different statements. Mismatching the action to the diagnosis is a tell that the operator doesn't fully believe their own reasoning.</p>
+
+<h4>Full exit</h4>
+<p>The position closes. The right move when:</p>
+<ul class="info-list">
+  <li>The thesis is broken — operating data has invalidated the original story.</li>
+  <li>A named replacement position has cleared the bar.</li>
+  <li>External capital needs require the full position to be liquidated.</li>
+</ul>
+<p>Half-exiting a broken thesis is a way of keeping the position open to be right after the fact. The "what if it bounces back" instinct is exactly the bias the discipline exists to correct.</p>
+
+<h4>Partial trim</h4>
+<p>The position size is reduced. The right move when:</p>
+<ul class="info-list">
+  <li>The thesis is weakened, not broken — partial conviction remains.</li>
+  <li>Margin of safety has compressed but not vanished.</li>
+  <li>Position sizing has compounded past tolerance and a rebalance is appropriate.</li>
+</ul>
+<p>The trim percentage matters. A 10% trim of a 7% position is a 0.7% adjustment — often not worth the friction. A trim that doesn't change the portfolio's behavior is a placebo.</p>
+
+<h4>The honest test</h4>
+<p>The size of the exit should match the magnitude of the diagnosis. If selling 30% feels right but the thesis is fully broken, the operator is hedging against being wrong about being wrong. That is two layers of caution where one is needed.</p>
+
+<p><em>Pick the action that matches the verdict. Then commit.</em></p>
+`
+  },
+
+  sell_inversion: {
+    eyebrow: 'Invert',
+    title:   'The Munger filter.',
+    bodyHtml: `
+<p>"Invert. Always invert." The single most useful sentence Munger ever said, applied to the moment of exit:</p>
+
+<p><strong>Pretend the position is not on the books. The cash is in hand. The stock trades at today's price. Buy it now.</strong></p>
+
+<p>Two answers are possible, and they map cleanly to two different decisions.</p>
+
+<h4>"No, would not buy today"</h4>
+<p>The sell is confirmed. The reason for holding is anchoring — to the entry price, to the original thesis, to the prior version of the operator who placed the bet. None of those reasons survive the inversion.</p>
+<p>Selling here removes a position the operator would not initiate. The portfolio improves the moment the trade is done.</p>
+
+<h4>"Yes, would buy today"</h4>
+<p>Stop. The sell is tape-watching, not investing. If the stock is attractive enough to buy at today's price, holding what is already owned is the same decision with lower friction.</p>
+<p>Common reasons the inversion catches a bad sell: the trigger was a price move not a fact change, recent news created emotional discomfort without changing the thesis, loss aversion is being relabeled as discipline.</p>
+
+<h4>The asymmetry the inversion exploits</h4>
+<p>Holding has emotional weight that buying does not. The position has a price the operator paid; the cash, by contrast, has no anchor. By removing the position from the picture, the inversion strips out the cost basis, the timing of the entry, the operator's previously-stated conviction — every input that should be irrelevant to the forward decision but isn't.</p>
+
+<p><em>The strongest sell signal is the one that survives the inverted question. If the answer is "no, would not buy today," seal the memo. If the answer is "yes, would buy today," close this flow and go re-read the thesis instead.</em></p>
+`
   }
 };
 
@@ -15042,6 +16680,18 @@ function hideThesisHistory() {
 function toggleCard(card) {
   if (!card) return;
   card.classList.toggle('is-collapsed');
+}
+
+/* Force every collapsible card on the s0 stock page back into its collapsed
+   state. Called on every s0 entry — the user lands looking at a clean
+   contents-of-position list and chooses what to open. Example mode runs its
+   own expand step after this, so it still gets the full reference view. */
+function collapseAllS0Cards() {
+  const s0 = document.querySelector('.scr[data-id="s0"]');
+  if (!s0) return;
+  s0.querySelectorAll('.position-section.is-collapsible').forEach(card => {
+    card.classList.add('is-collapsed');
+  });
 }
 
 /* ═════════════════════════════════════════════════
