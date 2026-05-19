@@ -303,19 +303,27 @@ body.is-fullscreen .zoom-toggle {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .s0-company-name {
-  font-size: 18px;
-  color: var(--p);
+  font-size: 16px;
+  color: var(--s);
   letter-spacing: -0.02em;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
 }
 .s0-price {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--p);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
+  font-weight: 500;
 }
-.s0-price-cad {
+/* CAD conversion captions are hidden globally — the app surfaces USD only. */
+.s0-price-cad,
+.miv-price-cad,
+.v5-iv-cad,
+.v5-num-cad,
+#s8-shares-dollar,
+#m4-margin-cad { display: none !important; }
+.s0-price-cad-disabled {
   font-size: 10.5px;
   color: var(--t);
   font-variant-numeric: tabular-nums;
@@ -569,6 +577,31 @@ body.is-fullscreen .zoom-toggle {
   letter-spacing: -0.02em;
   margin-left: 6px;
 }
+/* Alpha row stack — dollar amount primary, pp caption muted underneath. */
+.s0-perf-alpha-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.s0-perf-alpha-amt-line {
+  font-size: 14px;
+  color: var(--p);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.s0-perf-alpha-vs {
+  color: var(--t);
+  font-size: 11px;
+  letter-spacing: -0.005em;
+  margin-left: 4px;
+}
+.s0-perf-alpha-pp-line {
+  font-size: 11px;
+  color: var(--t);
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+}
 .s0-perf-row-arrow {
   font-size: 14px;
   color: var(--t);
@@ -695,6 +728,43 @@ body.is-fullscreen .zoom-toggle {
 
 /* Base for each position section (thesis, kill line, MOS, memo, confidence, research) */
 .position-section { padding: 20px 0; }
+
+/* Collapsible position cards — Thesis / Kill line / Margin of safety /
+   Confidence / Notes & research. Collapsed by default so the user can
+   scan past them to Performance + Position summary without scrolling.
+   Tap the head to expand inline. */
+.position-section.is-collapsible {
+  padding: 14px 18px;
+  border: 0.5px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.015);
+  margin-top: 10px;
+  transition: background 150ms var(--ease);
+}
+.position-section.is-collapsible + .position-section.is-collapsible {
+  margin-top: 8px;
+}
+.position-section.is-collapsible:hover { background: rgba(255,255,255,0.025); }
+.position-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.position-section.is-collapsible:not(.is-collapsed) .position-card-head {
+  margin-bottom: 14px;
+}
+.position-section.is-collapsible.is-collapsed .position-card-body { display: none; }
+.position-card-chevron {
+  color: var(--t);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 200ms var(--ease);
+  flex-shrink: 0;
+}
+.position-section.is-collapsible:not(.is-collapsed) .position-card-chevron {
+  transform: rotate(90deg);
+}
 .position-eyebrow {
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -758,7 +828,13 @@ body.is-fullscreen .zoom-toggle {
   margin-top: 16px;
   letter-spacing: 0.02em;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255,255,255,0.12);
+  text-underline-offset: 3px;
+  transition: color 150ms var(--ease);
 }
+.thesis-version:hover { color: var(--t); text-decoration-color: rgba(255,255,255,0.35); }
 
 /* Kill line — set apart. Left rule + indent reads as a document clause. */
 .kill-line-block {
@@ -779,6 +855,19 @@ body.is-fullscreen .zoom-toggle {
   color: var(--t-800);
   font-size: 13px;
   min-height: 36px;
+}
+/* Multi-trigger kill line — bullet list so the OR semantics are obvious. */
+.kill-line-bullet {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  line-height: 1.55;
+}
+.kill-line-bullet + .kill-line-bullet { margin-top: 8px; }
+.kill-line-bullet-mark {
+  color: var(--t-800);
+  flex-shrink: 0;
+  font-weight: 500;
 }
 
 /* Margin of safety — three rows + anchoring caption */
@@ -1460,6 +1549,80 @@ body.is-fullscreen .zoom-toggle {
   padding: 0;
 }
 .example-banner-back .glyph { font-size: 13px; line-height: 1; }
+
+/* ═══════════════ EXAMPLE MEMO MODE — s0 ═══════════════
+   When state.exampleMode is true, the stock page transforms into a pure
+   memo-review surface: no live-data, no transactions, no orders. Just the
+   artifact. Visual treatment differs from the normal stock page so users
+   know they're reading a reference, not their live position. */
+.scr[data-id="s0"].is-example-mode #s0-delta,
+.scr[data-id="s0"].is-example-mode #s0-price-cad,
+.scr[data-id="s0"].is-example-mode #s0-perf-vs-spx,
+.scr[data-id="s0"].is-example-mode #s0-tx-strip,
+.scr[data-id="s0"].is-example-mode #s0-position-summary,
+.scr[data-id="s0"].is-example-mode #s0-bottom-about,
+.scr[data-id="s0"].is-example-mode #s0-cta-foot,
+.scr[data-id="s0"].is-example-mode #s0-review-notif,
+.scr[data-id="s0"].is-example-mode #s0-divider-before-confidence,
+.scr[data-id="s0"].is-example-mode #s0-divider-before-tx {
+  display: none !important;
+}
+
+/* Visual differentiation — subtle vertical accent line on the left and a
+   faint scan-line gradient overlay so the page reads as a "specimen". */
+.scr[data-id="s0"].is-example-mode {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(217,164,65,0.02) 0%, transparent 30%),
+    var(--bg, #0a0a0a);
+}
+.scr[data-id="s0"].is-example-mode::before {
+  content: '';
+  position: absolute;
+  top: 56px;
+  left: 0;
+  width: 2px;
+  bottom: 0;
+  background: linear-gradient(180deg, var(--accent-amber) 0%, transparent 80%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Collapsible cards in example mode — render as fully-open reference
+   plates with a slightly elevated border so they read as artifact slabs. */
+.scr[data-id="s0"].is-example-mode .position-section.is-collapsible {
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.025);
+}
+.scr[data-id="s0"].is-example-mode .position-card-chevron { display: none; }
+.scr[data-id="s0"].is-example-mode .position-card-head { cursor: default; }
+
+/* Sequenced fade-up entrance — runs each time the user enters example mode.
+   Cards stagger in 80ms apart for a subtle reveal cascade. */
+@keyframes example-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes example-accent-grow {
+  from { transform: scaleY(0); transform-origin: top; }
+  to   { transform: scaleY(1); transform-origin: top; }
+}
+.scr[data-id="s0"].is-example-entering::before {
+  animation: example-accent-grow 900ms 0ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.scr[data-id="s0"].is-example-entering .example-banner.is-on,
+.scr[data-id="s0"].is-example-entering .s0-header,
+.scr[data-id="s0"].is-example-entering .position-section,
+.scr[data-id="s0"].is-example-entering .position-tx-strip {
+  animation: example-fade-up 500ms ease-out both;
+}
+.scr[data-id="s0"].is-example-entering .example-banner.is-on { animation-delay:   0ms; }
+.scr[data-id="s0"].is-example-entering .s0-header             { animation-delay: 120ms; }
+.scr[data-id="s0"].is-example-entering #s0-thesis-section     { animation-delay: 240ms; }
+.scr[data-id="s0"].is-example-entering #s0-killline-section   { animation-delay: 320ms; }
+.scr[data-id="s0"].is-example-entering #s0-mos-section        { animation-delay: 400ms; }
+.scr[data-id="s0"].is-example-entering #s0-confidence-section { animation-delay: 480ms; }
 .example-toast {
   position: fixed;
   left: 50%;
@@ -1627,6 +1790,12 @@ body.is-fullscreen .zoom-toggle {
   font-size: 10.5px;
   letter-spacing: 0.14em;
   color: var(--t);
+}
+/* Negative margin — the boundary condition a value investor most needs
+   to be confronted with. Amber emphasis on the percentage + label. */
+.miv-margin.is-amber .miv-margin-pct,
+.miv-margin.is-amber .miv-margin-lbl {
+  color: var(--accent-amber);
 }
 .miv-price-cell {
   padding: 14px 16px;
@@ -1852,7 +2021,46 @@ body.is-fullscreen .zoom-toggle {
 .v5-modal-sheet {
   background: var(--surface);
   padding: 28px 22px 28px;
+  position: relative;
 }
+/* Modal close — × in the top-right corner. Always tappable. */
+.v5-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--t);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  z-index: 2;
+  transition: color 150ms var(--ease);
+}
+.v5-modal-close:hover { color: var(--p); }
+
+/* Optional note textarea — appears after a reason is picked. Quiet,
+   monospace placeholder, no border. */
+.cantvalue-note-block { margin-top: 4px; }
+.cantvalue-note {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(255,255,255,0.10);
+  border-radius: 3px;
+  color: var(--p);
+  font-family: var(--font);
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  line-height: 1.55;
+  padding: 10px 12px;
+  outline: none;
+  resize: vertical;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+.cantvalue-note::placeholder { color: var(--t-800); }
+.cantvalue-note:focus { border-color: rgba(255,255,255,0.25); }
 .v5-modal-eyebrow {
   font-size: 10px;
   letter-spacing: 0.16em;
@@ -2647,6 +2855,20 @@ body.is-fullscreen .zoom-toggle {
 }
 .m6-health-mark.ok   { color: var(--p); }
 .m6-health-mark.warn { color: var(--p); }
+
+/* Immutability notice on m6 — institutional reassurance that edits create
+   versions, not overwrites. Quiet mono italic; left-rule indent reads as
+   a record-keeping clause, not a CTA. */
+.m6-immutability {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--t-800);
+  line-height: 1.55;
+  border-left: 0.5px solid rgba(255,255,255,0.15);
+  padding: 4px 0 4px 12px;
+  margin-top: -4px;
+}
 .m6-health-row .k { color: var(--t); flex-shrink: 0; min-width: 100px; }
 .m6-health-row .v { color: var(--s); }
 
@@ -3010,18 +3232,37 @@ body.is-fullscreen .zoom-toggle {
   line-height: 1;
 }
 /* Tappable step label — when the step has an info modal, the label itself
-   becomes the affordance. Subtle underline signals "tap for more"; replaces
-   the now-removed secondary "What is X?" CTAs from the foot. */
+   becomes the affordance. Subtle bordered box signals "tap for more" —
+   institutional button feel without being loud. */
 .ticker-row.lite .ticker-step.is-info {
   cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255,255,255,0.18);
-  text-decoration-thickness: 0.5px;
-  text-underline-offset: 4px;
-  transition: text-decoration-color 150ms var(--ease), color 150ms var(--ease);
+  display: inline-block;
+  border: 0.5px solid rgba(255,255,255,0.18);
+  border-radius: 3px;
+  padding: 3px 9px;
+  text-decoration: none;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease), color 150ms var(--ease);
 }
 .ticker-row.lite .ticker-step.is-info:hover {
-  text-decoration-color: rgba(255,255,255,0.55);
+  border-color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.04);
+  color: var(--p);
+}
+
+/* Forecast section eyebrows that open info modals — same boxed affordance
+   so Claim / Probability / Horizon read as identical tappable labels. */
+.forecast-eyebrow.is-info {
+  cursor: pointer;
+  display: inline-block;
+  border: 0.5px solid rgba(255,255,255,0.18);
+  border-radius: 3px;
+  padding: 3px 9px;
+  margin-bottom: 14px;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease), color 150ms var(--ease);
+}
+.forecast-eyebrow.is-info:hover {
+  border-color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.04);
   color: var(--p);
 }
 /* Small in-flow re-access link on m1 — opens mintro & mresearch for
@@ -4028,6 +4269,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .todaycard-primary:hover   { opacity: 0.65; }
 .todaycard-secondary:hover { color: var(--t); }
 
+/* Amber emphasis — Buffett/Munger lens. Reserved for the data POINT that
+   carries the signal, not the categorical label. Tags and tickers stay
+   monochrome because they're identifiers — the urgency lives in the
+   number that triggered the alert (big-move meta = the % drop and reason;
+   memo-pending count = how many positions are uncommitted). */
+.todaycard--bigmove  .todaycard-item-meta,
+.todaycard--backfill .todaycard-count {
+  color: var(--accent-amber);
+}
+
 /* ── Today sub-blocks (legacy — kept for any non-card layouts). Each
       notification followed the same focal + // + rows pattern. ── */
 .dash-today-block {
@@ -4099,6 +4350,69 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: var(--p);
   font-variant-numeric: tabular-nums;
   margin-left: 4px;
+}
+/* Concentration warning — Effective N at or below 3.0 means the book
+   reads as concentrated. The number turns amber so the user sees risk
+   concentration as a fact, not a computed footnote. */
+.dash-conc-meta .num.is-amber { color: var(--accent-amber); }
+
+/* Concentration info sheet — opened from the s10 .dash-conc tile.
+   Educational explainer for the Effective N metric + threshold guidance. */
+.conc-info-num {
+  font-size: 32px;
+  color: var(--accent-amber);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.conc-info-lbl {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--t);
+}
+.conc-info-body {
+  font-size: 13px;
+  color: var(--s);
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+.conc-info-formula {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+  color: var(--p);
+  letter-spacing: 0.02em;
+}
+.conc-info-formula-note {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  color: var(--t-800);
+  letter-spacing: 0.02em;
+  margin-top: 6px;
+}
+.conc-threshold-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.05);
+}
+.conc-threshold-row:last-child { border-bottom: none; }
+.conc-threshold-range {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--p);
+  flex-shrink: 0;
+  min-width: 96px;
+  font-variant-numeric: tabular-nums;
+}
+.conc-threshold-note {
+  font-size: 12.5px;
+  color: var(--t);
+  letter-spacing: -0.005em;
+  line-height: 1.5;
 }
 .dash-conc-bar {
   display: flex;
@@ -4785,7 +5099,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .review-notif .pulse-dot {
   flex-shrink: 0;
   width: 6px; height: 6px; border-radius: 50%;
-  background: var(--p);
+  background: var(--accent-amber);
   animation: notifPulse 1.6s ease-in-out infinite;
 }
 .review-notif .arrow {
@@ -4905,11 +5219,19 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 /* ═══════════════ AI INSIGHT (m6 + s4) ═══════════════ */
 /* Pulsing eyebrow dot */
 .ai-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+/* Brand mark "//" — used in eyebrow position. Replaces the prior pulsing
+   dot with the same identity glyph that appears in the dashboard header,
+   tying the system marker across surfaces. Pulse animation retained. */
 .ai-eyebrow-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--p);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--p);
+  line-height: 1;
   animation: aiPulse 1.6s ease-in-out infinite;
 }
+.ai-eyebrow-dot::before { content: '//'; }
 @keyframes aiPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
 
 /* "Thinking" three-dot bouncer */
@@ -5127,7 +5449,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <div style="padding-top:48px;padding-bottom:78px;text-align:right">
                 <div style="font-size:13px;color:var(--t);letter-spacing:-0.22px;margin-bottom:8px">Total Value</div>
                 <div style="font-size:28px;font-weight:400;letter-spacing:-0.56px;font-variant-numeric:tabular-nums;color:var(--p)" id="s10-total">
-                  173,249.00 <span style="color:var(--d)">CAD</span>
+                  127,389.71 <span style="color:var(--d)">USD</span>
                 </div>
               </div>
 
@@ -5142,7 +5464,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="dash-col">
                   <div class="dash-block">
                     <div class="dash-key">Value</div>
-                    <div class="dash-val-lg">126,471.77</div>
+                    <div class="dash-val-lg">92,994.83 <span style="font-size:13px;color:var(--t);letter-spacing:-0.22px">USD</span></div>
                     <div class="dash-meta-row">
                       <span class="dash-meta-key">All time</span>
                       <span class="dash-meta-val">+6,365.65 (+5.3%)</span>
@@ -5180,7 +5502,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="dash-col tight">
                   <div class="dash-block">
                     <div class="dash-key">Value</div>
-                    <div class="dash-val-lg">46,777.23</div>
+                    <div class="dash-val-lg">34,395.02 <span style="font-size:13px;color:var(--t);letter-spacing:-0.22px">USD</span></div>
                     <div class="dash-meta-row">
                       <span class="dash-meta-key">All time</span>
                       <span class="dash-meta-val">+2,353.46 (+5.3%)</span>
@@ -5216,7 +5538,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
                   <div class="dash-block" style="width:auto">
                     <div class="dash-meta-key">Cash (10%)</div>
-                    <div class="dash-val-sm">4,677.72</div>
+                    <div class="dash-val-sm">3,439.50 USD</div>
                   </div>
 
                   <!-- Calibration entry — routes to analytics chart (V4) or Calibration(Me) page (V5) -->
@@ -5230,12 +5552,12 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <!-- Concentration sub-block: bar + plain-language interpretation.
                        Sits as a header above Active Positions so the bar visually
                        maps to the weighted list directly below it. -->
-                  <div class="dash-conc">
+                  <div class="dash-conc" onclick="onConcentrationTap()" style="cursor:pointer">
                     <div class="dash-conc-head">
                       <div class="dash-conc-lbl">Concentration</div>
-                      <div class="dash-conc-meta">Effective N<span class="num" id="s10-effective-n">2.4</span></div>
+                      <div class="dash-conc-meta">Effective N<span class="num is-amber" id="s10-effective-n">2.4</span></div>
                     </div>
-                    <div class="dash-conc-bar" onclick="onConcentrationTap()" id="s10-conc-bar">
+                    <div class="dash-conc-bar" id="s10-conc-bar">
                       <span class="dash-conc-seg is-dominant" style="flex:63"></span>
                       <span class="dash-conc-seg" style="flex:7"></span>
                       <span class="dash-conc-seg" style="flex:6"></span>
@@ -5287,7 +5609,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                       <span class="dash-val-sm" id="s10-oo-count">0</span>
                     </div>
                     <div class="dash-meta-row" style="width:auto">
-                      <span class="dash-meta-key" id="s10-oo-notional">— CAD pending</span>
+                      <span class="dash-meta-key" id="s10-oo-notional">— USD pending</span>
                     </div>
                     <div id="s10-oo-bystock" style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:4px"></div>
                     <div id="s10-oo-more" style="font-size:12px;color:var(--t);letter-spacing:-0.01em;margin-top:2px;display:none"></div>
@@ -5354,7 +5676,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <span class="pulse-dot"></span>
                   <span><b style="font-weight:500">Q1 2026 earnings released</b> · Quarterly review due</span>
                 </div>
-                <span class="arrow">→</span>
               </div>
 
               <!-- ─── Stock header: ticker · exchange + company name (left), price + delta (right) ─── -->
@@ -5365,8 +5686,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 </div>
                 <div class="s0-header-right">
                   <div class="s0-price">192.35 USD</div>
-                  <div class="s0-price-cad">≈ 261.60 CAD</div>
-                  <div class="s0-delta" id="s0-delta">+0.42 today</div>
+                  <div class="s0-delta" id="s0-delta">+0.22% today</div>
                 </div>
               </div>
               <hr class="s0-divider">
@@ -5382,11 +5702,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     <div class="s0-draft-cta-title">Draft memo · AAPL</div>
                     <div class="s0-draft-cta-sub">Walk the protocol before execution. Ten fields, staged. SEAL writes the record.</div>
                   </div>
-                  <span class="act-arrow">→</span>
                 </div>
                 <div class="s0-draft-cta-aux" onclick="openMemoFields()">
                   <span class="s0-draft-cta-aux-text">Field reference · 10 questions</span>
-                  <span class="s0-draft-cta-aux-arrow">→</span>
                 </div>
               </div>
 
@@ -5398,7 +5716,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="s0-firsttime-eyebrow">About Apple Inc.</div>
                 <div class="s0-firsttime-prose">Apple Inc., together with its subsidiaries, designs, manufactures and sells smartphones, personal computers, tablets, wearables and accessories. Services revenue — App Store, iCloud, Apple Music, Apple TV+, Apple Pay — has become the company's primary growth engine.</div>
                 <button class="s0-firsttime-readmore" type="button" onclick="window.open('https://finance.yahoo.com/quote/AAPL/profile','_blank','noopener')">
-                  <span class="act-arrow">→</span>
                   <span>Read more on the company</span>
                 </button>
               </div>
@@ -5412,11 +5729,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <div id="s0-firsttime-news" class="s0-item" style="display:none" onclick="window.open('https://www.google.com/search?q=AAPL+stock+news&amp;tbm=nws','_blank','noopener')">News</div>
               <div id="s0-firsttime-research" class="s0-item" style="display:none" onclick="openMresearchPromptFromS0()">Research</div>
 
-              <!-- ─── Thesis — hero ─── -->
-              <div class="position-section" id="s0-thesis-section">
-                <div class="position-eyebrow">Thesis</div>
-                <div class="thesis-prose" id="s0-thesis">—</div>
-                <div class="thesis-version" id="s0-version" style="display:none">v3 · Mar 12, 2026 · 2 prior</div>
+              <!-- ─── Thesis — collapsible card ─── -->
+              <div class="position-section is-collapsible is-collapsed" id="s0-thesis-section">
+                <div class="position-card-head" onclick="toggleCard(this.parentElement)">
+                  <div class="position-eyebrow">Thesis</div>
+                  <span class="position-card-chevron">›</span>
+                </div>
+                <div class="position-card-body">
+                  <div class="thesis-prose" id="s0-thesis">—</div>
+                  <div class="thesis-version" id="s0-version" style="display:none" onclick="event.stopPropagation();openThesisHistory()">v3 · Mar 12, 2026 · 2 prior</div>
+                </div>
               </div>
 
               <!-- ─── Performance vs S&P 500 — sits between Thesis and Kill line
@@ -5425,7 +5747,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                    re-read what would prove them wrong. Visible on both
                    first-time (em-dash placeholders) and returning user. ─── -->
               <div id="s0-perf-vs-spx" class="s0-perf-panel">
-                <div class="s0-perf-eyebrow">Performance vs S&amp;P 500</div>
+                <div class="s0-perf-eyebrow">Performance vs S&amp;P 500 · since <span id="s0-perf-since-date">—</span></div>
                 <div class="s0-perf-row">
                   <span class="s0-perf-row-lbl">AAPL</span>
                   <span class="s0-perf-row-val" id="s0-perf-aapl">—</span>
@@ -5437,53 +5759,74 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="s0-perf-row s0-perf-row--alpha">
                   <span class="s0-perf-row-lbl">Alpha</span>
                   <span class="s0-perf-row-val">
-                    <span id="s0-perf-alpha-amt">—</span>
-                    <span class="s0-perf-row-pp" id="s0-perf-alpha-pp"></span>
+                    <span class="s0-perf-alpha-stack">
+                      <span class="s0-perf-alpha-amt-line"><span id="s0-perf-alpha-amt">—</span> <span class="s0-perf-alpha-vs">vs SPY</span></span>
+                      <span class="s0-perf-alpha-pp-line" id="s0-perf-alpha-pp">—</span>
+                    </span>
                     <span class="s0-perf-row-arrow">›</span>
                   </span>
                 </div>
-                <div class="s0-perf-caption" id="s0-perf-caption">Since purchase · <span id="s0-perf-since-date">—</span></div>
               </div>
 
-              <!-- ─── Kill line — its own bordered treatment ─── -->
-              <div class="position-section" id="s0-killline-section" style="padding-top:8px">
-                <div class="kill-line-block">
+              <!-- ─── Kill line — collapsible card ─── -->
+              <div class="position-section is-collapsible is-collapsed" id="s0-killline-section">
+                <div class="position-card-head" onclick="toggleCard(this.parentElement)">
                   <div class="position-eyebrow">Kill line</div>
-                  <div class="kill-line-text" id="s0-kill-line">—</div>
+                  <span class="position-card-chevron">›</span>
+                </div>
+                <div class="position-card-body">
+                  <div class="kill-line-block">
+                    <div class="kill-line-text" id="s0-kill-line">—</div>
+                  </div>
                 </div>
               </div>
 
-              <!-- ─── Margin of safety — price-anchored ─── -->
-              <div class="position-section" id="s0-mos-section">
-                <div class="position-eyebrow">Margin of safety</div>
-                <div class="mos-rows" id="s0-mos-rows">
-                  <div class="mos-row"><span>at entry</span><span id="s0-mos-entry">—</span></div>
-                  <div class="mos-row"><span>today</span><span id="s0-mos-today">—</span></div>
-                  <div class="mos-row"><span>fair value</span><span id="s0-mos-fv">—</span></div>
+              <!-- ─── Margin of safety — collapsible card ─── -->
+              <div class="position-section is-collapsible is-collapsed" id="s0-mos-section">
+                <div class="position-card-head" onclick="toggleCard(this.parentElement)">
+                  <div class="position-eyebrow">Margin of safety</div>
+                  <span class="position-card-chevron">›</span>
                 </div>
-                <div class="mos-anchoring" id="s0-mos-anchoring">—</div>
+                <div class="position-card-body">
+                  <div class="mos-rows" id="s0-mos-rows">
+                    <div class="mos-row"><span>at entry</span><span id="s0-mos-entry">—</span></div>
+                    <div class="mos-row"><span>today</span><span id="s0-mos-today">—</span></div>
+                    <div class="mos-row"><span>fair value</span><span id="s0-mos-fv">—</span></div>
+                  </div>
+                  <div class="mos-anchoring" id="s0-mos-anchoring">—</div>
+                </div>
               </div>
 
               <hr class="s0-divider thin" id="s0-divider-before-confidence">
 
-              <!-- ─── Confidence ─── -->
-              <div class="position-section" id="s0-confidence-section" style="padding-bottom:8px">
-                <div class="position-eyebrow">Confidence</div>
-                <div class="confidence-line" id="s0-confidence">—</div>
-                <div class="category-tag" id="s0-category" style="display:none">category: —</div>
+              <!-- ─── Confidence — collapsible card ─── -->
+              <div class="position-section is-collapsible is-collapsed" id="s0-confidence-section">
+                <div class="position-card-head" onclick="toggleCard(this.parentElement)">
+                  <div class="position-eyebrow">Confidence</div>
+                  <span class="position-card-chevron">›</span>
+                </div>
+                <div class="position-card-body">
+                  <div class="confidence-line" id="s0-confidence">—</div>
+                  <div class="category-tag" id="s0-category" style="display:none">category: —</div>
+                </div>
               </div>
 
-              <!-- ─── Notes & research — consolidated entry point. Both list
-                   types render inside one tappable block that routes to s30.
-                   Single CTA (block-level), no standalone button. ─── -->
-              <div class="position-section" style="cursor:pointer" onclick="openNotes()">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <!-- ─── Notes & research — collapsible card. Tap head to expand
+                   inline; bottom "View all" link routes to the dedicated s30
+                   notes page when the user wants to author/edit. ─── -->
+              <div class="position-section is-collapsible is-collapsed">
+                <div class="position-card-head" onclick="toggleCard(this.parentElement)">
                   <div class="position-eyebrow">Notes &amp; research</div>
-                  <span style="font-size:18px;color:var(--t);line-height:1">›</span>
+                  <span class="position-card-chevron">›</span>
                 </div>
-                <div class="research-list" id="s0-research-list"></div>
-                <div id="s0-notes-list"></div>
-                <div id="s0-nr-empty" style="font-size:13px;color:var(--t);padding:8px 0;display:none">No notes or research on record.</div>
+                <div class="position-card-body">
+                  <div class="research-list" id="s0-research-list"></div>
+                  <div id="s0-notes-list"></div>
+                  <div id="s0-nr-empty" style="font-size:13px;color:var(--t);padding:8px 0;display:none">No notes or research on record.</div>
+                  <button type="button" onclick="event.stopPropagation();openNotes()" style="display:flex;align-items:center;gap:6px;background:transparent;border:none;padding:10px 0 0;margin-top:6px;color:var(--t);font-family:var(--font);font-size:12px;letter-spacing:-0.005em;cursor:pointer">
+                    <span>View all · add note</span>
+                  </button>
+                </div>
               </div>
 
               <hr class="s0-divider thin" id="s0-divider-before-tx">
@@ -5497,7 +5840,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                    when there's no position on file. ─── -->
               <div id="s0-position-summary" class="s0-summary-panel">
                 <div class="s0-summary-row">
-                  <div class="s0-summary-num"><span id="s0-sum-mktval">—</span><span class="s0-summary-num-suffix">CAD</span></div>
+                  <div class="s0-summary-num"><span id="s0-sum-mktval">—</span><span class="s0-summary-num-suffix">USD</span></div>
                   <div class="s0-summary-lbl">Market Value</div>
                 </div>
                 <div class="s0-summary-row">
@@ -5546,7 +5889,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <!-- Pinned bottom CTA · V2 (capital decision flow) -->
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end" data-min-version="2">
+            <div id="s0-cta-foot" style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end" data-min-version="2">
               <button class="act-btn" onclick="onCapitalDecision()" style="padding:14px 4px;font-size:15px">
                 <span class="act-arrow">→</span>
                 <span>Capital decision</span>
@@ -5603,35 +5946,22 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <!-- CLAIM — proposition the user is forecasting against. The
                    threshold is an inline numeric input so the user declares
-                   their own bar (no hardcoded 20%). -->
+                   their own bar (no hardcoded 20%). Eyebrow is tappable —
+                   opens info modal explaining thresholds. -->
               <div class="forecast-section">
-                <div class="forecast-eyebrow">Claim</div>
+                <div class="forecast-eyebrow is-info" onclick="showInfoModal('compound20')">Claim</div>
                 <div class="forecast-claim-line">
                   <span class="forecast-ticker"><span class="memo-ctx-ticker">AAPL</span></span>
                   <span>compounds at</span>
                   <input id="s12-threshold-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0" maxlength="4" oninput="onForecastThresholdInput(event)" class="forecast-threshold-input" />
                   <span>% annually.</span>
-                  <button class="label-info-btn" onclick="showInfoModal('compound20')" aria-label="About thresholds" type="button" style="margin-left:6px">
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                      <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                      <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                    </svg>
-                  </button>
                 </div>
               </div>
 
               <!-- PROBABILITY — user's assessed likelihood, captured by the
                    existing slider control + band label. -->
               <div class="forecast-section" id="s12-prob-block">
-                <div class="forecast-eyebrow" style="display:flex;align-items:center">
-                  <span>Probability</span>
-                  <button class="label-info-btn" onclick="showInfoModal('probability')" aria-label="About probability">
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                      <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                      <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                    </svg>
-                  </button>
-                </div>
+                <div class="forecast-eyebrow is-info" onclick="showInfoModal('probability')">Probability</div>
                 <div class="forecast-prob-display">
                   <span id="s12-prob-num" class="prob-num">0</span><span class="prob-num-pct">%</span>
                 </div>
@@ -5644,15 +5974,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <!-- HORIZON — window over which the claim resolves. -->
               <div class="forecast-section" id="s12-horizon-block">
-                <div class="forecast-eyebrow" style="display:flex;align-items:center">
-                  <span>Horizon</span>
-                  <button class="label-info-btn" onclick="showInfoModal('horizon')" aria-label="About horizon">
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                      <circle cx="6.5" cy="6.5" r="6" stroke="#565B5E" stroke-width="1"/>
-                      <text x="6.5" y="10" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#565B5E" font-weight="500">i</text>
-                    </svg>
-                  </button>
-                </div>
+                <div class="forecast-eyebrow is-info" onclick="showInfoModal('horizon')">Horizon</div>
                 <div class="period-wrap">
                   <button class="period-btn period-btn-multi"    id="s12-h-1y" onclick="setHorizon('s12','1y')"><span class="period-btn-year">1Y</span><span class="period-btn-date" data-h-date="1y">—</span></button>
                   <button class="period-btn period-btn-multi"    id="s12-h-2y" onclick="setHorizon('s12','2y')"><span class="period-btn-year">2Y</span><span class="period-btn-date" data-h-date="2y">—</span></button>
@@ -5784,14 +6106,15 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <hr class="v5-rule">
 
-              <div class="v5-section-eyebrow">Analysis</div>
-              <div class="v5-prose">Use Claude or ChatGPT. Ask the questions a serious investor would ask — what the business actually does, how it makes money, what could break the thesis, what a fair price looks like.</div>
-
-              <div class="v5-section-eyebrow" style="margin-top:24px">One rule</div>
+              <div class="v5-section-eyebrow">Underwriting frameworks</div>
               <div class="v5-prose">LLMs invent financials when asked. For anything quantitative — earnings, margins, shares — paste from fiscal.ai. Never request recall.</div>
 
-              <div class="mresearch-prompt-card" style="margin-top:14px">
-                <div class="mresearch-prompt-eyebrow">Prompt for Claude / ChatGPT</div>
+              <div class="v5-prose" style="margin-top:14px">Structured prompts designed to support independent analysis and more disciplined capital allocation decisions.</div>
+
+              <div class="v5-prose" style="margin-top:14px;font-size:11px;color:var(--t-800);line-height:1.55;font-style:italic">These frameworks are intended to assist research and critical thinking. They are not recommendations or investment advice.</div>
+
+              <div class="mresearch-prompt-card" style="margin-top:18px">
+                <div class="mresearch-prompt-eyebrow">Suggested starting point</div>
                 <div class="mresearch-prompt-preview" id="mresearch-prompt-preview">I'm researching AAPL to write a short investment memo. Help me think through it in order — classification, intrinsic value, margin of safety, thesis, kill line, probability over a 3-year horizon…</div>
                 <div class="mresearch-prompt-actions">
                   <button type="button" class="mresearch-prompt-iconbtn" onclick="openMresearchPromptFromMresearch()" aria-label="Expand prompt">
@@ -5804,15 +6127,6 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   </button>
                 </div>
               </div>
-
-              <a class="v5-tool-card" href="https://claude.ai" target="_blank" rel="noopener" style="margin-top:12px">
-                <div class="v5-tool-card-text"><div class="v5-tool-card-title">Open Claude</div></div>
-                <span class="v5-tool-card-arrow">→</span>
-              </a>
-              <a class="v5-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener" style="margin-top:8px">
-                <div class="v5-tool-card-text"><div class="v5-tool-card-title">Open ChatGPT</div></div>
-                <span class="v5-tool-card-arrow">→</span>
-              </a>
             </div>
 
             <div class="v5-foot" id="mresearch-foot" style="padding:14px 16px 12px;align-items:flex-end">
@@ -6150,7 +6464,6 @@ to rewrite it.</div>
                   <div class="miv-price-cell">
                     <div class="miv-price-lbl">Market</div>
                     <div class="miv-price-val">192.35 USD</div>
-                    <div class="miv-price-cad">≈ 261.60 CAD</div>
                     <div class="miv-price-delta">Today</div>
                   </div>
                 </div>
@@ -6159,12 +6472,11 @@ to rewrite it.</div>
                      appears. No separate "What's it worth?" title; the label
                      above the field tells the user what they're entering. -->
                 <div class="miv-input-section">
-                  <div class="miv-input-lbl">Estimated intrinsic value</div>
+                  <div class="miv-input-lbl">Intrinsic value</div>
                   <label class="v5-iv-input-row" for="miv-input">
                     <input id="miv-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" oninput="onMivInput(event)" class="v5-iv-input">
                     <span class="v5-iv-currency">USD</span>
                   </label>
-                  <div class="v5-iv-cad" id="miv-input-cad">—</div>
                   <div class="v5-iv-suffix">per share, conservative central estimate</div>
                   <!-- Margin of safety — derived from market vs IV input.
                        Updates live as the user types. Hidden until input valid. -->
@@ -6211,6 +6523,7 @@ to rewrite it.</div>
           <!-- "Can't value this" off-ramp for V4 -->
           <div class="v5-modal" id="miv-cantvalue-modal">
             <div class="v5-modal-sheet">
+              <button type="button" class="v5-modal-close" onclick="closeMivCantValue()" aria-label="Close">×</button>
               <div class="v5-modal-title">An untestable price commits capital blind.</div>
               <div class="v5-modal-body">
                 <p>That's not a failing. It's information.</p>
@@ -6225,15 +6538,22 @@ to rewrite it.</div>
                   <button type="button" class="cantvalue-reason" data-reason="competence"  onclick="pickCantValueReason('competence')">Outside circle of competence</button>
                   <button type="button" class="cantvalue-reason" data-reason="time"        onclick="pickCantValueReason('time')">Don't have time right now</button>
                 </div>
+                <!-- Optional note — appears after a reason is picked. Free-text,
+                     not required. Feeds the audit trail so a future review can
+                     read why the user routed around the valuation step. -->
+                <div class="cantvalue-note-block" id="miv-cantvalue-note-block" style="display:none">
+                  <div class="cantvalue-eyebrow" style="margin-top:18px">Note (optional)</div>
+                  <textarea id="miv-cantvalue-note" class="cantvalue-note" rows="3" placeholder="What's the read? What would change it?" oninput="onCantValueNoteInput()"></textarea>
+                </div>
               </div>
               <div class="v5-modal-acts">
                 <button class="v5-secondary" id="miv-cantvalue-watchlist-btn" onclick="mivAddToWatchlist()">
                   <span class="act-arrow">→</span>
                   <span>Add to Under Review</span>
                 </button>
-                <button class="v5-secondary" onclick="continueMivAnyway()">
+                <button class="v5-secondary" id="miv-cantvalue-speculate-btn" onclick="continueMivAnyway()">
                   <span class="act-arrow" style="color:var(--t)">→</span>
-                  <span style="color:var(--t)">Continue anyway</span>
+                  <span style="color:var(--t)">Open speculative position</span>
                 </button>
               </div>
             </div>
@@ -6262,12 +6582,11 @@ to rewrite it.</div>
                 </div>
                 <div class="memo-context-chip" data-memo-context hidden></div>
 
-                <div class="v5-compare-row"><span>Price</span><span class="v5-num-stack"><span class="v5-num">192.35 USD</span><span class="v5-num-cad">≈ 261.60 CAD</span></span></div>
-                <div class="v5-compare-row"><span>Estimated intrinsic value</span><span class="v5-num-stack"><span class="v5-num" id="m4-yourvalue">—</span><span class="v5-num-cad" id="m4-yourvalue-cad">—</span></span></div>
+                <div class="v5-compare-row"><span>Price</span><span class="v5-num-stack"><span class="v5-num">192.35 USD</span></span></div>
+                <div class="v5-compare-row"><span>Intrinsic value</span><span class="v5-num-stack"><span class="v5-num" id="m4-yourvalue">—</span></span></div>
                 <div class="v5-compare-row" style="margin-top:14px"><span class="v5-num-lbl">Margin of safety</span><span class="v5-num-big" id="m4-margin">—%</span></div>
                 <!-- V4.5 only: dollar-amount framing of the margin so the %
                      translates to a concrete cushion on a 5% position. -->
-                <div id="m4-margin-cad" class="m4-margin-cad" data-min-version="4.5">—</div>
 
                 <hr class="v5-rule">
 
@@ -6461,6 +6780,14 @@ actually works for you.</div>
                   <div class="t-bsm" id="m6-date" style="margin-top:8px">Drafted today</div>
                 </div>
 
+                <!-- Immutability notice — memos are append-only. Editing on
+                     this page creates a new version; prior versions stay on
+                     the record. Renders for every entry into m6 so the user
+                     never overwrites their own history by accident. -->
+                <div class="m6-immutability">
+                  Memos are immutable once sealed. Each edit creates a new version. Prior versions stay on the record.
+                </div>
+
                 <!-- V4.5 only: automated memo-quality checklist. Soft signal —
                      each row shows a ✓ (good) or ! (thin) verdict on the
                      corresponding field. Doesn't gate commit; just surfaces
@@ -6528,7 +6855,11 @@ actually works for you.</div>
                 </div>
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
                   <span style="font-size:13px;color:var(--s)">Current horizon</span>
-                  <span style="font-size:13px;color:var(--p)">3 years</span>
+                  <span style="font-size:13px;color:var(--p)">3y <span style="color:var(--t-800);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;margin-left:6px">· 1.2y elapsed</span></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0">
+                  <span style="font-size:13px;color:var(--s)">Set on</span>
+                  <span style="font-size:13px;color:var(--t);font-variant-numeric:tabular-nums">Feb 27, 2025</span>
                 </div>
               </div>
 
@@ -6634,7 +6965,7 @@ actually works for you.</div>
               </div>
               <div style="text-align:right;margin:0 16px 22px">
                 <span style="font-size:13px;color:var(--t)">Non-Registered</span>
-                <span style="font-size:13px;color:var(--t);margin-left:10px">25,430.00 CAD</span>
+                <span style="font-size:13px;color:var(--t);margin-left:10px">18,698.53 USD</span>
               </div>
             </div>
 
@@ -6650,7 +6981,7 @@ actually works for you.</div>
             <div class="ai-section ai-section--s8" data-min-version="4">
               <div class="ai-eyebrow">
                 <span class="ai-eyebrow-dot"></span>
-                <span class="lbl">AI memo summary</span>
+                <span class="lbl">Memo summary</span>
               </div>
               <div class="ai-body" id="s8-ai-body"></div>
             </div>
@@ -6695,9 +7026,6 @@ actually works for you.</div>
                   <!-- V4.5 only: dollar-equivalent caption updates live as
                        the user types. Most retail mentally sizes in dollars,
                        not shares. -->
-                  <div class="s8-sub" data-min-version="4.5" id="s8-shares-dollar" style="display:none">
-                    <span class="s8-sub-text">≈ <span id="s8-shares-dollar-amt">0 CAD</span></span>
-                  </div>
                 </div>
                 <span class="body-md s8-value" id="s8-shares-disp" style="color:var(--p)">0</span>
               </div>
@@ -6709,7 +7037,7 @@ actually works for you.</div>
 
               <div class="form-row">
                 <span class="body-md" style="color:var(--s)">Estimated Cost</span>
-                <span class="body-md s8-value" id="s8-cost" style="color:var(--t)">0.00 CAD</span>
+                <span class="body-md s8-value" id="s8-cost" style="color:var(--t)">0.00 USD</span>
               </div>
             </div>
 
@@ -6783,7 +7111,7 @@ actually works for you.</div>
               <div class="h2"><span class="body-sm" style="color:var(--t);margin-right:8px">AAPL</span><span id="s4-action">Buy</span></div>
               <div style="margin-top:5px;display:flex;justify-content:flex-end;gap:12px">
                 <span class="body-sm" style="color:var(--s)">Non-Registered</span>
-                <span class="body-sm" style="color:var(--s)">25,430.00 CAD</span>
+                <span class="body-sm" style="color:var(--s)">18,698.53 USD</span>
               </div>
             </div>
 
@@ -7906,7 +8234,7 @@ Holding to a broken thesis is.</div>
                 <div style="font-size:13px;color:var(--t);margin-top:0;line-height:1.5;letter-spacing:-0.01em" id="s52-blurb">
                   Pending limits across your book. Each entry holds capital aside until it fills or is cancelled.
                 </div>
-                <div style="font-size:12px;color:var(--t);margin-top:8px;letter-spacing:-0.01em" id="s52-total">— CAD pending</div>
+                <div style="font-size:12px;color:var(--t);margin-top:8px;letter-spacing:-0.01em" id="s52-total">— USD pending</div>
               </div>
               <div id="s52-list"></div>
               <div id="s52-empty" style="font-size:13px;color:var(--t);padding:24px 0;line-height:1.55;display:none">
@@ -7939,6 +8267,48 @@ Holding to a broken thesis is.</div>
               </div>
             </div>
           </section>
+
+          <!-- Concentration info sheet — opened from the s10 .dash-conc tile.
+               Explains Effective N + the formula + threshold guidance. -->
+          <div class="tl-overlay" id="conc-overlay" onclick="hideConcentration()"></div>
+          <div class="tl-info" id="conc-info">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+              <span class="lbl">Concentration</span>
+              <button class="tl-close" onclick="hideConcentration()" type="button">×</button>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px">
+              <span class="conc-info-num">2.4</span>
+              <span class="conc-info-lbl">Effective N</span>
+            </div>
+            <div class="conc-info-body" style="margin-top:18px">
+              The portfolio behaves as if held in ~2.4 equally-weighted positions, even though the actual count is higher. One name dominates the book.
+            </div>
+            <div style="margin-top:24px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.08)">
+              <div class="lbl" style="margin-bottom:10px">Formula</div>
+              <div class="conc-info-formula">Effective N = 1 / Σ wᵢ²</div>
+              <div class="conc-info-formula-note">Inverse Herfindahl–Hirschman index. Lower number = more concentration.</div>
+            </div>
+            <div style="margin-top:24px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.08)">
+              <div class="lbl" style="margin-bottom:10px">Threshold guidance</div>
+              <div class="conc-threshold-row"><span class="conc-threshold-range">Below 3.0</span><span class="conc-threshold-note">Single-name risk dominates portfolio outcomes.</span></div>
+              <div class="conc-threshold-row"><span class="conc-threshold-range">3.0 – 5.0</span><span class="conc-threshold-note">Concentrated; defensible at high conviction.</span></div>
+              <div class="conc-threshold-row"><span class="conc-threshold-range">Above 5.0</span><span class="conc-threshold-note">Diversified across the book.</span></div>
+            </div>
+            <div style="margin-top:24px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.08)">
+              <div class="lbl" style="margin-bottom:10px">Stress test</div>
+              <div class="conc-info-body">A 30% drawdown in the largest position moves the book ~19%.</div>
+            </div>
+          </div>
+
+          <!-- Thesis version history sheet (opened from s0 thesis-version line) -->
+          <div class="tl-overlay" id="tv-overlay" onclick="hideThesisHistory()"></div>
+          <div class="tl-info" id="tv-info">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <span class="lbl">Thesis history · AAPL</span>
+              <button class="tl-close" onclick="hideThesisHistory()">×</button>
+            </div>
+            <div id="tv-list" style="display:flex;flex-direction:column;gap:18px"></div>
+          </div>
 
           <!-- Thesis review detail sheet (used from s24 review rows) -->
           <div class="tl-overlay" id="r-overlay" onclick="hideReviewDetail()"></div>
@@ -8532,7 +8902,7 @@ const SIZE_LBL = { core:'Core [10%+]', conv:'Conviction [5–10%]', start:'Start
 const MOS_LBL  = { below:'Meaningfully below intrinsic value', around:'Roughly around intrinsic value', above:'Above intrinsic value', unclear:'Unclear' };
 
 const MKTPRICE_USD = 192.35;
-const FX_USD_CAD   = 1.36;
+const FX_USD_CAD   = 1.0;  // App is USD-only; multiplier left as a no-op so existing math doesn't need refactoring.
 const PORTVAL_CAD  = 285000;
 
 /* Canonical date formatter — every writer that records a date should
@@ -8632,8 +9002,8 @@ const SEED_OPEN_ORDERS = [
   { id: 'oo-5',  ticker: 'NVDA',    action: 'Buy',  type: 'Limit', price: 425.00, currency: 'USD', shares: 4,   notionalCAD: 2312.00,  placed: 'Apr 22, 2026' },
   { id: 'oo-6',  ticker: 'NVDA',    action: 'Buy',  type: 'Limit', price: 410.00, currency: 'USD', shares: 3,   notionalCAD: 1672.80, placed: 'Apr 25, 2026' },
   { id: 'oo-7',  ticker: 'NVDA',    action: 'Sell', type: 'Limit', price: 520.00, currency: 'USD', shares: 2,   notionalCAD: 1414.40, placed: 'May 04, 2026' },
-  { id: 'oo-8',  ticker: 'ORIO.TO', action: 'Buy',  type: 'Limit', price: 7.50,   currency: 'CAD', shares: 200, notionalCAD: 1500.00,  placed: 'Apr 18, 2026' },
-  { id: 'oo-9',  ticker: 'ORIO.TO', action: 'Buy',  type: 'Limit', price: 7.20,   currency: 'CAD', shares: 150, notionalCAD: 1080.00,  placed: 'Apr 26, 2026' },
+  { id: 'oo-8',  ticker: 'ORIO.TO', action: 'Buy',  type: 'Limit', price: 7.50,   currency: 'USD', shares: 200, notionalCAD: 1500.00,  placed: 'Apr 18, 2026' },
+  { id: 'oo-9',  ticker: 'ORIO.TO', action: 'Buy',  type: 'Limit', price: 7.20,   currency: 'USD', shares: 150, notionalCAD: 1080.00,  placed: 'Apr 26, 2026' },
   { id: 'oo-10', ticker: 'BWEN',    action: 'Sell', type: 'Limit', price: 7.50,   currency: 'USD', shares: 100, notionalCAD: 1020.00,  placed: 'May 05, 2026' }
 ];
 function getOpenOrders() { return SEED_OPEN_ORDERS.slice(); }
@@ -8837,7 +9207,7 @@ function go(id) {
    "… →". Tapping the arrow expands to the full text + "Show less ←".
    Always opens collapsed when the stock page renders, so the position
    summary stays scannable on every entry. */
-const THESIS_COLLAPSE_LIMIT = 150;
+const THESIS_COLLAPSE_LIMIT = 180;
 /* Generic collapse-prose helper — used by both the Thesis and Kill line
    blocks on s0. Stores the full text on the element and toggles between
    a truncated view + "… →" and the full view + "← Show less". The expand
@@ -8863,9 +9233,16 @@ function paintCollapsibleProse(el) {
     return;
   }
   if (collapsed) {
+    // Prefer a clean clause break over an arbitrary word boundary so the
+    // truncation lands at a punctuation moment, not mid-thought.
     let cut = full.slice(0, THESIS_COLLAPSE_LIMIT);
-    const space = cut.lastIndexOf(' ');
-    if (space > 100) cut = cut.slice(0, space);
+    const clauseMatch = cut.match(/^(.*[\.;—])\s/);
+    if (clauseMatch && clauseMatch[1].length > 100) {
+      cut = clauseMatch[1];
+    } else {
+      const space = cut.lastIndexOf(' ');
+      if (space > 100) cut = cut.slice(0, space);
+    }
     el.innerHTML = `${escapeNote(cut).replace(/\n/g, '<br>')}<button class="thesis-toggle" onclick="${expandFn}()" aria-label="Expand ${escapeNote(label)}">… <span class="thesis-toggle-arrow">→</span></button>`;
   } else {
     el.innerHTML = `${escapeNote(full).replace(/\n/g, '<br>')}<button class="thesis-toggle thesis-toggle-collapse" onclick="${collapseFn}()" aria-label="Collapse ${escapeNote(label)}"><span class="thesis-toggle-arrow">←</span> Show less</button>`;
@@ -8887,9 +9264,22 @@ function collapseThesis() {
   el.dataset.collapsed = '1';
   paintCollapsibleProse(el);
 }
-/* Kill line — same collapse mechanic, separate element + handler pair so
-   the two blocks can toggle independently of each other. */
+/* Kill line — same collapse mechanic for single-clause kills. When the
+   text contains multiple ", or " joined clauses, render as a bullet list
+   so the OR semantics read visually rather than buried in punctuation —
+   each condition is a standalone trigger; any one trips the kill line. */
 function renderKillWithToggle(el, fullText) {
+  const trimmed = (fullText || '').trim();
+  const parts = trimmed.split(/,\s+or\s+/i).map(s => s.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    el.dataset.fullText = '';
+    el.dataset.collapsed = '';
+    el.innerHTML = parts.map(p => {
+      const clean = p.replace(/\.$/, '');
+      return `<div class="kill-line-bullet"><span class="kill-line-bullet-mark">·</span><span>${escapeNote(clean)}</span></div>`;
+    }).join('');
+    return;
+  }
   renderCollapsibleProse(el, fullText, 'expandKill', 'collapseKill', 'kill line');
 }
 function expandKill() {
@@ -9215,7 +9605,7 @@ function renderS0PositionPanels() {
   setText('s0-sum-mktval',    fmtCAD(marketValueCAD));
   setText('s0-sum-weight',    weightPct.toFixed(1) + '%');
   setText('s0-sum-pl',        fmtCADSigned(plCAD));
-  setText('s0-sum-pl-suffix', 'CAD');
+  setText('s0-sum-pl-suffix', 'USD');
   setText('s0-sum-pl-pct',    '(' + fmtPctSigned(plPct) + ')');
   setText('s0-sum-held-dur',  _formatHoldDuration(openedDate));
   setText('s0-sum-held-date', openedDate);
@@ -9865,6 +10255,32 @@ function applyExampleMode() {
   if (banner) banner.classList.toggle('is-on', !!state.exampleMode);
   const navMenu = document.getElementById('s0-nav-menu');
   if (navMenu) navMenu.style.display = state.exampleMode ? 'none' : '';
+
+  // Toggle the example-mode class on the s0 section. CSS uses this to hide
+  // live-data surfaces (price delta, performance panel, tx strip, position
+  // summary, capital-decision CTA) so the page reads as a pure memo review.
+  const s0 = document.querySelector('.scr[data-id="s0"]');
+  if (s0) {
+    s0.classList.toggle('is-example-mode', !!state.exampleMode);
+    if (state.exampleMode) {
+      // Expand every collapsible card so the full memo is visible at a glance
+      // — example mode is for SEEING the artifact, not navigating it.
+      s0.querySelectorAll('.position-section.is-collapsible').forEach(card => {
+        card.classList.remove('is-collapsed');
+      });
+      // Retrigger the entrance animation by toggling the class
+      s0.classList.remove('is-example-entering');
+      void s0.offsetWidth;
+      s0.classList.add('is-example-entering');
+    } else {
+      s0.classList.remove('is-example-entering');
+      // Restore collapsed state on the cards for normal navigation
+      s0.querySelectorAll('.position-section.is-collapsible').forEach(card => {
+        card.classList.add('is-collapsed');
+      });
+    }
+  }
+
   // V4.5: show / hide annotation pointers on the example memo (small ? chips
   // explaining why this thesis / kill line / sizing is good).
   applyExampleAnnotations();
@@ -11024,7 +11440,7 @@ function renderMivCompare() {
   const inputCad = document.getElementById('miv-input-cad');
   if (ok) {
     const cad = v * FX_USD_CAD;
-    const cadStr = '≈ ' + cad.toFixed(2) + ' CAD';
+    const cadStr = '≈ ' + cad.toFixed(2) + ' USD';
     if (topCad)   topCad.textContent   = cadStr;
     if (inputCad) inputCad.textContent = cadStr;
   } else {
@@ -11062,6 +11478,7 @@ function renderMivCompare() {
   if (marginBlock) {
     if (!ok) {
       marginBlock.style.display = 'none';
+      marginBlock.classList.remove('is-amber');
     } else {
       const MARKET = 192.35;
       const pct = ((v - MARKET) / MARKET) * 100;
@@ -11071,6 +11488,8 @@ function renderMivCompare() {
       marginBlock.style.display = '';
       if (marginPct) marginPct.textContent = `${sign}${formattedPct}%`;
       if (marginLbl) marginLbl.textContent = pct >= 0 ? 'Margin of safety' : 'Overpriced vs market';
+      // Amber when negative — boundary condition flagged for the user
+      marginBlock.classList.toggle('is-amber', pct < 0);
     }
   }
 }
@@ -11090,6 +11509,14 @@ function openMivCantValue() {
   document.querySelectorAll('.cantvalue-reason').forEach(c => {
     c.classList.toggle('is-on', c.dataset.reason === (state.memo && state.memo.cantValueReason));
   });
+  // Reveal + hydrate the optional note block if a reason is already chosen
+  const noteBlock = document.getElementById('miv-cantvalue-note-block');
+  const noteEl    = document.getElementById('miv-cantvalue-note');
+  if (noteBlock && noteEl) {
+    const hasReason = !!(state.memo && state.memo.cantValueReason);
+    noteBlock.style.display = hasReason ? '' : 'none';
+    noteEl.value = (state.memo && state.memo.cantValueNote) || '';
+  }
   refreshCantValueLock();
 }
 /* V4.5 — pick a reason for the can't-value off-ramp */
@@ -11098,8 +11525,18 @@ function pickCantValueReason(reason) {
   document.querySelectorAll('.cantvalue-reason').forEach(c => {
     c.classList.toggle('is-on', c.dataset.reason === reason);
   });
+  // Reveal the optional note block once a reason is picked.
+  const noteBlock = document.getElementById('miv-cantvalue-note-block');
+  if (noteBlock) noteBlock.style.display = '';
   try { persistMemoDraft(); } catch (_) {}
   refreshCantValueLock();
+}
+/* Persist the optional can't-value note as the user types. */
+function onCantValueNoteInput() {
+  const noteEl = document.getElementById('miv-cantvalue-note');
+  if (!noteEl) return;
+  if (state.memo) state.memo.cantValueNote = noteEl.value;
+  try { persistMemoDraft(); } catch (_) {}
 }
 function refreshCantValueLock() {
   // On V4.5, both "Add to Under Review" and "Continue anyway" require a
@@ -11142,7 +11579,7 @@ function renderM4Screen() {
   const yourVCad = document.getElementById('m4-yourvalue-cad');
   if (yourVCad) {
     yourVCad.textContent = isFinite(v) && v > 0
-      ? '≈ ' + (v * FX_USD_CAD).toFixed(2) + ' CAD'
+      ? '≈ ' + (v * FX_USD_CAD).toFixed(2) + ' USD'
       : '—';
   }
   if (margin) {
@@ -11162,7 +11599,7 @@ function renderM4Screen() {
       const marginPct    = (v - MKTPRICE_USD) / v;
       const cushionCAD   = notionalCAD * marginPct;
       const sign = cushionCAD >= 0 ? '+' : '−';
-      cadCaption.textContent = `On a ${notionalCAD.toLocaleString('en-CA', { maximumFractionDigits:0 })} CAD position, that's ${sign}${Math.abs(cushionCAD).toLocaleString('en-CA', { maximumFractionDigits:0 })} CAD of cushion before you cross intrinsic value.`;
+      cadCaption.textContent = `On a ${notionalCAD.toLocaleString('en-US', { maximumFractionDigits:0 })} USD position, that's ${sign}${Math.abs(cushionCAD).toLocaleString('en-US', { maximumFractionDigits:0 })} USD of cushion before you cross intrinsic value.`;
     } else {
       cadCaption.textContent = '—';
     }
@@ -12008,7 +12445,7 @@ function updateInputsDisplay() {
   const w = document.getElementById('s8-weight');
   const c = document.getElementById('s8-cost');
   if (w) w.textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
-  if (c) c.textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
+  if (c) c.textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD';
 
   // V4.5 only: live $ caption under the Shares row
   const sharesDollar = document.getElementById('s8-shares-dollar');
@@ -12016,7 +12453,7 @@ function updateInputsDisplay() {
   if (sharesDollar && sharesDollarAmt && state.version >= 4.5) {
     if (n > 0) {
       sharesDollar.style.display = '';
-      sharesDollarAmt.textContent = costCAD.toLocaleString('en-CA', { maximumFractionDigits: 0 }) + ' CAD';
+      sharesDollarAmt.textContent = costCAD.toLocaleString('en-CA', { maximumFractionDigits: 0 }) + ' USD';
     } else {
       sharesDollar.style.display = 'none';
     }
@@ -12050,7 +12487,7 @@ function renderS4() {
   document.getElementById('s4-weight').textContent = n ? (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%' : '—';
   document.getElementById('s4-shares').textContent = n || '—';
   document.getElementById('s4-cost').textContent = n
-    ? costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD'
+    ? costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD'
     : '—';
   document.getElementById('s4-conf').textContent = state.prob + '%';
   document.getElementById('s4-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
@@ -12065,7 +12502,7 @@ function renderS4() {
       const drop = costCAD * 0.30;
       const portfolioDragPct = (drop / PORTVAL_CAD) * 100;
       stressBody.innerHTML =
-        `If AAPL drops 30% after purchase: unrealized loss <strong>−$${drop.toLocaleString('en-CA', { maximumFractionDigits: 0 })} CAD</strong>. ` +
+        `If AAPL drops 30% after purchase: unrealized loss <strong>−$${drop.toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</strong>. ` +
         `Portfolio impact <strong>−${portfolioDragPct.toFixed(1)}%</strong>.`;
     } else {
       stress.style.display = 'none';
@@ -12122,7 +12559,7 @@ function renderS9() {
   }
   document.getElementById('s9-shares').textContent = n;
   document.getElementById('s9-weight').textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
-  document.getElementById('s9-cost').textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
+  document.getElementById('s9-cost').textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD';
   const s9Type = document.getElementById('s9-type');
   if (s9Type) s9Type.textContent = isLimit ? 'Limit Buy' : 'Market Buy';
   document.getElementById('s9-conf').textContent = state.prob + '%';
@@ -12434,7 +12871,7 @@ function refreshOpenOrdersTile() {
     if (moreEl) moreEl.style.display = 'none';
     return;
   }
-  notionalEl.textContent = `${totalNotional.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD pending`;
+  notionalEl.textContent = `${totalNotional.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD pending`;
 
   const TOP_N = 3;
   const inline = grouped.slice(0, TOP_N);
@@ -12445,7 +12882,7 @@ function refreshOpenOrdersTile() {
     const label = g.orders.length === 1 ? 'order' : 'orders';
     return `<div class="dash-meta-row" style="width:auto;gap:10px">
       <span class="dash-meta-key" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:0.02em;color:var(--p)">${g.ticker}</span>
-      <span class="dash-meta-val" style="font-variant-numeric:tabular-nums">${g.orders.length} ${label} · ${cad} CAD</span>
+      <span class="dash-meta-val" style="font-variant-numeric:tabular-nums">${g.orders.length} ${label} · ${cad} USD</span>
     </div>`;
   }).join('');
 
@@ -12470,8 +12907,8 @@ function renderS52() {
   const totalEl = document.getElementById('s52-total');
   if (totalEl) {
     totalEl.textContent = orders.length === 0
-      ? '0 CAD pending'
-      : `${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD pending`;
+      ? '0 USD pending'
+      : `${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD pending`;
   }
 
   const listEl = document.getElementById('s52-list');
@@ -12497,7 +12934,7 @@ function renderS52() {
           <div class="txn-shares">${tag}</div>
         </div>
         <div class="txn-side">
-          <div class="txn-cost">${cadStr} CAD</div>
+          <div class="txn-cost">${cadStr} USD</div>
           <div class="txn-date">${o.placed}</div>
         </div>
       </div>`;
@@ -12505,7 +12942,7 @@ function renderS52() {
     return `<div style="margin-top:28px">
       <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 0 8px;border-bottom:0.5px solid #232627;margin-bottom:4px">
         <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;letter-spacing:0.04em;color:var(--p);font-weight:500">${g.ticker}</span>
-        <span style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:none">${g.orders.length} ${label} · ${groupCAD} CAD</span>
+        <span style="font-size:11px;color:var(--t);letter-spacing:0.04em;text-transform:none">${g.orders.length} ${label} · ${groupCAD} USD</span>
       </div>
       ${rows}
     </div>`;
@@ -12550,10 +12987,10 @@ function refreshTodayBlock() {
   // Bucket every notification into its category. Each category becomes
   // one card with a list of affected tickers inside.
   const groups = {
-    bigMove:   { tag: 'Big move',       items: [], primary: 'Review thesis', primaryFn: "startThesisReview()" },
-    matMove:   { tag: 'Material move',  items: [], primary: 'Investigate',   primaryFn: "go('s0')" },
-    review:    { tag: 'Thesis review',  items: [], primary: 'Start review',  primaryFn: "startThesisReview()", secondary: 'Snooze' },
-    backfill:  { tag: 'Memo pending',   items: [], primary: 'Write memo',    primaryFn: "go('s60')" }
+    bigMove:   { tag: 'Big move',       items: [], primary: 'Review thesis', primaryFn: "startThesisReview()", cls: 'todaycard--bigmove' },
+    matMove:   { tag: 'Material move',  items: [], primary: 'Investigate',   primaryFn: "go('s0')",            cls: '' },
+    review:    { tag: 'Thesis review',  items: [], primary: 'Start review',  primaryFn: "startThesisReview()", cls: 'todaycard--review',  secondary: 'Snooze' },
+    backfill:  { tag: 'Memo pending',   items: [], primary: 'Write memo',    primaryFn: "go('s60')",           cls: 'todaycard--backfill' }
   };
 
   const movers = [
@@ -12604,7 +13041,7 @@ function refreshTodayBlock() {
     `).join('');
     const secondary = g.secondary || 'Dismiss';
     return `
-      <div class="todaycard">
+      <div class="todaycard ${g.cls || ''}">
         <div class="todaycard-head">
           <span class="todaycard-tag">${escapeNote(g.tag)}</span>
           <span class="todaycard-count">${g.items.length}</span>
@@ -12686,15 +13123,19 @@ function onAnnualizedTap() {
   }
 }
 
-/* Concentration bar tap — placeholder stub. Future detail screen would
-   show per-segment weights, top-N concentration metrics, and historical
-   HHI / Effective-N drift. */
+/* Concentration tile tap — opens the info sheet explaining Effective N,
+   the formula, threshold guidance, and a stress-test line. */
 function onConcentrationTap() {
-  // No-op for now (kept informational per the dashboard's threshold-gated
-  // posture — taps reveal detail, they don't trigger trades).
-  if (typeof showComposerToast === 'function') {
-    showComposerToast('Concentration detail — coming soon');
-  }
+  const overlay = document.getElementById('conc-overlay');
+  const info    = document.getElementById('conc-info');
+  if (overlay) overlay.classList.add('show');
+  if (info)    info.classList.add('show');
+}
+function hideConcentration() {
+  const overlay = document.getElementById('conc-overlay');
+  const info    = document.getElementById('conc-info');
+  if (overlay) overlay.classList.remove('show');
+  if (info)    info.classList.remove('show');
 }
 
 /* V4.5 — Pending overnight-review chip on the dashboard. Rendered when the
@@ -12995,8 +13436,8 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 
 <h4>Why it exists</h4>
 <p>Every valuation contains assumptions. Some will be wrong. The question is not whether you'll be wrong — you will — but whether being wrong costs you money.</p>
-<p>If you pay 42 CAD for a business you think is worth 60 CAD, you have 18 CAD of room. If your value estimate is off by 20% in the wrong direction, the business is still worth 48 CAD and you still paid less than it's worth.</p>
-<p>If you pay 58 CAD for the same business, the same error wipes you out.</p>
+<p>If you pay 42 USD for a business you think is worth 60 USD, you have 18 USD of room. If your value estimate is off by 20% in the wrong direction, the business is still worth 48 USD and you still paid less than it's worth.</p>
+<p>If you pay 58 USD for the same business, the same error wipes you out.</p>
 <p>The margin is the difference between <strong>a mistake that costs you return</strong> and <strong>a mistake that costs you capital</strong>.</p>
 
 <h4>How to read the number</h4>
@@ -13044,7 +13485,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p><strong>Earnings-based.</strong> Take a normal year's operating earnings. Apply a multiple that reflects how durable and how profitable the business is. Subtract net debt. Divide by shares.</p>
 <div class="info-example">
   <div class="info-example-title">Worked example</div>
-  <p>4B CAD in normal operating income × 12× multiple = 48B CAD enterprise value. Minus 8B CAD net debt = 40B CAD equity. Divided by 500M shares = <strong>80 CAD per share</strong>.</p>
+  <p>4B USD in normal operating income × 12× multiple = 48B USD enterprise value. Minus 8B USD net debt = 40B USD equity. Divided by 500M shares = <strong>80 USD per share</strong>.</p>
 </div>
 
 <p><strong>Cash-flow-based.</strong> Estimate the free cash flow the business will produce over the next ten years, plus a terminal value. Discount back at a rate that reflects the risk.</p>
@@ -13062,7 +13503,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <h4>What it is not</h4>
 <ul class="info-list">
   <li><strong>Not a price target.</strong> A price target predicts where the stock will go. Intrinsic value describes what the business is worth. The stock may take years to reflect it. It may never reflect it.</li>
-  <li><strong>Not a precise number.</strong> Anyone who tells you a business is worth exactly 63.42 CAD per share is wrong about precision. Intrinsic value is a range; the single number you write down is the lower bound you would defend.</li>
+  <li><strong>Not a precise number.</strong> Anyone who tells you a business is worth exactly 63.42 USD per share is wrong about precision. Intrinsic value is a range; the single number you write down is the lower bound you would defend.</li>
   <li><strong>Not the market's opinion.</strong> The whole point of estimating it yourself is that the market's number is the one you're betting against.</li>
 </ul>
 
@@ -13813,7 +14254,7 @@ function renderTxnList() {
         <div class="${tagCls}">${tag}</div>
       </div>
       <div class="txn-side">
-        <div class="txn-cost">${t.paper ? '— ' : ''}${cost} CAD</div>
+        <div class="txn-cost">${t.paper ? '— ' : ''}${cost} USD</div>
         <div class="txn-date">${t.date}</div>
       </div>
     </div>`;
@@ -13834,7 +14275,7 @@ function openTxnDetail(txnId) {
   document.getElementById('s25-action').textContent = txn.paper ? `${txn.action} · paper trade` : txn.action;
   document.getElementById('s25-shares').textContent = txn.shares + ' shares';
   document.getElementById('s25-cost').textContent   = '@ 192.35 USD';
-  document.getElementById('s25-total').textContent  = (txn.cost || (txn.shares * 192.35 * 1.36)).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
+  document.getElementById('s25-total').textContent  = (txn.cost || (txn.shares * 192.35 * 1.36)).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD';
   document.getElementById('s25-date').textContent   = txn.date;
   document.getElementById('s25-prob').textContent   = txn.prob + '%';
   document.getElementById('s25-horizon').textContent = HORIZON_LBL[txn.horizon] || txn.horizon;
@@ -14192,7 +14633,7 @@ function renderS40() {
   document.getElementById('s40-action').textContent = state.cd === 'initial' || state.cd === 'increase' ? 'Buy' : 'Sell';
   document.getElementById('s40-shares').textContent = n || '—';
   document.getElementById('s40-cost').textContent = n
-    ? costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD'
+    ? costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD'
     : '—';
   document.getElementById('s40-conf').textContent = state.prob + '%';
   document.getElementById('s40-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
@@ -14280,7 +14721,7 @@ function renderS51() {
         <div class="txn-shares paper-tag">Paper trade</div>
       </div>
       <div class="txn-side">
-        <div class="txn-cost">— ${cost} CAD</div>
+        <div class="txn-cost">— ${cost} USD</div>
         <div class="txn-date">${t.date}</div>
       </div>
     </div>`;
@@ -14553,6 +14994,54 @@ function showReviewDetail(reviewId) {
 function hideReviewDetail() {
   document.getElementById('r-overlay').classList.remove('show');
   document.getElementById('r-info').classList.remove('show');
+}
+
+/* ─── Thesis version history (opened from s0 thesis-version caption) ───
+   Seeded version log for the AAPL demo. Real implementation pulls from
+   state.memo.history or equivalent; for now the three entries below
+   match the "v3 · 2 prior" caption on s0. */
+const THESIS_HISTORY_SEED = [
+  {
+    ver: 'v3', date: 'Mar 12, 2026', current: true,
+    text: 'Apple is mispriced because the market still treats it as a hardware cycle. The real engine is the installed base — over two billion active devices monetized through services at expanding margin.'
+  },
+  {
+    ver: 'v2', date: 'Sep 4, 2025', current: false,
+    text: 'Services + capital return compound at 20%+ while iPhone unit base holds. Re-rates when services crosses 28% of revenue.'
+  },
+  {
+    ver: 'v1', date: 'Feb 27, 2025', current: false,
+    text: 'Compounder. Brand and ecosystem moat with disciplined buyback. Position sized at conviction.'
+  }
+];
+function openThesisHistory() {
+  const list = document.getElementById('tv-list');
+  if (list) {
+    list.innerHTML = THESIS_HISTORY_SEED.map(entry => `
+      <div style="border-left: 0.5px solid rgba(255,255,255,0.15); padding-left: 12px">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">
+          <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:0.14em;color:${entry.current ? 'var(--p)' : 'var(--t)'}">${escapeNote(entry.ver)}</span>
+          <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;letter-spacing:0.04em;color:var(--t-800)">${escapeNote(entry.date)}</span>
+          ${entry.current ? '<span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:0.14em;color:var(--accent-amber)">current</span>' : ''}
+        </div>
+        <div style="font-size:13px;color:var(--s);line-height:1.6;letter-spacing:-0.005em">${escapeNote(entry.text)}</div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('tv-overlay').classList.add('show');
+  document.getElementById('tv-info').classList.add('show');
+}
+function hideThesisHistory() {
+  document.getElementById('tv-overlay').classList.remove('show');
+  document.getElementById('tv-info').classList.remove('show');
+}
+
+/* Collapsible position-card toggle — used on s0 for Thesis / Kill line /
+   Margin of safety / Confidence / Notes & research. Tap the head to
+   expand or collapse the card body inline. */
+function toggleCard(card) {
+  if (!card) return;
+  card.classList.toggle('is-collapsed');
 }
 
 /* ═════════════════════════════════════════════════
