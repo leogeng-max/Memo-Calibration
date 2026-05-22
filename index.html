@@ -1495,25 +1495,15 @@ body.is-fullscreen .artboard-toggle {
    description types in character-by-character beneath it. */
 .size-desc {
   display: block;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--t);
   letter-spacing: -0.005em;
   line-height: 1.4;
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-  transition: max-height 200ms ease, opacity 180ms ease, margin-top 180ms ease;
+  margin-top: 3px;
 }
-.radio-row.is-on .size-desc {
-  max-height: 56px;
-  opacity: 1;
-  margin-top: 4px;
-}
-/* blinking cursor while typing */
+/* cursor remnant — kept for safety, no longer used */
 .size-desc.is-typing::after {
-  content: '|';
-  animation: sz-cur-blink 0.55s step-end infinite;
+  content: '';
   color: var(--t-800);
   margin-left: 1px;
 }
@@ -6545,6 +6535,22 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 
 /* ── Artboard toggle (below zoom button) ─────────────── */
+.demo-fill-btn {
+  position: fixed;
+  top: 114px; right: 18px;
+  width: 40px; height: 40px;
+  background: rgba(28,28,28,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  display: grid; place-items: center;
+  z-index: 1000; cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+  font-size: 17px;
+  line-height: 1;
+}
+.demo-fill-btn:hover { background: rgba(40,40,40,0.95); color: #E3E2E2; }
 .artboard-toggle {
   position: fixed;
   top: 66px; right: 18px;
@@ -6772,6 +6778,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
     <path d="M3 9V3h6M21 15v6h-6M3 15v6h6M21 9V3h-6"/>
   </svg>
 </button>
+
+<!-- ═════════════ Demo fill (below artboard) ═════════════ -->
+<button class="demo-fill-btn" id="demoFillBtn" title="Fill with demo data" onclick="fillDemoData()">✦</button>
 
 <!-- ═════════════ Artboard toggle (below zoom) ═════════════ -->
 <button class="artboard-toggle" id="artboardToggle" title="Design iterations" onclick="toggleArtboard()" style="display:none">
@@ -8055,10 +8064,10 @@ and you mis-hold.</div>
                     <div class="section-eyebrow">Position size</div>
                     <div class="memo-subhead" style="margin-top:6px;margin-bottom:14px">Ranges reflect common investing convention. Allocation is not prescribed.</div>
                     <div class="field-list" data-list="m1-size">
-                      <button class="radio-row" data-radio="core" data-desc="Common range: 10%+ · Highest-conviction positions." type="button"><div class="lbl-block"><div class="head">Core Position</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="conv" data-desc="Common range: 5–10% · Meaningful exposure, strong underwriting." type="button"><div class="lbl-block"><div class="head">High Conviction</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="start" data-desc="Common range: 1–3% · Building conviction or validating assumptions." type="button"><div class="lbl-block"><div class="head">Starter Position</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="sspc" data-desc="Common range: ≤2% · Higher uncertainty explicitly acknowledged." type="button"><div class="lbl-block"><div class="head">Speculative</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="core" type="button"><div class="lbl-block"><div class="head">Core</div><span class="size-desc">Common range: 10%+</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="conv" type="button"><div class="lbl-block"><div class="head">Conviction</div><span class="size-desc">Common range: 5–10%</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="start" type="button"><div class="lbl-block"><div class="head">Starter</div><span class="size-desc">Common range: 1–3%</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="sspc" type="button"><div class="lbl-block"><div class="head">Speculative</div><span class="size-desc">Common range: ≤2%</span></div><div class="radio-dot"></div></button>
                     </div>
                   </div>
 
@@ -11553,6 +11562,40 @@ function applyArtboardTransform() {
 }
 
 /* ── Artboard toggle ──────────────────────────────────── */
+/* ── Demo fill — replaces gibberish with realistic AAPL memo content ── */
+function fillDemoData() {
+  Object.assign(state.memo, {
+    type:            'comp',
+    size:            'core',
+    thesis:          'Services ecosystem generates recurring revenue at ~75% gross margins — structurally higher than hardware. Market continues to price AAPL as a hardware company. The re-rating to a software multiple has not happened.',
+    timingRationale: 'Services revenue crossed 25% of total revenue in FY25 and is accelerating. App Store regulatory headwinds have been overstated; alternative billing adoption has remained minimal across all markets.',
+    kill:            'Services gross margin compresses below 70% for two consecutive quarters, or iPhone installed base declines YoY for the first time.',
+    downsideFloor:   'Net cash of ~$50B, $90B+ annual buyback program, and a 2B-device installed base prevent any scenario of permanent capital impairment.',
+    intrinsicValue:  '224',
+    ivMethod:        'earnings',
+    cantValue:       false,
+    marginEnough:    'yes',
+    mos:             'below',
+    source:          'own',
+    note:            'Services mix shift is the thesis — not AI features. Watch Services gross margin as the primary leading indicator. If Vision Pro establishes a new platform monetization vector, revisit sizing.',
+    hurdleRate:      20,
+    horizonSel:      'y5p',
+  });
+  state.prob    = 65;
+  state.horizon = '5y';
+  state.defaultHurdleRate = 20;
+  state.hurdleConfirmed   = true;
+  try { persistMemoDraft(); } catch(_) {}
+  // Hydrate all visible memo screens
+  ['m1','m1b','miv','m2','m3','s12','m5','msrc','m6'].forEach(id => {
+    try { hydrateMemoScreen(id); } catch(_) {}
+  });
+  try { renderS12Modules(); } catch(_) {}
+  // Flash the button to confirm
+  const btn = document.getElementById('demoFillBtn');
+  if (btn) { btn.textContent = '✓'; btn.style.color = '#E3E2E2'; setTimeout(() => { btn.textContent = '✦'; btn.style.color = ''; }, 1200); }
+}
+
 function toggleArtboard() {
   const ab = document.getElementById('m6-artboard');
   const btn = document.getElementById('artboardToggle');
@@ -13972,7 +14015,6 @@ document.addEventListener('click', e => {
     state.memo.size = value;
     const adv = document.getElementById('m1b-cal-advisory');
     if (adv) adv.style.display = (value === 'core' || value === 'conv') ? '' : 'none';
-    triggerSizeDesc(row, false);
   }
   if (key === 'm4-mos')  state.memo.mos  = value;
   // ── Sell memo field-lists. Each radio pick writes the sm slice and
@@ -14061,7 +14103,7 @@ function hydrateMemoScreen(screenId) {
         r.classList.toggle('is-on', on);
         if (on) selectedBtn = r;
       });
-      triggerSizeDesc(selectedBtn, true); // instant — no animation on page load
+      // size-desc spans are now always-visible static HTML — no JS needed
     }
     const adv = document.getElementById('m1b-cal-advisory');
     if (adv) adv.style.display = (m.size === 'core' || m.size === 'conv') ? '' : 'none';
