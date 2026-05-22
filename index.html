@@ -265,7 +265,8 @@ body.is-fullscreen .artboard-toggle {
 
 /* Large primary button (LPB) — full-bleed footer */
 .lpb {
-  display: flex; width: 100%; height: 99px;
+  display: flex; width: 100%; height: 72px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   align-items: center; justify-content: center;
   background: var(--c-1000); color: var(--p);
   font-family: var(--font); font-size: 15px; letter-spacing: -0.02em;
@@ -1438,6 +1439,86 @@ body.is-fullscreen .artboard-toggle {
 }
 .workflow-card.is-collapsed .workflow-card-body { display: none; }
 
+/* ── Hurdle-rate card on mintro ──────────────────────────
+   Self-contained card: collapsed header shows current rate,
+   tapping expands the full option list.                   */
+.hurdle-card {
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.01);
+  overflow: hidden;
+  transition: border-color 150ms var(--ease);
+}
+.hurdle-card:hover { border-color: rgba(255,255,255,0.12); }
+.hurdle-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+.hurdle-card-left  { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.hurdle-card-lbl   { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t-800); }
+.hurdle-card-val   { font-size: 15px; font-weight: 500; color: var(--p); letter-spacing: -0.015em; }
+.hurdle-card-hint  { font-size: 11px; color: var(--t-800); letter-spacing: -0.005em; transition: opacity 200ms ease; margin-top: 6px; }
+.hurdle-card-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--t-800); flex-shrink: 0; align-self: center;
+  transition: opacity 300ms linear;
+}
+.hurdle-card-dot.is-seen { opacity: 0; pointer-events: none; }
+.hurdle-card-body {
+  border-top: 0.5px solid rgba(255,255,255,0.07);
+  display: none;
+}
+.hurdle-card.is-open .hurdle-card-body { display: block; }
+.hurdle-card-prompt {
+  padding: 12px 16px 6px;
+  font-size: 12.5px;
+  color: var(--t);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+.hurdle-card-prompt-sub {
+  font-size: 11px;
+  color: var(--t-800);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.hurdle-card-body .radio-row { padding: 12px 16px; }
+.hurdle-card-body .field-list { border-top: none; }
+
+/* ── Size option typewriter description ──────────────────
+   Buttons show only the name by default. On tap, the
+   description types in character-by-character beneath it. */
+.size-desc {
+  display: block;
+  font-size: 12.5px;
+  color: var(--t);
+  letter-spacing: -0.005em;
+  line-height: 1.4;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  transition: max-height 200ms ease, opacity 180ms ease, margin-top 180ms ease;
+}
+.radio-row.is-on .size-desc {
+  max-height: 56px;
+  opacity: 1;
+  margin-top: 4px;
+}
+/* blinking cursor while typing */
+.size-desc.is-typing::after {
+  content: '|';
+  animation: sz-cur-blink 0.55s step-end infinite;
+  color: var(--t-800);
+  margin-left: 1px;
+}
+@keyframes sz-cur-blink { 50% { opacity: 0; } }
+
 /* ─── CD picker sheet — replaces the removed s6 screen ───────────────
    Slides up over s0 for returning users. Tap backdrop or make a selection
    to dismiss. No confirm step — selection routes immediately. */
@@ -2041,7 +2122,7 @@ body.is-fullscreen .artboard-toggle {
   outline: none;
   color: var(--p);
   font-family: var(--font);
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 300;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -2927,15 +3008,27 @@ body.is-fullscreen .artboard-toggle {
   letter-spacing: -0.02em;
 }
 .hurdle-display-static {
-  padding: 10px 0 6px;
+  padding: 8px 0 4px;
   border-bottom: none;
   margin-bottom: 0;
 }
 .hurdle-display-static span {
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 300;
   color: var(--p);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+/* Flat (read-only) variant — no card chrome */
+.uw-module--flat {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+/* Restore top border on the card that follows a flat module */
+.uw-module--flat + .uw-module {
+  border-top: 0.5px solid #262626;
 }
 
 /* Reclassify escape link — secondary action at foot of horizon card */
@@ -3031,19 +3124,19 @@ body.is-fullscreen .artboard-toggle {
 }
 .uw-cal-row {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   margin-bottom: 8px;
 }
 .uw-cal-num {
-  font-size: 22px;
+  font-size: 15px;
   font-weight: 300;
   color: var(--p);
   font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
   letter-spacing: -0.02em;
-  min-width: 52px;
-  text-align: right;
+  text-align: center;
+  width: 100%;
 }
 .uw-provisional-nudge {
   font-size: 11px;
@@ -6332,7 +6425,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 0;
+  padding: 13px 20px;
   border-bottom: 0.5px solid #1E1E1E;
   cursor: pointer;
   user-select: none;
@@ -6355,6 +6448,100 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-quality-frac {
   font-size: 11px; color: var(--t);
   margin-left: auto; letter-spacing: -0.01em;
+}
+
+/* ── m6 Ledger design ──────────────────────────────────
+   Applied via .m6-ledger on .memo-page. Overrides the
+   default 14px sans-serif rows with Inter at a clean ledger scale.  */
+.m6-ledger { font-family: var(--font); }
+.m6-ledger-header {
+  padding-bottom: 16px;
+}
+.m6-ledger-meta {
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--t-800);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.m6-ledger .m6-ticker-hero {
+  font-family: var(--font);
+  font-size: 38px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  margin-bottom: 6px;
+}
+.m6-ledger-doc-label {
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--t-800);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+.m6-ledger-date {
+  font-family: var(--font);
+  font-size: 10px;
+  color: var(--t-800);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.m6-ledger-section-head {
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--t-800);
+  text-transform: uppercase;
+  padding-bottom: 9px;
+}
+.m6-ledger .memo-row {
+  grid-template-columns: 72px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: none;
+}
+.m6-ledger .memo-row:last-of-type { border-bottom: none; }
+.m6-ledger .memo-row .k {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--t);
+}
+.m6-ledger .memo-row .v {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--s);
+  line-height: 1.5;
+}
+.m6-ledger .m6-immutability {
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+.m6-ledger .t-bsm {
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.6;
+}
+/* ── Fixed quality footer — sits between scroll area and seal button ── */
+.m6-quality-footer {
+  flex-shrink: 0;
+  background: var(--bg);
+  border-top: 0.5px solid #1E1E1E;
+}
+.m6-quality-footer .m6-quality-strip {
+  border-top: none;
+  border-bottom: none;
+  margin-top: 0;
+}
+.m6-quality-footer .m6-health {
+  border-bottom: 0.5px solid #1E1E1E;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-top: 0;
 }
 
 /* ── Artboard toggle (below zoom button) ─────────────── */
@@ -7391,20 +7578,19 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <!-- COMPOUNDER VIEW -->
               <div id="s12-comp-view" style="display:none">
 
-                <!-- Module 1: Hurdle -->
-                <div class="uw-module">
+                <!-- Module 1: Hurdle — read-only display, no card chrome -->
+                <div class="uw-module uw-module--flat">
                   <div class="section-eyebrow is-info" onclick="showInfoModal('uw_hurdle')" style="margin-bottom:10px">Exceptional Compounding Hurdle</div>
-                  <div class="memo-subhead" style="margin-bottom:20px">Exceptional businesses are rare. Setting a demanding hurdle rate is a discipline mechanism — it forces explicit comparison to the rarest tier of compounders rather than to average market returns.</div>
-                  <div class="hurdle-display-static">
+                  <div class="hurdle-display-static" onclick="showInfoModal('hurdle_standard')" style="cursor:pointer;display:inline-flex;align-items:baseline;gap:5px">
                     <span id="s12-hurdle-display">20% per year</span>
+                    <span style="display:inline-block;width:9px;height:9px;flex-shrink:0;margin-bottom:2px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23565B5E%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cline x1=%227%22 y1=%2217%22 x2=%2217%22 y2=%227%22/%3E%3Cpolyline points=%227 7 17 7 17 17%22/%3E%3C/svg%3E');background-size:contain;background-repeat:no-repeat;background-position:center"></span>
                   </div>
-                  <div class="memo-subhead" style="margin-top:10px">Your compounding standard, established at setup. To revise it, return to the memo protocol.</div>
                 </div>
 
                 <!-- Module 2: Horizon -->
                 <div class="uw-module" id="s12-horizon-module">
                   <div class="section-eyebrow is-info" onclick="showInfoModal('uw_horizon')" style="margin-bottom:10px">Exceptional Compounding Horizon</div>
-                  <div class="memo-subhead" id="s12-horizon-prompt" style="margin-bottom:20px">Over what time horizon does your underwriting support the possibility of intrinsic value compounding at approximately <span class="uw-hurdle-inline" id="s12-horizon-hurdle-num">20</span>% annually?</div>
+                  <div class="memo-subhead" id="s12-horizon-prompt" style="margin-bottom:20px">Over what time horizon does your underwriting support the possibility of intrinsic value compounding at approximately <span class="uw-hurdle-inline" id="s12-horizon-hurdle-num">20</span><span class="uw-hurdle-inline">%</span> annually?</div>
                   <div class="field-list" data-list="s12-horizon-list">
                     <button class="radio-row" data-horiz="y1" onclick="setHorizonSel('y1')" type="button">
                       <div class="lbl-block"><div class="head">1 Year</div></div>
@@ -7419,10 +7605,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                       <div class="radio-dot"></div>
                     </button>
                   </div>
-                  <button class="uw-reclassify-link" type="button" onclick="doReclassify()">
-                    <span>This position does not meet the hurdle — reclassify</span>
-                    <span>→</span>
-                  </button>
+
                 </div>
 
                 <!-- Module 3: Calibration (Compounder) -->
@@ -7430,8 +7613,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <div class="section-eyebrow is-info" onclick="showInfoModal('uw_calibration')" style="margin-bottom:10px">Confidence Calibration</div>
                   <div class="memo-subhead" style="margin-bottom:20px">What probability would you assign to your underwriting assumptions broadly proving correct over that horizon?</div>
                   <div class="uw-cal-row">
-                    <input class="horiz-range" id="s12-prob-range" type="range" min="10" max="90" value="50" step="10" oninput="setProb('s12', this.value)" style="flex:1">
-                    <span class="uw-cal-num"><span id="s12-prob-num">50</span><span style="font-size:14px;color:var(--t);margin-left:1px">%</span></span>
+                    <span class="uw-cal-num"><span id="s12-prob-num">50</span><span style="font-size:11px;color:var(--p);margin-left:1px;vertical-align:baseline">%</span></span>
+                    <input class="horiz-range" id="s12-prob-range" type="range" min="10" max="90" value="50" step="10" oninput="setProb('s12', this.value)" style="width:100%">
                   </div>
                   <div class="horiz-ends" style="margin-top:2px">
                     <span class="body-xs">10%</span>
@@ -7455,8 +7638,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <div class="section-eyebrow is-info" onclick="showInfoModal('uw_calibration')" style="margin-bottom:10px">Confidence Calibration</div>
                   <div class="memo-subhead" style="margin-bottom:20px">What probability would you assign to your thesis proving broadly correct over your time horizon?</div>
                   <div class="uw-cal-row">
-                    <input class="horiz-range" id="s12-std-prob-range" type="range" min="10" max="90" value="50" step="10" oninput="setProb('s12', this.value); document.getElementById('s12-std-prob-num').textContent=this.value" style="flex:1">
-                    <span class="uw-cal-num"><span id="s12-std-prob-num">50</span><span style="font-size:14px;color:var(--t);margin-left:1px">%</span></span>
+                    <span class="uw-cal-num"><span id="s12-std-prob-num">50</span><span style="font-size:11px;color:var(--p);margin-left:1px;vertical-align:baseline">%</span></span>
+                    <input class="horiz-range" id="s12-std-prob-range" type="range" min="10" max="90" value="50" step="10" oninput="setProb('s12', this.value); document.getElementById('s12-std-prob-num').textContent=this.value" style="width:100%">
                   </div>
                   <div class="horiz-ends" style="margin-top:2px">
                     <span class="body-xs">10%</span>
@@ -7562,33 +7745,47 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <hr class="v5-rule">
 
-              <div class="section-eyebrow is-info" onclick="showInfoModal('compounding_standard')" style="margin-bottom:10px;color:var(--p)">Compounding standard</div>
-              <div class="v5-prose">The minimum annual return required to justify a Compounder position. Set once. Applied across all memos.</div>
-              <div class="field-list" data-list="mintro-hurdle" style="margin-top:16px">
-                <button class="radio-row" data-rate="0" onclick="setMintroHurdle(0)" type="button">
-                  <div class="lbl-block"><div class="head">0% per year</div><div class="sub">No formal hurdle.</div></div>
-                  <div class="radio-dot"></div>
-                </button>
-                <button class="radio-row" data-rate="10" onclick="setMintroHurdle(10)" type="button">
-                  <div class="lbl-block"><div class="head">10% per year</div></div>
-                  <div class="radio-dot"></div>
-                </button>
-                <button class="radio-row is-on" data-rate="20" onclick="setMintroHurdle(20)" type="button">
-                  <div class="lbl-block"><div class="head">20% per year</div></div>
-                  <div class="radio-dot"></div>
-                </button>
-                <button class="radio-row" data-rate="30" onclick="setMintroHurdle(30)" type="button">
-                  <div class="lbl-block"><div class="head">30% per year</div></div>
-                  <div class="radio-dot"></div>
-                </button>
-                <button class="radio-row" data-rate="40" onclick="setMintroHurdle(40)" type="button">
-                  <div class="lbl-block"><div class="head">40% per year</div></div>
-                  <div class="radio-dot"></div>
-                </button>
-                <button class="radio-row" data-rate="50" onclick="setMintroHurdle(50)" type="button">
-                  <div class="lbl-block"><div class="head">50%+ per year</div></div>
-                  <div class="radio-dot"></div>
-                </button>
+              <div class="hurdle-card" id="hurdle-card">
+                <div class="hurdle-card-head" onclick="toggleHurdleCard()">
+                  <div class="hurdle-card-left">
+                    <span class="hurdle-card-lbl">Compounding standard</span>
+                    <span class="hurdle-card-val" id="hurdle-card-val">20% per year</span>
+                    <span class="hurdle-card-hint" id="hurdle-card-hint">Not confirmed — tap to set yours.</span>
+                  </div>
+                  <span class="hurdle-card-dot" id="hurdle-card-dot"></span>
+                </div>
+                <div class="hurdle-card-body">
+                  <div class="hurdle-card-prompt">
+                    What annual return does your underwriting need to clear?
+                    <div class="hurdle-card-prompt-sub">This applies to every Compounder position in this system. Set it to reflect how you actually think about returns.</div>
+                  </div>
+                  <div class="field-list" data-list="mintro-hurdle">
+                    <button class="radio-row" data-rate="0" onclick="setMintroHurdle(0)" type="button">
+                      <div class="lbl-block"><div class="head">0% per year</div><div class="sub">No formal hurdle.</div></div>
+                      <div class="radio-dot"></div>
+                    </button>
+                    <button class="radio-row" data-rate="10" onclick="setMintroHurdle(10)" type="button">
+                      <div class="lbl-block"><div class="head">10% per year</div></div>
+                      <div class="radio-dot"></div>
+                    </button>
+                    <button class="radio-row" data-rate="20" onclick="setMintroHurdle(20)" type="button">
+                      <div class="lbl-block"><div class="head">20% per year</div></div>
+                      <div class="radio-dot"></div>
+                    </button>
+                    <button class="radio-row" data-rate="30" onclick="setMintroHurdle(30)" type="button">
+                      <div class="lbl-block"><div class="head">30% per year</div></div>
+                      <div class="radio-dot"></div>
+                    </button>
+                    <button class="radio-row" data-rate="40" onclick="setMintroHurdle(40)" type="button">
+                      <div class="lbl-block"><div class="head">40% per year</div></div>
+                      <div class="radio-dot"></div>
+                    </button>
+                    <button class="radio-row" data-rate="50" onclick="setMintroHurdle(50)" type="button">
+                      <div class="lbl-block"><div class="head">50%+ per year</div></div>
+                      <div class="radio-dot"></div>
+                    </button>
+                  </div>
+                </div>
               </div>
 
             </div>
@@ -7856,17 +8053,18 @@ and you mis-hold.</div>
                 <div class="memo-body--reveal">
                   <div>
                     <div class="section-eyebrow">Position size</div>
+                    <div class="memo-subhead" style="margin-top:6px;margin-bottom:14px">Ranges reflect common investing convention. Allocation is not prescribed.</div>
                     <div class="field-list" data-list="m1-size">
-                      <button class="radio-row" data-radio="core"><div class="lbl-block"><div class="head">Core Position</div><div class="sub">Typically used for highest-conviction ideas.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="conv"><div class="lbl-block"><div class="head">High Conviction</div><div class="sub">Meaningful exposure with substantial underwriting confidence.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="start"><div class="lbl-block"><div class="head">Starter Position</div><div class="sub">Used while building conviction or validating assumptions.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="sspc"><div class="lbl-block"><div class="head">Speculative</div><div class="sub">Higher uncertainty explicitly acknowledged.</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="core" data-desc="Common range: 10%+ · Highest-conviction positions." type="button"><div class="lbl-block"><div class="head">Core Position</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="conv" data-desc="Common range: 5–10% · Meaningful exposure, strong underwriting." type="button"><div class="lbl-block"><div class="head">High Conviction</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="start" data-desc="Common range: 1–3% · Building conviction or validating assumptions." type="button"><div class="lbl-block"><div class="head">Starter Position</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="sspc" data-desc="Common range: ≤2% · Higher uncertainty explicitly acknowledged." type="button"><div class="lbl-block"><div class="head">Speculative</div><span class="size-desc"></span></div><div class="radio-dot"></div></button>
                     </div>
                   </div>
 
                   <div class="cal-advisory" id="m1b-cal-advisory">
                     <div class="cal-advisory-title">Concentration requires calibration.</div>
-                    <div class="cal-advisory-body">Position size reflects the strength of the underlying underwriting. Investors without sufficient calibration history systematically overstate edge and forecasting precision.</div>
+                    <div class="cal-advisory-body">Research shows investors often overstate their edge before establishing a track record. Calibration data is how that changes over time.</div>
                     <div class="cal-advisory-actions">
                       <button class="cal-advisory-btn" onclick="document.getElementById('m1b-cal-advisory').style.display='none'" type="button">Proceed</button>
                       <button class="cal-advisory-btn" onclick="document.getElementById('m1b-cal-advisory').style.display='none';document.querySelector('[data-list=\'m1-size\']').scrollIntoView({behavior:'smooth'})" type="button">Adjust sizing</button>
@@ -8234,7 +8432,7 @@ to rewrite it.</div>
           <div class="v5-modal" id="m4-thinmargin-modal">
             <div class="v5-modal-sheet">
               <button type="button" class="v5-modal-close" onclick="document.getElementById('m4-thinmargin-modal').classList.remove('is-on')" aria-label="Close">×</button>
-              <div class="v5-modal-title">Margin reads thin. Two options.</div>
+              <div class="v5-modal-title">Current margin of safety: 0%. Two options.</div>
               <div class="v5-modal-body">
                 <p>Wait for a better price — system signals on trigger. Or continue, and the record notes the thin margin at entry.</p>
               </div>
@@ -8366,14 +8564,14 @@ What's obvious now will be murky later.</div>
                 </div>
 
                 <div class="field-list" data-list="msrc-source">
-                  <button class="radio-row" data-radio="own"><div class="lbl-block"><div class="head">Own analysis</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="twitter"><div class="lbl-block"><div class="head">Social media</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="screener"><div class="lbl-block"><div class="head">Screener</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="podcast"><div class="lbl-block"><div class="head">Podcast</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="newsletter"><div class="lbl-block"><div class="head">Newsletter</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="friend"><div class="lbl-block"><div class="head">Friend</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="13f"><div class="lbl-block"><div class="head">13F</div></div><div class="radio-dot"></div></button>
-                  <button class="radio-row" data-radio="other"><div class="lbl-block"><div class="head">Other</div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="own"><div class="lbl-block"><div class="head">Own analysis</div><div class="sub source-hitrate" data-source="own"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="twitter"><div class="lbl-block"><div class="head">Social media</div><div class="sub source-hitrate" data-source="twitter"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="screener"><div class="lbl-block"><div class="head">Screener</div><div class="sub source-hitrate" data-source="screener"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="podcast"><div class="lbl-block"><div class="head">Podcast</div><div class="sub source-hitrate" data-source="podcast"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="newsletter"><div class="lbl-block"><div class="head">Newsletter</div><div class="sub source-hitrate" data-source="newsletter"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="friend"><div class="lbl-block"><div class="head">Friend</div><div class="sub source-hitrate" data-source="friend"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="13f"><div class="lbl-block"><div class="head">13F</div><div class="sub source-hitrate" data-source="13f"></div></div><div class="radio-dot"></div></button>
+                  <button class="radio-row" data-radio="other"><div class="lbl-block"><div class="head">Other</div><div class="sub source-hitrate" data-source="other"></div></div><div class="radio-dot"></div></button>
                 </div>
 
                 <!-- Source detail (optional) with autocomplete from prior entries.
@@ -8413,76 +8611,76 @@ actually works for you.</div>
             </div>
 
             <div class="body-scroll">
-              <div class="memo-page" style="gap:20px">
+              <div class="memo-page m6-ledger" style="gap:16px">
                 <div class="backfill-banner memo-backfill-banner" style="display:none">
                   <span>Backfilling memo for <span class="ticker memo-backfill-ticker">—</span></span>
                 </div>
 
-                <!-- Document hero header -->
-                <div class="m6-doc-header">
+                <!-- Ledger header -->
+                <div class="m6-ledger-header">
                   <span id="m6-ticker-step" style="display:none">Review</span>
-                  <div class="m6-step-label"><span id="m6-ticker-meta">9 / 9</span></div>
+                  <div class="m6-ledger-meta" id="m6-ticker-meta">9 / 9</div>
                   <div class="m6-ticker-hero"><span class="memo-ctx-ticker">AAPL</span></div>
-                  <div class="memo-context-chip" data-memo-context hidden></div>
                   <div id="m6-title" style="display:none"></div>
-                  <div class="t-bsm" id="m6-date" style="margin-top:10px;color:var(--t-800);font-size:11px;letter-spacing:0.01em">—</div>
-                </div>
-
-                <!-- Quality strip: tap to expand health detail -->
-                <div class="m6-quality-strip" onclick="toggleM6Health()" id="m6-quality-strip" data-min-version="4.5">
-                  <span class="m6-quality-strip-lbl">Quality</span>
-                  <div class="m6-quality-dots" id="m6-quality-dots">
-                    <div class="m6-quality-dot"></div>
-                    <div class="m6-quality-dot"></div>
-                    <div class="m6-quality-dot"></div>
-                    <div class="m6-quality-dot"></div>
-                    <div class="m6-quality-dot"></div>
-                    <div class="m6-quality-dot"></div>
-                  </div>
-                  <span class="m6-quality-frac" id="m6-quality-frac">—</span>
-                  <span style="font-size:12px;color:var(--t-800);margin-left:4px" id="m6-quality-arrow">›</span>
-                </div>
-                <!-- Health detail (collapsed by default) -->
-                <div id="m6-health" class="m6-health" data-min-version="4.5" style="display:none;margin-top:-8px"></div>
-
-                <!-- Immutability notice -->
-                <div class="m6-immutability">
-                  This version is permanent once confirmed. Edits create new versions.
+                  <div class="m6-ledger-doc-label">INVESTMENT MEMO · V1</div>
+                  <div id="m6-date" class="m6-ledger-date">—</div>
                 </div>
 
                 <!-- Memo rows -->
                 <div>
-                  <div class="m6-section-head">
-                    <div class="section-eyebrow" style="margin-bottom:0">Memo</div>
-                    <div class="m6-tap-hint">Tap to edit</div>
-                  </div>
+                  <div class="m6-ledger-section-head">MEMO</div>
                   <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
                   <div class="memo-row" onclick="editFromReview('m1b')"><div class="k">Size</div><div class="v" id="m6-size">—</div></div>
                   <div class="memo-row" onclick="editFromReview('m2')"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
                   <div class="memo-row" id="m6-timing-row" style="display:none" onclick="editFromReview('m2')"><div class="k">Why now</div><div class="v" id="m6-timing">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill line</div><div class="v" id="m6-kill">—</div></div>
-                  <div class="memo-row" id="m6-floor-row" style="display:none" onclick="editFromReview('m3')"><div class="k">Downside floor</div><div class="v" id="m6-floor-disp">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">Intrinsic value</div><div class="v" id="m6-iv">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">Margin of safety</div><div class="v" id="m6-mos">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill</div><div class="v" id="m6-kill">—</div></div>
+                  <div class="memo-row" id="m6-floor-row" style="display:none" onclick="editFromReview('m3')"><div class="k">Floor</div><div class="v" id="m6-floor-disp">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">IV</div><div class="v" id="m6-iv">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MOS</div><div class="v" id="m6-mos">—</div></div>
                   <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
                   <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
                 </div>
 
                 <!-- Calibration rows -->
                 <div>
-                  <div class="section-eyebrow" style="margin-bottom:0">Calibration</div>
-                  <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Probability</div><div class="v" id="m6-prob">—</div></div>
+                  <div class="m6-ledger-section-head">CALIBRATION</div>
+                  <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Prob</div><div class="v" id="m6-prob">—</div></div>
                   <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
                 </div>
 
-                <div class="t-bsm" style="line-height:1.55;color:var(--t-800)">
+                <!-- Footer note -->
+                <div class="t-bsm" style="line-height:1.6;color:var(--t-800)">
                   The memo and calibration are recorded. Future buys of AAPL will skip the memo unless you choose to re-enter it.
+                </div>
+
+                <!-- Immutability notice -->
+                <div class="m6-immutability">
+                  This version is permanent once confirmed. Edits create new versions.
                 </div>
               </div>
             </div>
 
-            <!-- Hold-to-commit (1.8s). Mirrors the s4 hold-to-execute pattern;
-                 creates a deliberate beat for hesitation. -->
+            <!-- Quality footer — fixed between scroll and seal button -->
+            <div class="m6-quality-footer">
+              <!-- Health detail — expands above the strip when open -->
+              <div id="m6-health" class="m6-health" data-min-version="4.5" style="display:none"></div>
+              <!-- Quality strip — always visible -->
+              <div class="m6-quality-strip" onclick="toggleM6Health()" id="m6-quality-strip" data-min-version="4.5">
+                <span class="m6-quality-strip-lbl">Quality</span>
+                <div class="m6-quality-dots" id="m6-quality-dots">
+                  <div class="m6-quality-dot"></div>
+                  <div class="m6-quality-dot"></div>
+                  <div class="m6-quality-dot"></div>
+                  <div class="m6-quality-dot"></div>
+                  <div class="m6-quality-dot"></div>
+                  <div class="m6-quality-dot"></div>
+                </div>
+                <span class="m6-quality-frac" id="m6-quality-frac">—</span>
+                <span style="font-size:12px;color:var(--t-800);margin-left:4px" id="m6-quality-arrow">›</span>
+              </div>
+            </div>
+
+            <!-- Hold-to-commit (1.8s) -->
             <div class="v5-foot">
               <button class="lpb m6-hold-btn"
                       onmousedown="holdCommitStart(event)" onmouseup="holdCommitCancel()" onmouseleave="holdCommitCancel()"
@@ -8542,70 +8740,7 @@ actually works for you.</div>
             </div>
           </section>
 
-          <!-- ════════ s20 — Updated probability (returning user) ════════ -->
-          <section class="scr" data-id="s20">
-            <div style="padding-top:0;flex-shrink:0">
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('s19')">‹</button>
-                <span style="font-size:13px;color:var(--t);letter-spacing:-0.01em">Increase position</span>
-                <span style="width:22px"></span>
-              </div>
-              <hr class="div">
-            </div>
 
-            <div class="body-scroll" style="padding:0 16px 24px">
-              <div style="margin-top:36px">
-                <div class="lbl" style="margin-bottom:14px">Updated view</div>
-                <div class="flow-h">New probability.</div>
-              </div>
-
-              <!-- Live answer sentence — same pattern as s12, with delta vs prior reading -->
-              <div class="calib-statement">
-                <span class="calib-statement-lead">Now —</span>
-                <span class="calib-statement-slot" id="s20-summary-prob" onclick="document.getElementById('s20-prob-block')?.scrollIntoView({behavior:'smooth',block:'center'})">60%</span>
-                <span class="calib-statement-lead">probability over</span>
-                <span class="calib-statement-slot" id="s20-summary-horizon" onclick="document.getElementById('s20-horizon-block')?.scrollIntoView({behavior:'smooth',block:'center'})">3 years</span><span class="calib-statement-lead">.</span>
-                <div class="calib-statement-prior" id="s20-statement-prior" style="visibility:hidden">Was 60% over 3 years.</div>
-              </div>
-
-              <div class="calib-section calib-section--unified">
-                <div class="calib-row calib-row--tight" id="s20-prob-block">
-                  <div class="calib-row-label">Updated probability</div>
-                  <div>
-                    <span id="s20-prob-num" class="prob-num">60</span><span class="prob-num-pct">%</span>
-                  </div>
-                  <div style="text-align:center;margin-top:6px">
-                    <span class="delta-chip" id="s20-delta" style="visibility:hidden">0%</span>
-                  </div>
-                  <input class="horiz-range" id="s20-prob-range" type="range" min="0" max="100" value="60" step="10"
-                         oninput="setProb('s20', this.value)" style="margin-top:18px">
-                  <div class="horiz-ends">
-                    <span class="body-xs">0%</span><span class="body-xs" id="s20-prob-msg" style="color:var(--t-700)">Modest edge</span><span class="body-xs">100%</span>
-                  </div>
-                </div>
-
-                <div class="calib-link" aria-hidden="true"></div>
-
-                <div class="calib-row calib-row--tight" id="s20-horizon-block">
-                  <div class="calib-row-label">Time horizon</div>
-                  <div class="period-wrap">
-                    <button class="period-btn period-btn-multi"    id="s20-h-1y" onclick="setHorizon('s20','1y')"><span class="period-btn-year">1Y</span><span class="period-btn-date" data-h-date="1y">—</span></button>
-                    <button class="period-btn period-btn-multi"    id="s20-h-2y" onclick="setHorizon('s20','2y')"><span class="period-btn-year">2Y</span><span class="period-btn-date" data-h-date="2y">—</span></button>
-                    <button class="period-btn period-btn-multi on" id="s20-h-3y" onclick="setHorizon('s20','3y')"><span class="period-btn-year">3Y</span><span class="period-btn-date" data-h-date="3y">—</span></button>
-                    <button class="period-btn period-btn-multi"    id="s20-h-4y" onclick="setHorizon('s20','4y')"><span class="period-btn-year">4Y</span><span class="period-btn-date" data-h-date="4y">—</span></button>
-                    <button class="period-btn period-btn-multi"    id="s20-h-5y" onclick="setHorizon('s20','5y')"><span class="period-btn-year">5Y</span><span class="period-btn-date" data-h-date="5y">—</span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style="flex-shrink:0;padding:14px 16px 18px;display:flex;justify-content:flex-end">
-              <button class="act-btn" onclick="continueFromS20()" style="padding:14px 4px">
-                <span class="act-arrow">→</span>
-                <span>Continue</span>
-              </button>
-            </div>
-          </section>
 
           <!-- ════════ s8 — Enter shares (numpad) ════════ -->
           <section class="scr" data-id="s8" onclick="if(state.activeInput) closeNumpad()">
@@ -9954,7 +10089,7 @@ Holding to a broken thesis is.</div>
             <div style="margin-top:24px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.08)">
               <div class="lbl" style="margin-bottom:10px">Threshold guidance</div>
               <div class="conc-threshold-row"><span class="conc-threshold-range">Below 3.0</span><span class="conc-threshold-note">Single-name risk dominates portfolio outcomes.</span></div>
-              <div class="conc-threshold-row"><span class="conc-threshold-range">3.0 – 5.0</span><span class="conc-threshold-note">Concentrated; defensible at high conviction.</span></div>
+              <div class="conc-threshold-row"><span class="conc-threshold-range">3.0 – 5.0</span><span class="conc-threshold-note">Concentrated. Some investors hold at this level at high conviction; others do not.</span></div>
               <div class="conc-threshold-row"><span class="conc-threshold-range">Above 5.0</span><span class="conc-threshold-note">Diversified across the book.</span></div>
             </div>
             <div style="margin-top:24px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.08)">
@@ -10638,7 +10773,7 @@ in the diagnosis.</div>
                 <div>
                   <div class="section-eyebrow">Verdict</div>
                   <div class="field-list" data-list="sm7-answer">
-                    <button class="radio-row" data-radio="no"><div class="lbl-block"><div class="head">No — would not buy today</div><div class="sub">Confirmed sell. Holding is loss aversion or anchoring, not analysis.</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-radio="no"><div class="lbl-block"><div class="head">No — would not buy today</div><div class="sub">Sell follows from the analysis. The inversion test points against holding.</div></div><div class="radio-dot"></div></button>
                     <button class="radio-row" data-radio="yes"><div class="lbl-block"><div class="head">Yes — would buy today</div><div class="sub">Selling is tape-watching, not investing. Reconsider before sealing.</div></div><div class="radio-dot"></div></button>
                   </div>
                 </div>
@@ -10803,7 +10938,7 @@ the inverted question.</div>
                   <div>
                     <span class="body-md" style="color:var(--s)">Shares</span>
                     <div class="s8-sub">
-                      <span class="s8-sub-text">Recommended</span>
+                      <span class="s8-sub-text">From sealed memo</span>
                       <span class="s8-sub-text" style="color:var(--s)" id="sm-exec-recommended">—</span>
                     </div>
                   </div>
@@ -11749,7 +11884,6 @@ const SCREENS = [
   { id: 'm5',  group: 'Memo',    name: 'Note',                         sub: '8 / 9 · optional context',                                   minVersion: 2 },
   { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '9 / 9 · memo + calibration',                          minVersion: 2 },
   { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why',                                                  minVersion: 2 },
-  { id: 's20', group: 'Returning user',name: 'Updated probability',          sub: 'with delta',                                           minVersion: 2 },
   { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad',                                               minVersion: 2 },
   { id: 's4',  group: 'Order',         name: 'Review & execute',             sub: 'hold to confirm',                                      minVersion: 2 },
   { id: 's9',  group: 'Order',         name: 'Order filled',                 sub: 'AAPL',                                                 minVersion: 2 },
@@ -11815,7 +11949,7 @@ function go(id) {
   if (id === 's60') renderBackfillList();
   if (id === 's61') renderBackfillSaved();
   // Backfill banner visibility on every memo screen
-  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshBackfillBanner();
+  if (['m1','m1b','miv','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshBackfillBanner();
   // Test-scenario caption — shown on memo review screens during the returning
   // increase flow so reviewers know why the user is going through all 8 steps.
   refreshReviewCaption(id);
@@ -11832,24 +11966,23 @@ function go(id) {
   refreshProtocolReferenceMode(id);
   if (id === 's12' || id === 'm6') refreshMemoLocks();
   if (id === 's12') { hydrateForecastThreshold(); refreshCalibSummary(); }
-  if (id === 's20') refreshS20Summary();
   if (id === 'research-prompt') renderResearchPromptDetail();
   if (id === 'mresearch-prompt') renderMresearchPromptList();
   if (id === 'calib-me')        renderCalibMe();
   if (id === 'postmortem')      renderPostMortem();
   // Hydrate memo screens from the draft so resuming visibly fills in
-  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
+  if (['m1','m1b','miv','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) hydrateMemoScreen(id);
   // V4.5 — record time on each memo step (silently). Used by Calibration(Me)
   // later to surface "memos under 5 min score 28% worse" personal feedback.
-  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) recordMemoStepTime(id);
+  if (['m1','m1b','miv','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) recordMemoStepTime(id);
   // V4.5 — swap the per-step Continue CTA label to a verb-specific phrase
   if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc'].indexOf(id) !== -1) refreshStepCtaLabel(id);
   // Refresh the persistent "your context" chip (Compounder · Core etc.)
   // on every memo screen. It self-hides when no selection is set yet.
-  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshMemoContextChip();
+  if (['m1','m1b','miv','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshMemoContextChip();
   // Apply / restore m6 edit-mode UI overrides (back arrow + Continue
   // label) when entering any of the per-field memo steps.
-  if (['m1','m1b','miv','m4','m2','m3','s12','m5','msrc'].indexOf(id) !== -1) refreshEditModeUI(id);
+  if (['m1','m1b','miv','m2','m3','s12','m5','msrc'].indexOf(id) !== -1) refreshEditModeUI(id);
   // Clear the edit flag the moment the user lands back on m6 — keeps
   // state clean if they leave the memo entirely without saving.
   if (id === 'm6') state.editingFromReview = false;
@@ -12525,14 +12658,65 @@ function backFromM6() {
    their first memo (state.hasMemo flips at SEAL), these pages stop auto-
    showing. Re-access lives on m1 and in the drawer under "Reference". */
 function setMintroHurdle(rate) {
-  state.defaultHurdleRate = rate;
-  state.memo.hurdleRate   = rate;
+  state.defaultHurdleRate  = rate;
+  state.memo.hurdleRate    = rate;
+  state.hurdleConfirmed    = true;
   // Sync the s12 display if already rendered
   const display = document.getElementById('s12-hurdle-display');
   if (display) display.textContent = rate + '% per year';
   const inline  = document.getElementById('s12-horizon-hurdle-num');
   if (inline)  inline.textContent  = rate;
   try { localStorage.setItem('mogo.defaultHurdleRate', rate); } catch(_) {}
+  // Sync card header value
+  const cardVal  = document.getElementById('hurdle-card-val');
+  if (cardVal) cardVal.textContent = (rate === 50 ? '50%+' : rate + '%') + ' per year';
+  // Hide the "not confirmed" hint once user makes an explicit choice
+  const cardHint = document.getElementById('hurdle-card-hint');
+  if (cardHint) { cardHint.style.opacity = '0'; setTimeout(() => { cardHint.style.display = 'none'; }, 200); }
+  // Close the card after a short beat so the selection registers visually
+  setTimeout(() => {
+    const card = document.getElementById('hurdle-card');
+    if (card) card.classList.remove('is-open');
+  }, 280);
+  // Reflect selection on radio rows
+  document.querySelectorAll('[data-list="mintro-hurdle"] .radio-row').forEach(btn => {
+    btn.classList.toggle('is-on', parseInt(btn.dataset.rate) === rate);
+  });
+}
+function toggleHurdleCard() {
+  const card = document.getElementById('hurdle-card');
+  if (card) card.classList.toggle('is-open');
+  // Dot fades out permanently on first open — one-way state
+  const dot = document.getElementById('hurdle-card-dot');
+  if (dot && !dot.classList.contains('is-seen')) dot.classList.add('is-seen');
+}
+
+/* ── Size option typewriter ──────────────────────────────
+   instant=true skips animation (used on hydration so a
+   returning user sees their previous pick immediately).  */
+let _sizeDescTimer = null;
+function triggerSizeDesc(btn, instant) {
+  // Clear all existing descriptions first
+  document.querySelectorAll('[data-list="m1-size"] .size-desc').forEach(el => {
+    el.textContent = '';
+    el.classList.remove('is-typing');
+  });
+  if (_sizeDescTimer) { clearTimeout(_sizeDescTimer); _sizeDescTimer = null; }
+  const desc = btn ? btn.dataset.desc : null;
+  const el   = btn ? btn.querySelector('.size-desc') : null;
+  if (!desc || !el) return;
+  if (instant) { el.textContent = desc; return; }
+  el.classList.add('is-typing');
+  let i = 0;
+  function tick() {
+    if (i < desc.length) {
+      el.textContent += desc[i++];
+      _sizeDescTimer = setTimeout(tick, 15);
+    } else {
+      el.classList.remove('is-typing');
+    }
+  }
+  tick();
 }
 
 function continueFromMintro()    { go('mresearch'); }
@@ -13511,17 +13695,7 @@ function setProb(scr, val) {
     range.style.background = `linear-gradient(to right, var(--p) ${pct}%, var(--divider) ${pct}%)`;
     range.setAttribute('value', v);
   }
-  // Connector sentence on s12 + s20 updates in real time
   if (scr === 's12') { refreshCalibSummary(); refreshMemoLocks(); }
-  if (scr === 's20') {
-    const d = v - 60;
-    const chip = document.getElementById('s20-delta');
-    if (chip) {
-      chip.textContent = (d > 0 ? '+' : (d < 0 ? '−' : '')) + Math.abs(d) + '%';
-      chip.style.visibility = d === 0 ? 'hidden' : 'visible';
-    }
-    refreshS20Summary();
-  }
 }
 function setHorizon(scr, h) {
   state.horizon = h;
@@ -13530,30 +13704,9 @@ function setHorizon(scr, h) {
     if (btn) btn.classList.toggle('on', k === h);
   });
   if (scr === 's12') refreshCalibSummary();
-  if (scr === 's20') refreshS20Summary();
 }
 
-/* s20 live-summary sentence + "Was X% over Y" prior reading */
-function refreshS20Summary() {
-  const probEl    = document.getElementById('s20-summary-prob');
-  const horizonEl = document.getElementById('s20-summary-horizon');
-  if (probEl)    probEl.textContent    = state.prob + '%';
-  if (horizonEl) horizonEl.textContent = HORIZON_LBL[state.horizon] || state.horizon;
-  // Show the prior reading only if the user has moved off of it
-  const prior  = document.getElementById('s20-statement-prior');
-  if (prior) {
-    // The s20 page seeds at 60% / 3y as the previous reading (per existing delta-chip logic)
-    const movedProb = state.prob !== 60;
-    const movedHoriz = state.horizon !== '3y';
-    if (movedProb || movedHoriz) {
-      prior.textContent = `Was 60% over 3 years.`;
-      prior.style.visibility = 'visible';
-    } else {
-      prior.style.visibility = 'hidden';
-    }
-  }
-
-}
+/* setHorizon continues above */
 
 /* Connector sentence on s12: ties probability + horizon into one declarative
    line. Also refreshes the "Past calibrations" link visibility. */
@@ -13819,6 +13972,7 @@ document.addEventListener('click', e => {
     state.memo.size = value;
     const adv = document.getElementById('m1b-cal-advisory');
     if (adv) adv.style.display = (value === 'core' || value === 'conv') ? '' : 'none';
+    triggerSizeDesc(row, false);
   }
   if (key === 'm4-mos')  state.memo.mos  = value;
   // ── Sell memo field-lists. Each radio pick writes the sm slice and
@@ -13901,7 +14055,13 @@ function hydrateMemoScreen(screenId) {
   if (screenId === 'm1b') {
     const list = document.querySelector('[data-list="m1-size"]');
     if (list) {
-      list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.size));
+      let selectedBtn = null;
+      list.querySelectorAll('.radio-row').forEach(r => {
+        const on = r.dataset.radio === m.size;
+        r.classList.toggle('is-on', on);
+        if (on) selectedBtn = r;
+      });
+      triggerSizeDesc(selectedBtn, true); // instant — no animation on page load
     }
     const adv = document.getElementById('m1b-cal-advisory');
     if (adv) adv.style.display = (m.size === 'core' || m.size === 'conv') ? '' : 'none';
@@ -14637,12 +14797,6 @@ function memoStepValid(stepId) {
       const v = parseFloat(state.memo.intrinsicValue);
       return isFinite(v) && v > 0 && (state.memo.ivMethod || '').trim().length > 0;
     }
-    case 'm4':  {
-      // m4 has no user input now — the margin is auto-derived from IV vs
-      // market price. Unlock as soon as a valid IV exists upstream.
-      const v = parseFloat(state.memo.intrinsicValue);
-      return isFinite(v) && v > 0;
-    }
     case 'm2':  {
       // V4.5: the thesis textarea is pre-filled with a 2-prompt scaffold
       // ("Why the market is wrong:" / "Why I think I know:"). The Continue
@@ -14680,10 +14834,9 @@ function memoStepValid(stepId) {
   }
 }
 function refreshMemoLocks() {
-  // Iteration order mirrors the live screen sequence:
-  //   1 m1 · 2 m1b · 3 m2 · 4 m3 · 5 miv · 6 m4 · 7 s12 · 8 msrc · 9 m5 · 10 m6
+  // Iteration order: m1 · m1b · m2 · m3 · miv · s12 · msrc · m5 · m6
   // s12 + msrc have their own dedicated lock refreshers below.
-  ['m1','m1b','m2','m3','miv','m4'].forEach(id => {
+  ['m1','m1b','m2','m3','miv'].forEach(id => {
     const btn = document.getElementById(id + '-next');
     if (btn) btn.classList.toggle('locked', !memoStepValid(id));
   });
@@ -14894,7 +15047,11 @@ function continueFromMiv() {
   if (state.editingFromReview) { exitReviewEdit(); return; }
   if (margin <= 0) {
     const m = document.getElementById('m4-thinmargin-modal');
-    if (m) m.classList.add('is-on');
+    if (m) {
+      const t = m.querySelector('.v5-modal-title');
+      if (t) t.textContent = `Current margin of safety: ${Math.round(margin)}%. Two options.`;
+      m.classList.add('is-on');
+    }
     return;
   }
   go('s12');
@@ -14971,75 +15128,8 @@ function continueMivAnyway() {
   go('s12');
 }
 
-/* m4 — render the computed margin from price + miv intrinsic value */
-function renderM4Screen() {
-  const v = parseFloat(state.memo.intrinsicValue);
-  const yourV = document.getElementById('m4-yourvalue');
-  const margin = document.getElementById('m4-margin');
-  if (yourV)  yourV.textContent  = isFinite(v) && v > 0 ? v.toFixed(2) + ' USD' : '—';
-  // CAD conversion caption (Canada platform)
-  const yourVCad = document.getElementById('m4-yourvalue-cad');
-  if (yourVCad) {
-    yourVCad.textContent = isFinite(v) && v > 0
-      ? '≈ ' + (v * FX_USD_CAD).toFixed(2) + ' USD'
-      : '—';
-  }
-  if (margin) {
-    if (isFinite(v) && v > 0) {
-      const pct = ((v - MKTPRICE_USD) / v * 100);
-      margin.textContent = (pct >= 0 ? '' : '−') + Math.abs(pct).toFixed(0) + '%';
-    } else {
-      margin.textContent = '—%';
-    }
-  }
-  // V4.5: translate the margin % into a CAD cushion on a notional 5%
-  // position. Same number, two framings — % feels safe, $ feels real.
-  const cadCaption = document.getElementById('m4-margin-cad');
-  if (cadCaption && state.version >= 4.5) {
-    if (isFinite(v) && v > 0) {
-      const notionalCAD  = PORTVAL_CAD * 0.05;        // 14,250 on a 285k portfolio
-      const marginPct    = (v - MKTPRICE_USD) / v;
-      const cushionCAD   = notionalCAD * marginPct;
-      const sign = cushionCAD >= 0 ? '+' : '−';
-      cadCaption.textContent = `On a ${notionalCAD.toLocaleString('en-US', { maximumFractionDigits:0 })} USD position, that's ${sign}${Math.abs(cushionCAD).toLocaleString('en-US', { maximumFractionDigits:0 })} USD of cushion before you cross intrinsic value.`;
-    } else {
-      cadCaption.textContent = '—';
-    }
-  }
-  // Reflect current binary selection on the rows
-  document.querySelectorAll('.scr[data-id="m4"] .v5-radio-row').forEach(row => {
-    row.classList.toggle('is-on', row.dataset.mos === state.memo.marginEnough);
-  });
-}
-function setM4Mos(val) {
-  state.memo.marginEnough = val;
-  // Mirror into legacy state.memo.mos so downstream (s4, s9, AI insight,
-  // s0 position artifact) keeps reading something meaningful.
-  state.memo.mos = val === 'yes' ? 'below' : 'around';
-  persistMemoDraft();
-  renderM4Screen();
-  refreshMemoLocks();
-}
-
-/* continueFromM4 — m4 has no user input now (the Yes/No radios were removed).
-   The marginEnough flag is auto-derived from the computed margin so the
-   downstream surfaces (m6 review, memo-health check, transaction snapshot)
-   still see a valid value. Negative margin still routes to the thin-margin
-   modal so the off-ramp stays available. */
-function continueFromM4() {
-  const v = parseFloat(state.memo.intrinsicValue);
-  if (!isFinite(v) || v <= 0) return;
-  const MARKET = 192.35;
-  const margin = ((v - MARKET) / MARKET) * 100;
-  state.memo.marginEnough = margin > 0 ? 'yes' : 'no';
-  if (state.memo.marginEnough === 'no') {
-    const m = document.getElementById('m4-thinmargin-modal');
-    if (m) m.classList.add('is-on');
-    return;
-  }
-  if (state.editingFromReview) { exitReviewEdit(); return; }
-  go('s12');
-}
+/* m4 screen removed — renderM4Screen / setM4Mos / continueFromM4 deleted.
+   m4-thinmargin-modal is still active; m4SetPriceAlert + continueM4Anyway below. */
 function m4SetPriceAlert() {
   const m = document.getElementById('m4-thinmargin-modal');
   if (m) m.classList.remove('is-on');
@@ -15752,7 +15842,7 @@ function pickReason(scr, row) {
    ═════════════════════════════════════════════════ */
 function goBackFromShares() {
   closeNumpad();
-  go(state.cd === 'initial' ? 'm6' : 's20');
+  go('m6');
 }
 function renderS8() {
   // Default to limit order; seed limit price to market price on first visit.
@@ -16083,8 +16173,6 @@ function resetFlow() {
   const taN = document.getElementById('m5-note'); if (taN) taN.value = '';
   const r12 = document.getElementById('s12-prob-range'); if (r12) { r12.value = 50; setProb('s12', 50); }
   setHorizon('s12','3y');
-  const r20 = document.getElementById('s20-prob-range'); if (r20) { r20.value = 60; setProb('s20', 60); }
-  setHorizon('s20','3y');
   document.querySelectorAll('#s19-reasons .reason-row').forEach(r => r.classList.remove('sel'));
   document.getElementById('s19-cont').classList.add('locked');
   refreshMemoLocks();
@@ -16802,13 +16890,13 @@ const INFO_MODALS = {
 <p>A position you'd defend in front of a skeptical board. The thesis is durable, the kill line is clearly defined, and you've done enough work that incremental volatility doesn't change your view. You expect to hold through at least one significant drawdown.</p>
 <p><strong>What this sizing requires:</strong> high conviction in both the business and the price. Not just "I like this company" — you've stress-tested the bear case, named the load-bearing assumptions, and concluded the asymmetry is real at today's price.</p>
 <p><strong>What it implies operationally:</strong> you will not trim on a 20% drawdown. You will add if the thesis is intact and the price improves. You are committing to the position behaving as a long-term holding regardless of near-term price action.</p>
-<p><strong>The honest test:</strong> if the stock dropped 30% tomorrow on no news, would you add or would you sell? If the answer is "sell" or "wait and see," it's not a core position. Size it down.</p>
+<p><strong>The honest test:</strong> if the stock dropped 30% tomorrow on no news, would you add or would you sell? If the answer is "sell" or "wait and see," it's not a core position.</p>
 
 <h4>High Conviction</h4>
 <p>A position you believe in but where either the business quality or the price doesn't quite earn full sizing. Often a compounder bought at a fair price rather than a great one, or an emerging compounder where the inflection is plausible but not proven.</p>
 <p><strong>What this sizing requires:</strong> real conviction in the business, calibrated awareness that something — multiple, execution, timing — keeps it from being a core. The work is done. The confidence has a specific gap.</p>
 <p><strong>What it implies operationally:</strong> you'll hold through normal volatility, you'll add selectively on dislocations, and you'll trim if the gap that kept it from core sizing actually materializes as a problem.</p>
-<p><strong>The honest test:</strong> can you name the specific reason this isn't sized at 10%? If you can't, you either don't have a conviction position or you don't have a sizing discipline.</p>
+<p><strong>The honest test:</strong> can you name the specific reason this isn't sized at 10%? If the reason is hard to articulate, it may be worth considering whether the conviction and the sizing are genuinely aligned.</p>
 
 <h4>Starter Position</h4>
 <p>A position you're building toward. The work is partially done, the thesis is forming, and you want skin in the game while you continue the analysis. Or: a position you want to own but where current price doesn't justify full sizing.</p>
@@ -16851,7 +16939,7 @@ Once the horizon arrives, the system compares your stated probability to the act
 
 20% is set deliberately above that bar. Even if your thesis falls short — say it compounds at 15% instead of 20% — you still beat the index handily. The asymmetry is the point: you're building a margin of safety into the goal itself, not just the entry price.
 
-Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names won't clear it. That's by design — most of the time the right answer is "no, not at this price."`
+Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't clear it. That's by design — most stocks at most prices will not clear this bar, and that is the intended effect of the filter.`
   },
   margin: {
     eyebrow: 'Margin of safety',
@@ -16877,7 +16965,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <h4>How much is enough</h4>
 <p>There is no single right answer, but two principles apply.</p>
 <ul class="info-list">
-  <li><strong>Higher quality business, smaller margin needed.</strong> A business with durable economics, consistent growth, and a wide moat is less likely to disappoint. A 20–25% margin can be enough. A business with volatile earnings, uncertain competitive position, or a thesis that requires something specific to happen needs a wider margin — typically 40% or more — because the range of outcomes is wider.</li>
+  <li><strong>The margin reflects your own assessment of uncertainty.</strong> Some investors accept a smaller margin for businesses with durable economics and consistent earnings. Others do not. A business with volatile earnings, uncertain competitive position, or a thesis that requires something specific to happen has a wider range of outcomes — and the margin can reflect that.</li>
   <li><strong>Wider margin on your early estimates.</strong> The first hundred valuations you produce will be worse than the next hundred. Demand more margin while you're still calibrating. Three years from now, the calibration data will tell you whether your valuations are reliable. Until then, assume they aren't.</li>
 </ul>
 
@@ -16985,7 +17073,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p>This is the exit that costs people the most. It has no drama. It feels like nothing. Build the habit anyway.</p>
 
 <h4>When a kill line fires</h4>
-<p>Execute. Do not re-litigate. The argument against the action was made by the version of you holding the position; the argument for it was made by the version of you who could think clearly. Defer to the latter.</p>
+<p>The kill line was written to remove the decision from the moment. Whether to act on it remains yours — the memo records what was decided at entry. The argument against acting was made by the version of you holding the position; the argument for it was made by the version of you who could think clearly.</p>
 <p>Then write down what happened. Whether the thesis was wrong, the kill line was wrong, or both. <em>The post-mortem is where the next thesis gets better.</em></p>
 `
   },
@@ -17065,7 +17153,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <h4>Capital needed elsewhere</h4>
 <p>Outside the portfolio. House purchase, business investment, life event. This is the only sell trigger that has nothing to do with the position or the market — and it deserves explicit acknowledgment so it doesn't get dressed up as analysis.</p>
 
-<p><em>If the trigger doesn't fit any of these, the trigger is probably "the stock went down." That is not a sell signal. It is a feeling. Close the flow and re-read the thesis.</em></p>
+<p><em>If the trigger doesn't fit any of these, consider whether the decision is driven by a change in the underlying facts or by a reaction to price. The memo is designed to help distinguish between them.</em></p>
 `
   },
 
@@ -17079,10 +17167,10 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p>The original story still holds. Selling here requires another reason — margin of safety eliminated, capital needed, sizing rebalance. Selling a stock with an intact thesis is a legitimate decision but a high-bar one.</p>
 
 <h4>Weakened</h4>
-<p>Partial erosion. The mechanism is impaired but not broken. Probability of the thesis playing out is lower than at entry, the expected payoff is smaller, the path is murkier. A trim is often the right response — full exit overweights what changed.</p>
+<p>Partial erosion. The mechanism is impaired but not broken. Probability of the thesis playing out is lower than at entry, the expected payoff is smaller, the path is murkier. A trim reflects partial conviction remaining. A full exit treats the thesis as fully broken — verify that the verdict supports the magnitude of the action.</p>
 
 <h4>Broken</h4>
-<p>Facts have invalidated the original claim. Not "the stock is down." The specific operating data that the thesis was built on no longer reads the way it did. Full exit is the default here; trimming a broken thesis is sentimentality.</p>
+<p>Facts have invalidated the original claim. Not "the stock is down." The specific operating data that the thesis was built on no longer reads the way it did. Many investors treat a broken thesis as a reason to close the full position. Others reduce exposure first. The sell memo records whichever choice is made and the reasoning behind it.</p>
 
 <p><strong>The honest test:</strong> if a colleague read the original thesis and today's facts side by side, would they reach the same verdict? If the answer requires explanation, the verdict needs to be more honest.</p>
 
@@ -17098,7 +17186,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 
 <h4>Triggered</h4>
 <p>The pre-committed condition has fired. Defer to the prior judgment. The version of the operator who wrote the kill line was thinking clearly; the version reading this screen has a position to defend. The asymmetry of those two states is exactly why kill lines exist.</p>
-<p>Execute. Do not re-litigate. If the kill line is wrong in retrospect, that is information for the next memo — not a reason to override this one.</p>
+<p>The kill line was written to remove the decision from the moment. Whether to act on it remains yours — the memo records what was decided at entry. If the kill line proves wrong in retrospect, that is information for the next memo.</p>
 
 <h4>Not triggered</h4>
 <p>This is a discretionary exit. The kill line was the cleanest pre-commitment available; ignoring it requires a justification that survives written scrutiny. The note field is mandatory for this branch because the future self reading the record needs to understand what other consideration overrode the pre-commitment.</p>
@@ -17122,7 +17210,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <h4>Three patterns surface here</h4>
 <ul class="info-list">
   <li><strong>IV unchanged, price up.</strong> Margin of safety eliminated. The original thesis is being paid for in full. Selling is a sizing call, not a thesis call.</li>
-  <li><strong>IV down, price down more.</strong> Asymmetry has improved, not worsened. The market is paying attention to the same data points but discounting them more aggressively. This is often a buy signal disguised as a sell signal.</li>
+  <li><strong>IV down, price down more.</strong> Asymmetry may have improved rather than worsened — the market is discounting the same data more aggressively. Consider whether the thesis has strengthened before concluding it has weakened.</li>
   <li><strong>IV down materially, price barely moved.</strong> The market hasn't caught up. The sell here is on a thesis change, not a price change — and the timing window may be short.</li>
 </ul>
 
@@ -17149,12 +17237,12 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 
 <h4>Illegitimate destinations</h4>
 <ul class="info-list">
-  <li><strong>"Cash for safety."</strong> Without a deployment thesis, cash is just a slower-burning loss of purchasing power.</li>
+  <li><strong>"Cash for safety."</strong> If no deployment thesis exists, consider whether the sell decision is driven by a new opportunity or by something else.</li>
   <li><strong>"I'll figure it out."</strong> The most common rationalization. Translates to: I am exiting because the position has been uncomfortable, and I do not have a plan for what comes next.</li>
   <li><strong>The unspecified portfolio rebalance.</strong> Selling "to reduce concentration" without naming what gets bought instead is just selling.</li>
 </ul>
 
-<p><em>If the destination cannot be named in a sentence, the position should probably continue to be held.</em></p>
+<p><em>If the destination cannot be named in a sentence, it may be worth revisiting whether the decision is thesis-driven.</em></p>
 `
   },
 
@@ -17165,7 +17253,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p>A full exit and a partial trim are different statements. Mismatching the action to the diagnosis is a tell that the operator doesn't fully believe their own reasoning.</p>
 
 <h4>Full exit</h4>
-<p>The position closes. The right move when:</p>
+<p>The position closes. Consistent with this when:</p>
 <ul class="info-list">
   <li>The thesis is broken — operating data has invalidated the original story.</li>
   <li>A named replacement position has cleared the bar.</li>
@@ -17174,7 +17262,7 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p>Half-exiting a broken thesis is a way of keeping the position open to be right after the fact. The "what if it bounces back" instinct is exactly the bias the discipline exists to correct.</p>
 
 <h4>Partial trim</h4>
-<p>The position size is reduced. The right move when:</p>
+<p>The position size is reduced. Consistent with this when:</p>
 <ul class="info-list">
   <li>The thesis is weakened, not broken — partial conviction remains.</li>
   <li>Margin of safety has compressed but not vanished.</li>
@@ -17200,11 +17288,11 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p>Two answers are possible, and they map cleanly to two different decisions.</p>
 
 <h4>"No, would not buy today"</h4>
-<p>The sell is confirmed. The reason for holding is anchoring — to the entry price, to the original thesis, to the prior version of the operator who placed the bet. None of those reasons survive the inversion.</p>
+<p>The inversion check points against holding. The reason for holding may be anchoring — to the entry price, to the original thesis, to the prior version of the operator who placed the bet. None of those reasons survive the inversion.</p>
 <p>Selling here removes a position the operator would not initiate. The portfolio improves the moment the trade is done.</p>
 
 <h4>"Yes, would buy today"</h4>
-<p>Stop. The sell is tape-watching, not investing. If the stock is attractive enough to buy at today's price, holding what is already owned is the same decision with lower friction.</p>
+<p>If the stock is attractive enough to buy at today's price, consider what that implies about holding what is already owned. Holding what is already owned is the same decision with lower friction.</p>
 <p>Common reasons the inversion catches a bad sell: the trigger was a price move not a fact change, recent news created emotional discomfort without changing the thesis, loss aversion is being relabeled as discipline.</p>
 
 <h4>The asymmetry the inversion exploits</h4>
@@ -17273,11 +17361,17 @@ Stating "≥20%/yr" also forces you to be honest. It's a high bar, so most names
 <p><em>If there is no credible floor, that is not disqualifying — but it changes the sizing and the thesis type. A position without a floor is a bet on being right. Name it accordingly.</em></p>
 `
   },
+  hurdle_standard: {
+    eyebrow: 'Compounding Standard',
+    title:   'Your compounding standard.',
+    bodyHtml: `<p>Established at setup. This rate applies to all Compounder memos as the minimum annual return the underwriting must support.</p><p>To revise it, return to the memo protocol from the main screen.</p>`
+  },
   uw_hurdle: {
     eyebrow: 'Exceptional Compounding Hurdle',
     title:   'The minimum return required to justify the bet.',
     bodyHtml: `
-<p>A hurdle rate is not a target. It is the floor below which the investment thesis does not justify concentrated exposure. If the business cannot plausibly compound at the hurdle, it should be sized differently or not held at all.</p>
+<p>Exceptional businesses are rare. Setting a demanding hurdle rate is a discipline mechanism — it forces explicit comparison to the rarest tier of compounders rather than to average market returns.</p>
+<p>A hurdle rate is not a target. It is the floor below which the investment thesis does not justify concentrated exposure. If the business cannot plausibly compound at the hurdle by your own underwriting, that has implications for how you approach sizing and classification.</p>
 <p>Setting a demanding hurdle forces an honest comparison: not against average returns, but against the rarest tier of businesses. Most companies — including good ones — will not clear it. That is the discipline.</p>
 
 <h4>Why the hurdle matters</h4>
@@ -19056,14 +19150,13 @@ function proceedFromGuardrail() {
      · prob === 50  → coin flip — no edge stated
      · prob ≥ 80%   → rare territory — most 80%+ resolve at 60–65%
    Anything in 51–79% proceeds without interruption.
-   Fires on the calibration step (s12 → m5) and on the increase-flow's
-   updated-probability screen (s20 → s8). */
+   Fires on the calibration step (s12 → m5). */
 function checkProbGuardrail(onProceed) {
   const prob = state.prob;
   if (prob < 30) {
     showGuardrail({
       title: `${prob}% — speculative bet.`,
-      body:  `At ${prob}% you're explicitly betting against the base rate. That's rational only when the payoff is genuinely asymmetric — a small bounded loss against a large potential gain — and the position is sized to match. A speculative bet at 5%+ portfolio weight is gambling, not investing. Continue only if you've sized this small.`,
+      body:  `At ${prob}% you're explicitly betting against the base rate. That's rational only when the payoff is genuinely asymmetric — a small bounded loss against a large potential gain — and the position is sized to match. Asymmetric payoffs can justify below-30% probability positions when sized to reflect the stated confidence. Verify the position size before proceeding.`,
       onProceed: onProceed
     });
     return;
@@ -19071,7 +19164,7 @@ function checkProbGuardrail(onProceed) {
   if (prob < 50) {
     showGuardrail({
       title: `${prob}% — sub coin-flip.`,
-      body:  `At ${prob}% you think this is more likely to lose than win. Most investors should pass at this confidence level. Continue only if the asymmetric payoff justifies the negative base rate, and size the position accordingly.`,
+      body:  `At ${prob}% the stated odds are against the position. Asymmetric payoff can justify this; verify the sizing reflects the confidence level before proceeding.`,
       onProceed: onProceed
     });
     return;
@@ -19079,7 +19172,7 @@ function checkProbGuardrail(onProceed) {
   if (prob === 50) {
     showGuardrail({
       title: `50% — that's a coin flip.`,
-      body:  `At 50% you're stating you have no edge — just a toss-up. If you can't make a case for better-than-coin-flip odds, this isn't a position to commit capital to. Sharpen the thesis until you reach modest edge (60%+), or pass on the trade.`,
+      body:  `At 50% no edge is stated — just a toss-up. Consider whether the thesis can be sharpened to articulate why the odds favor the position before proceeding.`,
       onProceed: onProceed
     });
     return;
@@ -19095,10 +19188,6 @@ function checkProbGuardrail(onProceed) {
   onProceed();
 }
 
-// Hook for s20 (returning user) Continue button
-function continueFromS20() {
-  checkProbGuardrail(() => go('s8'));
-}
 
 /* ═════════════════════════════════════════════════
    INIT
@@ -19109,7 +19198,6 @@ document.addEventListener('DOMContentLoaded', () => {
   refreshModeButtons();
   refreshNotifSwitches();       // sync drawer on/off switches to persisted notifPrefs
   setProb('s12', 0);            // initial-buy default — Continue stays locked until the user moves it
-  setProb('s20', 60);
   hydrateAckCheckboxes();       // reflect persisted "don't show again" flags on mintro + mresearch
   document.querySelectorAll('button:not([type])').forEach(b => b.type = 'button');
   fitScaler();
