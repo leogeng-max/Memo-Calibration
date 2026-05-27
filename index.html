@@ -7618,7 +7618,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .pt-drawer { position:absolute; top:58px; right:0; bottom:0; left:0; background:#0c0c0c; border-top:1px solid rgba(255,255,255,0.07); z-index:901; transform:translateX(100%); transition:transform 320ms cubic-bezier(0.32,0.72,0,1); display:flex; flex-direction:column; overflow:hidden; }
 .pt-drawer.is-open { transform:translateX(0); }
 
-.pt-drawer-head { padding:12px 14px 10px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.pt-drawer-head { padding:12px 14px 10px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0; display:flex; align-items:center; justify-content:flex-start; gap:10px; }
+.pt-drawer-back { background:transparent; border:none; color:var(--t); font-size:22px; cursor:pointer; padding:0 4px 2px 0; line-height:1; flex-shrink:0; transition:color 120ms; }
+.pt-drawer-back:hover { color:var(--p); }
 .pt-drawer-title { font-family:var(--font); font-size:10px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--t); }
 .pt-drawer-sub { font-family:var(--font); font-size:10px; color:rgba(255,255,255,0.28); margin-top:5px; letter-spacing:-0.01em; line-height:1.45; }
 .pt-drawer-close { background:transparent; border:none; color:rgba(255,255,255,0.35); font-size:18px; cursor:pointer; padding:2px 4px; line-height:1; transition:color 120ms; flex-shrink:0; }
@@ -9432,10 +9434,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                     <div class="section-eyebrow">Position size</div>
                     <div class="memo-subhead" style="margin-top:6px;margin-bottom:14px">Ranges reflect common investing convention. Allocation is not prescribed.</div>
                     <div class="field-list" data-list="m1-size">
-                      <button class="radio-row" data-radio="core" type="button"><div class="lbl-block"><div class="head">Core</div><span class="size-desc">Common range: 10%+</span></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="conv" type="button"><div class="lbl-block"><div class="head">Conviction</div><span class="size-desc">Common range: 5–10%</span></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="start" type="button"><div class="lbl-block"><div class="head">Starter</div><span class="size-desc">Common range: 1–3%</span></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-radio="sspc" type="button"><div class="lbl-block"><div class="head">Speculative</div><span class="size-desc">Common range: ≤2%</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="core" type="button"><div class="lbl-block"><div class="head">Core</div><span class="size-desc">Approximately 10%+</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="conv" type="button"><div class="lbl-block"><div class="head">Conviction</div><span class="size-desc">Approximately 5–10%</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="start" type="button"><div class="lbl-block"><div class="head">Starter</div><span class="size-desc">Approximately 1–3%</span></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-radio="sspc" type="button"><div class="lbl-block"><div class="head">Speculative</div><span class="size-desc">Approximately ≤2%</span></div><div class="radio-dot"></div></button>
                     </div>
                   </div>
 
@@ -12921,11 +12923,11 @@ the inverted question.</div>
           <div class="pt-overlay" id="pt-overlay" onclick="closePressureTest()"></div>
           <div class="pt-drawer" id="pt-drawer" role="dialog" aria-label="Pressure Test">
             <div class="pt-drawer-head">
+              <button class="pt-drawer-back" onclick="closePressureTest()" type="button" aria-label="Close">‹</button>
               <div>
                 <div class="pt-drawer-title">Pressure Test</div>
                 <div class="pt-drawer-sub">Copy prompt · paste into AI</div>
               </div>
-              <button class="pt-drawer-close" onclick="closePressureTest()" type="button" aria-label="Close">×</button>
             </div>
             <div class="pt-body" id="pt-body"></div>
           </div>
@@ -13233,10 +13235,10 @@ const TYPE_SUB = {
 };
 const SIZE_LBL = { core:'Core Position', conv:'High Conviction', start:'Starter Position', sspc:'Speculative' };
 const SIZE_SUB = {
-  core:  'Common range: 10%+',
-  conv:  'Common range: 5–10%',
-  start: 'Common range: 1–3%',
-  sspc:  'Common range: ≤2%'
+  core:  'Approximately 10%+',
+  conv:  'Approximately 5–10%',
+  start: 'Approximately 1–3%',
+  sspc:  'Approximately ≤2%'
 };
 const MOS_LBL  = { below:'Meaningfully below intrinsic value', around:'Roughly around intrinsic value', above:'Above intrinsic value', unclear:'Unclear' };
 
