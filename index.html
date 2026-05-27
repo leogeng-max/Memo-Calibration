@@ -1735,6 +1735,65 @@ body.is-fullscreen .artboard-toggle {
   cursor: pointer;
   margin-top: 8px;
 }
+
+/* ─── mexample — research prompt block + worked example ─── */
+.prompt-card {
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.015);
+  max-height: 260px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 14px;
+}
+.prompt-text {
+  font-family: 'Inter', var(--font), monospace;
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--s);
+  white-space: pre-wrap;
+  word-break: break-word;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+.prompt-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 11px 16px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 4px;
+  color: var(--p);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: background 150ms var(--ease), border-color 150ms var(--ease);
+}
+.prompt-copy-btn:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.3); }
+.prompt-copy-btn.is-copied { border-color: rgba(255,255,255,0.4); }
+.prompt-copy-icon { flex-shrink: 0; }
+.example-memo-body p {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--s);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+}
+.example-memo-body p:last-child { margin-bottom: 0; }
+.example-memo-body .info-disclaimer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 11px;
+  color: var(--t-800);
+  line-height: 1.55;
+  font-style: italic;
+}
 .v5-tool-card:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.12); }
 .v5-tool-card-text { display: flex; flex-direction: column; gap: 3px; }
 .v5-tool-card-title { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; }
@@ -4515,6 +4574,9 @@ body.is-fullscreen .artboard-toggle {
   display: flex; flex-direction: column;
 }
 .bracket--composer textarea { flex: none; width: 100%; min-height: 40px; overflow: hidden; }
+/* The Memo composer holds the full memo — start it taller. It still
+   auto-grows beyond this via autoExpand() as the text gets longer. */
+#m5-note { min-height: 120px; }
 .composer-toolbar {
   display: flex; align-items: center; justify-content: flex-end; gap: 4px;
   margin-top: 6px;
@@ -5005,6 +5067,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-top: 18px;
   padding: 0 16px 16px;
 }
+/* Sub-description under Type / Size values on the order ticket */
+.s8-row-sub {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--t-800);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  margin-top: 3px;
+}
 .s8-memo-section .lbl {
   font-family: var(--font);
   font-size: 11px;
@@ -5115,6 +5187,11 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .s4r-val {
   font-size: 12px; font-weight: 300;
   color: var(--s); line-height: 1.55;
+}
+.s4r-val-sub {
+  font-size: 11px; font-weight: 300;
+  color: var(--t-800); line-height: 1.45;
+  letter-spacing: -0.005em; margin-top: 3px;
 }
 .s4r-stress {
   margin: 16px 16px 0;
@@ -6296,6 +6373,18 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: var(--p);
   font-style: normal;
 }
+/* Compliance disclaimer — small, dim, set apart from the body copy.
+   Mirrors the research-orientation disclaimer treatment. */
+.info-modal-body.is-html .info-disclaimer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 11px;
+  color: var(--t-800);
+  line-height: 1.55;
+  font-style: italic;
+  letter-spacing: -0.005em;
+}
 .info-modal-body.is-html .info-list {
   margin: 0 0 12px;
   padding: 0;
@@ -6329,7 +6418,74 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-bottom: 8px;
 }
 
-/* ─── Hurdle rate inline editor inside info modal ─── */
+/* ─── Hurdle rate scroll wheel (iOS-style picker) inside info modal ─── */
+.hurdle-wheel-picker {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.hurdle-wheel-eyebrow {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t);
+  margin-bottom: 8px;
+}
+.hurdle-wheel {
+  position: relative;
+  height: 220px;            /* 5 rows × 44px */
+  perspective: 900px;
+  overflow: hidden;
+}
+.hurdle-wheel-scroll {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  transform-style: preserve-3d;
+  padding: 88px 0;          /* (220 − 44) / 2 — lets first/last row reach center */
+  scrollbar-width: none;
+}
+.hurdle-wheel-scroll::-webkit-scrollbar { display: none; }
+.hurdle-wheel-item {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 19px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--p);
+  backface-visibility: hidden;
+  transition: opacity 80ms linear;
+  will-change: transform, opacity;
+}
+.hurdle-wheel-item.is-centered { font-weight: 400; }
+/* Center selection band */
+.hurdle-wheel-selection {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 44px;
+  transform: translateY(-50%);
+  border-top: 1px solid rgba(255,255,255,0.16);
+  border-bottom: 1px solid rgba(255,255,255,0.16);
+  pointer-events: none;
+  z-index: 1;
+}
+/* Top / bottom fades so rows dissolve into the sheet like a drum */
+.hurdle-wheel-fade {
+  position: absolute;
+  left: 0; right: 0;
+  height: 84px;
+  pointer-events: none;
+  z-index: 2;
+}
+.hurdle-wheel-fade--top    { top: 0;    background: linear-gradient(to bottom, var(--surface) 12%, transparent); }
+.hurdle-wheel-fade--bottom { bottom: 0; background: linear-gradient(to top,    var(--surface) 12%, transparent); }
+
+/* ─── Legacy hurdle rate inline editor (number input) — kept for safety ─── */
 .hurdle-edit-row {
   display: flex;
   align-items: center;
@@ -6892,6 +7048,14 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: var(--s);
   line-height: 1.55;
 }
+.m6-ledger .memo-row .v .memo-row-sub {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--t-800);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  margin-top: 3px;
+}
 .m6-ledger .m6-immutability {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 10px;
@@ -6969,26 +7133,43 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
    ══════════════════════════════════════════════════════ */
 .mfork-title-block {
   padding: 28px 20px 24px;
-  border-bottom: 1px solid var(--c-1000);
   flex-shrink: 0;
 }
 .mfork-title {
   font-size: 17px; font-weight: 400; letter-spacing: -0.02em;
   color: var(--p); line-height: 1.2; margin: 0;
 }
+.mfork-title.is-info {
+  cursor: pointer;
+  transition: color 180ms var(--ease);
+}
+.mfork-title.is-info::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 6px;
+  vertical-align: super;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565B5E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='7' y1='17' x2='17' y2='7'/%3E%3Cpolyline points='7 7 17 7 17 17'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: filter 180ms var(--ease);
+}
+.mfork-title.is-info:hover         { color: var(--s); }
+.mfork-title.is-info:hover::after  { filter: brightness(2.5); }
 .mfork-options {
-  flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
+  flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px;
+  padding: 0 20px; min-height: 0;
 }
 .mfork-option {
   display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 16px;
-  padding: 24px 20px; text-align: left; border: none;
-  border-bottom: 1px solid var(--c-1000); background: transparent;
+  padding: 20px 0; text-align: left; border: none;
+  background: transparent;
   cursor: pointer; position: relative;
   transition: background 150ms var(--ease);
 }
-.mfork-option:hover  { background: rgba(255,255,255,0.02); }
-.mfork-option:active { background: rgba(255,255,255,0.03); }
-.mfork-option.is-on  { background: rgba(255,255,255,0.025); }
+.mfork-option:active { background: rgba(255,255,255,0.02); }
 .mfork-lbl { display: flex; flex-direction: column; }
 .mfork-option-tag {
   font-size: 15px; font-weight: 400; letter-spacing: -0.02em;
@@ -7863,7 +8044,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
     </div>
     <div>
       <div class="version-picker" id="versionPicker">
-        <button data-version="4.5" onclick="setVersion(4.5)">V4.5</button>
+        <button data-version="4.5"  onclick="setVersion(4.5)">V4.5</button>
+        <button data-version="mvp1" onclick="setVersion('mvp1')">MVP V1</button>
       </div>
       <div class="version-meta">
         <span class="title" id="versionTitle">—</span>
@@ -7878,6 +8060,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
         <button id="mode-first"  onclick="setMode('first')">First-time</button>
         <button id="mode-return" onclick="setMode('return')">Returning</button>
       </div>
+    </div>
+    <div class="drawer-row">
+      <button class="drawer-action" onclick="openMvpRecord()" type="button">Transaction record</button>
     </div>
 
     <div class="drawer-group">Notifications</div>
@@ -8805,7 +8990,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <span class="workflow-card-chevron">↓</span>
                 </div>
                 <div class="workflow-card-body">
-                  <div class="v5-prose">Modern research stacks three layers: primary sources, Fiscal, and AI tools like Claude or ChatGPT — together, not as alternatives.</div>
+                  <div class="v5-prose">Modern research stacks three layers: primary sources, Fiscal, and AI tools — together, not as alternatives.</div>
                   <div class="v5-prose">Primary sources — filings, transcripts, regulatory documents — are ground truth. Fiscal provides the structured financial layer.</div>
                   <div class="v5-prose">AI is useful for:</div>
                   <ul class="v5-bullets">
@@ -8920,7 +9105,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               <hr class="div">
             </div>
             <div class="mfork-title-block">
-              <div class="mfork-title">What kind of decision is this?</div>
+              <div class="mfork-title is-info" onclick="showInfoModal('mfork_decision')">What kind of decision is this?</div>
             </div>
             <div class="mfork-options">
               <button class="mfork-option" id="mfork-opt-active" onclick="selectFork('active')">
@@ -9314,7 +9499,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <textarea id="m2-text" rows="2" placeholder="" oninput="onMemoInput(); autoExpand(this)"></textarea>
 
                   <div class="composer-toolbar">
-                    <button class="composer-icon-btn" onclick="pasteToTextarea('m2-text', refreshMemoLocks)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('m2-text', refreshMemoLocks)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. AI output)">
                       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
                         <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
@@ -9921,7 +10106,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 </div>
                 <div class="memo-header">
                   <div class="memo-header-top">
-                    <h1 class="memo-header-title">Note</h1>
+                    <h1 class="memo-header-title" id="m5-title">Note</h1>
                   </div>
                   <div class="memo-header-meta">8 / 9</div>
                   <div class="memo-header-right">
@@ -9934,10 +10119,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="memo-body--reveal">
                 <div>
                   <div class="field-ex-row">
-                    <div class="memo-subtitle">The work behind it.</div>
+                    <div class="memo-subtitle" id="m5-subtitle">The work behind it.</div>
                     <button class="field-ex-btn" id="ex-btn-m5-note" onclick="toggleFieldEx('m5-note')" type="button">[ex]</button>
                   </div>
-                  <div class="memo-subhead" style="margin-top:6px">Re-read when the kill line trips. Distinguish thesis-wrong from world-wrong.</div>
+                  <div class="memo-subhead" id="m5-subhead" style="margin-top:6px">Re-read when the kill line trips. Distinguish thesis-wrong from world-wrong.</div>
                 </div>
 
                 <div class="bracket bracket--composer">
@@ -9946,7 +10131,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <textarea id="m5-note" rows="2" placeholder="" oninput="onM5NoteInput(); autoExpand(this)"></textarea>
 
                   <div class="composer-toolbar">
-                    <button class="composer-icon-btn" onclick="pasteToTextarea('m5-note')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('m5-note')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. AI output)">
                       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
                         <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
@@ -9986,6 +10171,56 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
             <div class="v5-foot memo-foot--reveal">
               <button class="v5-primary is-arrow" id="m5-next" onclick="advanceMemo('m6')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ mexample — Research prompt + worked example (MVP V1) ════════ -->
+          <section class="scr" data-id="mexample">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('m5')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="memo-header">
+                  <div class="memo-header-top"><h1 class="memo-header-title">Write your memo</h1></div>
+                  <div class="memo-header-meta">Reference</div>
+                </div>
+
+                <!-- Research prompt -->
+                <div class="memo-body--reveal">
+                  <div>
+                    <div class="section-eyebrow">Research prompt</div>
+                    <div class="memo-subhead" style="margin-top:6px;margin-bottom:12px">Paste this into any AI, fill in the bracketed company details, and it returns a first draft of every memo input.</div>
+                    <div class="prompt-card">
+                      <pre class="prompt-text" id="mexample-prompt-text"></pre>
+                    </div>
+                    <button class="prompt-copy-btn" id="mexample-copy-btn" onclick="copyResearchPrompt()" type="button">
+                      <svg class="prompt-copy-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <rect x="3" y="2.5" width="9" height="11" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                        <path d="M5.5 2.5V1.6A0.6 0.6 0 0 1 6.1 1h6A0.6 0.6 0 0 1 12.7 1.6v9.4a0.6 0.6 0 0 1-0.6 0.6h-0.9" stroke="currentColor" stroke-width="1"/>
+                      </svg>
+                      <span id="mexample-copy-label">Copy prompt</span>
+                    </button>
+                  </div>
+
+                  <!-- Worked example -->
+                  <div style="margin-top:8px">
+                    <div class="section-eyebrow">Example memo</div>
+                    <div class="memo-subhead" style="margin-top:6px;margin-bottom:12px">A complete memo, written in one pass.</div>
+                    <div class="example-memo-body">
+                      <p>Apple is mispriced because the market still treats it as a hardware-cycle story. The real engine is the installed base — over two billion active devices throwing off recurring, high-margin services revenue at gross margins north of 70%.</p>
+                      <p>My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.</p>
+                      <p>The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.</p>
+                      <p>I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.</p>
+                      <p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written memo.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -10251,22 +10486,28 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                    tier they committed to (e.g. Core 10%+ → weight should land near 10%).
                    Hidden when there's no fresh memo (increase / reduce / exit flows). -->
               <div id="s8-memo-toprows" style="display:none">
-                <div class="form-row">
+                <div class="form-row" style="align-items:flex-start">
                   <span class="body-md" style="color:var(--s)">Type</span>
-                  <span class="body-md s8-value" id="s8-memo-type" style="color:var(--t)">—</span>
+                  <div style="text-align:right;max-width:64%">
+                    <span class="body-md s8-value" id="s8-memo-type" style="color:var(--t)">—</span>
+                    <div class="s8-row-sub" id="s8-memo-type-sub"></div>
+                  </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" style="align-items:flex-start">
                   <span class="body-md" style="color:var(--s)">Size</span>
-                  <span class="body-md s8-value" id="s8-memo-size" style="color:var(--t)">—</span>
+                  <div style="text-align:right;max-width:64%">
+                    <span class="body-md s8-value" id="s8-memo-size" style="color:var(--t)">—</span>
+                    <div class="s8-row-sub" id="s8-memo-size-sub"></div>
+                  </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" id="s8-toprow-iv-row">
                   <span class="body-md s8-info-row" onclick="openS8InfoModal('iv')">
                     <span style="color:var(--s)">Intrinsic value</span>
                     <span class="s8-info-icon">↗</span>
                   </span>
                   <span class="body-md s8-value" id="s8-toprow-iv" style="color:var(--t)">—</span>
                 </div>
-                <div class="form-row">
+                <div class="form-row" id="s8-toprow-mos-row">
                   <span class="body-md s8-info-row" onclick="openS8InfoModal('mos')">
                     <span style="color:var(--s)">Margin of safety</span>
                     <span class="s8-info-icon">↗</span>
@@ -10319,23 +10560,23 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                  fit alongside the form rows + numpad on the same screen. -->
             <div id="s8-memo-section" class="s8-memo-section" style="display:none">
               <div class="lbl" style="margin-bottom:12px">Memo on file</div>
-              <div class="s8-memo-row">
+              <div class="s8-memo-row" id="s8-memo-iv-row">
                 <span class="body-sm" style="color:var(--s);flex-shrink:0">Intrinsic value</span>
                 <span class="body-md" id="s8-memo-iv" style="text-align:right">—</span>
               </div>
-              <div class="s8-memo-row">
+              <div class="s8-memo-row" id="s8-memo-mos-row">
                 <span class="body-sm" style="color:var(--s);flex-shrink:0">Margin of safety</span>
                 <span class="body-md" id="s8-memo-mos" style="text-align:right;line-height:1.5">—</span>
               </div>
-              <div class="s8-memo-row s8-memo-row--stacked">
+              <div class="s8-memo-row s8-memo-row--stacked" id="s8-memo-thesis-row">
                 <span class="body-sm" style="color:var(--s)">Thesis</span>
                 <span class="body-md" id="s8-memo-thesis" style="line-height:1.5">—</span>
               </div>
-              <div class="s8-memo-row s8-memo-row--stacked">
+              <div class="s8-memo-row s8-memo-row--stacked" id="s8-memo-kill-row">
                 <span class="body-sm" style="color:var(--s)">Kill line</span>
                 <span class="body-md" id="s8-memo-kill" style="line-height:1.5">—</span>
               </div>
-              <div class="s8-memo-row" style="border-bottom:none">
+              <div class="s8-memo-row" id="s8-memo-calib-row" style="border-bottom:none">
                 <span class="body-sm" style="color:var(--s);flex-shrink:0">Calibration</span>
                 <span class="body-md" id="s8-memo-calib" style="text-align:right">—</span>
               </div>
@@ -10433,21 +10674,31 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="s4r-section-head">MEMO</div>
                 <div class="s4r-row">
                   <div class="s4r-key">TYPE</div>
-                  <div class="s4r-val" id="s4-memo-type">—</div>
+                  <div class="s4r-val">
+                    <span id="s4-memo-type">—</span>
+                    <div class="s4r-val-sub" id="s4-memo-type-sub"></div>
+                  </div>
                 </div>
                 <div class="s4r-row">
                   <div class="s4r-key">SIZE</div>
-                  <div class="s4r-val" id="s4-memo-size">—</div>
+                  <div class="s4r-val">
+                    <span id="s4-memo-size">—</span>
+                    <div class="s4r-val-sub" id="s4-memo-size-sub"></div>
+                  </div>
                 </div>
-                <div class="s4r-row s4r-row--stack">
+                <div class="s4r-row s4r-row--stack" id="s4-memo-note-row" style="display:none">
+                  <div class="s4r-key">MEMO</div>
+                  <div class="s4r-val" id="s4-memo-note">—</div>
+                </div>
+                <div class="s4r-row s4r-row--stack" id="s4-memo-thesis-row">
                   <div class="s4r-key">THESIS</div>
                   <div class="s4r-val" id="s4-memo-thesis">—</div>
                 </div>
-                <div class="s4r-row s4r-row--stack">
+                <div class="s4r-row s4r-row--stack" id="s4-memo-kill-row">
                   <div class="s4r-key">KILL</div>
                   <div class="s4r-val" id="s4-memo-kill">—</div>
                 </div>
-                <div class="s4r-row">
+                <div class="s4r-row" id="s4-memo-mos-row">
                   <div class="s4r-key">MOS</div>
                   <div class="s4r-val" id="s4-memo-mos">—</div>
                 </div>
@@ -10559,6 +10810,62 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
               </div>
             </div>
             <button class="lpb" onclick="finishOrder()">Done</button>
+          </section>
+
+          <!-- ════════ mvprecord — Recorded transaction (post-purchase receipt + memo) ════════ -->
+          <section class="scr" data-id="mvprecord">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="closeMvpRecord()" type="button">‹</button>
+                <span class="memo-header-version" style="font-size:9px">RECORD</span>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll">
+              <div class="memo-page m6-ledger s9-ledger-page" style="gap:0;padding:24px 20px 40px">
+
+                <!-- Ledger header -->
+                <div class="s9-ledger-header">
+                  <div class="m6-ledger-meta" id="mvprec-date">—</div>
+                  <div class="s9-ticker-hero"><span class="memo-ctx-ticker">AAPL</span></div>
+                  <div class="s9-event-label">Position opened</div>
+                  <div class="s9-order-subtype" id="mvprec-type">Market Buy</div>
+                </div>
+
+                <!-- Stats strip -->
+                <div class="m6-stats-strip s9-stats-strip">
+                  <div class="m6-stat-cell"><div class="m6-stat-lbl">SHARES</div><div class="m6-stat-val" id="mvprec-shares">—</div></div>
+                  <div class="m6-stat-cell"><div class="m6-stat-lbl">COST</div><div class="m6-stat-val" id="mvprec-cost">—</div></div>
+                  <div class="m6-stat-cell"><div class="m6-stat-lbl">WEIGHT</div><div class="m6-stat-val" id="mvprec-weight">—</div></div>
+                </div>
+
+                <!-- Trade detail -->
+                <div>
+                  <div class="m6-ledger-section-head">ORDER</div>
+                  <div class="memo-row"><div class="k">PRICE</div><div class="v" id="mvprec-price">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">FILLED</div><div class="v" id="mvprec-filled">—</div></div>
+                </div>
+
+                <!-- Memo -->
+                <div>
+                  <div class="m6-ledger-section-head">MEMO</div>
+                  <div class="memo-row"><div class="k">TYPE</div><div class="v" id="mvprec-mtype">—</div></div>
+                  <div class="memo-row"><div class="k">SIZE</div><div class="v" id="mvprec-msize">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">MEMO</div><div class="v" id="mvprec-note">—</div></div>
+                </div>
+
+                <!-- Calibration -->
+                <div>
+                  <div class="m6-ledger-section-head">CALIBRATION</div>
+                  <div class="memo-row"><div class="k">PROB</div><div class="v" id="mvprec-prob">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">HORIZON</div><div class="v" id="mvprec-hrz">—</div></div>
+                </div>
+
+                <div class="t-bsm" style="line-height:1.6;color:var(--t-800);margin-top:8px">
+                  Recorded at execution. This is the permanent record of the decision and the memo behind it.
+                </div>
+              </div>
+            </div>
           </section>
 
           <!-- ════════ s5 — Calibration analytics ════════ -->
@@ -11311,7 +11618,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                   <textarea id="r2b-thesis" rows="3" placeholder="One sentence. The new reason this is worth owning." oninput="onReviewInput()"></textarea>
 
                   <div class="composer-toolbar">
-                    <button class="composer-icon-btn" onclick="pasteToTextarea('r2b-thesis')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('r2b-thesis')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. AI output)">
                       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
                         <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
@@ -11750,7 +12057,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
                   <!-- Inline composer toolbar — sits at the bottom inside the bracket -->
                   <div class="composer-toolbar">
-                    <button class="composer-icon-btn" onclick="pasteToTextarea('s30-new-note', refreshNoteSaveLock)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. ChatGPT / Claude output)">
+                    <button class="composer-icon-btn" onclick="pasteToTextarea('s30-new-note', refreshNoteSaveLock)" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. AI output)">
                       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
                         <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
@@ -12918,7 +13225,19 @@ function persistTransactions() {
 
 const HORIZON_LBL = { '1y':'1 year', '2y':'2 years', '3y':'3 years', '4y':'4 years', '5y':'5 years' };
 const TYPE_LBL = { comp:'Compounder', emer:'Emerging Compounder', situ:'Situational Mispricing', spec:'Speculative' };
+const TYPE_SUB = {
+  comp: 'Businesses compounding capital at above-market rates with durable competitive position.',
+  emer: 'Businesses or themes early in their compounding lifecycle, with conviction they will graduate.',
+  situ: 'Assets trading materially below reasonable estimates of value due to identifiable dislocation.',
+  spec: 'Asymmetric upside with acknowledged binary or high-variance risk.'
+};
 const SIZE_LBL = { core:'Core Position', conv:'High Conviction', start:'Starter Position', sspc:'Speculative' };
+const SIZE_SUB = {
+  core:  'Common range: 10%+',
+  conv:  'Common range: 5–10%',
+  start: 'Common range: 1–3%',
+  sspc:  'Common range: ≤2%'
+};
 const MOS_LBL  = { below:'Meaningfully below intrinsic value', around:'Roughly around intrinsic value', above:'Above intrinsic value', unclear:'Unclear' };
 
 const MKTPRICE_USD = 192.35;
@@ -12953,11 +13272,15 @@ function findStock(ticker) {
 }
 
 const VERSIONS = {
-  4.5: { label: 'V4.5', title: 'Intelligent investor',   blurb: 'Memo flow + pre-commit kill-line, EV math, sleep-on-it, devil\'s advocate, sizing math' }
+  4.5:    { label: 'V4.5',   title: 'Intelligent investor', blurb: 'Memo flow + pre-commit kill-line, EV math, sleep-on-it, devil\'s advocate, sizing math' },
+  'mvp1': { label: 'MVP V1', title: 'Low friction',         blurb: 'Classify + size + calibration. Drop your memo as a note or attachment — no separate sections.' }
 };
 function loadVersion() {
-  // V4.5 is the only supported version. Any legacy persisted value is
-  // silently normalized.
+  try {
+    const raw = localStorage.getItem('mogo.calmemo.version');
+    if (raw === 'mvp1') return 'mvp1';
+    if (parseFloat(raw) === 4.5) return 4.5;
+  } catch (_) {}
   return 4.5;
 }
 function persistVersion(v) {
@@ -13145,6 +13468,18 @@ const _DEMO_VALUES = {
   coreConditions:  ['Employment situation changes such that this capital is needed before the planned 25-year horizon.', 'Total portfolio structure changes materially enough that this allocation percentage no longer fits the intended framework.'],
 };
 
+/* MVP V1 demo note — a full memo in one pass, matching the worked example on
+   the mexample page (thesis → valuation → catalysts → exit). The low-friction
+   flow expects the whole memo to live in this one field, so its demo fill is a
+   complete write-up rather than a one-line note. */
+const MVP_EXAMPLE_MEMO = `Apple is mispriced because the market still treats it as a hardware-cycle story. The real engine is the installed base — over two billion active devices throwing off recurring, high-margin services revenue at gross margins north of 70%.
+
+My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.
+
+The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.
+
+I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.`;
+
 const _DEMO_SCREEN_FIELDS = {
   m1:   ['type', 'size'],
   m1b:  ['size'],
@@ -13178,7 +13513,11 @@ function openS8InfoModal(type) {
 function backFromMfork() {
   if (state.cd === 'draft')               { go('s0');  return; }
   if (state.cd && state.cd !== 'initial') { go('s19'); return; }
-  if (!state.hasMemo)                     { go('mresearch'); return; }
+  // MVP V1 has no orientation pages — bounce straight to s0.
+  if (!state.hasMemo) {
+    go(state.version === 'mvp1' ? 's0' : 'mresearch');
+    return;
+  }
   go('s0');
 }
 
@@ -13527,6 +13866,10 @@ function _demoFillScreen(id) {
     try { persistMemoDraft(); } catch(_) {}
     try { renderMc5(); } catch(_) {}
     return;
+  } else if (id === 'm5') {
+    // MVP V1 fills the note with a complete worked memo; V4.5 keeps the
+    // short research-note example. Falls through to the common tail below.
+    state.memo.note = (state.version === 'mvp1') ? MVP_EXAMPLE_MEMO : _DEMO_VALUES.note;
   } else {
     const fields = _DEMO_SCREEN_FIELDS[id];
     if (fields) fields.forEach(f => { state.memo[f] = _DEMO_VALUES[f]; });
@@ -14240,6 +14583,10 @@ function go(id) {
   if (id === 's61') renderBackfillSaved();
   // Backfill banner visibility on every memo screen
   if (['m1','m1b','miv','m2','m3','s12','m5','msrc','m6'].indexOf(id) !== -1) refreshBackfillBanner();
+  // Re-render step counter + back arrow for the current version's flow
+  if (['m1','m1b','m2','m3','miv','s12','msrc','m5','m6'].indexOf(id) !== -1) hydrateMemoStepNav(id);
+  if (id === 'mexample') renderMexample();
+  if (id === 'mvprecord') renderMvpRecord();
   // Test-scenario caption — shown on memo review screens during the returning
   // increase flow so reviewers know why the user is going through all 8 steps.
   refreshReviewCaption(id);
@@ -14773,10 +15120,13 @@ function onCapitalDecision() {
   if (state.exampleMode) { showExampleToast(); return; }
   if (!state.hasMemo) {
     // First-time: intent is implied — go straight to memo intro.
+    // MVP V1 skips the protocol intro entirely; lands on mresearch instead.
     state.cd = 'initial';
     state.prob = 0;
     state._memoEditedThisFlow = false;
-    go('mintro');
+    // MVP V1 jumps straight to the allocation fork — no protocol intro,
+    // no research orientation. Both orientation pages are V4.5-only.
+    go(state.version === 'mvp1' ? 'mfork' : 'mintro');
     return;
   }
   // Returning user: surface the action picker over s0.
@@ -14870,7 +15220,8 @@ function backFromMResearch() {
     go('m1');
     return;
   }
-  go('mintro');
+  // MVP V1 has no mintro to return to — bounce back to the stock page.
+  go(state.version === 'mvp1' ? 's0' : 'mintro');
 }
 
 /* mresearch-prompt is reachable from two entry points:
@@ -16127,7 +16478,9 @@ function continueFromCalibration() {
     if (state.prob < 5) return;
   }
   if (state.editingFromReview) { checkProbGuardrail(() => exitReviewEdit()); return; }
-  checkProbGuardrail(() => go('msrc'));
+  // Route via the current memo flow — V4.5 lands on msrc, MVP V1 jumps to m5.
+  const nextStep = getNextMemoStep('s12') || 'msrc';
+  checkProbGuardrail(() => go(nextStep));
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -16502,6 +16855,7 @@ function hydrateMemoScreen(screenId) {
   if (screenId === 'm5') {
     const ta = document.getElementById('m5-note');
     if (ta && ta.value !== m.note) ta.value = m.note || '';
+    if (ta) autoExpand(ta);   // grow to fit restored text so nothing is clipped
   }
   if (screenId === 'msrc') {
     const list = document.querySelector('[data-list="msrc-source"]');
@@ -17231,12 +17585,98 @@ function refreshMemoLocks() {
   if (s12cont) s12cont.classList.toggle('locked', !memoStepValid('s12'));
   refreshMsrcLock();
 }
+/* ── Memo flow per version ────────────────────────────────────────────
+   V4.5 walks the full nine-step memo. MVP V1 keeps only classification,
+   size, calibration, and the free-form note/attachment — the thesis,
+   kill, IV, MOS and source-attribution screens are routed around.   */
+const MEMO_FLOW_V45  = ['m1','m1b','m2','m3','miv','s12','msrc','m5','m6'];
+const MEMO_FLOW_MVP1 = ['m1','m1b','m5','s12','m6'];
+function getMemoFlow() {
+  return state.version === 'mvp1' ? MEMO_FLOW_MVP1 : MEMO_FLOW_V45;
+}
+function getNextMemoStep(currentId) {
+  const flow = getMemoFlow();
+  const idx = flow.indexOf(currentId);
+  if (idx === -1 || idx >= flow.length - 1) return null;
+  return flow[idx + 1];
+}
+function getPrevMemoStep(currentId) {
+  const flow = getMemoFlow();
+  const idx = flow.indexOf(currentId);
+  if (idx <= 0) return null;
+  return flow[idx - 1];
+}
+function getMemoStepCounter(stepId) {
+  const flow = getMemoFlow();
+  const idx = flow.indexOf(stepId);
+  if (idx === -1) return null;
+  // m6 review uses 'Review' rather than a fraction
+  if (stepId === 'm6') return state.version === 'mvp1' ? 'Review' : '9 / 9';
+  return `${idx + 1} / ${flow.length}`;
+}
+/* Dynamically rewrite the step counter + the back arrow on the active
+   memo screen so the flow shrinks or grows with the version. m1 and m6
+   keep their custom back-handlers (state cleanup) — everything else is
+   driven by the flow. */
+function hydrateMemoStepNav(stepId) {
+  const flow = getMemoFlow();
+  if (flow.indexOf(stepId) === -1) return;
+  const scr = document.querySelector(`.scr[data-id="${stepId}"]`);
+  if (!scr) return;
+  // Step counter (m6 manages its own ticker meta inside renderM6)
+  if (stepId !== 'm6') {
+    const counter = getMemoStepCounter(stepId);
+    if (counter) {
+      const meta = scr.querySelector('.memo-header-meta');
+      if (meta) meta.textContent = counter;
+    }
+  }
+  // Back button — only for steps with a simple go() handler
+  if (stepId !== 'm1' && stepId !== 'm6') {
+    const backBtn = scr.querySelector('.back-btn');
+    if (backBtn) {
+      const prev = getPrevMemoStep(stepId);
+      if (prev) backBtn.setAttribute('onclick', `go('${prev}')`);
+    }
+  }
+  // MVP V1: this screen is the whole memo, not a supporting note —
+  // retitle it, drop the kill-line reference (no kill criteria here), and
+  // swap the short [ex] note hint for a full "Example memo" card.
+  if (stepId === 'm5') {
+    const isMvp1 = state.version === 'mvp1';
+    const t       = document.getElementById('m5-title');
+    const st      = document.getElementById('m5-subtitle');
+    const sh      = document.getElementById('m5-subhead');
+    const exBtn   = document.getElementById('ex-btn-m5-note');
+    if (t) {
+      t.textContent = isMvp1 ? 'Memo' : 'Note';
+      // MVP V1: the title carries an info arrow that opens the worked example.
+      if (isMvp1) {
+        t.classList.add('is-info');
+        t.setAttribute('onclick', "showInfoModal('mvp_memo_example')");
+      } else {
+        t.classList.remove('is-info');
+        t.removeAttribute('onclick');
+      }
+    }
+    if (st) st.textContent = isMvp1
+      ? 'This is the memo serious investors write before committing capital — a record of why you believe what you believe, and what would change your mind.'
+      : 'The work behind it.';
+    if (sh) sh.style.display = isMvp1 ? 'none' : '';
+    if (exBtn)  exBtn.style.display  = isMvp1 ? 'none' : '';
+  }
+}
+
 function advanceMemo(target) {
   // Edit-mode short-circuit: when the user came from m6's "Edit" affordance,
   // any step's Continue should commit the field they just touched and bounce
   // them back to the review screen rather than walking the full sequence.
   if (state.editingFromReview) { exitReviewEdit(); return; }
-  go(target);
+  // Route via the current version's memo flow, falling back to the explicit
+  // target only when the current screen isn't part of the flow.
+  const cur = window._currentScreenId;
+  const next = getNextMemoStep(cur);
+  go(next || target);
 }
 
 /* ── m6 "Edit" affordance — entry, exit, and per-step UI overrides ────── */
@@ -17303,7 +17743,18 @@ function refreshEditModeUI(id) {
       ctaBtn.textContent = 'Save changes';
     }
   } else {
-    if (backBtn) backBtn.setAttribute('onclick', _MEMO_STEP_BACK_HANDLERS[id]);
+    // Restore the back-button onclick. For memo-flow steps with a simple
+    // go() back handler, prefer the current version's flow (so MVP V1
+    // skips the screens it routes around). m1 / m6 keep their custom
+    // backFromX() handlers since those do state cleanup.
+    if (backBtn) {
+      const flowPrev = (id !== 'm1' && id !== 'm6') ? getPrevMemoStep(id) : null;
+      if (flowPrev) {
+        backBtn.setAttribute('onclick', `go('${flowPrev}')`);
+      } else {
+        backBtn.setAttribute('onclick', _MEMO_STEP_BACK_HANDLERS[id]);
+      }
+    }
     if (ctaBtn && ctaBtn.dataset._origLabel) {
       ctaBtn.textContent = ctaBtn.dataset._origLabel;
     }
@@ -17547,14 +17998,33 @@ function renderM6() {
   // matches what the user actually did.
   const tickerMeta = document.getElementById('m6-ticker-meta');
   if (tickerMeta) {
-    if (state.version >= 4.5 && state.cd === 'increase') {
+    if (state.version === 'mvp1') {
+      tickerMeta.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · Review';
+    } else if (state.version >= 4.5 && state.cd === 'increase') {
       tickerMeta.innerHTML = '<span class="memo-ctx-ticker">AAPL</span>';
     } else {
       tickerMeta.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · 9 / 9';
     }
   }
-  document.getElementById('m6-type').textContent    = TYPE_LBL[m.type] || '—';
-  document.getElementById('m6-size').textContent    = SIZE_LBL[m.size] || '—';
+  // Type / Size — render with their sub-description so the review row
+  // mirrors the chooser the user saw on m1 / m1b instead of stripping
+  // the context down to a single label.
+  const typeEl = document.getElementById('m6-type');
+  if (typeEl) {
+    const lbl = TYPE_LBL[m.type] || '—';
+    const sub = TYPE_SUB[m.type];
+    typeEl.innerHTML = sub
+      ? `${lbl}<div class="memo-row-sub">${sub}</div>`
+      : lbl;
+  }
+  const sizeEl = document.getElementById('m6-size');
+  if (sizeEl) {
+    const lbl = SIZE_LBL[m.size] || '—';
+    const sub = SIZE_SUB[m.size];
+    sizeEl.innerHTML = sub
+      ? `${lbl}<div class="memo-row-sub">${sub}</div>`
+      : lbl;
+  }
   document.getElementById('m6-thesis').textContent  = m.thesis || '—';
   // Timing rationale (optional) — show when populated
   const timingRow  = document.getElementById('m6-timing-row');
@@ -17635,6 +18105,33 @@ function renderM6() {
       srcDisp.textContent = detail ? `${label} · ${detail}` : label;
     } else {
       srcRow.style.display = 'none';
+    }
+  }
+
+  // ── MVP V1: hide the structured-memo rows that this version skips and
+  //           promote the free-form Note row to the primary memo field. ──
+  const isMvp1 = state.version === 'mvp1';
+  ['m6-thesis','m6-kill','m6-iv','m6-mos'].forEach(id => {
+    const el = document.getElementById(id);
+    const row = el ? el.closest('.memo-row') : null;
+    if (row) row.style.display = isMvp1 ? 'none' : '';
+  });
+  // IV stat cell in the top strip — irrelevant when IV isn't captured.
+  // Also collapse the grid to two columns so the strip isn't left lopsided.
+  const ivStatCell = document.getElementById('m6-iv-stat');
+  const ivStatWrap = ivStatCell ? ivStatCell.closest('.m6-stat-cell') : null;
+  if (ivStatWrap) ivStatWrap.style.display = isMvp1 ? 'none' : '';
+  const stripEl = document.querySelector('.scr[data-id="m6"] .m6-stats-strip');
+  if (stripEl) stripEl.style.gridTemplateColumns = isMvp1 ? '1fr 1fr' : '';
+  // Note row — always visible in MVP V1 (this IS the memo), labelled "Memo".
+  {
+    const noteRow  = document.getElementById('m6-note-row');
+    const noteDisp = document.getElementById('m6-note-display');
+    const noteKey  = noteRow ? noteRow.querySelector('.k') : null;
+    if (noteKey) noteKey.textContent = isMvp1 ? 'Memo' : 'Note';
+    if (isMvp1) {
+      if (noteRow)  noteRow.style.display = '';
+      if (noteDisp) noteDisp.textContent = (m.note || '').trim() || '—';
     }
   }
 
@@ -18275,6 +18772,20 @@ function renderS8() {
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v || '—'; };
     set('s8-memo-type', TYPE_LBL[state.memo.type]);
     set('s8-memo-size', SIZE_LBL[state.memo.size]);
+    // Sub-descriptions under Type / Size — mirrors the m1 / m1b choosers
+    const typeSub = document.getElementById('s8-memo-type-sub');
+    if (typeSub) typeSub.textContent = TYPE_SUB[state.memo.type] || '';
+    const sizeSub = document.getElementById('s8-memo-size-sub');
+    if (sizeSub) sizeSub.textContent = SIZE_SUB[state.memo.size] || '';
+    // MVP V1 captures neither IV/MOS nor thesis/kill — drop those rows from
+    // both the top summary and the "Memo on file" block, leaving calibration.
+    const isMvp1 = state.version === 'mvp1';
+    ['s8-toprow-iv-row','s8-toprow-mos-row',
+     's8-memo-iv-row','s8-memo-mos-row','s8-memo-thesis-row','s8-memo-kill-row'
+    ].forEach(rid => {
+      const row = document.getElementById(rid);
+      if (row) row.style.display = isMvp1 ? 'none' : '';
+    });
     // Intrinsic value — show $X / share if filled, "Not valued" if the
     // user took the can't-value off-ramp, else em-dash placeholder.
     const ivNum = parseFloat(state.memo.intrinsicValue);
@@ -18441,6 +18952,25 @@ function renderS4() {
     document.getElementById('s4-memo-thesis').textContent = state.memo.thesis || '—';
     document.getElementById('s4-memo-kill').textContent   = state.memo.kill   || '—';
     document.getElementById('s4-memo-mos').textContent    = MOS_LBL[state.memo.mos] || '—';
+    // Sub-descriptions under Type / Size — mirrors m6 / s8 review rows
+    const typeSub = document.getElementById('s4-memo-type-sub');
+    if (typeSub) typeSub.textContent = TYPE_SUB[state.memo.type] || '';
+    const sizeSub = document.getElementById('s4-memo-size-sub');
+    if (sizeSub) sizeSub.textContent = SIZE_SUB[state.memo.size] || '';
+    // MVP V1 captures neither thesis, kill, nor MOS — drop those rows here too.
+    const isMvp1 = state.version === 'mvp1';
+    ['s4-memo-thesis-row','s4-memo-kill-row','s4-memo-mos-row'].forEach(rid => {
+      const row = document.getElementById(rid);
+      if (row) row.style.display = isMvp1 ? 'none' : '';
+    });
+    // MVP V1: the free-form write-up IS the memo — show it under a MEMO label.
+    const noteRow = document.getElementById('s4-memo-note-row');
+    if (noteRow) {
+      noteRow.style.display = isMvp1 ? '' : 'none';
+      if (isMvp1) {
+        document.getElementById('s4-memo-note').textContent = (state.memo.note || '').trim() || '—';
+      }
+    }
   } else {
     memoSec.style.display = 'none';
   }
@@ -18500,6 +19030,7 @@ function renderS9() {
 
   const memoSec  = document.getElementById('s9-memo-section');
   const memoNote = document.getElementById('s9-memo-note');
+  const isMvp1   = state.version === 'mvp1';
   if (state.cd === 'initial') {
     memoSec.style.display  = 'block';
     if (memoNote) memoNote.style.display = 'block';
@@ -18508,10 +19039,92 @@ function renderS9() {
     document.getElementById('s9-memo-thesis').textContent = state.memo.thesis || '—';
     document.getElementById('s9-memo-kill').textContent   = state.memo.kill   || '—';
     document.getElementById('s9-memo-mos').textContent    = MOS_LBL[state.memo.mos] || '—';
+    // MVP V1: structured rows are skipped during capture — hide them in the
+    // summary as well and surface the free-form note instead.
+    ['s9-memo-thesis','s9-memo-kill','s9-memo-mos'].forEach(id => {
+      const row = document.getElementById(id)?.closest('.memo-row');
+      if (row) row.style.display = isMvp1 ? 'none' : '';
+    });
+    // Replace MOS row with a NOTE row in MVP V1 (reuse the row, keep last-row spacing)
+    if (isMvp1) {
+      // Find or insert a NOTE row inside the memo section
+      let noteRow = document.getElementById('s9-memo-note-row');
+      if (!noteRow) {
+        const memoMosRow = document.getElementById('s9-memo-mos')?.closest('.memo-row');
+        if (memoMosRow && memoMosRow.parentNode) {
+          noteRow = document.createElement('div');
+          noteRow.id = 's9-memo-note-row';
+          noteRow.className = 'memo-row s9-last-row';
+          noteRow.innerHTML = '<div class="k">NOTE</div><div class="v" id="s9-memo-note-val">—</div>';
+          memoMosRow.parentNode.insertBefore(noteRow, memoMosRow.nextSibling);
+        }
+      }
+      noteRow.style.display = '';
+      const noteVal = document.getElementById('s9-memo-note-val');
+      if (noteVal) noteVal.textContent = (state.memo.note || '').trim() || '—';
+    } else {
+      const noteRow = document.getElementById('s9-memo-note-row');
+      if (noteRow) noteRow.style.display = 'none';
+    }
   } else {
     memoSec.style.display = 'none';
     if (memoNote) memoNote.style.display = 'none';
   }
+}
+
+/* ── Transaction record (drawer) — read-only receipt of a completed buy plus
+   the memo behind it. Renders the most recent real buy; falls back to
+   representative demo data so the page is never empty in the prototype. ── */
+function openMvpRecord() {
+  window._mvpRecordReturn = window._currentScreenId;
+  try { closeDrawer(); } catch(_) {}
+  go('mvprecord');
+}
+function closeMvpRecord() {
+  const back = window._mvpRecordReturn;
+  go(back && back !== 'mvprecord' ? back : (state.version === 'mvp1' ? 'mfork' : 's10'));
+}
+function renderMvpRecord() {
+  const txns = (state.transactions || []).filter(t => !t.paper && t.action === 'Buy');
+  const tx   = txns.length ? txns[txns.length - 1] : null;
+  const m    = (tx && tx.memo) ? tx.memo : (state.memo || {});
+  const type = m.type || 'comp';
+  const size = m.size || 'core';
+  const note = (m.note || '').trim() || MVP_EXAMPLE_MEMO;
+
+  let shares, costUSD, weightPct, dateStr, prob, horizon;
+  if (tx) {
+    shares    = tx.shares;
+    costUSD   = tx.cost / FX_USD_CAD;
+    weightPct = tx.cost / PORTVAL_CAD * 100;
+    dateStr   = tx.date;
+    prob      = tx.prob;
+    horizon   = tx.horizon;
+  } else {
+    shares    = 25;
+    costUSD   = 25 * MKTPRICE_USD;
+    weightPct = (25 * MKTPRICE_USD) / PORTVAL_CAD * 100;
+    dateStr   = fmtDate();
+    prob      = 60;
+    horizon   = '5y';
+  }
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('mvprec-date',   dateStr);
+  set('mvprec-type',   'Market Buy');
+  set('mvprec-shares', String(shares));
+  set('mvprec-cost',   costUSD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD');
+  set('mvprec-weight', weightPct.toFixed(2) + '%');
+  set('mvprec-price',  MKTPRICE_USD.toFixed(2) + ' USD');
+  set('mvprec-filled', dateStr);
+
+  const mtypeEl = document.getElementById('mvprec-mtype');
+  if (mtypeEl) mtypeEl.innerHTML = (TYPE_LBL[type] || '—') + (TYPE_SUB[type] ? `<div class="memo-row-sub">${TYPE_SUB[type]}</div>` : '');
+  const msizeEl = document.getElementById('mvprec-msize');
+  if (msizeEl) msizeEl.innerHTML = (SIZE_LBL[size] || '—') + (SIZE_SUB[size] ? `<div class="memo-row-sub">${SIZE_SUB[size]}</div>` : '');
+  set('mvprec-note', note);
+  set('mvprec-prob', prob ? prob + '%' : '—');
+  set('mvprec-hrz',  HORIZON_LBL[horizon] || horizon || '—');
 }
 
 function finishOrder() {
@@ -18544,7 +19157,7 @@ function setMode(m) {
     state.reviewPending = true; persistReviewPending(true);
   }
   refreshModeButtons();
-  go('s10');
+  if (state.version === 'mvp1') { startMvpFirstFlow(); } else { go('s10'); }
   closeDrawer();
 }
 function refreshModeButtons() {
@@ -18644,10 +19257,13 @@ function refreshVersionVisibility() {
   //   data-max-version  → hide if state.version > this (default: Infinity)
   // V4.5 = 4.5 (float). parseFloat needed instead of parseInt so the dot
   // doesn't get truncated.
+  // MVP V1 is a fork of V4.5 (minus most memo sections) — for legacy numeric
+  // gating, treat it as the 4.5 baseline so all V4.5-min-version UI still shows.
+  const effectiveVer = (state.version === 'mvp1') ? 4.5 : state.version;
   document.querySelectorAll('[data-min-version], [data-max-version]').forEach(el => {
     const minVer = el.dataset.minVersion != null ? parseFloat(el.dataset.minVersion) : 1;
     const maxVer = el.dataset.maxVersion != null ? parseFloat(el.dataset.maxVersion) : Infinity;
-    const ok = minVer <= state.version && state.version <= maxVer;
+    const ok = minVer <= effectiveVer && effectiveVer <= maxVer;
     if (!ok) {
       el.dataset._origDisplay = el.dataset._origDisplay || el.style.display || '';
       el.style.display = 'none';
@@ -18659,12 +19275,29 @@ function refreshVersionVisibility() {
 
 /* Version picker chip — updates state, persists, and refreshes UI.
    V1–V3 were retired; clamp anything below 4 up to the V4 baseline. */
+/* MVP V1 has no dashboard or search surface — the flow begins at the
+   allocation fork. Reset to a fresh first-time memo and land on mfork. */
+function startMvpFirstFlow() {
+  state.cd = 'initial';
+  state.prob = 0;
+  state._memoEditedThisFlow = false;
+  if (state.memo) state.memo.allocationType = null;
+  go('mfork');
+}
+
 function setVersion(v) {
-  // V4.5 is the only supported version — any legacy input snaps to it.
-  v = 4.5;
+  // Accept either the numeric 4.5 or the string 'mvp1'. Anything else snaps to 4.5.
+  if (v === 'mvp1') {
+    // keep as string
+  } else {
+    v = parseFloat(v);
+    if (!VERSIONS[v]) v = 4.5;
+  }
   state.version = v;
   persistVersion(v);
   refreshVersionUI();
+  // MVP V1 starts directly at the allocation fork (dashboard + search are cut).
+  if (v === 'mvp1') { startMvpFirstFlow(); return; }
   // If the current screen is no longer reachable in this version, route to s10
   const cur = SCREENS.find(s => s.id === window._currentScreenId);
   if (cur && (cur.minVersion || 1) > v) {
@@ -18678,7 +19311,11 @@ function setVersion(v) {
 function refreshVersionUI() {
   // Update version-picker chip state
   document.querySelectorAll('#versionPicker button').forEach(btn => {
-    btn.classList.toggle('on', parseFloat(btn.dataset.version) === state.version);
+    const dv = btn.dataset.version;
+    const matches = (dv === 'mvp1')
+      ? state.version === 'mvp1'
+      : parseFloat(dv) === state.version;
+    btn.classList.toggle('on', matches);
   });
   // Update header title/blurb
   const meta = VERSIONS[state.version];
@@ -19772,8 +20409,39 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
   hurdle_standard: {
     eyebrow: 'Compounding Standard',
     title:   'Your compounding standard.',
-    bodyHtml: `<p>This rate applies to all Compounder memos as the minimum annual return the underwriting must support. Adjust it below if your standard has changed.</p>`,
+    bodyHtml: `<p>This rate applies to all Compounder memos as the minimum annual return the underwriting must support.</p>
+<p>We default to <strong>20%</strong> — meaningfully above the S&amp;P 500's ~15% average over the past decade — so the bar represents real outperformance, not just keeping up with the market.</p>
+<p>Set this against your <strong>full portfolio</strong>, not just positions held in this app. If you hold Compounders on other brokerages or platforms, the standard is the same — pick the rate that reflects how you actually think about returns across everything you own.</p>`,
     edit: 'hurdle'
+  },
+  mvp_memo_example: {
+    eyebrow: 'Memo',
+    title:   'What goes in a memo.',
+    bodyHtml: `<p>A memo is the written case for a position — the reasoning you commit to before you buy, so a sharper version of you can later judge whether the decision was sound, not just whether it happened to work out.</p>
+<p>A complete memo covers four things, in plain language:</p>
+<ul class="info-list">
+  <li><strong>Thesis</strong> — why the market is wrong, and what you see that it doesn't.</li>
+  <li><strong>Value</strong> — roughly what the business is worth, and the margin of safety at today's price.</li>
+  <li><strong>Why now</strong> — what makes this the moment, rather than six months ago or six months from now.</li>
+  <li><strong>Exit conditions</strong> — the specific events that would tell you the thesis is broken.</li>
+</ul>
+<p>No template and no sections are required. One honest write-up that a sharper reader could challenge is enough.</p>
+<h4>An example</h4>
+<p>Apple is mispriced because the market still treats it as a hardware-cycle story. The real engine is the installed base — over two billion active devices throwing off recurring, high-margin services revenue at gross margins north of 70%.</p>
+<p>My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.</p>
+<p>The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.</p>
+<p>I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.</p>
+<p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written memo.</p>`
+  },
+  mfork_decision: {
+    eyebrow: 'Capital allocation',
+    title:   'Two kinds of decisions.',
+    bodyHtml: `<p>Every capital deployment is one of two things: a position where you believe you can outperform the market, or one where you are deciding how capital should sit relative to the market.</p>
+<p><strong>Active allocation</strong> — you are claiming an edge. The memo records why you expect this position to outperform the S&amp;P 500 over your stated horizon, and your record is later measured against that benchmark.</p>
+<p><strong>Core / Treasury</strong> — you are not claiming an edge. The memo records why this capital belongs here, in this form, at this scale — for liquidity, long-term compounding, or stability.</p>
+<p>Classifying the decision honestly is what makes calibration meaningful. Active positions are assessed on outperformance; Core / Treasury positions are assessed on the role they were meant to play.</p>
+<p><em>Neither label is better than the other. The point is to be honest about which one you are making.</em></p>
+<p class="info-disclaimer">This is a journaling and self-calibration framework, not investment advice or a recommendation. You choose the classification; the system only records and measures your own judgment over time.</p>`
   },
   uw_hurdle: {
     eyebrow: 'Exceptional Compounding Hurdle',
@@ -19870,6 +20538,245 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
   }
 };
 
+/* Apply a picked hurdle preset from the info modal. Updates state and
+   every on-screen surface that references the rate. */
+function pickHurdleRate(rate) {
+  const raw = parseInt(rate, 10);
+  if (!raw || raw < 5 || raw > 50) return;
+  state.memo.hurdleRate   = raw;
+  state.defaultHurdleRate = raw;
+  const display = document.getElementById('s12-hurdle-display');
+  if (display) display.textContent = (raw === 50 ? '50%+' : raw + '%') + ' per year';
+  const inlineNum = document.getElementById('s12-horizon-hurdle-num');
+  if (inlineNum) inlineNum.textContent = raw;
+  const hurdleCard = document.getElementById('hurdle-card-val');
+  if (hurdleCard) hurdleCard.textContent = (raw === 50 ? '50%+' : raw + '%') + ' per year';
+  // Sync radio rows inside the modal
+  document.querySelectorAll('[data-list="hurdle-modal-rates"] .radio-row').forEach(btn => {
+    btn.classList.toggle('is-on', parseInt(btn.dataset.rate) === raw);
+  });
+  // Keep mintro preset rows in lockstep (V4.5 only path, harmless otherwise)
+  document.querySelectorAll('[data-list="mintro-hurdle"] .radio-row').forEach(btn => {
+    btn.classList.toggle('is-on', parseInt(btn.dataset.rate) === raw);
+  });
+}
+
+/* ── Hurdle scroll-wheel (iOS-style picker) ──────────────────────────── */
+const HURDLE_WHEEL_ITEM_H = 44;  // must match .hurdle-wheel-item height in CSS
+let _hurdleWheelSettleTimer = null;
+
+/* Re-skin items each scroll frame: the closer to the vertical center, the
+   flatter and brighter; items further out tilt back and fade like a drum. */
+function updateHurdleWheel() {
+  const scroll = document.getElementById('hurdle-wheel-scroll');
+  if (!scroll) return;
+  const center = scroll.scrollTop / HURDLE_WHEEL_ITEM_H;
+  scroll.querySelectorAll('.hurdle-wheel-item').forEach((item, i) => {
+    const offset = i - center;
+    const abs    = Math.abs(offset);
+    const angle  = Math.max(Math.min(offset * 20, 85), -85);
+    item.style.transform = `rotateX(${-angle}deg)`;
+    item.style.opacity   = String(Math.max(1 - abs * 0.34, 0.12));
+    item.classList.toggle('is-centered', abs < 0.5);
+  });
+}
+
+/* Scroll handler — repaints the wheel, then commits the centered value once
+   the scroll settles (snap finished). */
+function onHurdleWheelScroll() {
+  updateHurdleWheel();
+  clearTimeout(_hurdleWheelSettleTimer);
+  _hurdleWheelSettleTimer = setTimeout(() => {
+    const scroll = document.getElementById('hurdle-wheel-scroll');
+    if (!scroll) return;
+    const idx   = Math.round(scroll.scrollTop / HURDLE_WHEEL_ITEM_H);
+    const items = scroll.querySelectorAll('.hurdle-wheel-item');
+    const item  = items[Math.max(0, Math.min(idx, items.length - 1))];
+    if (item) pickHurdleRate(parseInt(item.dataset.rate, 10));
+  }, 140);
+}
+
+/* Position the wheel on the current rate when the modal opens. */
+function initHurdleWheel(rate) {
+  const scroll = document.getElementById('hurdle-wheel-scroll');
+  if (!scroll) return;
+  const items = scroll.querySelectorAll('.hurdle-wheel-item');
+  let idx = 0;
+  items.forEach((it, i) => { if (parseInt(it.dataset.rate, 10) === rate) idx = i; });
+  scroll.scrollTop = idx * HURDLE_WHEEL_ITEM_H;
+  updateHurdleWheel();
+}
+
+/* ── mexample — research prompt (hurdle/probability content removed; the
+   calibration step on the next page captures that). Company stays as
+   fill-in placeholders. ─────────────────────────────────────────────── */
+const RESEARCH_PROMPT = `You are conducting investment research on [COMPANY NAME] ([TICKER]) for a serious investor evaluating whether this name deserves the next layer of diligence. This research will populate the inputs to a structured investment memo. The investor will challenge and refine your conclusions, but you are providing the first complete draft of every input. Be decisive. Provide answers, not options.
+
+CONTEXT
+Company: [COMPANY NAME]
+Ticker: [TICKER]
+Sector: [SECTOR]
+Segment: [SEGMENT]
+Business: [ONE-PARAGRAPH BUSINESS DESCRIPTION]
+
+The investor has access to a comprehensive financial data platform (Fiscal) for verifying numbers, reading filings, and reviewing earnings call transcripts. Make specific claims with confidence — the investor will verify them. If you do not know a specific number, state your best estimate and mark it [VERIFY] so the investor can confirm.
+
+PURPOSE OF THIS DOCUMENT
+This is a research-drafting tool. It produces the first complete draft of the qualitative inputs to an investment memo — it is not an investment decision on its own. Before any thesis is committed, the original research identified in section 7 should be completed and the claims in section 8 verified.
+
+Sections 1 through 6 define the memo: what the business is, how to classify it, the thesis, the timing, the conditions that would end the position, and what it is worth. Section 7 identifies where deeper original research would most change those conclusions. Section 8 is the verification checklist.
+
+STANCE
+Write as an experienced analyst delivering a research document to a discerning portfolio manager. Direct, specific, declarative. No marketing language, no hedging, no throat-clearing, no closing summaries.
+
+You are not making a recommendation to buy or sell. You are populating the analytical inputs the investor will use to decide whether to do deeper work on this name. But for every input that requires a choice, make the choice and explain it. Do not present options for the investor to pick between — pick, and justify. If the investor disagrees, they will override you.
+
+When you state a number, state a specific number. When you state a classification, state one classification. Conviction in the draft makes it easier to challenge; equivocation makes it harder.
+
+DEFAULTS ARE OFTEN WRONG
+For each analytical decision in this document — classification, valuation method, reference class, kill criteria selection — first consider whether the most common approach for businesses in this sector is actually appropriate for this specific business. Many businesses have structural features (multi-segment operations, embedded financial subsidiaries, asset-heavy economics, transitional financials, situational catalysts) that make the default approach unreliable. When you encounter these features, depart from the default and justify the departure. Do not produce analysis that would be technically defensible for an "average" company in this sector but wrong for this specific company.
+
+OUTPUT STRUCTURE
+Produce a research document with the eight sections below, in order. Use the section headers exactly as written, in uppercase. Total length should be roughly 2,200-3,000 words.
+
+1. BUSINESS OVERVIEW
+Two to three paragraphs covering what the business does and how it makes money, where it sits in its industry, its current scale and growth profile, and the single most important thing to understand about this business — the insight that, if missed, would lead to a wrong analysis.
+
+2. CLASSIFICATION
+State the classification: compounder, emerging compounder, situational mispricing, or speculative. Pick one. Then provide the case for this classification in one paragraph, and address the strongest argument for the alternative classification an investor might otherwise choose, explaining in one paragraph why your choice is more accurate.
+
+Each classification implies an integrated judgment about business quality and how the investor will make money. A compounder is a high-quality business expected to deliver returns through long-duration earnings growth. An emerging compounder is a business demonstrating the characteristics of a future compounder but not yet proven. A situational mispricing is a business where the gap between price and intrinsic value, often driven by a transient event, drives the return rather than long-term compounding. A speculative position is one where forward outcomes have a wide distribution and the bet is on a specific resolution rather than on stable business economics.
+
+3. THESIS AND STRUCTURAL DECOMPOSITION
+Write the thesis as it would appear in the investor's memo: two to three sentences stating why this position should exist. Lead with the reason this investment makes sense, in declarative form.
+
+Below the thesis, in one short paragraph, identify the load-bearing assumption — the single claim that, if false, collapses the thesis.
+
+Then perform a structural decomposition. Break the relevant base (revenue, gross services volume, loan book, units sold, customer count — whatever the load-bearing assumption is about) into sub-segments defined by their exposure to the load-bearing risk. For each sub-segment, state its size as a percentage of the total, its growth rate, and its exposure to the risk (high, medium, low). If the decomposition reveals that the risk applies to only a small portion of the base, restate the load-bearing assumption more precisely.
+
+If the load-bearing assumption is not about a measurable base (for example, "the CEO will allocate capital well," "the regulatory ruling will go in the company's favor"), state that no quantitative decomposition is possible and instead identify the specific evidence or events that would confirm or falsify the assumption. Do not produce a forced decomposition that adds noise rather than insight.
+
+This decomposition (or, in its absence, the evidence map) is the analytical foundation for section 6's valuation; do not skip it.
+
+4. WHY NOW
+State the reason the timing is right now, in two to three sentences. This should be a specific, defensible answer — what has changed, or what is about to change, that makes this the right moment rather than six months ago or six months from now. For a compounder, the answer is often "the price has come to me" or "the long-term compounding case is intact and the entry point is reasonable" — these are valid answers, but they still need to be articulated explicitly. If you cannot identify a genuine "why now" and the investment case would have been equally valid two years ago at a similar price, say so directly and state that the absence of a "why now" is itself a reason to question the timing.
+
+5. KILL CRITERIA
+Select the four to six kill criteria the investor should adopt for this position. Do not produce a long menu — produce the actual list. For each, specify:
+   - The metric or event, stated specifically
+   - The exact threshold or condition that triggers it
+   - The action if triggered: SELL, REDUCE, or REVIEW (5-day window)
+   - One sentence explaining why this matters for this specific business
+
+Prioritize leading indicators. Prioritize criteria that would trigger before damage is fully visible in the stock price. The kill criteria should follow directly from the load-bearing assumption and structural decomposition (or evidence map) in section 3.
+
+6. INTRINSIC VALUE
+
+Before calculating IV, determine the right valuation method for this specific business. Do not default to the most common method for the sector — many businesses are mis-valued because the obvious method fails to capture their actual economics.
+
+METHOD SELECTION
+Answer these questions explicitly before choosing a method:
+
+   - Does this business operate in materially different segments with different economics (different growth rates, margin profiles, capital requirements, or competitive dynamics)? If yes, sum-of-parts is likely required. A consolidated method will average across segments that should not be averaged.
+
+   - Does the business contain a financial subsidiary (lending book, insurance float, investment portfolio) whose earnings quality and capital structure differ fundamentally from the operating business? If yes, that subsidiary must be valued separately. Standard DCF or multiples on the consolidated entity will distort the result.
+
+   - Is the business asset-heavy in ways not reflected in earnings (real estate, natural resources, intellectual property, investment securities)? If yes, asset-based valuation or NAV should be a primary or supporting method.
+
+   - Is the business in a phase where earnings significantly understate or overstate true economic value (heavy reinvestment, transitional margins, cyclical trough, restructuring)? If yes, single-period multiples are unreliable. Cash flow methods over a normalized period are required.
+
+   - Is the business a true single-segment, steady-state operator with stable margins and predictable growth? Only in this case is a straightforward DCF or multiples approach likely to produce a reliable IV.
+
+STATE THE METHOD
+Based on the above, state the valuation method or combination of methods you will use. If sum-of-parts, list the segments and the method for each. If a blend, state the weighting and why.
+
+If you are using a single consolidated method on a business with any of the structural features above, justify explicitly why the consolidated approach is reliable here. The default assumption should be that it is not.
+
+ASSUMPTIONS
+State every material assumption explicitly. Conservatism is not optional — when in doubt about an assumption, choose the version that produces a lower IV. The investor will use this number for margin of safety, so optimism here directly destroys the safety margin. For each assumption, give the conservative version (which you will use), the base version, and the aggressive version, so the investor sees what you are choosing to be conservative about.
+
+For each segment (if SOTP) or for the consolidated business:
+   - Revenue growth rate (years 1-3, years 4-5, terminal)
+   - Margin trajectory
+   - Capital intensity
+   - Discount rate (note: a lending book and an operating business should not share a discount rate)
+   - Terminal value method and inputs
+
+For consolidated calculations also state:
+   - Tax rate
+   - Share count changes over the holding period
+
+CALCULATION
+Walk through the math. If SOTP, show each segment's value and how they aggregate. Show how leverage and corporate-level items (net debt, minority interests, corporate overhead) flow into the per-share number.
+
+Produce three scenario valuations — downside, base, upside — with explicit probability weights and per-share values for each. State the probability-weighted IV and also state the explicit downside per-share value and explicit upside per-share value separately. The downside scenario serves margin-of-safety analysis (most relevant for situational mispricing and speculative classifications). The upside scenario serves multi-year compounding analysis (most relevant for compounder and emerging compounder classifications). Both are required regardless of classification.
+
+CONSERVATIVE INTRINSIC VALUE
+State the conservative per-share intrinsic value as a single number.
+
+MARGIN OF SAFETY
+State the margin of safety to the conservative IV. Also state the margin of safety to the explicit downside scenario per-share value. The downside margin of safety is the honest number; the weighted margin of safety can be misleading when the downside scenario is not far below the current price.
+
+SENSITIVITY
+Identify the single assumption (across all segments if SOTP, across all scenarios) that would most increase the IV if shifted to its aggressive version, and state by how much.
+
+WHERE THIS IV COULD BE WRONG
+In two or three sentences, identify the most likely reason this IV is too high despite the conservative approach. Be specific about which assumption, segment, or scenario weighting is the weakest point.
+
+7. WHERE DEEPER WORK WOULD MOST LIKELY CHANGE THE CONCLUSIONS
+Identify the three to five specific pieces of original analytical work that would most likely strengthen or weaken the thesis, and which direction each would push it. These are not Fiscal verification tasks (which are in section 8). These are original research: channel checks, building a model from the 10-K, reading specific disclosures in full, talking to former employees, analyzing competitor financials, pulling primary data, reading the supply-side reaction on forums, modeling capital return at various trajectories.
+
+For each piece of work, state:
+   - What the work is, specifically
+   - Which assumption or scenario weight it would most affect
+   - Which direction it would likely push the conclusion (stronger, weaker, or could go either way)
+   - Roughly how much time the work would take (hours, days, weeks)
+
+This section is the document's most actionable output. It tells the investor where to spend the next research hour.
+
+8. VERIFY ON FISCAL
+End with a numbered checklist of the specific items the investor should verify on Fiscal before acting on any conclusion from this document. These are mechanical fact-checks of specific claims made in sections 1-6: financial figures, segment disclosures, guidance ranges, share counts, debt covenants, insider activity, restated financials, contingent liabilities. This is distinct from section 7's original research agenda. Aim for 10-15 specific verification items.`;
+
+function renderMexample() {
+  const el = document.getElementById('mexample-prompt-text');
+  if (el) el.textContent = RESEARCH_PROMPT;
+  const lbl = document.getElementById('mexample-copy-label');
+  const btn = document.getElementById('mexample-copy-btn');
+  if (lbl) lbl.textContent = 'Copy prompt';
+  if (btn) btn.classList.remove('is-copied');
+}
+
+function copyResearchPrompt() {
+  const onDone = () => {
+    const lbl = document.getElementById('mexample-copy-label');
+    const btn = document.getElementById('mexample-copy-btn');
+    if (lbl) lbl.textContent = 'Copied ✓';
+    if (btn) btn.classList.add('is-copied');
+    setTimeout(() => {
+      if (lbl) lbl.textContent = 'Copy prompt';
+      if (btn) btn.classList.remove('is-copied');
+    }, 1800);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(RESEARCH_PROMPT).then(onDone).catch(() => _fallbackCopyText(RESEARCH_PROMPT, onDone));
+  } else {
+    _fallbackCopyText(RESEARCH_PROMPT, onDone);
+  }
+}
+function _fallbackCopyText(text, cb) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (cb) cb();
+  } catch (_) {}
+}
+
 function onHurdleEditInput(input) {
   const raw = parseInt(input.value, 10);
   if (!raw || raw < 5 || raw > 50) return;
@@ -19917,22 +20824,28 @@ function showInfoModal(key) {
     bodyEl.classList.remove('is-html');
     bodyEl.textContent = body;
   }
-  // Editable hurdle rate — injected after body copy when flagged
+  // Editable hurdle rate — iOS-style scroll wheel constrained to defensible
+  // round numbers. The centered row is the selection.
   if (m.edit === 'hurdle') {
-    const rate = state.memo.hurdleRate || state.defaultHurdleRate || 20;
+    const rates = [15, 20, 25, 30, 35, 40, 45, 50];
+    const stateRate = state.memo.hurdleRate || state.defaultHurdleRate || 20;
+    const items = rates.map(r => {
+      const label = (r === 50 ? '50%+' : r + '%') + ' per year';
+      return `<div class="hurdle-wheel-item" data-rate="${r}">${label}</div>`;
+    }).join('');
     bodyEl.innerHTML += `
-      <div class="hurdle-edit-row">
-        <span class="hurdle-edit-lbl">Your standard</span>
-        <div>
-          <div class="hurdle-edit-input-wrap">
-            <input class="hurdle-edit-input" id="hurdle-edit-val" type="number"
-                   min="5" max="50" step="1" value="${rate}"
-                   inputmode="numeric" oninput="onHurdleEditInput(this)">
-            <span class="hurdle-edit-unit">% per year</span>
+      <div class="hurdle-wheel-picker">
+        <div class="hurdle-wheel-eyebrow">Your standard</div>
+        <div class="hurdle-wheel">
+          <div class="hurdle-wheel-selection"></div>
+          <div class="hurdle-wheel-fade hurdle-wheel-fade--top"></div>
+          <div class="hurdle-wheel-fade hurdle-wheel-fade--bottom"></div>
+          <div class="hurdle-wheel-scroll" id="hurdle-wheel-scroll" onscroll="onHurdleWheelScroll()">
+            ${items}
           </div>
-          <div class="hurdle-edit-hint">5 – 50%</div>
         </div>
       </div>`;
+    setTimeout(() => initHurdleWheel(stateRate), 0);
   }
   // Reset scroll to top so the user always lands at the first sentence
   const sheetEl = bodyEl.closest('.info-modal-sheet');
@@ -21647,7 +22560,8 @@ document.addEventListener('DOMContentLoaded', () => {
   hydrateAckCheckboxes();       // reflect persisted "don't show again" flags on mintro + mresearch
   document.querySelectorAll('button:not([type])').forEach(b => b.type = 'button');
   fitScaler();
-  go('s10');
+  // MVP V1 boots straight into the allocation fork; everything else lands on the dashboard.
+  if (state.version === 'mvp1') { startMvpFirstFlow(); } else { go('s10'); }
 });
 
 /* ═══════════════════════════════════════════════════════════════
