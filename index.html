@@ -7181,10 +7181,107 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .demo-fill-btn:hover { background: rgba(40,40,40,0.95); color: #E3E2E2; }
 
-/* ── M6 reset button (below demo-fill) ─────────────── */
-.m6-reset-btn {
+/* ── Engineering-notes toggle button (below demo-fill) ─────────────
+   When on (.is-on), shows a side panel of engineering notes with numbered
+   badges pinned to UI elements + SVG connector lines. */
+.eng-notes-btn {
   position: fixed;
   top: 162px; right: 18px;
+  width: 40px; height: 40px;
+  background: rgba(28,28,28,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  display: grid; place-items: center;
+  z-index: 1000; cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.eng-notes-btn:hover { background: rgba(40,40,40,0.95); color: #E3E2E2; }
+.eng-notes-btn.is-on { background: rgba(217,164,65,0.18); color: var(--accent-amber); border-color: rgba(217,164,65,0.45); }
+
+/* Connector-line SVG layer — fixed full-viewport, draws on top of everything */
+.eng-notes-lines {
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 1100;
+  display: none;
+}
+body.eng-notes-on .eng-notes-lines { display: block; }
+
+/* Numbered badges pinned to annotated elements */
+.eng-note-badge {
+  position: fixed;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  color: #000;
+  font: 600 10px/18px var(--font);
+  text-align: center;
+  z-index: 1101;
+  pointer-events: none;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.6);
+}
+
+/* Two side panels in the empty space outside the phone frame.
+   left panel hosts cards whose target sits on the left half of the phone;
+   right panel hosts the rest. Each panel's exact left/right is computed
+   in renderEngNotes() so it sits flush against the empty space. */
+.eng-notes-panel {
+  position: fixed;
+  top: 60px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  z-index: 1102;
+  display: none;
+  flex-direction: column; gap: 12px;
+  padding: 4px 0;
+}
+body.eng-notes-on .eng-notes-panel { display: flex; }
+.eng-note-card {
+  background: rgba(28,28,28,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: var(--font);
+  color: var(--s);
+}
+.eng-note-card-head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.eng-note-card-num {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-amber); color: #000;
+  font: 600 10px/18px var(--font); text-align: center;
+  flex-shrink: 0;
+}
+.eng-note-card-label {
+  font-size: 12px; font-weight: 500; color: var(--p);
+  letter-spacing: -0.01em;
+}
+.eng-note-card-body {
+  font-size: 11.5px; color: var(--t);
+  line-height: 1.55; letter-spacing: -0.005em;
+  white-space: pre-line;
+}
+.eng-notes-panel-head {
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent-amber); margin: 0 4px 4px;
+  font-family: var(--font); font-weight: 500;
+}
+.eng-notes-empty {
+  font-size: 12px; color: var(--t-800); padding: 12px 8px;
+  font-family: var(--font);
+}
+
+/* ── M6 reset button (below demo-fill + engineering notes) ─────────────── */
+.m6-reset-btn {
+  position: fixed;
+  top: 210px; right: 18px;
   width: 40px; height: 40px;
   background: rgba(28,28,28,0.85);
   backdrop-filter: blur(8px);
@@ -7776,6 +7873,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
 <!-- ═════════════ Demo fill (below artboard) ═════════════ -->
 <button class="demo-fill-btn" id="demoFillBtn" title="Fill with demo data" onclick="fillDemoData()">✦</button>
+
+<!-- ═════════════ Engineering notes overlay toggle ═════════════ -->
+<button class="eng-notes-btn" id="engNotesBtn" title="Toggle engineering notes" onclick="toggleEngNotes()">
+  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+    <rect x="3" y="2" width="12" height="14" rx="1"/>
+    <line x1="6" y1="6" x2="12" y2="6"/>
+    <line x1="6" y1="9" x2="12" y2="9"/>
+    <line x1="6" y1="12" x2="10" y2="12"/>
+  </svg>
+</button>
+
+<!-- Engineering-notes overlay (badges + left/right side panels + lines) -->
+<svg id="engNotesLines" class="eng-notes-lines" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="engNotesPanelLeft"  class="eng-notes-panel eng-notes-panel--left"></div>
+<div id="engNotesPanelRight" class="eng-notes-panel eng-notes-panel--right"></div>
 
 <!-- ═════════════ M6 reset button (below demo fill) ═════════════ -->
 <button class="m6-reset-btn" id="m6ResetBtn" title="Reset to fresh state" onclick="resetM6Screen()">
@@ -13963,6 +14075,322 @@ function resetM6Screen() {
   try { persistMemoDraft(); } catch(_) {}
 }
 
+/* ═════════════════════════════════════════════════════════════════════
+   ENGINEERING-NOTES OVERLAY
+   Toggled via the 📝-style button in the right rail. When on, each screen
+   gets numbered badges pinned to UI elements and a side panel of cards
+   describing what they are, whether they're dynamic, and how they behave.
+   Targeted at engineers who get this file as a spec.
+   ═════════════════════════════════════════════════════════════════════ */
+/* Notes are written for an engineer reading the file cold — plain English,
+   focused on what each element does and whether it's dynamic. Implementation
+   details (function names, state keys) are deliberately avoided. */
+const ENG_NOTES = {
+  /* ─── First-time flow ──────────────────────────────────────────────── */
+  mfork: { items: [
+    { sel: '.scr[data-id="mfork"] .mfork-title', label: 'Decision question',
+      note: 'The first question of the memo flow. Tap the ↗ icon for an explanation of the two allocation types.' },
+    { sel: '.scr[data-id="mfork"] #mfork-opt-active', label: 'Active allocation',
+      note: 'The user is claiming an edge. Selecting this routes them through the full investor-memo flow.' },
+    { sel: '.scr[data-id="mfork"] #mfork-opt-core', label: 'Core / Treasury',
+      note: 'The user is not claiming an edge — broad-market exposure or liquidity. Routes through a lighter allocation-memo flow.' },
+    { sel: '.scr[data-id="mfork"] #mfork-continue', label: 'Continue',
+      note: 'Stays locked until one option is selected.' },
+  ]},
+
+  m1: { items: [
+    { sel: '.scr[data-id="m1"] .memo-header-title', label: 'Step title',
+      note: 'Step 1 of the memo. Tap the ↗ icon to see definitions for each classification.' },
+    { sel: '.scr[data-id="m1"] .memo-header-meta', label: 'Step counter',
+      note: 'Shows the user\'s progress through the memo. Updates automatically as they advance.' },
+    { sel: '.scr[data-id="m1"] .memo-header-right', label: 'Context label',
+      note: 'Shows the ticker, the memo version, and the allocation type the user chose on the previous screen.' },
+    { sel: '.scr[data-id="m1"] [data-list="m1-type"]', label: 'Classification options',
+      note: 'Four mutually exclusive choices. The descriptions are fixed guidance copy — they don\'t change with state.' },
+    { sel: '.scr[data-id="m1"] #m1-next', label: 'Continue',
+      note: 'Locked until the user picks a classification.' },
+    { sel: '.scr[data-id="m1"] .memo-body--reveal', label: 'Entry animation',
+      note: 'Intentional staged entrance. The header appears immediately; the body and continue arrow fade up after a short delay (~500ms). This gives the user a beat to read the page title and understand the step before the choices appear — not a perceived lag.' },
+  ]},
+
+  m1b: { items: [
+    { sel: '.scr[data-id="m1b"] .memo-header-title', label: 'Step title',
+      note: 'Step 2. Tap the ↗ icon for an explanation of how to think about sizing.' },
+    { sel: '.scr[data-id="m1b"] .memo-header-right', label: 'Context label',
+      note: 'Now shows the classification chosen on the previous step, so the user can see what they\'re sizing.' },
+    { sel: '.scr[data-id="m1b"] .memo-subhead', label: 'Convention note',
+      note: 'Reminds the user that the percentage ranges are common conventions, not enforced limits.' },
+    { sel: '.scr[data-id="m1b"] [data-list="m1-size"]', label: 'Size choices',
+      note: 'The "Approximately …%" caption under each option is fixed guidance — the actual allocation isn\'t enforced.' },
+    { sel: '.scr[data-id="m1b"] #m1b-next', label: 'Continue',
+      note: 'Locked until the user picks a size.' },
+    { sel: '.scr[data-id="m1b"] .memo-body--reveal', label: 'Entry animation',
+      note: 'Intentional staged entrance. The header appears immediately; the body and continue arrow fade up after a short delay (~500ms). This gives the user a beat to read the page title and understand the step before the choices appear — not a perceived lag.' },
+  ]},
+
+  m5: { items: [
+    { sel: '.scr[data-id="m5"] #m5-title', label: 'Step title',
+      note: 'Step 3. Tap the ↗ icon to open a worked example of a complete memo.' },
+    { sel: '.scr[data-id="m5"] #m5-subtitle', label: 'Framing copy',
+      note: 'Frames what the user is about to write — the discipline of writing the case before committing capital.' },
+    { sel: '.scr[data-id="m5"] #m5-note', label: 'Memo composer',
+      note: 'Free-form text input. The box auto-grows as the user types so nothing gets clipped.' },
+    { sel: '.scr[data-id="m5"] .composer-toolbar', label: 'Paste and attach',
+      note: 'Quick input — paste from clipboard (e.g. AI output) or upload a PDF/Word doc as the memo.' },
+    { sel: '.scr[data-id="m5"] #m5-next', label: 'Continue',
+      note: 'Not locked — writing a note is encouraged but not required to proceed.' },
+    { sel: '.scr[data-id="m5"] .memo-body--reveal', label: 'Entry animation',
+      note: 'Intentional staged entrance. The header appears immediately; the composer and continue arrow fade up after a short delay (~500ms). This gives the user a beat to read the page title and understand the step before the input appears — not a perceived lag.' },
+  ]},
+
+  s12: { items: [
+    { sel: '.scr[data-id="s12"] .memo-header-title', label: 'Step title',
+      note: 'Step 4 — calibration. The user records how confident they are that this bet clears the compounding standard.' },
+    { sel: '.scr[data-id="s12"] .hurdle-display-static', label: 'Compounding standard',
+      note: 'The annual return the user expects from a Compounder. Tap to see why it defaults to 20% and to adjust it.' },
+    { sel: '.scr[data-id="s12"] [data-list="s12-horizon-list"]', label: 'Horizon choice',
+      note: 'The window of time the user is making this prediction over. One of 1, 3, or 5+ years.' },
+    { sel: '.scr[data-id="s12"] .uw-cal-row', label: 'Confidence slider',
+      note: 'The user\'s probability that the position clears the compounding standard over the chosen horizon. This is the core calibration data the app tracks over time.' },
+    { sel: '.scr[data-id="s12"] .memo-body--reveal', label: 'Entry animation',
+      note: 'Intentional staged entrance. The header appears immediately; the hurdle, horizon and slider modules fade up after a short delay (~500ms). This gives the user a beat to read the page title and understand the step before the calibration inputs appear — not a perceived lag.' },
+  ]},
+
+  m6: { items: [
+    { sel: '.scr[data-id="m6"] .m6-ticker-hero', label: 'Position hero',
+      note: 'The ticker the memo is about. Same as the user picked at the start of the flow.' },
+    { sel: '.scr[data-id="m6"] #m6-live-badge', label: 'Live indicator',
+      note: 'Only shows for a returning user — signals that this is an existing live position, not a brand-new buy.' },
+    { sel: '.scr[data-id="m6"] .alloc-type-lbl', label: 'Allocation + classify',
+      note: 'The highlighted block summarises the allocation type and classification picked earlier — the two facts that define the memo.' },
+    { sel: '.scr[data-id="m6"] #m6-position-status', label: 'Current call',
+      note: 'Only shows on returning visits. Lists the probability and horizon already on file for this position, plus when they were set.' },
+    { sel: '.scr[data-id="m6"] .m6-stats-strip', label: 'Stats strip',
+      note: 'Quick read of the calibration numbers (probability + horizon) the user just set on the previous step.' },
+    { sel: '.scr[data-id="m6"] .m6-section-edit-hint', label: 'Tap to update',
+      note: 'Every memo row below is tappable — taps route back to the relevant step so the user can revise. Saving creates a new version; older ones stay in history.' },
+    { sel: '.scr[data-id="m6"] #m6-note-row', label: 'Memo body',
+      note: 'The free-form memo the user wrote on step 3. Paragraph breaks are preserved.' },
+    { sel: '.scr[data-id="m6"] #pt-step', label: 'Pressure test',
+      note: 'A separate gate before the seal. Tapping the CTA opens a side drawer with prompts the user runs through their own AI tool. The user then checks the box to confirm they reviewed the results.' },
+    { sel: '.scr[data-id="m6"] #m6-seal-btn', label: 'Seal arrow',
+      note: 'Slides up only after the pressure test is acknowledged. On a returning visit, if the user has edited anything, tapping it surfaces a confirmation that a new version of the memo will be created.' },
+  ]},
+
+  s8: { items: [
+    { sel: '.scr[data-id="s8"] .h2', label: 'Order header',
+      note: 'Confirms the ticker and the action (Buy or Sell) for the order being entered.' },
+    { sel: '.scr[data-id="s8"] #s8-memo-toprows', label: 'Memo summary',
+      note: 'Read-only snapshot of the memo the user just sealed. The sub-text under Type and Size explains the choice in plain language.' },
+    { sel: '.scr[data-id="s8"] #s8-limit-row', label: 'Limit price',
+      note: 'Tappable. Opens the numpad so the user can enter the price they\'ll pay. Showing the live market price below as a reference.' },
+    { sel: '.scr[data-id="s8"] #s8-shares-row', label: 'Shares',
+      note: 'Tappable. Opens the numpad for the share count. The portfolio weight + estimated cost above update live as this number changes.' },
+    { sel: '.scr[data-id="s8"] #s8-weight', label: 'Estimated weight',
+      note: 'Updates live based on shares × price ÷ portfolio value.' },
+    { sel: '.scr[data-id="s8"] #s8-memo-section', label: 'Memo on file',
+      note: 'The full calibration record carried into this order ticket — read-only.' },
+  ]},
+
+  s4: { items: [
+    { sel: '.scr[data-id="s4"] .s4r-ticker', label: 'Order hero',
+      note: 'The ticker plus the action (Buy / Sell) the user is about to confirm.' },
+    { sel: '.scr[data-id="s4"] .s4r-stats', label: 'Order stats',
+      note: 'Quick read of the three things the user just entered: weight, shares, cost.' },
+    { sel: '.scr[data-id="s4"] #s4-memo-section', label: 'Memo recap',
+      note: 'The full investor memo carried into the confirmation screen. The user re-reads it before holding to confirm.' },
+    { sel: '.scr[data-id="s4"] .act-btn', label: 'Paper trade',
+      note: 'Lets the user log this decision as a paper trade instead of buying. Doesn\'t place a real order, but the memo and calibration are still recorded for tracking.' },
+    { sel: '.scr[data-id="s4"] #s4-exec', label: 'Hold to confirm',
+      note: 'The actual order trigger. Hold to confirm so the user can\'t fire it by accident; releases reset the progress bar.' },
+  ]},
+
+  s9: { items: [
+    { sel: '.scr[data-id="s9"] #s9-filled-at', label: 'Fill timestamp',
+      note: 'Generated at execution. Shows the time and date the order filled.' },
+    { sel: '.scr[data-id="s9"] #s9-event-label', label: 'Event label',
+      note: 'Reads "Order Filled" on a buy, "Position Reduced" on a partial sell, "Position Closed" on a full exit. Mirrors what just happened.' },
+    { sel: '.scr[data-id="s9"] .s9-stats-strip', label: 'Trade stats',
+      note: 'Shares filled, total cost, resulting portfolio weight.' },
+    { sel: '.scr[data-id="s9"] #s9-memo-section', label: 'Memo recorded',
+      note: 'Confirms the memo + calibration are permanently on file for this trade. Future capital decisions reuse this memo unless the user revises it.' },
+    { sel: '.scr[data-id="s9"] .lpb', label: 'Done',
+      note: 'Returns the user to the stock page (or restarts the demo).' },
+  ]},
+
+  /* ─── Returning-only screens ──────────────────────────────────────── */
+  s0: { items: [
+    { sel: '.scr[data-id="s0"] #s0-cta-foot', label: 'Capital decision',
+      note: 'The only action on this stripped page for MVP V1 returning users. Opens a sheet asking whether the user wants to increase, reduce, or exit the position.' },
+  ]},
+
+  msell: { items: [
+    { sel: '.scr[data-id="msell"] #msell-title', label: 'Action title',
+      note: '"Reduce position" or "Close position", depending on what the user picked on the Capital-decision sheet.' },
+    { sel: '.scr[data-id="msell"] #msell-eyebrow', label: 'Reason prompt',
+      note: 'Asks the user to name why they\'re selling. The wording changes between Reduce and Exit.' },
+    { sel: '.scr[data-id="msell"] [data-list="msell-reason"]', label: 'Reason choices',
+      note: 'Five canonical reasons. The reason is recorded with the sell so the app can later distinguish thesis breaks from price-driven exits.' },
+    { sel: '.scr[data-id="msell"] #msell-next', label: 'Continue',
+      note: 'Locked until a reason is chosen. Routes to the memo review for a final read before the sell order.' },
+    { sel: '.scr[data-id="msell"] .memo-body--reveal', label: 'Entry animation',
+      note: 'Intentional staged entrance. The header appears immediately; the reason options and continue arrow fade up after a short delay (~500ms). This gives the user a beat to register the question before the choices appear — not a perceived lag.' },
+  ]},
+
+  /* ─── Transaction record (drawer) ─────────────────────────────────── */
+  mvprecord: { items: [
+    { sel: '.scr[data-id="mvprecord"] #mvprec-date', label: 'Record date',
+      note: 'When the transaction was recorded.' },
+    { sel: '.scr[data-id="mvprecord"] .s9-ticker-hero', label: 'Position hero',
+      note: 'The ticker the record is for.' },
+    { sel: '.scr[data-id="mvprecord"] .m6-stats-strip', label: 'Trade stats',
+      note: 'The exact shares, cost, and weight at the time of the recorded transaction.' },
+    { sel: '.scr[data-id="mvprecord"] #mvprec-mtype', label: 'Type and size',
+      note: 'The classification + size from the investor memo, with their explanatory captions.' },
+    { sel: '.scr[data-id="mvprecord"] #mvprec-note', label: 'Memo body',
+      note: 'The full memo as written at the time of the transaction.' },
+    { sel: '.scr[data-id="mvprecord"] #mvprec-prob', label: 'Calibration',
+      note: 'The probability and horizon the user committed to at this trade — used later for scoring how accurate they were.' },
+  ]},
+};
+
+function toggleEngNotes() {
+  const on = !document.body.classList.contains('eng-notes-on');
+  document.body.classList.toggle('eng-notes-on', on);
+  const btn = document.getElementById('engNotesBtn');
+  if (btn) btn.classList.toggle('is-on', on);
+  if (on) renderEngNotes();
+  else clearEngNotes();
+}
+
+function clearEngNotes() {
+  document.querySelectorAll('.eng-note-badge').forEach(b => b.remove());
+  ['engNotesPanelLeft', 'engNotesPanelRight'].forEach(id => {
+    const p = document.getElementById(id);
+    if (p) p.innerHTML = '';
+  });
+  const svg = document.getElementById('engNotesLines');
+  if (svg) svg.innerHTML = '';
+}
+
+/* Render annotations for the current screen. Cards are placed in the empty
+   space on whichever side of the phone the target sits, lines route from
+   the inner edge of the card straight across to the target. */
+function renderEngNotes() {
+  clearEngNotes();
+  if (!document.body.classList.contains('eng-notes-on')) return;
+  const screenId = window._currentScreenId;
+  const cfg = ENG_NOTES[screenId];
+  const panelL = document.getElementById('engNotesPanelLeft');
+  const panelR = document.getElementById('engNotesPanelRight');
+  const svg    = document.getElementById('engNotesLines');
+  const phone  = document.querySelector('.frame-wrap');
+  if (!panelL || !panelR || !svg || !phone) return;
+
+  const phoneRect = phone.getBoundingClientRect();
+  const phoneCenterX = phoneRect.left + phoneRect.width / 2;
+
+  // Position the two panels in the empty space outside the phone.
+  // Each panel is ~260px wide, separated from the phone by ~24px.
+  const CARD_W = 260;
+  const GAP    = 24;
+  const leftEdge  = Math.max(16, phoneRect.left - CARD_W - GAP);
+  const rightEdge = Math.min(window.innerWidth - CARD_W - 16, phoneRect.right + GAP);
+  panelL.style.left  = leftEdge  + 'px';
+  panelL.style.width = CARD_W + 'px';
+  panelR.style.left  = rightEdge + 'px';
+  panelR.style.width = CARD_W + 'px';
+
+  // Empty-state copy
+  if (!cfg || !cfg.items || !cfg.items.length) {
+    const empty = document.createElement('div');
+    empty.className = 'eng-notes-empty';
+    empty.textContent = 'No notes for this screen yet.';
+    panelR.appendChild(empty);
+    return;
+  }
+
+  // Each annotation: place card on the same side as the target, drop a
+  // badge on the target's edge nearest the card.
+  cfg.items.forEach((item, i) => {
+    const target = document.querySelector(item.sel);
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) return;
+    const targetCenterX = rect.left + rect.width / 2;
+    const onLeftSide = targetCenterX < phoneCenterX;
+    const panel = onLeftSide ? panelL : panelR;
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'eng-note-card';
+    card.id = 'eng-note-card-' + i;
+    card.dataset.side = onLeftSide ? 'left' : 'right';
+    card.innerHTML = `
+      <div class="eng-note-card-head">
+        <div class="eng-note-card-num">${i + 1}</div>
+        <div class="eng-note-card-label">${item.label}</div>
+      </div>
+      <div class="eng-note-card-body">${item.note}</div>`;
+    panel.appendChild(card);
+
+    // Badge — on the side of the target facing the card
+    const badge = document.createElement('div');
+    badge.className = 'eng-note-badge';
+    badge.id = 'eng-note-badge-' + i;
+    badge.textContent = String(i + 1);
+    if (onLeftSide) {
+      badge.style.left = Math.max(rect.left - 22, 4) + 'px';
+    } else {
+      badge.style.left = Math.min(rect.right + 4, window.innerWidth - 22) + 'px';
+    }
+    badge.style.top = Math.max(rect.top + rect.height / 2 - 9, 4) + 'px';
+    document.body.appendChild(badge);
+  });
+
+  // Draw connecting lines after layout settles
+  requestAnimationFrame(() => drawEngNoteLines(cfg.items.length));
+}
+
+/* Lines: from card's inner edge (right edge for left-side cards, left edge
+   for right-side cards) straight to the badge — short horizontal stub from
+   the card, then diagonal to the badge center. */
+function drawEngNoteLines(count) {
+  const svg = document.getElementById('engNotesLines');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  svg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+  for (let i = 0; i < count; i++) {
+    const badge = document.getElementById('eng-note-badge-' + i);
+    const card  = document.getElementById('eng-note-card-' + i);
+    if (!badge || !card) continue;
+    const b = badge.getBoundingClientRect();
+    const c = card.getBoundingClientRect();
+    const onLeft = card.dataset.side === 'left';
+    // Card's inner edge (the side facing the phone)
+    const x1 = onLeft ? c.right : c.left;
+    const y1 = c.top + c.height / 2;
+    // Badge center
+    const x2 = b.left + b.width / 2;
+    const y2 = b.top  + b.height / 2;
+    // Short stub away from the card, then diagonal to the badge
+    const stub = 8;
+    const stubX = onLeft ? x1 + stub : x1 - stub;
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', `M ${x1} ${y1} L ${stubX} ${y1} L ${x2} ${y2}`);
+    path.setAttribute('stroke', 'rgba(217,164,65,0.6)');
+    path.setAttribute('stroke-width', '1.25');
+    path.setAttribute('fill', 'none');
+    svg.appendChild(path);
+  }
+}
+
+// Redraw on resize so lines/badges follow the layout
+window.addEventListener('resize', () => {
+  if (document.body.classList.contains('eng-notes-on')) renderEngNotes();
+});
+
 function fillDemoData() {
   const id     = window._currentScreenId || '';
   const filled = !!window._demoFilled[id];
@@ -14811,6 +15239,10 @@ function go(id) {
   if (id === 'm6') try { renderPtStep(); } catch(_) {}
   // Sync ✦ demo-fill button to show filled/empty state for the new screen
   refreshDemoBtnState();
+  // Re-render the engineering-notes overlay for the new screen if it's on
+  if (document.body.classList.contains('eng-notes-on')) {
+    requestAnimationFrame(() => renderEngNotes());
+  }
 }
 
 /* ═════════════════════════════════════════════════
