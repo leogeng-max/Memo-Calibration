@@ -1247,7 +1247,7 @@ body.is-fullscreen .artboard-toggle {
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--t-800);
+  color: var(--p);
   text-align: right;
 }
 .memo-header .memo-header-meta  { margin-top: 0; align-self: start; grid-column: 1; grid-row: 2; }
@@ -2055,6 +2055,12 @@ body.is-fullscreen .artboard-toggle {
    memo-review surface: no live-data, no transactions, no orders. Just the
    artifact. Visual treatment differs from the normal stock page so users
    know they're reading a reference, not their live position. */
+/* MVP V1: stripped-down stock page — hide all the position-artifact content
+   and leave only the Capital-decision CTA (the foot sits outside .body-scroll,
+   so it stays). Scoped to is-mvp-min, which is only applied when the active
+   version is MVP V1 — V4.5 is unaffected. */
+.scr[data-id="s0"].is-mvp-min .body-scroll > * { display: none !important; }
+
 .scr[data-id="s0"].is-example-mode #s0-delta,
 .scr[data-id="s0"].is-example-mode #s0-price-cad,
 .scr[data-id="s0"].is-example-mode #s0-perf-section,
@@ -5174,8 +5180,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   text-transform: uppercase; color: var(--t); margin-bottom: 6px;
 }
 .s4r-row {
-  display: grid; grid-template-columns: 68px 1fr;
-  gap: 14px; padding: 10px 0;
+  display: grid; grid-template-columns: 1fr;
+  gap: 5px; padding: 12px 0;
   border-bottom: 1px solid #1A1A1A; align-items: start;
 }
 .s4r-row:last-child { border-bottom: none; }
@@ -6952,6 +6958,34 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   text-transform: uppercase;
   margin-bottom: 16px;
 }
+/* Live indicator — pulsating green dot + "LIVE", top-right of the ledger
+   header. Shown when reviewing an existing (live) position. */
+.m6-live-badge {
+  position: absolute;
+  top: -2px; right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #3FB950;
+  z-index: 2;
+}
+.m6-live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #3FB950;
+  animation: m6-live-pulse 1.6s ease-in-out infinite;
+}
+@keyframes m6-live-pulse {
+  0%, 100% { opacity: 1;   box-shadow: 0 0 0 0 rgba(63,185,80,0.55); }
+  50%      { opacity: 0.45; box-shadow: 0 0 0 5px rgba(63,185,80,0); }
+}
+/* Hide the institutional corner mark when the LIVE badge occupies that spot. */
+.m6-ledger-header.has-live::before { display: none; }
 .m6-ledger .m6-ticker-hero {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 54px;
@@ -6963,11 +6997,23 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .m6-ledger-classify {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 11px;
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  color: var(--t);
-  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--s);
+  margin-bottom: 18px;     /* space before the gray doc-label / date sub block */
+}
+/* Override the small dim default for alloc-type-lbl when it sits inside the
+   m6 ledger header — it becomes a highlighted primary metadata line directly
+   under the AAPL hero, paired with classify above the dim sub block. */
+.m6-ledger-header .alloc-type-lbl {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--p);
+  text-transform: none;
+  text-align: left;
+  margin: 0 0 4px 0;
 }
 .m6-ledger-doc-label {
   font-family: 'Inter', var(--font), sans-serif;
@@ -6984,6 +7030,18 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   letter-spacing: 0.04em;
   margin-top: 4px;
 }
+
+/* Position status block — shown on m6 for the MVP V1 returning flow */
+.m6-position-status {
+  border-top: 1px solid #1C1C1C;
+  border-bottom: 1px solid #1C1C1C;
+  padding: 6px 0;
+  margin-bottom: 22px;
+}
+.m6-posrow { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; }
+.m6-posrow-k { font-family: 'Inter', var(--font), sans-serif; font-size: 12px; color: var(--t); letter-spacing: -0.01em; }
+.m6-posrow-v { font-family: 'Inter', var(--font), sans-serif; font-size: 12px; color: var(--s); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.m6-posrow-v--dim { color: var(--t-800); }
 
 /* Stats strip — IV · PROB · HRZ in three equal columns */
 .m6-stats-strip {
@@ -7025,9 +7083,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-bottom: 0;
 }
 .m6-ledger .memo-row {
-  grid-template-columns: 60px 1fr;
-  gap: 14px;
-  padding: 11px 0;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: 14px 0;
   border-top: none;
   border-bottom: 1px solid #1A1A1A;
 }
@@ -7048,6 +7106,14 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: var(--s);
   line-height: 1.55;
 }
+/* Free-form memo text — preserve paragraph breaks (\n\n) when rendered
+   into a div via textContent. Used everywhere the MVP V1 memo body appears. */
+#m6-note-display,
+#s4-memo-note,
+#s9-memo-note-val,
+#mvprec-note {
+  white-space: pre-line;
+}
 .m6-ledger .memo-row .v .memo-row-sub {
   font-size: 11px;
   font-weight: 300;
@@ -7055,6 +7121,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   line-height: 1.5;
   letter-spacing: -0.005em;
   margin-top: 3px;
+}
+/* Current portfolio weight under the SIZE row — slightly brighter than the
+   suggested range so the user can compare at a glance. */
+.memo-row-now,
+.m6-ledger .memo-row .v .memo-row-now {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  margin-top: 2px;
 }
 .m6-ledger .m6-immutability {
   font-family: 'Inter', var(--font), sans-serif;
@@ -7530,14 +7606,18 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
 /* ═══ Pressure Test Drawer ═══ */
 /* ── Pressure Test required step ── */
-.pt-step { margin:0 16px 10px; border:1px solid rgba(255,255,255,0.1); padding:12px 14px; transition:border-color 200ms; }
+.pt-step { position:relative; margin:0 16px 10px; border:1px solid rgba(255,255,255,0.1); padding:14px 14px 16px; transition:border-color 200ms; }
 .pt-step.is-resolved { border-color:rgba(255,255,255,0.07); }
 .pt-step-head { font-family:var(--font); font-size:9px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--t); margin-bottom:4px; }
-.pt-step-sub { font-family:var(--font); font-size:11px; color:rgba(255,255,255,0.28); margin-bottom:12px; line-height:1.4; letter-spacing:-0.01em; }
+/* Sell-reason radio list (Reduce / Exit) inside the pt-step box */
+.m6-reason-list { display:flex; flex-direction:column; margin-top:8px; }
+.m6-reason-row { padding:11px 0; }
+.m6-reason-row .lbl-block .head { font-size:13px; }
+.pt-step-sub { font-family:var(--font); font-size:12px; color:var(--t-800); margin-top:4px; margin-bottom:0; line-height:1.45; letter-spacing:-0.01em; }
 .pt-step-acts { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.pt-step-run { font-family:var(--font); font-size:11px; font-weight:400; letter-spacing:0.02em; color:var(--p); background:none; border:none; padding:7px 0; cursor:pointer; transition:color 150ms; }
-.pt-step-run:hover { color:rgba(255,255,255,0.7); }
-.pt-step-skip { font-family:var(--font); font-size:11px; color:rgba(255,255,255,0.28); background:none; border:none; cursor:pointer; padding:4px 0; transition:color 120ms; }
+.pt-step-run { display:block; font-family:var(--font); font-size:14px; font-weight:500; letter-spacing:-0.01em; color:var(--p); background:none; border:none; padding:0; cursor:pointer; text-align:left; transition:color 150ms; }
+.pt-step-run:hover { color:rgba(255,255,255,0.85); }
+.pt-step-skip { position:absolute; top:12px; right:14px; font-family:var(--font); font-size:11px; color:var(--t-800); background:none; border:none; cursor:pointer; padding:0; transition:color 120ms; }
 .pt-step-skip:hover { color:var(--t); }
 .pt-step-status { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .pt-step-status-lbl { font-family:var(--font); font-size:11px; color:var(--t); letter-spacing:-0.01em; }
@@ -7545,6 +7625,11 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .pt-step-redo { font-family:var(--font); font-size:10px; color:rgba(255,255,255,0.6); background:none; border:none; cursor:pointer; padding:0; transition:color 120ms; letter-spacing:-0.01em; }
 .pt-step-redo:hover { color:rgba(255,255,255,0.9); }
 /* PT confirm checkbox — shown after PT is run, user must self-certify */
+.pt-done-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 12px;
+}
+.pt-done-row .pt-confirm-row { margin-top: 0; }
 .pt-confirm-row {
   display: flex; align-items: center; gap: 9px;
   margin-top: 12px; cursor: pointer; user-select: none;
@@ -9326,8 +9411,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <!-- Review rows -->
                 <div>
                   <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">MEMO</div>
-                    <span class="m6-section-edit-hint">Tap each to edit</span>
+                    <div class="m6-ledger-section-head">INVESTOR MEMO</div>
+                    <span class="m6-section-edit-hint">Tap each to update</span>
                   </div>
                   <div class="memo-row" onclick="go('mfork')"><div class="k">Path</div><div class="v">Core / Treasury</div></div>
                   <div class="memo-row" onclick="go('mc2')"><div class="k">Why</div><div class="v" id="mc5-reason">—</div></div>
@@ -10308,38 +10393,32 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 </div>
 
                 <!-- Ledger header -->
-                <div class="m6-ledger-header">
+                <div class="m6-ledger-header" id="m6-ledger-header">
+                  <div class="m6-live-badge" id="m6-live-badge" style="display:none"><span class="m6-live-dot"></span>Live</div>
                   <span id="m6-ticker-step" style="display:none">Review</span>
                   <div class="m6-ledger-meta" id="m6-ticker-meta">9 / 9</div>
                   <div class="m6-ticker-hero"><span class="memo-ctx-ticker">AAPL</span></div>
+                  <!-- Highlighted primary metadata: allocation + classification -->
+                  <div class="alloc-type-lbl">Active allocation</div>
                   <div class="m6-ledger-classify" id="m6-classify">—</div>
                   <div id="m6-title" style="display:none"></div>
-                  <div class="m6-ledger-doc-label">INVESTMENT MEMO · V1</div>
-                  <div class="alloc-type-lbl" style="margin-top:3px;text-align:left">Active allocation</div>
+                  <!-- Gray sub-description: doc label + drafted date -->
+                  <div class="m6-ledger-doc-label" id="m6-doc-label">INVESTMENT MEMO · V1</div>
                   <div id="m6-date" class="m6-ledger-date">—</div>
                 </div>
 
-                <!-- Key metrics strip -->
-                <div class="m6-stats-strip">
-                  <div class="m6-stat-cell">
-                    <div class="m6-stat-lbl">IV</div>
-                    <div class="m6-stat-val" id="m6-iv-stat">—</div>
-                  </div>
-                  <div class="m6-stat-cell">
-                    <div class="m6-stat-lbl">PROB</div>
-                    <div class="m6-stat-val" id="m6-prob-stat">—</div>
-                  </div>
-                  <div class="m6-stat-cell">
-                    <div class="m6-stat-lbl">HRZ</div>
-                    <div class="m6-stat-val" id="m6-hrz-stat">—</div>
-                  </div>
+                <!-- Position status (MVP V1 returning: increase / reduce / exit) -->
+                <div class="m6-position-status" id="m6-position-status" style="display:none">
+                  <div class="m6-posrow"><span class="m6-posrow-k">Probability</span><span class="m6-posrow-v" id="m6-pos-prob">—</span></div>
+                  <div class="m6-posrow"><span class="m6-posrow-k">Horizon</span><span class="m6-posrow-v" id="m6-pos-hrz">—</span></div>
+                  <div class="m6-posrow"><span class="m6-posrow-k">Set on</span><span class="m6-posrow-v m6-posrow-v--dim" id="m6-pos-seton">—</span></div>
                 </div>
 
                 <!-- Memo rows -->
                 <div>
                   <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">MEMO</div>
-                    <span class="m6-section-edit-hint">Tap each to edit</span>
+                    <div class="m6-ledger-section-head">INVESTOR MEMO</div>
+                    <span class="m6-section-edit-hint">Tap each to update</span>
                   </div>
                   <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
                   <div class="memo-row" onclick="editFromReview('m1b')"><div class="k">Size</div><div class="v" id="m6-size">—</div></div>
@@ -10354,38 +10433,115 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 </div>
 
                 <!-- Calibration rows -->
-                <div>
+                <div id="m6-calibration-section">
                   <div class="m6-ledger-section-head">CALIBRATION</div>
                   <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Prob</div><div class="v" id="m6-prob">—</div></div>
                   <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
                 </div>
 
-                <!-- Footer note -->
-                <div class="t-bsm" style="line-height:1.6;color:var(--t-800)">
+                <!-- Footer note (buy / first-time framing) -->
+                <div class="t-bsm" id="m6-buy-footer" style="line-height:1.6;color:var(--t-800)">
                   The memo and calibration are recorded. Future buys of AAPL will skip the memo unless you choose to re-enter it.
                 </div>
 
-                <!-- Immutability notice -->
-                <div class="m6-immutability">
+                <!-- Immutability notice (buy) -->
+                <div class="m6-immutability" id="m6-immutability">
                   This version is permanent once confirmed. Edits create new versions.
                 </div>
+
+                <!-- Footer note (sell: reduce / exit) -->
+                <div class="t-bsm" id="m6-sell-footer" style="line-height:1.6;color:var(--t-800);display:none"></div>
               </div>
             </div>
 
 
-            <!-- Pressure Test — required step before sealing -->
+            <!-- Pressure Test — required step before sealing (buy / increase) -->
             <div class="pt-step" id="pt-step">
-              <div class="pt-step-head">Pressure Test</div>
+              <button class="pt-step-skip" onclick="skipPressureTest()" type="button">Skip for now</button>
+              <button class="pt-step-run" onclick="runPressureTest()" type="button">Pressure Test →</button>
               <div class="pt-step-sub">Challenge this memo before you commit.</div>
-              <div class="pt-step-acts">
-                <button class="pt-step-run" onclick="runPressureTest()" type="button">Run →</button>
-                <button class="pt-step-skip" onclick="skipPressureTest()" type="button">Skip for now</button>
+            </div>
+
+            <!-- Sell reason — replaces the pressure test for Reduce / Exit.
+                 Picking a reason is the deliberate act that unlocks the seal. -->
+            <div class="pt-step" id="m6-sell-reason" style="display:none">
+              <div class="pt-step-head" id="m6-sell-reason-head">Why are you closing this position?</div>
+              <div class="m6-reason-list" data-list="m6-sell-reason">
+                <button class="radio-row m6-reason-row" data-r="thesis"      onclick="selectSellReason('thesis')" type="button"><div class="lbl-block"><div class="head">Thesis no longer holds</div></div><div class="radio-dot"></div></button>
+                <button class="radio-row m6-reason-row" data-r="killline"    onclick="selectSellReason('killline')" type="button"><div class="lbl-block"><div class="head">Hit my exit conditions</div></div><div class="radio-dot"></div></button>
+                <button class="radio-row m6-reason-row" data-r="fairvalue"   onclick="selectSellReason('fairvalue')" type="button"><div class="lbl-block"><div class="head">Fairly valued now</div></div><div class="radio-dot"></div></button>
+                <button class="radio-row m6-reason-row" data-r="betteridea"  onclick="selectSellReason('betteridea')" type="button"><div class="lbl-block"><div class="head">Better opportunity elsewhere</div></div><div class="radio-dot"></div></button>
+                <button class="radio-row m6-reason-row" data-r="capital"     onclick="selectSellReason('capital')" type="button"><div class="lbl-block"><div class="head">Need the capital</div></div><div class="radio-dot"></div></button>
               </div>
             </div>
 
             <!-- Tap-to-continue (slides up once PT confirmed) -->
             <div class="v5-foot">
-              <button class="v5-primary is-arrow m6-hold-btn" id="m6-seal-btn" onclick="commitMemo()" type="button">→</button>
+              <button class="v5-primary is-arrow m6-hold-btn" id="m6-seal-btn" onclick="onM6SealTap()" type="button">→</button>
+            </div>
+
+            <!-- Edit-confirmation modal — appears when the user is on a returning
+                 flow (increase / reduce / exit) and has edited any memo field
+                 before sealing, explaining that a new version is created. -->
+            <div class="v5-modal" id="m6-update-modal">
+              <div class="v5-modal-sheet">
+                <button type="button" class="v5-modal-close" onclick="closeM6UpdateModal()" aria-label="Close">×</button>
+                <div class="v5-modal-title">A new version of your memo will be created.</div>
+                <div class="v5-modal-body">
+                  <p>Your edits will be saved as a new version of this investor memo. The previous version stays in your history — earlier records are never overwritten.</p>
+                </div>
+                <div class="v5-modal-acts">
+                  <button class="v5-secondary" onclick="closeM6UpdateModal()" type="button">
+                    <span class="act-arrow" style="color:var(--t)">←</span>
+                    <span style="color:var(--t)">Keep editing</span>
+                  </button>
+                  <button class="v5-secondary" onclick="confirmM6UpdateCommit()" type="button">
+                    <span class="act-arrow">→</span>
+                    <span>Save new version</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ════════ msell — Sell reason (MVP V1 Reduce / Exit) ════════
+               Its own step before the memo review: name why you're trimming or
+               closing. Styled like the m1 Classify chooser. -->
+          <section class="scr" data-id="msell">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s0')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="memo-header">
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title" id="msell-title">Reduce position</h1>
+                  </div>
+                  <div class="memo-header-meta">Capital decision</div>
+                  <div class="memo-header-right">
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · <span id="msell-tag">REDUCE</span></span>
+                  </div>
+                </div>
+                <div class="memo-body--reveal">
+                  <div>
+                    <div class="section-eyebrow" id="msell-eyebrow">Why are you trimming?</div>
+                    <div class="field-list" data-list="msell-reason">
+                      <button class="radio-row" data-r="thesis"     onclick="pickSellReason('thesis')" type="button"><div class="lbl-block"><div class="head">Thesis no longer holds</div><div class="sub">The facts changed — the original case no longer holds.</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="killline"   onclick="pickSellReason('killline')" type="button"><div class="lbl-block"><div class="head">Hit my exit conditions</div><div class="sub">A condition I set in the memo has been met.</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="fairvalue"  onclick="pickSellReason('fairvalue')" type="button"><div class="lbl-block"><div class="head">Fairly valued now</div><div class="sub">The margin of safety is gone at today's price.</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="betteridea" onclick="pickSellReason('betteridea')" type="button"><div class="lbl-block"><div class="head">Better opportunity elsewhere</div><div class="sub">Capital earns more per unit of risk somewhere else.</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="capital"    onclick="pickSellReason('capital')" type="button"><div class="lbl-block"><div class="head">Need the capital</div><div class="sub">Outside the portfolio — unrelated to the position.</div></div><div class="radio-dot"></div></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-foot memo-foot--reveal">
+              <button class="v5-primary is-arrow locked" id="msell-next" onclick="go('m6')">→</button>
             </div>
           </section>
 
@@ -10408,11 +10564,11 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <div style="margin-top:24px;padding:16px 0;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)">
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
-                  <span style="font-size:13px;color:var(--s)">Current probability</span>
+                  <span style="font-size:13px;color:var(--s)">Probability</span>
                   <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums">60%</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
-                  <span style="font-size:13px;color:var(--s)">Current horizon</span>
+                  <span style="font-size:13px;color:var(--s)">Horizon</span>
                   <span style="font-size:13px;color:var(--p)">3y <span style="color:var(--t-800);font-family:var(--font);font-size:11px;margin-left:6px">· 1.2y elapsed</span></span>
                 </div>
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
@@ -10456,11 +10612,11 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <div style="text-align:right;margin:24px 16px 6px">
                 <span style="font-size:13px;color:var(--t)">AAPL</span>
-                <span class="h2" style="margin-left:10px">Buy</span>
+                <span class="h2" id="s8-action-label" style="margin-left:10px">Buy</span>
               </div>
               <div style="text-align:right;margin:0 16px 22px">
-                <span style="font-size:13px;color:var(--t)">Non-Registered</span>
-                <span style="font-size:13px;color:var(--t);margin-left:10px">18,698.53 USD</span>
+                <span style="font-size:13px;color:var(--t)" id="s8-acct-label">Non-Registered</span>
+                <span style="font-size:13px;color:var(--t);margin-left:10px" id="s8-acct-meta">18,698.53 USD</span>
               </div>
             </div>
 
@@ -10673,7 +10829,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
               <!-- Memo section (initial buy only) -->
               <div id="s4-memo-section" class="s4r-section" style="display:none">
-                <div class="s4r-section-head">MEMO</div>
+                <div class="s4r-section-head">INVESTOR MEMO</div>
                 <div class="s4r-row">
                   <div class="s4r-key">TYPE</div>
                   <div class="s4r-val">
@@ -10723,7 +10879,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
             </div>
 
             <!-- Paper trade -->
-            <div style="flex-shrink:0;padding:12px 16px;display:flex;justify-content:flex-start;background:var(--bg)" data-min-version="3">
+            <div id="s4-paper-row" style="flex-shrink:0;padding:12px 16px;display:flex;justify-content:flex-start;background:var(--bg)" data-min-version="3">
               <button class="act-btn" onclick="savePaperTrade()" type="button">
                 <span class="act-arrow">→</span>
                 <span>Log as paper trade — don't buy</span>
@@ -10748,7 +10904,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
                 <div class="s9-ledger-header">
                   <div class="m6-ledger-meta" id="s9-filled-at">—</div>
                   <div class="s9-ticker-hero"><span class="memo-ctx-ticker">AAPL</span></div>
-                  <div class="s9-event-label">Order Filled</div>
+                  <div class="s9-event-label" id="s9-event-label">Order Filled</div>
                   <div class="s9-order-subtype" id="s9-type">Market Buy</div>
                 </div>
 
@@ -10780,7 +10936,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
                 <!-- Memo recorded section (shown if state.hasMemo) -->
                 <div id="s9-memo-section" style="display:none">
-                  <div class="m6-ledger-section-head">MEMO</div>
+                  <div class="m6-ledger-section-head">INVESTOR MEMO</div>
                   <div class="memo-row"><div class="k">TYPE</div><div class="v" id="s9-memo-type">—</div></div>
                   <div class="memo-row"><div class="k">SIZE</div><div class="v" id="s9-memo-size">—</div></div>
                   <div class="memo-row"><div class="k">THESIS</div><div class="v" id="s9-memo-thesis">—</div></div>
@@ -10850,7 +11006,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
                 <!-- Memo -->
                 <div>
-                  <div class="m6-ledger-section-head">MEMO</div>
+                  <div class="m6-ledger-section-head">INVESTOR MEMO</div>
                   <div class="memo-row"><div class="k">TYPE</div><div class="v" id="mvprec-mtype">—</div></div>
                   <div class="memo-row"><div class="k">SIZE</div><div class="v" id="mvprec-msize">—</div></div>
                   <div class="memo-row s9-last-row"><div class="k">MEMO</div><div class="v" id="mvprec-note">—</div></div>
@@ -14566,7 +14722,9 @@ function go(id) {
   document.getElementById('pageName').textContent = meta ? meta.name : id;
   document.getElementById('pageSub').textContent  = meta ? meta.sub  : '';
   // Refresh dynamic content
-  if (id === 's0')        { collapseAllS0Cards(); renderStock(); applyExampleMode(); }
+  if (id === 's0')        { collapseAllS0Cards(); renderStock(); applyExampleMode();
+                            const _s0el = document.querySelector('.scr[data-id="s0"]');
+                            if (_s0el) _s0el.classList.toggle('is-mvp-min', state.version === 'mvp1'); }
   if (id === 'mresearch') initWorkflowCardChevron();
   // Sell-memo screen entries — hydrate the relevant inputs/radios + lock state
   if (['sm1','sm2','sm3','sm4','sm5','sm6','sm7'].indexOf(id) !== -1) hydrateSellMemoScreen(id);
@@ -14589,6 +14747,7 @@ function go(id) {
   if (['m1','m1b','m2','m3','miv','s12','msrc','m5','m6'].indexOf(id) !== -1) hydrateMemoStepNav(id);
   if (id === 'mexample') renderMexample();
   if (id === 'mvprecord') renderMvpRecord();
+  if (id === 'msell') hydrateMsell();
   // Test-scenario caption — shown on memo review screens during the returning
   // increase flow so reviewers know why the user is going through all 8 steps.
   refreshReviewCaption(id);
@@ -15149,6 +15308,29 @@ function closeCDSheet() {
 function pickCD(choice) {
   closeCDSheet();
   state.cd = choice;
+  // ── MVP V1 returning flow ──────────────────────────────────────────────
+  // Increase, Reduce, and Exit all route through the same memo review (m6):
+  // the user re-reads the on-file memo, the calibration block shows where the
+  // position stands, the pressure test is pre-confirmed (already done before),
+  // and Continue routes to the buy ticket (increase) or sell ticket (reduce/
+  // exit). No separate s19 reason screen, no sell-memo (sm1) flow.
+  if (state.version === 'mvp1') {
+    state._memoEditedThisFlow = false;
+    hydrateAaplMemoFromSeed();
+    if (!(state.memo.note || '').trim()) state.memo.note = MVP_EXAMPLE_MEMO;
+    // Seed the on-file calibration for this review (the original 60% / 3y call).
+    state.prob = 60; state.horizon = '3y'; state._increaseSeeded = true;
+    // Pressure test was completed at the original buy — carry it as confirmed
+    // (used by the Increase flow; sells replace PT with the reason page).
+    state.memo.ptStatus    = 'done';
+    state.memo.ptConfirmed = true;
+    state.sellReason       = null;
+    // Reduce / Exit first name a reason on its own page; Increase goes straight
+    // to the memo review.
+    go((choice === 'reduce' || choice === 'exit') ? 'msell' : 'm6');
+    return;
+  }
+  // ── V4.5 ──
   if (choice === 'reduce' || choice === 'exit') {
     if (state.usingSeedPersona) hydrateAaplMemoFromSeed();
     go('sm1');
@@ -15157,6 +15339,52 @@ function pickCD(choice) {
   // increase
   go('s19');
 }
+
+/* Sell-side flows (Reduce / Exit). Buy-side = initial / increase. */
+function isSellFlow() { return state.cd === 'reduce' || state.cd === 'exit'; }
+/* MVP V1 returning = any capital-decision flow that isn't a first-time buy. */
+function isMvpReturning() { return state.version === 'mvp1' && state.cd && state.cd !== 'initial' && state.cd !== 'draft'; }
+
+/* Shares on file for the demo position (used by sell "on file" + Exit default). */
+const MVP_POS_SHARES = 47;
+
+const SELL_REASON_LBL = {
+  thesis:     'Thesis no longer holds',
+  killline:   'Hit my exit conditions',
+  fairvalue:  'Fairly valued now',
+  betteridea: 'Better opportunity elsewhere',
+  capital:    'Need the capital'
+};
+
+/* Reduce / Exit: the reason is captured on its own page (msell) before the
+   memo review. Picking one unlocks that page's Continue arrow. */
+function pickSellReason(r) {
+  state.sellReason = r;
+  try { persistMemoDraft(); } catch(_) {}
+  document.querySelectorAll('[data-list="msell-reason"] .radio-row').forEach(b =>
+    b.classList.toggle('is-on', b.dataset.r === r));
+  const next = document.getElementById('msell-next');
+  if (next) next.classList.remove('locked');
+}
+
+/* Hydrate the sell-reason page for Reduce vs Exit. */
+function hydrateMsell() {
+  const isExit = state.cd === 'exit';
+  const t  = document.getElementById('msell-title');
+  const ey = document.getElementById('msell-eyebrow');
+  const tag= document.getElementById('msell-tag');
+  if (t)   t.textContent  = isExit ? 'Close position' : 'Reduce position';
+  if (ey)  ey.textContent = isExit ? 'Why are you closing this position?' : 'Why are you trimming?';
+  if (tag) tag.textContent= isExit ? 'EXIT' : 'REDUCE';
+  document.querySelectorAll('[data-list="msell-reason"] .radio-row').forEach(b =>
+    b.classList.toggle('is-on', b.dataset.r === state.sellReason));
+  const next = document.getElementById('msell-next');
+  if (next) next.classList.toggle('locked', !state.sellReason);
+}
+
+/* Legacy alias — the old embedded m6 reason picker is no longer used, but keep
+   the symbol defined so any stray reference is harmless. */
+function selectSellReason(r) { pickSellReason(r); }
 
 /* s19 → memo review path. For the returning user increasing exposure, after
    "Why are you increasing?" we send them through the full memo review starting
@@ -15308,6 +15536,9 @@ function backFromMintro() {
    The increase / reduce / exit flow skips the sequence and lands directly
    on m6 from s19, so back should return there. */
 function backFromM6() {
+  // MVP V1: sells came through the reason page; buys/increase came from s0.
+  if (state.version === 'mvp1' && isSellFlow())                                       { go('msell'); return; }
+  if (state.version === 'mvp1' && state.cd && state.cd !== 'initial' && state.cd !== 'draft') { go('s0'); return; }
   if (state.cd && state.cd !== 'initial' && state.cd !== 'draft') { go('s19'); return; }
   go('m5');
 }
@@ -17987,6 +18218,31 @@ function continueM4Anyway() {
   go('s12');
 }
 
+/* Current portfolio weight for AAPL — sum of real (non-paper) buy txns net of
+   sells, valued at the current market price. Returns 0 when no position. */
+function getCurrentPositionWeightPct() {
+  const txns = (state.transactions || []).filter(t => !t.paper);
+  let shares = 0;
+  txns.forEach(t => {
+    const n = parseInt(t.shares, 10) || 0;
+    shares += (t.action === 'Sell') ? -n : n;
+  });
+  if (shares <= 0) return 0;
+  return ((shares * MKTPRICE_USD * FX_USD_CAD) / PORTVAL_CAD) * 100;
+}
+/* Build the SIZE row value HTML — label, suggested range, and (when there's
+   an existing position) the user's current portfolio weight so they can
+   compare at a glance. */
+function buildSizeValueHtml(sizeKey) {
+  const lbl = SIZE_LBL[sizeKey] || '—';
+  const sub = SIZE_SUB[sizeKey];
+  const w   = getCurrentPositionWeightPct();
+  let html = lbl;
+  if (sub) html += `<div class="memo-row-sub">${sub}</div>`;
+  if (w > 0) html += `<div class="memo-row-now">Currently ${w.toFixed(1)}%</div>`;
+  return html;
+}
+
 function renderM6() {
   const m = state.memo;
   // V4.5: render memo-quality checklist + personalized title
@@ -18020,13 +18276,7 @@ function renderM6() {
       : lbl;
   }
   const sizeEl = document.getElementById('m6-size');
-  if (sizeEl) {
-    const lbl = SIZE_LBL[m.size] || '—';
-    const sub = SIZE_SUB[m.size];
-    sizeEl.innerHTML = sub
-      ? `${lbl}<div class="memo-row-sub">${sub}</div>`
-      : lbl;
-  }
+  if (sizeEl) sizeEl.innerHTML = buildSizeValueHtml(m.size);
   document.getElementById('m6-thesis').textContent  = m.thesis || '—';
   // Timing rationale (optional) — show when populated
   const timingRow  = document.getElementById('m6-timing-row');
@@ -18081,18 +18331,9 @@ function renderM6() {
     const parts = [TYPE_LBL[m.type], SIZE_LBL[m.size]].filter(Boolean);
     classifyEl.textContent = parts.join(' · ') || '—';
   }
-  const ivStatEl = document.getElementById('m6-iv-stat');
-  if (ivStatEl) {
-    const ivN = parseFloat(m.intrinsicValue);
-    ivStatEl.textContent = (isFinite(ivN) && ivN > 0) ? '$' + Math.round(ivN) : '—';
-  }
-  const probStatEl = document.getElementById('m6-prob-stat');
-  if (probStatEl) probStatEl.textContent = state.prob ? state.prob + '%' : '—';
-  const hrzStatEl = document.getElementById('m6-hrz-stat');
-  if (hrzStatEl) {
-    const hrzFull = HORIZON_LBL[state.horizon] || '';
-    hrzStatEl.textContent = hrzFull ? hrzFull.replace('Years','yr').replace('Year','yr') : '—';
-  }
+  /* m6 top stats strip removed — calibration (prob / horizon) shows in its
+     own section below, and IV lives in the memo rows, so the boxed strip was
+     redundant. */
   /* m6-top3 removed */
   document.getElementById('m6-date').textContent    = 'Drafted ' + fmtDate();
 
@@ -18118,13 +18359,6 @@ function renderM6() {
     const row = el ? el.closest('.memo-row') : null;
     if (row) row.style.display = isMvp1 ? 'none' : '';
   });
-  // IV stat cell in the top strip — irrelevant when IV isn't captured.
-  // Also collapse the grid to two columns so the strip isn't left lopsided.
-  const ivStatCell = document.getElementById('m6-iv-stat');
-  const ivStatWrap = ivStatCell ? ivStatCell.closest('.m6-stat-cell') : null;
-  if (ivStatWrap) ivStatWrap.style.display = isMvp1 ? 'none' : '';
-  const stripEl = document.querySelector('.scr[data-id="m6"] .m6-stats-strip');
-  if (stripEl) stripEl.style.gridTemplateColumns = isMvp1 ? '1fr 1fr' : '';
   // Note row — always visible in MVP V1 (this IS the memo), labelled "Memo".
   {
     const noteRow  = document.getElementById('m6-note-row');
@@ -18134,6 +18368,100 @@ function renderM6() {
     if (isMvp1) {
       if (noteRow)  noteRow.style.display = '';
       if (noteDisp) noteDisp.textContent = (m.note || '').trim() || '—';
+    }
+  }
+
+  // Position-status block — MVP V1 returning flow (increase / reduce / exit):
+  // show where the position currently stands before re-confirming the memo.
+  {
+    const posStatus = document.getElementById('m6-position-status');
+    if (posStatus) {
+      const returning = isMvp1 && state.cd && state.cd !== 'initial' && state.cd !== 'draft';
+      posStatus.style.display = returning ? '' : 'none';
+      if (returning) {
+        const probEl = document.getElementById('m6-pos-prob');
+        const hrzEl  = document.getElementById('m6-pos-hrz');
+        const setEl  = document.getElementById('m6-pos-seton');
+        if (probEl) probEl.textContent = (state.prob || 60) + '%';
+        // Exit closes the bet early — surface that in the horizon line.
+        const earlyNote = (state.cd === 'exit')
+          ? ' · closing 1.8y early'
+          : '';
+        if (hrzEl)  hrzEl.innerHTML = (HORIZON_LBL[state.horizon] || '3 years') +
+          ' <span style="color:var(--t-800);font-size:11px;margin-left:4px">· 1.2y elapsed' + earlyNote + '</span>';
+        if (setEl)  setEl.textContent = 'Feb 27, 2025';
+      }
+    }
+  }
+
+  // LIVE badge — shown when reviewing an existing (live) position, i.e. any
+  // returning capital decision (increase / reduce / exit). Hidden first-time.
+  {
+    const liveBadge = document.getElementById('m6-live-badge');
+    const header    = document.getElementById('m6-ledger-header');
+    const live = !!(state.cd && state.cd !== 'initial' && state.cd !== 'draft');
+    if (liveBadge) liveBadge.style.display = live ? '' : 'none';
+    if (header)    header.classList.toggle('has-live', live);
+  }
+
+  // ── Sell flows (Reduce / Exit): reframe the review away from "author /
+  //    re-commit an investment memo" toward "close or trim a position." ──
+  {
+    const sell   = isSellFlow();
+    const isExit  = state.cd === 'exit';
+    const docLbl  = document.getElementById('m6-doc-label');
+    const buyFoot = document.getElementById('m6-buy-footer');
+    const immut   = document.getElementById('m6-immutability');
+    const sellFoot= document.getElementById('m6-sell-footer');
+    const calSec  = document.getElementById('m6-calibration-section');
+    const ptStep  = document.getElementById('pt-step');
+    const reasonSec = document.getElementById('m6-sell-reason');
+    const reasonHead= document.getElementById('m6-sell-reason-head');
+    const editHint  = document.querySelector('.scr[data-id="m6"] .m6-section-edit-hint');
+
+    if (sell) {
+      if (docLbl)  docLbl.textContent = isExit ? 'CLOSE POSITION' : 'REDUCE POSITION';
+      // Buy-only notices don't apply to a sell.
+      if (buyFoot) buyFoot.style.display = 'none';
+      if (immut)   immut.style.display   = 'none';
+      if (sellFoot) {
+        sellFoot.style.display = '';
+        sellFoot.textContent = isExit
+          ? 'Closing this position records the outcome against your original call.'
+          : 'Trimming records this change against the memo on file.';
+      }
+      // Bottom calibration is a forward re-forecast — irrelevant when closing
+      // the bet. The position-status block above already shows the original call.
+      if (calSec) calSec.style.display = 'none';
+      // The memo is read-only context here, not an editable artifact.
+      if (editHint) editHint.style.display = 'none';
+      // The reason is captured on its own page (msell) before this review,
+      // so the pressure test and the embedded reason picker are both hidden,
+      // and the seal is ready (reason already named).
+      if (ptStep)    ptStep.style.display = 'none';
+      if (reasonSec) reasonSec.style.display = 'none';
+      _revealSeal();
+    } else {
+      // Buy framing. Distinguish first-time (writing the memo) from Increase
+      // (re-reading the memo on file before adding) — the footnotes differ.
+      const isIncrease = state.cd === 'increase';
+      if (docLbl)  docLbl.textContent = 'INVESTMENT MEMO · V1';
+      if (buyFoot) {
+        buyFoot.style.display = '';
+        buyFoot.textContent = isIncrease
+          ? 'This is the memo on file for AAPL, written at your original entry. Review it and update anything that’s changed — or confirm as-is.'
+          : 'The memo and calibration are recorded. Future buys of AAPL will skip the memo unless you choose to re-enter it.';
+      }
+      if (immut) {
+        immut.style.display = '';
+        immut.textContent = isIncrease
+          ? 'This is v1, written Feb 27, 2025. Any edits create a new version that supersedes it — earlier versions stay in your history.'
+          : 'This version is permanent once confirmed. Edits create new versions.';
+      }
+      if (sellFoot) sellFoot.style.display = 'none';
+      if (calSec)  calSec.style.display = '';
+      if (editHint) editHint.style.display = '';
+      if (reasonSec) reasonSec.style.display = 'none';
     }
   }
 
@@ -18406,6 +18734,27 @@ function loadPendingMemos() {
 }
 function persistPendingMemos(list) {
   try { localStorage.setItem('mogo.calmemo.pending', JSON.stringify(list)); } catch (_) {}
+}
+
+/* Seal-button gate. On a returning flow (increase / reduce / exit), if the
+   user has edited any memo field via the "Tap each to update" affordances,
+   first surface a confirmation modal explaining that a new version of the
+   memo will be created and the previous one stays in history. */
+function onM6SealTap() {
+  const isReturning = state.cd && state.cd !== 'initial' && state.cd !== 'draft';
+  if (isReturning && state._memoEditedThisFlow) {
+    const m = document.getElementById('m6-update-modal');
+    if (m) { m.classList.add('is-on'); return; }
+  }
+  commitMemo();
+}
+function closeM6UpdateModal() {
+  const m = document.getElementById('m6-update-modal');
+  if (m) m.classList.remove('is-on');
+}
+function confirmM6UpdateCommit() {
+  closeM6UpdateModal();
+  commitMemo();
 }
 
 function commitMemo() {
@@ -18753,6 +19102,9 @@ function renderS8() {
   // Default to limit order; seed limit price to market price on first visit.
   state.shares     = state.shares || '';
   state.limitPrice = state.limitPrice || '';
+  // Exit = close the whole position, so default the share count to the full
+  // holding (the user can still trim it down if they change their mind).
+  if (state.cd === 'exit' && !state.shares) state.shares = String(MVP_POS_SHARES);
   updateInputsDisplay();
   // Auto-open the numpad on Limit Price when entering the page — the user's
   // first task here is to enter the price. After they tap a value and the
@@ -18765,10 +19117,19 @@ function renderS8() {
   // the user has just authored a memo. For increase / reduce / exit the
   // user is referencing their existing position, not a fresh memo, so we
   // hide the section to keep the share-entry surface clean.
+  // Buy vs Sell header (increase = buy; reduce / exit = sell).
+  const sell = isSellFlow();
+  const s8Act = document.getElementById('s8-action-label');
+  if (s8Act) s8Act.textContent = sell ? 'Sell' : 'Buy';
+  const s8AcctMeta = document.getElementById('s8-acct-meta');
+  if (s8AcctMeta) s8AcctMeta.textContent = sell ? '47 shares on file' : '18,698.53 USD';
+
   const memoSec     = document.getElementById('s8-memo-section');
   const memoTopRows = document.getElementById('s8-memo-toprows');
   if (!memoSec) return;
-  if (state.cd === 'initial' && state.memo) {
+  // Show the memo summary for the first-time buy AND for the MVP V1 returning
+  // flow (increase / reduce / exit), where the user is re-confirming the memo.
+  if ((state.cd === 'initial' || isMvpReturning()) && state.memo) {
     memoSec.style.display = 'block';
     if (memoTopRows) memoTopRows.style.display = '';
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v || '—'; };
@@ -18919,8 +19280,12 @@ function renderS4() {
   const isLimit = state.orderType === 'limit' && limit > 0;
   const priceUSD = isLimit ? limit : MKTPRICE_USD;
   const costCAD = n * priceUSD * FX_USD_CAD;
-  document.getElementById('s4-action').textContent = 'Buy';
-  document.getElementById('s4-type').textContent = isLimit ? 'Limit Buy' : 'Market Buy';
+  const sell = isSellFlow();
+  document.getElementById('s4-action').textContent = sell ? 'Sell' : 'Buy';
+  document.getElementById('s4-type').textContent = (isLimit ? 'Limit ' : 'Market ') + (sell ? 'Sell' : 'Buy');
+  // Paper-trade off-ramp only makes sense for a buy.
+  const paperRow = document.getElementById('s4-paper-row');
+  if (paperRow) paperRow.style.display = sell ? 'none' : '';
   document.getElementById('s4-weight').textContent = n ? (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%' : '—';
   document.getElementById('s4-shares').textContent = n || '—';
   document.getElementById('s4-cost').textContent = n
@@ -18947,7 +19312,8 @@ function renderS4() {
   }
 
   const memoSec = document.getElementById('s4-memo-section');
-  if (state.cd === 'initial') {
+  // Show the memo on the first-time buy AND the MVP V1 returning flow.
+  if (state.cd === 'initial' || isMvpReturning()) {
     memoSec.style.display = 'block';
     document.getElementById('s4-memo-type').textContent   = TYPE_LBL[state.memo.type] || '—';
     document.getElementById('s4-memo-size').textContent   = SIZE_LBL[state.memo.size] || '—';
@@ -18958,7 +19324,11 @@ function renderS4() {
     const typeSub = document.getElementById('s4-memo-type-sub');
     if (typeSub) typeSub.textContent = TYPE_SUB[state.memo.type] || '';
     const sizeSub = document.getElementById('s4-memo-size-sub');
-    if (sizeSub) sizeSub.textContent = SIZE_SUB[state.memo.size] || '';
+    if (sizeSub) {
+      const sub = SIZE_SUB[state.memo.size] || '';
+      const w   = getCurrentPositionWeightPct();
+      sizeSub.innerHTML = sub + (w > 0 ? `<div class="memo-row-now">Currently ${w.toFixed(1)}%</div>` : '');
+    }
     // MVP V1 captures neither thesis, kill, nor MOS — drop those rows here too.
     const isMvp1 = state.version === 'mvp1';
     ['s4-memo-thesis-row','s4-memo-kill-row','s4-memo-mos-row'].forEach(rid => {
@@ -19016,8 +19386,13 @@ function renderS9() {
   document.getElementById('s9-shares').textContent = n;
   document.getElementById('s9-weight').textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
   document.getElementById('s9-cost').textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD';
+  const sell = isSellFlow();
   const s9Type = document.getElementById('s9-type');
-  if (s9Type) s9Type.textContent = isLimit ? 'Limit Buy' : 'Market Buy';
+  if (s9Type) s9Type.textContent = (isLimit ? 'Limit ' : 'Market ') + (sell ? 'Sell' : 'Buy');
+  const s9Event = document.getElementById('s9-event-label');
+  if (s9Event) s9Event.textContent = (state.cd === 'exit') ? 'Position Closed'
+                                    : (state.cd === 'reduce') ? 'Position Reduced'
+                                    : 'Order Filled';
   document.getElementById('s9-conf').textContent = state.prob + '%';
   document.getElementById('s9-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
   /* s9-top3 removed — Top 3 idea no longer captured */
@@ -19033,40 +19408,60 @@ function renderS9() {
   const memoSec  = document.getElementById('s9-memo-section');
   const memoNote = document.getElementById('s9-memo-note');
   const isMvp1   = state.version === 'mvp1';
-  if (state.cd === 'initial') {
+  // Show the memo on the first-time buy AND every MVP V1 capital decision
+  // (increase / reduce / exit) — the receipt should always reflect what's
+  // on file, not go blank after a returning action.
+  if (state.cd === 'initial' || isMvpReturning()) {
     memoSec.style.display  = 'block';
-    if (memoNote) memoNote.style.display = 'block';
+    // The "future capital decisions reuse it" footer only fits a buy.
+    if (memoNote) memoNote.style.display = sell ? 'none' : 'block';
     document.getElementById('s9-memo-type').textContent   = TYPE_LBL[state.memo.type] || '—';
     document.getElementById('s9-memo-size').textContent   = SIZE_LBL[state.memo.size] || '—';
     document.getElementById('s9-memo-thesis').textContent = state.memo.thesis || '—';
     document.getElementById('s9-memo-kill').textContent   = state.memo.kill   || '—';
     document.getElementById('s9-memo-mos').textContent    = MOS_LBL[state.memo.mos] || '—';
     // MVP V1: structured rows are skipped during capture — hide them in the
-    // summary as well and surface the free-form note instead.
+    // summary as well and surface the free-form memo instead.
     ['s9-memo-thesis','s9-memo-kill','s9-memo-mos'].forEach(id => {
       const row = document.getElementById(id)?.closest('.memo-row');
       if (row) row.style.display = isMvp1 ? 'none' : '';
     });
-    // Replace MOS row with a NOTE row in MVP V1 (reuse the row, keep last-row spacing)
     if (isMvp1) {
-      // Find or insert a NOTE row inside the memo section
+      // Insert (once) a MEMO row carrying the free-form write-up.
       let noteRow = document.getElementById('s9-memo-note-row');
       if (!noteRow) {
         const memoMosRow = document.getElementById('s9-memo-mos')?.closest('.memo-row');
         if (memoMosRow && memoMosRow.parentNode) {
           noteRow = document.createElement('div');
           noteRow.id = 's9-memo-note-row';
-          noteRow.className = 'memo-row s9-last-row';
-          noteRow.innerHTML = '<div class="k">NOTE</div><div class="v" id="s9-memo-note-val">—</div>';
+          noteRow.className = 'memo-row';
+          noteRow.innerHTML = '<div class="k">MEMO</div><div class="v" id="s9-memo-note-val">—</div>';
           memoMosRow.parentNode.insertBefore(noteRow, memoMosRow.nextSibling);
         }
       }
-      noteRow.style.display = '';
+      if (noteRow) noteRow.style.display = '';
       const noteVal = document.getElementById('s9-memo-note-val');
       if (noteVal) noteVal.textContent = (state.memo.note || '').trim() || '—';
-    } else {
-      const noteRow = document.getElementById('s9-memo-note-row');
-      if (noteRow) noteRow.style.display = 'none';
+
+      // On a sell, surface the reason (the key signal on a sell receipt).
+      let reasonRow = document.getElementById('s9-sell-reason-row');
+      if (sell) {
+        if (!reasonRow) {
+          const anchor = document.getElementById('s9-memo-note-row');
+          if (anchor && anchor.parentNode) {
+            reasonRow = document.createElement('div');
+            reasonRow.id = 's9-sell-reason-row';
+            reasonRow.className = 'memo-row';
+            reasonRow.innerHTML = '<div class="k">REASON</div><div class="v" id="s9-sell-reason-val">—</div>';
+            anchor.parentNode.insertBefore(reasonRow, anchor.nextSibling);
+          }
+        }
+        if (reasonRow) reasonRow.style.display = '';
+        const rv = document.getElementById('s9-sell-reason-val');
+        if (rv) rv.textContent = SELL_REASON_LBL[state.sellReason] || '—';
+      } else if (reasonRow) {
+        reasonRow.style.display = 'none';
+      }
     }
   } else {
     memoSec.style.display = 'none';
@@ -19123,7 +19518,7 @@ function renderMvpRecord() {
   const mtypeEl = document.getElementById('mvprec-mtype');
   if (mtypeEl) mtypeEl.innerHTML = (TYPE_LBL[type] || '—') + (TYPE_SUB[type] ? `<div class="memo-row-sub">${TYPE_SUB[type]}</div>` : '');
   const msizeEl = document.getElementById('mvprec-msize');
-  if (msizeEl) msizeEl.innerHTML = (SIZE_LBL[size] || '—') + (SIZE_SUB[size] ? `<div class="memo-row-sub">${SIZE_SUB[size]}</div>` : '');
+  if (msizeEl) msizeEl.innerHTML = buildSizeValueHtml(size);
   set('mvprec-note', note);
   set('mvprec-prob', prob ? prob + '%' : '—');
   set('mvprec-hrz',  HORIZON_LBL[horizon] || horizon || '—');
@@ -19159,7 +19554,7 @@ function setMode(m) {
     state.reviewPending = true; persistReviewPending(true);
   }
   refreshModeButtons();
-  if (state.version === 'mvp1') { startMvpFirstFlow(); } else { go('s10'); }
+  if (state.version === 'mvp1') { enterMvp(); } else { go('s10'); }
   closeDrawer();
 }
 function refreshModeButtons() {
@@ -19287,6 +19682,14 @@ function startMvpFirstFlow() {
   go('mfork');
 }
 
+/* MVP V1 landing router. First-time persona → the allocation fork (write the
+   first memo). Returning persona (memo already on file) → the stock page,
+   where Capital decision opens Increase / Reduce / Exit. */
+function enterMvp() {
+  if (state.hasMemo) { state.cd = null; go('s0'); }
+  else                startMvpFirstFlow();
+}
+
 function setVersion(v) {
   // Accept either the numeric 4.5 or the string 'mvp1'. Anything else snaps to 4.5.
   if (v === 'mvp1') {
@@ -19298,8 +19701,8 @@ function setVersion(v) {
   state.version = v;
   persistVersion(v);
   refreshVersionUI();
-  // MVP V1 starts directly at the allocation fork (dashboard + search are cut).
-  if (v === 'mvp1') { startMvpFirstFlow(); return; }
+  // MVP V1 routes by persona (first-time → fork; returning → stock page).
+  if (v === 'mvp1') { enterMvp(); return; }
   // If the current screen is no longer reachable in this version, route to s10
   const cur = SCREENS.find(s => s.id === window._currentScreenId);
   if (cur && (cur.minVersion || 1) > v) {
@@ -21813,7 +22216,9 @@ function recordTransaction(opts) {
     horizon: state.horizon,
     top3: state.memo.top3,
     paper: !!opts.paper,
-    memo: memoSnapshot
+    memo: memoSnapshot,
+    // Reduce / Exit reason (MVP V1) — the high-value calibration signal.
+    sellReason: (!isBuy && state.sellReason) ? state.sellReason : null
   };
   state.transactions.push(tx);
   persistTransactions();
@@ -22562,7 +22967,18 @@ document.addEventListener('DOMContentLoaded', () => {
   hydrateAckCheckboxes();       // reflect persisted "don't show again" flags on mintro + mresearch
   document.querySelectorAll('button:not([type])').forEach(b => b.type = 'button');
   fitScaler();
-  // MVP V1 boots straight into the allocation fork; everything else lands on the dashboard.
+  // URL trigger: ?mvp=1 (or #mvp=1) forces the MVP V1 first-time flow on load
+  // so a recipient can be sent index.html and land directly at mfork — no
+  // need to find the drawer toggle. ?mvp=return drops them into the
+  // returning-user stock page instead.
+  const _q = (location.search + ' ' + location.hash).toLowerCase();
+  if (_q.includes('mvp=1') || _q.includes('mvp=first')) {
+    setVersion('mvp1'); setMode('first'); startMvpFirstFlow(); return;
+  }
+  if (_q.includes('mvp=return')) {
+    setVersion('mvp1'); setMode('return'); go('s0'); return;
+  }
+  // Default boot: MVP V1 jumps to allocation fork; everything else hits dashboard.
   if (state.version === 'mvp1') { startMvpFirstFlow(); } else { go('s10'); }
 });
 
@@ -22819,15 +23235,12 @@ function _revealSeal() {
 function onPtConfirmCheck(checkbox) {
   state.memo.ptConfirmed = checkbox.checked;
   try { persistMemoDraft(); } catch(_) {}
-  const statusRow = document.querySelector('#pt-step .pt-step-status');
-  const lbl = document.querySelector('.pt-confirm-lbl');
+  const lbl = document.querySelector('#pt-step .pt-confirm-lbl');
   if (checkbox.checked) {
-    if (statusRow) statusRow.style.display = 'none';
     if (lbl) lbl.textContent = 'Pressure tested';
     _revealSeal();
   } else {
-    if (statusRow) statusRow.style.display = '';
-    if (lbl) lbl.textContent = 'I have reviewed the results';
+    if (lbl) lbl.textContent = 'I have pressure tested';
     const sealBtn = document.getElementById('m6-seal-btn');
     if (sealBtn) {
       sealBtn.classList.remove('is-pt-ready');
@@ -22838,6 +23251,8 @@ function onPtConfirmCheck(checkbox) {
 
 function renderPtStep() {
   const el     = document.getElementById('pt-step');
+  // Sell flows (Reduce / Exit) replace the pressure test with a reason picker.
+  if (isSellFlow()) { if (el) el.style.display = 'none'; return; }
   const status = state.memo.ptStatus || null;
 
   if (el) {
@@ -22845,26 +23260,22 @@ function renderPtStep() {
       el.className = 'pt-step';
       el.style.display = '';
       el.innerHTML = `
-        <div class="pt-step-head">Pressure Test</div>
-        <div class="pt-step-sub">Challenge this memo before you commit.</div>
-        <div class="pt-step-acts">
-          <button class="pt-step-run" onclick="runPressureTest()" type="button">Run →</button>
-          <button class="pt-step-skip" onclick="skipPressureTest()" type="button">Skip for now</button>
-        </div>`;
+        <button class="pt-step-skip" onclick="skipPressureTest()" type="button">Skip for now</button>
+        <button class="pt-step-run" onclick="runPressureTest()" type="button">Pressure Test →</button>
+        <div class="pt-step-sub">Challenge this memo before you commit.</div>`;
     } else if (status === 'done') {
       el.className = 'pt-step is-resolved';
       el.style.display = '';
       const confirmed = !!state.memo.ptConfirmed;
       el.innerHTML = `
-        <div class="pt-step-status"${confirmed ? ' style="display:none"' : ''}>
-          <span class="pt-step-status-lbl is-done">✓ Pressure tested</span>
-          <button class="pt-step-redo" onclick="runPressureTest()" type="button">Run again</button>
-        </div>
-        <label class="pt-confirm-row">
-          <input class="pt-confirm-check" type="checkbox" id="pt-confirm-check"
-                 onchange="onPtConfirmCheck(this)" ${confirmed ? 'checked' : ''}>
-          <span class="pt-confirm-lbl">${confirmed ? 'Pressure tested' : 'I have reviewed the results'}</span>
-        </label>`;
+        <div class="pt-done-row">
+          <label class="pt-confirm-row">
+            <input class="pt-confirm-check" type="checkbox" id="pt-confirm-check"
+                   onchange="onPtConfirmCheck(this)" ${confirmed ? 'checked' : ''}>
+            <span class="pt-confirm-lbl">${confirmed ? 'Pressure tested' : 'I have pressure tested'}</span>
+          </label>
+          <button class="pt-step-redo" onclick="runPressureTest()" type="button">Start again</button>
+        </div>`;
       if (confirmed) _revealSeal();
     } else {
       el.className = 'pt-step is-resolved';
@@ -22872,7 +23283,7 @@ function renderPtStep() {
       el.innerHTML = `
         <div class="pt-step-status">
           <span class="pt-step-status-lbl">— Skipped</span>
-          <button class="pt-step-redo" onclick="runPressureTest()" type="button">Run anyway</button>
+          <button class="pt-step-redo" onclick="runPressureTest()" type="button">Start anyway</button>
         </div>`;
       _revealSeal();
     }
