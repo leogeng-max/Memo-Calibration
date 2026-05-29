@@ -9375,9 +9375,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             <div class="body-scroll">
               <div class="memo-page">
                 <div class="memo-header">
-                  <div><h1 class="memo-header-title">Why this allocation</h1></div>
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title is-info" onclick="showInfoModal('core_why')">Why this allocation</h1>
+                  </div>
                   <div class="memo-header-meta">1 / 4</div>
-                  <div></div>
                   <div class="memo-header-right">
                     <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
@@ -9415,9 +9416,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             <div class="body-scroll">
               <div class="memo-page">
                 <div class="memo-header">
-                  <div><h1 class="memo-header-title">Role</h1></div>
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title is-info" onclick="showInfoModal('core_role')">Role</h1>
+                  </div>
                   <div class="memo-header-meta">2 / 4</div>
-                  <div></div>
                   <div class="memo-header-right">
                     <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
@@ -9469,9 +9471,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             <div class="body-scroll">
               <div class="memo-page">
                 <div class="memo-header">
-                  <div><h1 class="memo-header-title">Conditions</h1></div>
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title is-info" onclick="showInfoModal('core_conditions')">Conditions</h1>
+                  </div>
                   <div class="memo-header-meta">3 / 4</div>
-                  <div></div>
                   <div class="memo-header-right">
                     <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
@@ -21269,6 +21272,24 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
 <p>The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.</p>
 <p>I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.</p>
 <p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written memo.</p>`
+  },
+  core_why: {
+    eyebrow: 'Capital placement',
+    title:   'Why this capital belongs here.',
+    bodyHtml: `<p>This is where you state — in your own words — why this capital is the right fit for this allocation, in this form, at this scale.</p>
+<p>The bar isn't an edge claim. It's that broad-market exposure, liquidity, or treasury holdings genuinely match your portfolio plan and the role you want this capital to play.</p>`
+  },
+  core_role: {
+    eyebrow: 'Portfolio role',
+    title:   'What this capital is doing.',
+    bodyHtml: `<p>Different capital does different work. Naming the role explicitly — retirement compounding, cash reserve, drawdown buffer, optionality — keeps the allocation honest.</p>
+<p>It also tells you what would change about the role itself, not just the market, before you'd rebalance away from it.</p>`
+  },
+  core_conditions: {
+    eyebrow: 'Reconsider when',
+    title:   'What would change this decision.',
+    bodyHtml: `<p>Core allocations aren't set-and-forget, but they shouldn't react to market noise either.</p>
+<p>State the specific situational changes — life events, portfolio-structure shifts, mandate changes — that would prompt revisiting this allocation. Not market prices.</p>`
   },
   mfork_decision: {
     eyebrow: 'Capital allocation',
