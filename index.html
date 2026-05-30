@@ -15695,6 +15695,9 @@ function go(id) {
   if (id === 's51') renderS51();
   if (id === 's52') renderS52();
   if (id === 'mfields') renderMemoFields();
+  // Keep the side-menu persona toggle in sync with the screen the user is
+  // actually on — never let the toggle disagree with what's visible.
+  if (typeof refreshModeButtons === 'function') refreshModeButtons();
   refreshProtocolReferenceMode(id);
   if (id === 's12' || id === 'm6') refreshMemoLocks();
   if (id === 's12') { hydrateForecastThreshold(); refreshCalibSummary(); }
@@ -20861,9 +20864,31 @@ function setMode(m) {
   if (state.version === 'mvp1') { enterMvp(); } else { go('s10'); }
   closeDrawer();
 }
+/* Persona toggle reflects the screen the user is actually on, not just
+   state.hasMemo. Screens that are part of the "write your first memo"
+   path (mfork + the memo steps when cd === 'initial') count as
+   First-time. Screens that act on a live position (capital decisions:
+   increase / reduce / exit) count as Returning. When neither applies,
+   we fall back to state.hasMemo. */
+const FIRST_TIME_SCREENS = ['mintro','mresearch','mfork','mfork-info'];
+const RETURNING_ONLY_SCREENS = ['msell','madd'];
+function inferPersonaFromScreen() {
+  const id = window._currentScreenId;
+  if (!id) return state.hasMemo ? 'return' : 'first';
+  if (FIRST_TIME_SCREENS.indexOf(id) !== -1) return 'first';
+  if (RETURNING_ONLY_SCREENS.indexOf(id) !== -1) return 'return';
+  // Capital-decision flows on shared memo screens (m1/m1b/m5/s12/m6) —
+  // state.cd disambiguates the persona for the shared steps.
+  if (state.cd === 'increase' || state.cd === 'reduce' || state.cd === 'exit') return 'return';
+  if (state.cd === 'initial' || state.cd === 'draft') return 'first';
+  return state.hasMemo ? 'return' : 'first';
+}
 function refreshModeButtons() {
-  document.getElementById('mode-first').classList.toggle('on', !state.hasMemo);
-  document.getElementById('mode-return').classList.toggle('on', state.hasMemo);
+  const persona = inferPersonaFromScreen();
+  const first = document.getElementById('mode-first');
+  const ret   = document.getElementById('mode-return');
+  if (first) first.classList.toggle('on', persona === 'first');
+  if (ret)   ret.classList.toggle('on',   persona === 'return');
 }
 function resetFlow() {
   state.shares = '';
@@ -21002,11 +21027,25 @@ function setVersion(v) {
     v = parseFloat(v);
     if (!VERSIONS[v]) v = 4.5;
   }
+  const versionChanged = state.version !== v;
   state.version = v;
   persistVersion(v);
   refreshVersionUI();
-  // MVP V1 routes by persona (first-time → fork; returning → stock page).
-  if (v === 'mvp1') { enterMvp(); return; }
+  // MVP V1 always lands on first-time when freshly selected — the demo
+  // starts from "What kind of decision is this?", not the returning
+  // stock page. Returning is reachable via the persona toggle.
+  if (v === 'mvp1') {
+    if (versionChanged) {
+      state.hasMemo = false; persistHasMemo(false);
+      state.usingSeedPersona = false;
+      state.transactions = []; persistTransactions();
+      state.notes = []; persistNotes();
+      state.thesisReviews = []; persistThesisReviews();
+      state.reviewPending = false; persistReviewPending(false);
+    }
+    enterMvp();
+    return;
+  }
   // If the current screen is no longer reachable in this version, route to s10
   const cur = SCREENS.find(s => s.id === window._currentScreenId);
   if (cur && (cur.minVersion || 1) > v) {
