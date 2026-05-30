@@ -6995,6 +6995,17 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: #EBEBEB;
   margin-bottom: 12px;
 }
+/* MVP V1 returning mode swaps the ticker (short "AAPL") for a prose
+   title ("Adding to Apple"). Drop down to the canonical memo-header
+   title size so it sits alongside m1 / m1b / s12 / madd / msell etc. */
+.m6-ledger-header.is-prose-title .m6-ticker-hero {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--p);
+  margin-bottom: 6px;
+}
 .m6-ledger-classify {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 14px;
@@ -7042,6 +7053,187 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-posrow-k { font-family: 'Inter', var(--font), sans-serif; font-size: 12px; color: var(--t); letter-spacing: -0.01em; }
 .m6-posrow-v { font-family: 'Inter', var(--font), sans-serif; font-size: 12px; color: var(--s); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .m6-posrow-v--dim { color: var(--t-800); }
+
+/* ── MVP V1 returning view on m6 ──────────────────────────────────────
+   New-memo chip, two-clocks horizon line, flow banner, declarations,
+   inline memo body. Typography & spacing match the existing m6-ledger
+   design tokens: 8-9px tracked uppercase labels, 12px weight-300 body,
+   1px #1A1A1A row dividers, 14px vertical padding. */
+.m6-mvp1-returning {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 4px;
+}
+/* "New memo" indicator — mirrors the LIVE badge style: pulsing green
+   dot + uppercase tracked text, no pill, no background. */
+.m6-newmemo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #3FB950;
+}
+.m6-newmemo-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #3FB950;
+  animation: m6-live-pulse 1.6s ease-in-out infinite;
+}
+/* Two-clocks horizon line — sits inline under the chip as a single quiet
+   sentence. No box, no background — matches the existing m6 row-sub style. */
+.m6-twoclocks {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--t-800);
+  letter-spacing: -0.005em;
+  margin-top: -8px;
+}
+/* Flow banner — same body size as memo-row .v (12px / weight 300), thin
+   left rule, no fill. Reads as a paragraph, not a chip. */
+.m6-flow-banner {
+  border-left: 1px solid #1C1C1C;
+  padding: 2px 0 2px 12px;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  background: transparent;
+}
+/* Nudge — quiet eyebrow label + body, no icon, no fill. Same left rule
+   as the flow banner so the two read as a paragraph stack. */
+.m6-nudge {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: none;
+  border-left: 1px solid #1C1C1C;
+  background: transparent;
+  border-radius: 0;
+  padding: 2px 0 2px 12px;
+}
+.m6-nudge-icon {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t);
+  background: none;
+  width: auto; height: auto;
+  border-radius: 0;
+  display: inline-block;
+  padding: 0;
+  line-height: 1;
+}
+.m6-nudge-text {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--s);
+  letter-spacing: -0.005em;
+}
+/* Declarations — match the existing m6-ledger memo-row pattern.
+   Key (9px tracked uppercase) stacks above value (12px weight 300).
+   1px #1A1A1A bottom divider; tappable to edit. */
+.m6-declarations {
+  display: flex;
+  flex-direction: column;
+}
+.m6-declaration {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "key  edit"
+    "val  edit";
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #1A1A1A;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Inter', var(--font), sans-serif;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+.m6-declaration:last-child { border-bottom: none; }
+.m6-declaration-key {
+  grid-area: key;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.m6-declaration-text {
+  grid-area: val;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  line-height: 1.55;
+}
+.m6-declaration-edit {
+  grid-area: edit;
+  align-self: center;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--t);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+/* Inline memo body — eyebrow label (9px tracked) above a 12px textarea. */
+.m6-inline-memo { display: flex; flex-direction: column; gap: 8px; }
+.m6-inline-memo-label {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--t);
+  text-transform: uppercase;
+}
+.m6-inline-memo-input {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  background: transparent;
+  border: 1px solid #1C1C1C;
+  border-radius: 2px;
+  padding: 12px 12px;
+  min-height: 110px;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+.m6-inline-memo-input::placeholder {
+  color: var(--t-800);
+  font-weight: 300;
+}
+.m6-inline-memo-input:focus { border-color: #3A3A3A; }
+
+/* MVP V1 returning save row — uses the canonical .v5-foot stack
+   (.v5-foot-secondary above .v5-primary). No extra CSS needed beyond
+   what .v5-foot / .v5-foot-secondary / .v5-secondary / .v5-primary
+   already provide; the JS just toggles which children are visible. */
 
 /* Stats strip — IV · PROB · HRZ in three equal columns */
 .m6-stats-strip {
@@ -7689,9 +7881,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   letter-spacing: -0.01em;
 }
 
-/* Calibration no-data placeholder (hidden by default, shown in no-data mode) */
+/* Calibration low-sample disclaimer — shown by default so users with few
+   closed positions see why the accuracy figure isn’t meaningful yet. */
 .cal-no-data-note {
-  display: none;
+  display: block;
   font-size: 13px;
   color: var(--t-800);
   letter-spacing: -0.01em;
@@ -7846,6 +8039,37 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 .pt-follow-copy { flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:0.07em; color:rgba(255,255,255,0.2); background:transparent; border:1px solid rgba(255,255,255,0.08); padding:3px 6px; cursor:pointer; transition:color 120ms,border-color 120ms; white-space:nowrap; margin-top:1px; }
 .pt-follow-copy:hover { color:var(--t); border-color:rgba(255,255,255,0.22); }
 .pt-follow-copy.is-copied { color:#7ec897; border-color:#7ec897; }
+
+/* ── MVP V1 toast (commit confirmation) ───────────────────────────────── */
+.mvp1-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 36px;
+  transform: translate(-50%, 16px);
+  width: min(360px, calc(100% - 32px));
+  max-width: 360px;
+  padding: 14px 16px;
+  background: #121212;
+  border: 1px solid #2a2a2a;
+  border-left: 2px solid var(--s, #e5e3df);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--s, #e5e3df);
+  letter-spacing: -0.005em;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease, transform 240ms ease;
+  cursor: pointer;
+}
+.mvp1-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
 
 </style>
 </head>
@@ -8295,6 +8519,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
       <div class="drawer-switch-row">
         <span class="drawer-switch-label">Has accumulated data<span class="drawer-switch-sub">Source hit-rates · calibration history</span></span>
         <button class="drawer-switch is-on" id="data-mode-switch" aria-label="Toggle data state" onclick="toggleDataMode()"></button>
+      </div>
+      <div class="drawer-switch-row">
+        <span class="drawer-switch-label">More data<span class="drawer-switch-sub">Mature calibration sample (10+ positions held a year)</span></span>
+        <button class="drawer-switch" id="more-data-switch" aria-label="Toggle calibration sample size" onclick="toggleMoreData()" type="button"></button>
       </div>
     </div>
     <div class="drawer-row">
@@ -8903,6 +9131,11 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               </div>
 
               <div class="memo-body--reveal">
+              <!-- Returning-user notice — explains that editing here doesn't
+                   overwrite the previous prediction; it creates a new one. -->
+              <div id="s12-returning-note" style="display:none;margin-bottom:16px;padding:11px 13px;border-left:2px solid rgba(217,164,65,0.45);background:rgba(217,164,65,0.04);font-size:12px;color:var(--s);letter-spacing:-0.01em;line-height:1.5">
+                Changing your probability or horizon creates a <strong>new prediction</strong>. The previous one keeps running on its original horizon and stays in your history — nothing is overwritten.
+              </div>
               <!-- COMPOUNDER VIEW -->
               <div id="s12-comp-view" style="display:none">
 
@@ -8951,9 +9184,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="cal-history-row">
                     <span class="cal-history-label">Historical accuracy</span>
-                    <span class="cal-history-val">58% · 14 positions</span>
+                    <span class="cal-history-val">— · 2 positions</span>
                   </div>
-                  <div class="cal-no-data-note">No calibration history yet. Accuracy data accumulates as positions close.</div>
+                  <div class="cal-no-data-note">Accuracy isn’t meaningful yet — once you’ve tracked more positions over a longer period, this percentage will surface with a reliable number.</div>
                   <div class="memo-subhead" style="margin-top:14px">These estimates are inherently uncertain and reflect your own underwriting assumptions — not platform forecasts or guarantees. Your calibration will be tracked over time and surfaced in your Edge Analysis.</div>
                 </div>
 
@@ -8976,9 +9209,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="cal-history-row">
                     <span class="cal-history-label">Historical accuracy</span>
-                    <span class="cal-history-val">58% · 14 positions</span>
+                    <span class="cal-history-val">— · 2 positions</span>
                   </div>
-                  <div class="cal-no-data-note">No calibration history yet. Accuracy data accumulates as positions close.</div>
+                  <div class="cal-no-data-note">Accuracy isn’t meaningful yet — once you’ve tracked more positions over a longer period, this percentage will surface with a reliable number.</div>
                   <div class="memo-subhead" style="margin-top:14px">These estimates are inherently uncertain and reflect your own underwriting assumptions — not platform forecasts or guarantees.</div>
                 </div>
                 <!-- Horizon -->
@@ -10529,6 +10762,68 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="m6-posrow"><span class="m6-posrow-k">Set on</span><span class="m6-posrow-v m6-posrow-v--dim" id="m6-pos-seton">—</span></div>
                 </div>
 
+                <!-- ── MVP V1 returning view ─────────────────────────────────
+                     Shown only when state.version==='mvp1' and state.cd is one
+                     of increase/reduce/exit. Replaces the standard memo rows
+                     with the spec's 4 declarations + inline memo body. -->
+                <div class="m6-mvp1-returning" id="m6-mvp1-returning" style="display:none">
+                  <!-- New-memo chip (anchors "this is the latest memo") -->
+                  <div class="m6-newmemo-chip" id="m6-newmemo-chip">
+                    <span class="m6-newmemo-dot"></span>
+                    <span id="m6-newmemo-chip-label">New memo · saved with today's trade</span>
+                  </div>
+
+                  <!-- Two-clocks horizon block -->
+                  <div class="m6-twoclocks" id="m6-twoclocks" style="display:none">
+                    <span id="m6-twoclocks-text">—</span>
+                  </div>
+
+                  <!-- Flow-specific banner -->
+                  <div class="m6-flow-banner" id="m6-flow-banner">
+                    <span id="m6-flow-banner-text">—</span>
+                  </div>
+
+                  <!-- Mismatch nudge (Step 6) — conditional, default hidden.
+                       Quiet, black-and-white "heads up" label + body. -->
+                  <div class="m6-nudge" id="m6-nudge" style="display:none">
+                    <div class="m6-nudge-icon" aria-hidden="true">HEADS UP</div>
+                    <div class="m6-nudge-text" id="m6-nudge-text">—</div>
+                  </div>
+
+                  <!-- 4 pre-filled declarations — tappable rows that match
+                       the existing m6-ledger memo-row pattern. -->
+                  <div class="m6-declarations">
+                    <button type="button" class="m6-declaration" onclick="editFromReview('m1')">
+                      <span class="m6-declaration-key">Classification</span>
+                      <span class="m6-declaration-text" id="m6-decl-classify">—</span>
+                      <span class="m6-declaration-edit">Edit ›</span>
+                    </button>
+                    <button type="button" class="m6-declaration" onclick="editFromReview('m1b')">
+                      <span class="m6-declaration-key">Position size</span>
+                      <span class="m6-declaration-text" id="m6-decl-size">—</span>
+                      <span class="m6-declaration-edit">Edit ›</span>
+                    </button>
+                    <button type="button" class="m6-declaration" onclick="editFromReview('s12')">
+                      <span class="m6-declaration-key">Confidence</span>
+                      <span class="m6-declaration-text" id="m6-decl-confid">—</span>
+                      <span class="m6-declaration-edit">Edit ›</span>
+                    </button>
+                    <button type="button" class="m6-declaration" onclick="editFromReview('s12')">
+                      <span class="m6-declaration-key">Horizon</span>
+                      <span class="m6-declaration-text" id="m6-decl-horizon">—</span>
+                      <span class="m6-declaration-edit">Edit ›</span>
+                    </button>
+                  </div>
+
+                  <!-- Inline memo body (per Q8 decision) -->
+                  <div class="m6-inline-memo">
+                    <label class="m6-inline-memo-label" id="m6-inline-memo-label" for="m6-inline-memo-input">Your memo for this purchase</label>
+                    <textarea class="m6-inline-memo-input" id="m6-inline-memo-input"
+                              placeholder="A few honest sentences. What changed, what didn't, and why this trade now."
+                              oninput="onM6InlineMemoInput(this)"></textarea>
+                  </div>
+                </div>
+
                 <!-- Memo rows -->
                 <div>
                   <div class="m6-ledger-section-row">
@@ -10566,6 +10861,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
                 <!-- Footer note (sell: reduce / exit) -->
                 <div class="t-bsm" id="m6-sell-footer" style="line-height:1.6;color:var(--t-800);display:none"></div>
+
               </div>
             </div>
 
@@ -10590,8 +10886,23 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               </div>
             </div>
 
-            <!-- Tap-to-continue (slides up once PT confirmed) -->
-            <div class="v5-foot">
+            <!-- Tap-to-continue (slides up once PT confirmed).
+                 First-time + V4.5 paths show the bare arrow seal.
+                 MVP V1 returning swaps in the canonical V4-style stack:
+                 secondary "Discard changes" row sitting above the
+                 full-width primary save CTA. -->
+            <div class="v5-foot" id="m6-foot">
+              <!-- MVP V1 returning footer (hidden by default) -->
+              <div class="v5-foot-secondary" id="m6-save-secondary-row" style="display:none">
+                <button class="v5-secondary" id="m6-save-secondary" type="button" onclick="exitMemo()">
+                  <span class="act-arrow">→</span>
+                  <span>Discard changes</span>
+                </button>
+              </div>
+              <button class="v5-primary m6-save-primary" id="m6-save-primary" type="button" onclick="onM6SealTap()" style="display:none">
+                <span id="m6-save-primary-label">Save as new memo &amp; add to position</span>
+              </button>
+              <!-- First-time / V4.5 seal arrow -->
               <button class="v5-primary is-arrow m6-hold-btn" id="m6-seal-btn" onclick="onM6SealTap()" type="button">→</button>
             </div>
 
@@ -10601,9 +10912,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             <div class="v5-modal" id="m6-update-modal">
               <div class="v5-modal-sheet">
                 <button type="button" class="v5-modal-close" onclick="closeM6UpdateModal()" aria-label="Close">×</button>
-                <div class="v5-modal-title">A new version of your memo will be created.</div>
+                <div class="v5-modal-title">A new version will be created.</div>
                 <div class="v5-modal-body">
-                  <p>Your edits will be saved as a new version of this investor memo. The previous version stays in your history — earlier records are never overwritten.</p>
+                  <p>Your edits — to the memo, the calibration, or both — will be saved as a new version that supersedes the current one.</p>
+                  <p>If you changed the calibration (probability or horizon), today becomes the new "Set on" date and the elapsed counter resets. The previous prediction stays in your history and continues to be tracked against its original horizon.</p>
                 </div>
                 <div class="v5-modal-acts">
                   <button class="v5-secondary" onclick="closeM6UpdateModal()" type="button">
@@ -10643,13 +10955,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 </div>
                 <div class="memo-body--reveal">
                   <div>
-                    <div class="section-eyebrow" id="msell-eyebrow">Why are you trimming?</div>
+                    <div class="section-eyebrow" id="msell-eyebrow">One question before you trim <span class="memo-ctx-ticker">AAPL</span>:</div>
+                    <div class="memo-subtitle" id="msell-subtitle" style="margin-top:6px;margin-bottom:6px">Why are you selling now?</div>
+                    <div class="memo-subhead" id="msell-subhead" style="margin-bottom:14px">No wrong answer — being honest here makes the next decision easier.</div>
                     <div class="field-list" data-list="msell-reason">
-                      <button class="radio-row" data-r="thesis"     onclick="pickSellReason('thesis')" type="button"><div class="lbl-block"><div class="head">Thesis no longer holds</div><div class="sub">The facts changed — the original case no longer holds.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="killline"   onclick="pickSellReason('killline')" type="button"><div class="lbl-block"><div class="head">Hit my exit conditions</div><div class="sub">A condition I set in the memo has been met.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="fairvalue"  onclick="pickSellReason('fairvalue')" type="button"><div class="lbl-block"><div class="head">Fairly valued now</div><div class="sub">The margin of safety is gone at today's price.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="betteridea" onclick="pickSellReason('betteridea')" type="button"><div class="lbl-block"><div class="head">Better opportunity elsewhere</div><div class="sub">Capital earns more per unit of risk somewhere else.</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="capital"    onclick="pickSellReason('capital')" type="button"><div class="lbl-block"><div class="head">Need the capital</div><div class="sub">Outside the portfolio — unrelated to the position.</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="thesis"     onclick="pickSellReason('thesis')" type="button"><div class="lbl-block"><div class="head">The thesis has weakened</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="profit"     onclick="pickSellReason('profit')" type="button"><div class="lbl-block"><div class="head">Taking some profit</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="rebalance"  onclick="pickSellReason('rebalance')" type="button"><div class="lbl-block"><div class="head">Rebalancing — position got too big</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="cash"       onclick="pickSellReason('cash')" type="button"><div class="lbl-block"><div class="head">Raising cash for something else</div></div><div class="radio-dot"></div></button>
                     </div>
                   </div>
                 </div>
@@ -10657,6 +10970,56 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             </div>
             <div class="v5-foot memo-foot--reveal">
               <button class="v5-primary is-arrow locked" id="msell-next" onclick="go('m6')">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ madd — Add reflection question (MVP V1 Increase) ════════
+               The required reflection between Capital Decision → m6 review on
+               an Add. Single question, three options. Styled like m1. -->
+          <section class="scr" data-id="madd">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s0')">‹</button>
+                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="memo-header">
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title" id="madd-title">Adding to Apple</h1>
+                  </div>
+                  <div class="memo-header-meta">Capital decision</div>
+                  <div class="memo-header-right">
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · ADD</span>
+                  </div>
+                </div>
+                <div class="memo-body--reveal">
+                  <div>
+                    <div class="section-eyebrow">One question before you add to <span class="memo-ctx-ticker">AAPL</span>:</div>
+                    <div class="memo-subtitle" style="margin-top:6px;margin-bottom:6px">Is your thesis stronger — or is the stock just cheaper?</div>
+                    <div class="memo-subhead" style="margin-bottom:14px">No wrong answer — but "just cheaper" is how good investors talk themselves into bad averages. Be honest; this is the point.</div>
+                    <div class="field-list" data-list="madd-reason">
+                      <button class="radio-row" data-r="stronger" onclick="pickAddReason('stronger')" type="button">
+                        <div class="lbl-block"><div class="head">The case is stronger than before</div></div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="cheaper" onclick="pickAddReason('cheaper')" type="button">
+                        <div class="lbl-block"><div class="head">Same case, better price</div></div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="unsure" onclick="pickAddReason('unsure')" type="button">
+                        <div class="lbl-block"><div class="head">I'm not sure yet</div></div>
+                        <div class="radio-dot"></div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-foot memo-foot--reveal">
+              <button class="v5-primary is-arrow locked" id="madd-next" onclick="go('m6')">→</button>
             </div>
           </section>
 
@@ -10680,15 +11043,15 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div style="margin-top:24px;padding:16px 0;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)">
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
                   <span style="font-size:13px;color:var(--s)">Probability</span>
-                  <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums">60%</span>
+                  <span style="font-size:13px;color:var(--p);font-variant-numeric:tabular-nums" id="s19-pos-prob">60%</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
                   <span style="font-size:13px;color:var(--s)">Horizon</span>
-                  <span style="font-size:13px;color:var(--p)">3y <span style="color:var(--t-800);font-family:var(--font);font-size:11px;margin-left:6px">· 1.2y elapsed</span></span>
+                  <span style="font-size:13px;color:var(--p)" id="s19-pos-hrz">3y <span style="color:var(--t-800);font-family:var(--font);font-size:11px;margin-left:6px">· 1.2y elapsed</span></span>
                 </div>
                 <div style="display:flex;justify-content:space-between;padding:6px 0">
                   <span style="font-size:13px;color:var(--s)">Set on</span>
-                  <span style="font-size:13px;color:var(--t);font-variant-numeric:tabular-nums">Feb 27, 2025</span>
+                  <span style="font-size:13px;color:var(--t);font-variant-numeric:tabular-nums" id="s19-pos-seton">Feb 27, 2025</span>
                 </div>
               </div>
 
@@ -11049,6 +11412,23 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <span class="s9-firstmemo-arrow">→</span>
                 </div>
 
+                <!-- Broker-style order execution receipt — account, status,
+                     duration, submitted / executed timestamps, type, price,
+                     entered / filled quantity, total cost. -->
+                <div id="s9-order-details">
+                  <div class="m6-ledger-section-head">ORDER DETAILS</div>
+                  <div class="memo-row"><div class="k">ACCOUNT</div><div class="v" id="s9-od-account">Non-Registered</div></div>
+                  <div class="memo-row"><div class="k">STATUS</div><div class="v" id="s9-od-status">Filled</div></div>
+                  <div class="memo-row"><div class="k">DURATION</div><div class="v" id="s9-od-duration">Good for Day</div></div>
+                  <div class="memo-row"><div class="k">SUBMITTED</div><div class="v" id="s9-od-submitted">—</div></div>
+                  <div class="memo-row"><div class="k">EXECUTED</div><div class="v" id="s9-od-executed">—</div></div>
+                  <div class="memo-row"><div class="k">TYPE</div><div class="v" id="s9-od-type">—</div></div>
+                  <div class="memo-row"><div class="k">PRICE</div><div class="v" id="s9-od-price">—</div></div>
+                  <div class="memo-row"><div class="k">ENTERED</div><div class="v" id="s9-od-entered">—</div></div>
+                  <div class="memo-row"><div class="k">FILLED</div><div class="v" id="s9-od-filled">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">TOTAL</div><div class="v" id="s9-od-total">—</div></div>
+                </div>
+
                 <!-- Memo recorded section (shown if state.hasMemo) -->
                 <div id="s9-memo-section" style="display:none">
                   <div class="m6-ledger-section-head">INVESTOR MEMO</div>
@@ -11223,15 +11603,15 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
             <div class="metrics">
               <div class="met">
-                <span class="lbl">Avg conf.</span>
+                <span class="lbl">Average confidence</span>
                 <span class="met-v" id="s5-mv1">71%</span>
               </div>
               <div class="met" style="align-items:center">
-                <span class="lbl">Actual acc.</span>
+                <span class="lbl">Actual accuracy</span>
                 <span class="met-v" id="s5-mv2">54%</span>
               </div>
               <div class="met" style="align-items:flex-end">
-                <span class="lbl">Gap</span>
+                <span class="lbl">Difference</span>
                 <span class="met-v" id="s5-mv3">−17%</span>
               </div>
             </div>
@@ -13284,6 +13664,29 @@ let state = {
   protocolFromM1: false,           // transient flag: true when re-reading the orientation pages mid-memo (back routes return to m1)
   forecastThreshold: 20,           // user-declared compounding threshold (%) on s12 — defaults to 20, drives the derived EV line
 
+  /* ── Append-only prediction log for the live position ─────────────────
+     Each commit appends a new entry; nothing is overwritten. The original
+     prediction keeps running on its own clock; new predictions start their
+     own. Two (or more) clocks coexist. See: formatTwoClocks().
+     For the demo, seeded with one "original" entry so a returning user has
+     a prior call to compare against.                                     */
+  predictions: [
+    {
+      id:            'pred-original',
+      prob:          60,
+      horizon:       '3y',
+      setOn:         'Feb 27, 2025',
+      elapsedYears:  1.2,
+      source:        'original'    // 'original' | 'add' | 'trim' | 'exit'
+    }
+  ],
+
+  /* Legacy singleton — kept as a derived view of the latest prediction so
+     older render paths (s4, s9, s19, mvprecord) don't have to be rewritten
+     in lockstep with the data-model change. Updated by syncPositionAlias(). */
+  position: null,
+
+
   /* ── Sell memo draft (sm1–sm7 → sm-review) ─────────────────────────────
      Live values as the user walks the sell flow. Sealed at sm-review and
      appended to state.sellMemos for the position's history. The Object.assign
@@ -13523,6 +13926,79 @@ function fmtDate(d) {
   return (d || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+/* "Just set" / "Xmo elapsed" / "X.Xy elapsed" — used on the position-status
+   block (m6) and the s19 increase-reason screen to show how long the current
+   on-file prediction has been running. Resets to "Just set" when the user
+   commits a calibration change. */
+function fmtElapsedYears(years) {
+  if (!years || years <= 0.02) return 'Just set';
+  if (years < 1) return Math.round(years * 12) + 'mo elapsed';
+  return years.toFixed(1) + 'y elapsed';
+}
+
+/* ── Prediction helpers ─────────────────────────────────────────────── */
+function getOriginalPrediction() {
+  const ps = (state.predictions || []);
+  return ps.find(p => p.source === 'original') || ps[0] || null;
+}
+function getLatestPrediction() {
+  const ps = (state.predictions || []);
+  return ps.length ? ps[ps.length - 1] : null;
+}
+/* Keep the legacy state.position alias in sync with the latest prediction so
+   older render paths still work without a rewrite. */
+function syncPositionAlias() {
+  const latest = getLatestPrediction();
+  state.position = latest
+    ? { prob: latest.prob, horizon: latest.horizon, setOn: latest.setOn, elapsedYears: latest.elapsedYears || 0 }
+    : null;
+}
+/* Append a new prediction snapshot. Called from commitMemo on a returning
+   commit when calibration changed. */
+function appendPrediction(source) {
+  state.predictions = state.predictions || [];
+  state.predictions.push({
+    id:           'pred-' + Date.now(),
+    prob:         state.prob,
+    horizon:      state.horizon,
+    setOn:        fmtDate(),
+    elapsedYears: 0,
+    source:       source || 'add'
+  });
+  syncPositionAlias();
+}
+/* Render the spec's horizon chip: "Original call: X mo in, Y mo to score ·
+   This call: new 3-yr clock". Returns null when there's only one prediction. */
+function formatTwoClocks() {
+  const orig   = getOriginalPrediction();
+  const latest = getLatestPrediction();
+  if (!orig || !latest || orig.id === latest.id) return null;
+  const elapsedMo = Math.round((orig.elapsedYears || 0) * 12);
+  const totalMo   = horizonToMonths(orig.horizon);
+  const remainMo  = Math.max(0, totalMo - elapsedMo);
+  return `Original call: ${elapsedMo} mo in, ${remainMo} mo to score · This call: new 3-yr clock`;
+}
+function horizonToMonths(h) {
+  if (h === '1y' || h === 'y1') return 12;
+  if (h === '3y' || h === 'y3') return 36;
+  if (h === '5y' || h === 'y5p') return 60;
+  return 36;
+}
+
+/* Hydrate the s19 (V4.5 Increase Reason) on-file calibration rows from
+   state.position so they reflect the latest committed prediction. */
+function renderS19() {
+  const pos = state.position;
+  if (!pos) return;
+  const probEl  = document.getElementById('s19-pos-prob');
+  const hrzEl   = document.getElementById('s19-pos-hrz');
+  const setEl   = document.getElementById('s19-pos-seton');
+  if (probEl) probEl.textContent = pos.prob + '%';
+  if (hrzEl)  hrzEl.innerHTML = (HORIZON_LBL[pos.horizon] || pos.horizon)
+    + ' <span style="color:var(--t-800);font-family:var(--font);font-size:11px;margin-left:6px">· ' + fmtElapsedYears(pos.elapsedYears) + '</span>';
+  if (setEl)  setEl.textContent = pos.setOn;
+}
+
 /* Release-version picker — segments the prototype into the shippable
    versions we'd hand to engineering one sprint at a time. Selecting a
    lower version hides UI elements + drawer entries that belong to
@@ -13680,6 +14156,31 @@ function refreshNotifSwitches() {
 }
 
 /* ── Prototype data-state toggle ─────────────────────── */
+/* "More data" drawer toggle — swaps the s12 calibration panel between the
+   low-sample state (default: "— · 2 positions" with the not-meaningful note)
+   and the mature-sample state ("60% · 12 positions" with a short reliability
+   note). Demo-only — doesn't touch state, just rewrites the display strings
+   on both s12 module variants. */
+const _CAL_SAMPLE = {
+  off: {
+    val:  '— · 2 positions',
+    note: 'Accuracy isn’t meaningful yet — once you’ve tracked more positions over a longer period, this percentage will surface with a reliable number.'
+  },
+  on: {
+    val:  '60% · 12 positions',
+    note: 'Tracked over the past year. Accuracy continues to firm up as more positions close.'
+  }
+};
+function toggleMoreData() {
+  const btn = document.getElementById('more-data-switch');
+  if (!btn) return;
+  const on = !btn.classList.contains('is-on');
+  btn.classList.toggle('is-on', on);
+  const mode = on ? _CAL_SAMPLE.on : _CAL_SAMPLE.off;
+  document.querySelectorAll('.cal-history-val').forEach(el => { el.textContent = mode.val;  });
+  document.querySelectorAll('.cal-no-data-note').forEach(el => { el.textContent = mode.note; });
+}
+
 function toggleDataMode() {
   const noData = document.body.classList.toggle('demo-no-data');
   const sw = document.getElementById('data-mode-switch');
@@ -14174,10 +14675,8 @@ const ENG_NOTES = {
       note: 'Every memo row below is tappable — taps route back to the relevant step so the user can revise. Saving creates a new version; older ones stay in history.' },
     { sel: '.scr[data-id="m6"] #m6-note-row', label: 'Memo body',
       note: 'The free-form memo the user wrote on step 3. Paragraph breaks are preserved.' },
-    { sel: '.scr[data-id="m6"] #pt-step', label: 'Pressure test',
-      note: 'A separate gate before the seal. Tapping the CTA opens a side drawer with prompts the user runs through their own AI tool. The user then checks the box to confirm they reviewed the results.' },
     { sel: '.scr[data-id="m6"] #m6-seal-btn', label: 'Seal arrow',
-      note: 'Slides up only after the pressure test is acknowledged. On a returning visit, if the user has edited anything, tapping it surfaces a confirmation that a new version of the memo will be created.' },
+      note: 'Always available on this screen — tapping commits the memo. On a returning visit, if the user has edited any field, tapping it surfaces a confirmation that a new version of the memo will be created (older versions stay in history).' },
   ]},
 
   s8: { items: [
@@ -14215,6 +14714,8 @@ const ENG_NOTES = {
       note: 'Reads "Order Filled" on a buy, "Position Reduced" on a partial sell, "Position Closed" on a full exit. Mirrors what just happened.' },
     { sel: '.scr[data-id="s9"] .s9-stats-strip', label: 'Trade stats',
       note: 'Shares filled, total cost, resulting portfolio weight.' },
+    { sel: '.scr[data-id="s9"] #s9-order-details', label: 'Order details',
+      note: 'Full broker-style execution receipt — account, status, duration, submitted and executed timestamps, type, price, entered vs filled quantity, and total cost. All fields are dynamic except Account and Duration, which are hardcoded in this prototype.' },
     { sel: '.scr[data-id="s9"] #s9-memo-section', label: 'Memo recorded',
       note: 'Confirms the memo + calibration are permanently on file for this trade. Future capital decisions reuse this memo unless the user revises it.' },
     { sel: '.scr[data-id="s9"] .lpb', label: 'Done',
@@ -15179,6 +15680,8 @@ function go(id) {
   if (id === 'mexample') renderMexample();
   if (id === 'mvprecord') renderMvpRecord();
   if (id === 'msell') hydrateMsell();
+  if (id === 'madd')  hydrateMadd();
+  if (id === 's19') renderS19();
   // Test-scenario caption — shown on memo review screens during the returning
   // increase flow so reviewers know why the user is going through all 8 steps.
   refreshReviewCaption(id);
@@ -15753,16 +16256,24 @@ function pickCD(choice) {
     state._memoEditedThisFlow = false;
     hydrateAaplMemoFromSeed();
     if (!(state.memo.note || '').trim()) state.memo.note = MVP_EXAMPLE_MEMO;
-    // Seed the on-file calibration for this review (the original 60% / 3y call).
-    state.prob = 60; state.horizon = '3y'; state._increaseSeeded = true;
+    // Seed the in-progress draft from the on-file prediction so the s12 form
+    // is pre-filled with what the user actually committed to. state.position
+    // stays the immutable source of truth until a fresh commit changes it.
+    state.prob = state.position.prob;
+    state.horizon = state.position.horizon;
+    state._increaseSeeded = true;
     // Pressure test was completed at the original buy — carry it as confirmed
     // (used by the Increase flow; sells replace PT with the reason page).
     state.memo.ptStatus    = 'done';
     state.memo.ptConfirmed = true;
     state.sellReason       = null;
-    // Reduce / Exit first name a reason on its own page; Increase goes straight
-    // to the memo review.
-    go((choice === 'reduce' || choice === 'exit') ? 'msell' : 'm6');
+    state.addReason        = null;
+    // Each capital decision names a reason on its own page before the memo
+    // review. Reduce / Exit → msell. Increase → madd (single reflection
+    // question: "stronger thesis vs just cheaper").
+    if (choice === 'reduce' || choice === 'exit') { go('msell'); return; }
+    if (choice === 'increase') { go('madd'); return; }
+    go('m6');
     return;
   }
   // ── V4.5 ──
@@ -15784,7 +16295,11 @@ function isMvpReturning() { return state.version === 'mvp1' && state.cd && state
 const MVP_POS_SHARES = 47;
 
 const SELL_REASON_LBL = {
-  thesis:     'Thesis no longer holds',
+  thesis:     'The thesis has weakened',
+  profit:     'Taking some profit',
+  rebalance:  'Rebalancing — position got too big',
+  cash:       'Raising cash for something else',
+  // Legacy keys — keep so old saved drafts don't blank out
   killline:   'Hit my exit conditions',
   fairvalue:  'Fairly valued now',
   betteridea: 'Better opportunity elsewhere',
@@ -15802,14 +16317,23 @@ function pickSellReason(r) {
   if (next) next.classList.remove('locked');
 }
 
-/* Hydrate the sell-reason page for Reduce vs Exit. */
+/* Hydrate the sell-reason page for Reduce vs Exit. Per MVP V1 spec:
+   - Reduce → "Trimming Apple", "One question before you trim AAPL:"
+   - Exit   → "Closing Apple",  "One question before you close AAPL:"
+   Both share the same 4 reason options + helper line. */
 function hydrateMsell() {
   const isExit = state.cd === 'exit';
   const t  = document.getElementById('msell-title');
   const ey = document.getElementById('msell-eyebrow');
+  const st = document.getElementById('msell-subtitle');
+  const sh = document.getElementById('msell-subhead');
   const tag= document.getElementById('msell-tag');
-  if (t)   t.textContent  = isExit ? 'Close position' : 'Reduce position';
-  if (ey)  ey.textContent = isExit ? 'Why are you closing this position?' : 'Why are you trimming?';
+  if (t)   t.textContent  = isExit ? 'Closing Apple' : 'Trimming Apple';
+  if (ey)  ey.innerHTML   = isExit
+    ? 'One question before you close <span class="memo-ctx-ticker">AAPL</span>:'
+    : 'One question before you trim <span class="memo-ctx-ticker">AAPL</span>:';
+  if (st)  st.textContent = isExit ? 'Why are you closing this position?' : 'Why are you selling now?';
+  if (sh)  sh.textContent = 'No wrong answer — being honest here makes the next decision easier.';
   if (tag) tag.textContent= isExit ? 'EXIT' : 'REDUCE';
   document.querySelectorAll('[data-list="msell-reason"] .radio-row').forEach(b =>
     b.classList.toggle('is-on', b.dataset.r === state.sellReason));
@@ -15820,6 +16344,29 @@ function hydrateMsell() {
 /* Legacy alias — the old embedded m6 reason picker is no longer used, but keep
    the symbol defined so any stray reference is harmless. */
 function selectSellReason(r) { pickSellReason(r); }
+
+/* MVP V1 Add flow: a single reflection question before the memo review.
+   "Is your thesis stronger — or is the stock just cheaper?"
+   Picking one unlocks the Continue arrow that sends them on to m6. */
+function pickAddReason(r) {
+  state.addReason = r;
+  try { persistMemoDraft(); } catch(_) {}
+  document.querySelectorAll('[data-list="madd-reason"] .radio-row').forEach(b =>
+    b.classList.toggle('is-on', b.dataset.r === r));
+  const next = document.getElementById('madd-next');
+  if (next) next.classList.remove('locked');
+}
+
+/* Hydrate the madd reflection page. Restore any prior pick so the user can
+   navigate back without losing their choice. */
+function hydrateMadd() {
+  const t = document.getElementById('madd-title');
+  if (t) t.textContent = 'Adding to Apple';
+  document.querySelectorAll('[data-list="madd-reason"] .radio-row').forEach(b =>
+    b.classList.toggle('is-on', b.dataset.r === state.addReason));
+  const next = document.getElementById('madd-next');
+  if (next) next.classList.toggle('locked', !state.addReason);
+}
 
 /* s19 → memo review path. For the returning user increasing exposure, after
    "Why are you increasing?" we send them through the full memo review starting
@@ -17163,6 +17710,20 @@ function renderS12Modules() {
   if (compView) compView.style.display = isComp ? '' : 'none';
   if (stdView)  stdView.style.display  = isComp ? 'none' : '';
   if (header)   header.textContent = 'Exceptional Compounding';
+  // Show the "creates a new prediction" notice only on returning visits —
+  // first-time users are creating the original prediction, not editing it.
+  const returningNote = document.getElementById('s12-returning-note');
+  if (returningNote) {
+    const returning = state.cd && state.cd !== 'initial' && state.cd !== 'draft';
+    returningNote.style.display = returning ? '' : 'none';
+  }
+  // MVP V1 locks horizon at 3 years — hide the picker and force the state.
+  if (state.version === 'mvp1') {
+    state.horizon = '3y';
+    state.memo.horizonSel = 'y3';
+    const horizonModule = document.getElementById('s12-horizon-module');
+    if (horizonModule) horizonModule.style.display = 'none';
+  }
   // Hydrate hurdle display — prefer the global standard set on mintro
   const savedRate = parseInt(localStorage.getItem('mogo.defaultHurdleRate') || '0', 10);
   const rate = savedRate || state.defaultHurdleRate || state.memo.hurdleRate || 20;
@@ -17432,8 +17993,13 @@ function hydrateMemoScreen(screenId) {
     // Re-read intro & research — only surfaces for users who've completed
     // a memo before. First-time users see mintro/mresearch as part of the
     // auto-flow before reaching m1, so the in-flow re-access is noise.
+    // MVP V1 hides it everywhere — that flow doesn't expose the protocol
+    // reference at all.
     const protoLink = document.getElementById('m1-protocol-link');
-    if (protoLink) protoLink.style.display = state.hasMemo ? '' : 'none';
+    if (protoLink) {
+      const show = state.hasMemo && state.version !== 'mvp1';
+      protoLink.style.display = show ? '' : 'none';
+    }
   }
   if (screenId === 'm1b') {
     const list = document.querySelector('[data-list="m1-size"]');
@@ -18259,6 +18825,68 @@ function refreshMemoLocks() {
    kill, IV, MOS and source-attribution screens are routed around.   */
 const MEMO_FLOW_V45  = ['m1','m1b','m2','m3','miv','s12','msrc','m5','m6'];
 const MEMO_FLOW_MVP1 = ['m1','m1b','m5','s12','m6'];
+
+/* ── MVP V1 microcopy bank ─────────────────────────────────────────────
+   Every user-facing string for the Add/Reduce/Exit returning flows lives
+   here so copy edits don't require hunting through HTML + JS. Reference
+   the same source of truth from m6 hydration, the save CTA, the toast,
+   and the nudge banners. */
+const MVP1_COPY = {
+  // m6 header (verb + company)
+  title: {
+    increase: 'Adding to Apple',
+    reduce:   'Trimming Apple',
+    exit:     'Closing Apple'
+  },
+  // Chip below the title — anchors the user to "this is the latest memo"
+  newMemoChip: 'NEW MEMO · SAVED WITH TODAY\'S TRADE',
+  // Banner copy under the chip — flow-specific framing
+  banner: {
+    increase: 'You\'re adding to a position you already hold. This memo replaces the latest one on file.',
+    reduce:   'You\'re trimming a position you already hold. This memo replaces the latest one on file.',
+    exit:     'You\'re closing this position. This memo records why — your original 3-year call is still tracked separately.'
+  },
+  // Memo body section label (per Q8 decision)
+  memoBodyLabel: {
+    increase: 'Your memo for this purchase',
+    reduce:   'Why you\'re trimming',
+    exit:     'Why you\'re closing'
+  },
+  // 4 declarations on m6 (returning flow) — the row eyebrow carries the
+  // label, so these are just the values shown below it.
+  declarations: {
+    classify: '{classify}',
+    size:     '{size}',
+    confid:   '{prob}% chance over 3 years',
+    horizon:  '3-year scoring clock'
+  },
+  // Save CTA (primary + secondary)
+  saveCta: {
+    increase: { primary: 'Save as new memo & add to position', secondary: 'Discard changes' },
+    reduce:   { primary: 'Save as new memo & reduce position', secondary: 'Discard changes' },
+    exit:     { primary: 'Save as new memo & close position',  secondary: 'Discard changes' }
+  },
+  // Toast on commit
+  toast: {
+    increase: 'Saved. This is now your latest memo for Apple, attached to today\'s purchase. Your original 3-year call is still tracked separately.',
+    reduce:   'Saved. This is now your latest memo for Apple, attached to today\'s sale. Your original 3-year call is still tracked separately.',
+    exit:     'Saved. This memo records the close — your original 3-year call is still tracked separately for scoring.'
+  },
+  // Mismatch nudges — 4 conditional cases
+  nudges: {
+    sizeConfMismatch:    'You\'re sizing this up but your confidence sits below 50%. Worth a second look — does the size match what you actually believe?',
+    confDroppedAdding:   'Your confidence is lower than your original call, but you\'re adding to the position. Same case at a better price, or are you averaging into doubt?',
+    thesisWeakenedHighConf: 'You said the thesis has weakened, but your confidence is still high. One of those probably needs to update — which one feels off?',
+    noChangeButPriceMoved:  'Nothing in your memo has changed — only the price has. That\'s fine if the case really is identical. Worth saying so out loud.'
+  }
+};
+function getMvp1Verb() {
+  const cd = state.cd;
+  if (cd === 'increase') return 'increase';
+  if (cd === 'reduce')   return 'reduce';
+  if (cd === 'exit')     return 'exit';
+  return 'increase';
+}
 function getMemoFlow() {
   return state.version === 'mvp1' ? MEMO_FLOW_MVP1 : MEMO_FLOW_V45;
 }
@@ -18807,7 +19435,9 @@ function renderM6() {
   }
 
   // Position-status block — MVP V1 returning flow (increase / reduce / exit):
-  // show where the position currently stands before re-confirming the memo.
+  // shows the on-file prediction (from state.position), NOT the in-progress
+  // draft. The draft only takes effect when the user commits a calibration
+  // change — at which point state.position resets to today and elapsed = 0.
   {
     const posStatus = document.getElementById('m6-position-status');
     if (posStatus) {
@@ -18817,14 +19447,14 @@ function renderM6() {
         const probEl = document.getElementById('m6-pos-prob');
         const hrzEl  = document.getElementById('m6-pos-hrz');
         const setEl  = document.getElementById('m6-pos-seton');
-        if (probEl) probEl.textContent = (state.prob || 60) + '%';
+        const pos = state.position;
+        if (probEl) probEl.textContent = pos.prob + '%';
         // Exit closes the bet early — surface that in the horizon line.
-        const earlyNote = (state.cd === 'exit')
-          ? ' · closing 1.8y early'
-          : '';
-        if (hrzEl)  hrzEl.innerHTML = (HORIZON_LBL[state.horizon] || '3 years') +
-          ' <span style="color:var(--t-800);font-size:11px;margin-left:4px">· 1.2y elapsed' + earlyNote + '</span>';
-        if (setEl)  setEl.textContent = 'Feb 27, 2025';
+        const earlyNote = (state.cd === 'exit') ? ' · closing early' : '';
+        const elapsedTxt = fmtElapsedYears(pos.elapsedYears);
+        if (hrzEl)  hrzEl.innerHTML = (HORIZON_LBL[pos.horizon] || pos.horizon) +
+          ' <span style="color:var(--t-800);font-size:11px;margin-left:4px">· ' + elapsedTxt + earlyNote + '</span>';
+        if (setEl)  setEl.textContent = pos.setOn;
       }
     }
   }
@@ -18903,6 +19533,194 @@ function renderM6() {
   // Reset hold-to-commit progress fill in case the user came back from cancellation
   const fill = document.getElementById('m6-commit-fill');
   if (fill) fill.style.width = '0%';
+
+  // ── MVP V1 returning view (Add / Reduce / Exit) ────────────────────────
+  // Per spec: replace the ledger memo rows with the spec layout —
+  // verb+company title, new-memo chip, two-clocks block, flow banner,
+  // 4 tappable declarations, inline memo body, save CTAs.
+  renderMvp1ReturningView();
+}
+
+/* m6 returning redesign (Step 5).
+   When state.cd is increase/reduce/exit on MVP V1, this swaps the m6
+   review out of its V4.5-ledger mode and into the spec layout:
+     - Verb+company title (Adding/Trimming/Closing Apple)
+     - "New memo" chip (LIVE-badge styling)
+     - Two-clocks horizon block
+     - Flow-specific banner
+     - Conditional mismatch nudge
+     - 4 tappable declarations (classify / size / confidence / horizon)
+     - Inline memo body textarea
+     - Canonical V4 footer: "Discard changes" secondary row above the
+       full-width primary "Save as new memo & …" CTA
+   First-time / V4.5 paths are untouched — they keep the bare arrow seal. */
+function renderMvp1ReturningView() {
+  const block = document.getElementById('m6-mvp1-returning');
+  if (!block) return;
+  const isReturning = isMvpReturning();
+  block.style.display = isReturning ? '' : 'none';
+
+  const ids = {
+    rowsSection:    document.querySelector('.scr[data-id="m6"] .m6-ledger-section-row'),
+    calSection:     document.getElementById('m6-calibration-section'),
+    buyFooter:      document.getElementById('m6-buy-footer'),
+    sellFooter:     document.getElementById('m6-sell-footer'),
+    immut:          document.getElementById('m6-immutability'),
+    posStatus:      document.getElementById('m6-position-status'),
+    ptStep:         document.getElementById('pt-step'),
+    reasonSec:      document.getElementById('m6-sell-reason'),
+    sealBtn:        document.getElementById('m6-seal-btn'),
+    saveSecRow:     document.getElementById('m6-save-secondary-row'),
+    savePrimary:    document.getElementById('m6-save-primary')
+  };
+  const memoRowsWrap = ids.rowsSection ? ids.rowsSection.parentElement : null;
+
+  if (!isReturning) {
+    // First-time / V4.5: bare arrow seal owns the footer, and the ticker
+    // hero is the giant "AAPL" — drop the prose-title modifier.
+    if (ids.sealBtn)     ids.sealBtn.style.display     = '';
+    if (ids.saveSecRow)  ids.saveSecRow.style.display  = 'none';
+    if (ids.savePrimary) ids.savePrimary.style.display = 'none';
+    const hdrA = document.getElementById('m6-ledger-header');
+    if (hdrA) hdrA.classList.remove('is-prose-title');
+    return;
+  }
+  // Returning mode: ticker hero shows a prose title ("Adding to Apple")
+  // so swap to the canonical 26px memo-header size.
+  const hdr = document.getElementById('m6-ledger-header');
+  if (hdr) hdr.classList.add('is-prose-title');
+
+  // Hide the V4.5 / first-time pieces — the new view owns the page.
+  if (memoRowsWrap)  memoRowsWrap.style.display  = 'none';
+  if (ids.calSection) ids.calSection.style.display = 'none';
+  if (ids.buyFooter)  ids.buyFooter.style.display  = 'none';
+  if (ids.sellFooter) ids.sellFooter.style.display = 'none';
+  if (ids.immut)      ids.immut.style.display      = 'none';
+  if (ids.posStatus)  ids.posStatus.style.display  = 'none';
+  if (ids.ptStep)     ids.ptStep.style.display     = 'none';
+  if (ids.reasonSec)  ids.reasonSec.style.display  = 'none';
+  // Footer swap: hide the bare arrow seal, show the canonical stack
+  // ("Discard changes" above the full-width primary save CTA).
+  if (ids.sealBtn)     ids.sealBtn.style.display     = 'none';
+  if (ids.saveSecRow)  ids.saveSecRow.style.display  = '';
+  if (ids.savePrimary) ids.savePrimary.style.display = '';
+
+  // Header: title (verb + company), ticker meta, alloc lbl, classify, doc label
+  const verb = getMvp1Verb();
+  const titleEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero');
+  if (titleEl) titleEl.innerHTML = MVP1_COPY.title[verb] || titleEl.innerHTML;
+  const tickerMeta = document.getElementById('m6-ticker-meta');
+  if (tickerMeta) tickerMeta.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · New memo';
+  const allocLbl = document.querySelector('.scr[data-id="m6"] .alloc-type-lbl');
+  if (allocLbl) {
+    const verbLbl = { increase: 'Adding more', reduce: 'Trimming back', exit: 'Closing out' }[verb] || 'Updating';
+    allocLbl.textContent = verbLbl;
+  }
+  const classifyEl = document.getElementById('m6-classify');
+  if (classifyEl) classifyEl.textContent = (TYPE_LBL[state.memo.type] || '') +
+    (state.memo.size ? ' · ' + (SIZE_LBL[state.memo.size] || '') : '');
+  const docLbl = document.getElementById('m6-doc-label');
+  // Doc label keeps the existing "INVESTMENT MEMO · V<n>" voice. Bump the
+  // version so the user sees this is a NEW version, not the original.
+  if (docLbl) docLbl.textContent = 'INVESTMENT MEMO · V2';
+
+  // Chip
+  const chipLabel = document.getElementById('m6-newmemo-chip-label');
+  if (chipLabel) chipLabel.textContent = MVP1_COPY.newMemoChip;
+
+  // Two-clocks horizon block (Step 8)
+  const twoclocks  = document.getElementById('m6-twoclocks');
+  const twoText    = document.getElementById('m6-twoclocks-text');
+  const tcStr      = (typeof formatTwoClocks === 'function') ? formatTwoClocks() : null;
+  if (twoclocks && twoText) {
+    if (tcStr) { twoclocks.style.display = ''; twoText.textContent = tcStr; }
+    else       { twoclocks.style.display = 'none'; }
+  }
+
+  // Flow-specific banner
+  const bannerText = document.getElementById('m6-flow-banner-text');
+  if (bannerText) bannerText.textContent = MVP1_COPY.banner[verb] || '';
+
+  // 4 declarations
+  const m = state.memo;
+  const classifyTxt = (TYPE_LBL[m.type] || '—');
+  const sizeTxt     = (SIZE_LBL[m.size] || '—');
+  const decl = MVP1_COPY.declarations;
+  const $d = id => document.getElementById(id);
+  if ($d('m6-decl-classify')) $d('m6-decl-classify').textContent = decl.classify.replace('{classify}', classifyTxt);
+  if ($d('m6-decl-size'))     $d('m6-decl-size').textContent     = decl.size.replace('{size}', sizeTxt);
+  if ($d('m6-decl-confid'))   $d('m6-decl-confid').textContent   = decl.confid.replace('{prob}', state.prob);
+  if ($d('m6-decl-horizon'))  $d('m6-decl-horizon').textContent  = decl.horizon;
+
+  // Inline memo body
+  const memoLabel = document.getElementById('m6-inline-memo-label');
+  const memoInput = document.getElementById('m6-inline-memo-input');
+  if (memoLabel) memoLabel.textContent = MVP1_COPY.memoBodyLabel[verb] || 'Your memo';
+  if (memoInput) {
+    memoInput.value = m.note || '';
+    memoInput.placeholder = (verb === 'increase')
+      ? 'A few honest sentences. What changed, what didn\'t, and why this trade now.'
+      : (verb === 'reduce')
+        ? 'A few honest sentences. What\'s pulling you to trim now?'
+        : 'A few honest sentences. What\'s closing the case?';
+  }
+
+  // Save CTA label (primary)
+  const primary = document.getElementById('m6-save-primary-label');
+  if (primary) primary.textContent = (MVP1_COPY.saveCta[verb] || {}).primary || 'Save as new memo';
+
+  // Mismatch nudges (Step 6)
+  renderMvp1Nudge();
+}
+
+/* Inline memo body input handler — push edits straight into state.memo.note
+   so the rest of the app (toast, latest-memo header on s0, m6 itself) sees
+   the new copy without an extra commit step. */
+function onM6InlineMemoInput(el) {
+  if (!el) return;
+  state.memo = state.memo || {};
+  state.memo.note = el.value;
+  state._memoEditedThisFlow = true;
+  try { persistMemoDraft(); } catch(_) {}
+}
+
+/* MVP V1 mismatch nudge — surfaced on m6 when the user's draft contradicts
+   itself in one of 4 well-known ways. At most one nudge shows at a time;
+   first match wins (priority order matches spec urgency).
+   1. Adding while confidence dropped
+   2. Sized big with low confidence
+   3. Thesis weakened but confidence still high (Reduce/Exit context)
+   4. No memo edits but price moved (Add/Reduce context)               */
+function renderMvp1Nudge() {
+  const nudgeEl = document.getElementById('m6-nudge');
+  const nudgeTx = document.getElementById('m6-nudge-text');
+  if (!nudgeEl || !nudgeTx) return;
+  const verb = getMvp1Verb();
+  const orig = (typeof getOriginalPrediction === 'function') ? getOriginalPrediction() : null;
+  const origProb = orig ? orig.prob : 60;
+  const draftProb = state.prob;
+  const sizeIsBig = state.memo && (state.memo.size === 'core' || state.memo.size === 'large' || state.memo.size === 'big');
+  let msg = null;
+
+  // Case 1: Confidence dropped while adding
+  if (verb === 'increase' && draftProb < origProb) {
+    msg = MVP1_COPY.nudges.confDroppedAdding;
+  }
+  // Case 2: Sized big with low confidence (sub-50%)
+  else if (verb === 'increase' && sizeIsBig && draftProb < 50) {
+    msg = MVP1_COPY.nudges.sizeConfMismatch;
+  }
+  // Case 3: Thesis weakened but still high confidence (Reduce/Exit)
+  else if ((verb === 'reduce' || verb === 'exit') && state.sellReason === 'thesis' && draftProb >= 70) {
+    msg = MVP1_COPY.nudges.thesisWeakenedHighConf;
+  }
+  // Case 4: No memo edits this flow but the user is acting anyway
+  else if ((verb === 'increase' || verb === 'reduce') && state._memoEditedThisFlow === false) {
+    msg = MVP1_COPY.nudges.noChangeButPriceMoved;
+  }
+
+  if (msg) { nudgeEl.style.display = ''; nudgeTx.textContent = msg; }
+  else     { nudgeEl.style.display = 'none'; }
 }
 
 /* V4.5 — Verb-specific Continue labels on each memo step CTA. Each Continue
@@ -19203,6 +20021,40 @@ function commitMemo() {
   _commitMemoInner();
 }
 function _commitMemoInner() {
+  // ── Append a new prediction to the position's prediction log ─────────
+  // First-time commits seed the FIRST prediction. Returning commits append
+  // a new one — even when calibration is unchanged, since each transaction
+  // gets its own attached memo snapshot. The original prediction continues
+  // to tick on its own clock; the new one starts fresh.
+  {
+    const returning = state.cd && state.cd !== 'initial' && state.cd !== 'draft';
+    const source    = state.cd === 'increase' ? 'add'
+                    : state.cd === 'reduce'   ? 'trim'
+                    : state.cd === 'exit'     ? 'exit'
+                    : 'original';
+    if (state.cd === 'initial') {
+      // First memo on file — replace the seeded "original" entry so the
+      // demo starts from a clean state if the user re-walks the flow.
+      state.predictions = [{
+        id:           'pred-' + Date.now(),
+        prob:         state.prob,
+        horizon:      state.horizon,
+        setOn:        fmtDate(),
+        elapsedYears: 0,
+        source:       'original'
+      }];
+      syncPositionAlias();
+    } else if (returning) {
+      appendPrediction(source);
+      // Toast: confirms the new memo is on file and the original 3-yr call
+      // is still tracked separately. Only fires for MVP V1 returning flows.
+      if (state.version === 'mvp1') {
+        try { showMvp1Toast(state.cd === 'increase' ? 'increase'
+                              : state.cd === 'reduce'   ? 'reduce'
+                              : 'exit'); } catch(_) {}
+      }
+    }
+  }
   // Persist source attribution into the global per-source history so the
   // detail field autocompletes next time the user picks the same source.
   if (state.memo && state.memo.source && (state.memo.sourceDetail || '').trim()) {
@@ -19833,12 +20685,29 @@ function renderS9() {
   /* s9-top3 removed — Top 3 idea no longer captured */
   // Filled-at timestamp — generated at execution
   const filledEl = document.getElementById('s9-filled-at');
+  const nowTs = new Date();
+  const submittedTs = new Date(nowTs.getTime() - 65 * 1000); // ~1 minute earlier
+  const fmtDateTime = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    + ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+    + ' EDT';
   if (filledEl) {
-    const now = new Date();
-    const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    const date = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const time = nowTs.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const date = nowTs.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     filledEl.textContent = `Filled at ${time} · ${date}`;
   }
+
+  // ── Order details (broker-style execution receipt) ─────────────────
+  const setOD = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setOD('s9-od-account',   state.account || 'Non-Registered');
+  setOD('s9-od-status',    'Filled');
+  setOD('s9-od-duration',  'Good for Day');
+  setOD('s9-od-submitted', fmtDateTime(submittedTs));
+  setOD('s9-od-executed',  fmtDateTime(nowTs));
+  setOD('s9-od-type',      (isLimit ? 'Limit ' : 'Market ') + (sell ? 'Sell' : 'Buy'));
+  setOD('s9-od-price',     isLimit ? priceUSD.toFixed(2) + ' USD' : 'Market');
+  setOD('s9-od-entered',   String(n));
+  setOD('s9-od-filled',    n + ' × ' + priceUSD.toFixed(2) + ' USD');
+  setOD('s9-od-total',     costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD');
 
   const memoSec  = document.getElementById('s9-memo-section');
   const memoNote = document.getElementById('s9-memo-note');
@@ -23413,6 +24282,7 @@ function checkProbGuardrail(onProceed) {
    ═════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   populateHorizonDates();
+  syncPositionAlias();          // seed state.position from the seeded predictions array
   refreshVersionUI();           // builds drawer jumper (filtered) + applies version-gated visibility
   refreshModeButtons();
   refreshNotifSwitches();       // sync drawer on/off switches to persisted notifPrefs
@@ -23706,6 +24576,13 @@ function renderPtStep() {
   const el     = document.getElementById('pt-step');
   // Sell flows (Reduce / Exit) replace the pressure test with a reason picker.
   if (isSellFlow()) { if (el) el.style.display = 'none'; return; }
+  // MVP V1 has no pressure-test gate in any flow (first-time or returning) —
+  // hide the block and reveal the seal directly so the user can commit.
+  if (state.version === 'mvp1') {
+    if (el) el.style.display = 'none';
+    _revealSeal();
+    return;
+  }
   const status = state.memo.ptStatus || null;
 
   if (el) {
@@ -23786,6 +24663,31 @@ function copyPtFollowUp(btn, text) {
   btn.textContent = 'COPIED';
   btn.classList.add('is-copied');
   setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('is-copied'); }, 1500);
+}
+
+/* ── MVP V1 toast (commit confirmation) ──────────────────────────────────
+   Fires on the returning commit path with verb-aware copy. The original
+   3-year call is still tracked separately — that's the line the user needs
+   to see most. Auto-dismisses; tap to dismiss early. */
+function showMvp1Toast(verb) {
+  const msg = (MVP1_COPY.toast && MVP1_COPY.toast[verb]) ||
+              'Saved. This is now your latest memo for Apple.';
+  let toast = document.getElementById('mvp1-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'mvp1-toast';
+    toast.className = 'mvp1-toast';
+    toast.onclick = () => toast.classList.remove('is-on');
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  // restart the visibility animation if it's already showing
+  toast.classList.remove('is-on');
+  // Force reflow so the next class add re-runs the CSS transition
+  void toast.offsetWidth;
+  toast.classList.add('is-on');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('is-on'), 5200);
 }
 </script>
 
