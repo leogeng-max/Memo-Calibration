@@ -4991,6 +4991,19 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   box-shadow: 0 -16px 32px rgba(0,0,0,0.45);
 }
 .ios-numpad.is-open { transform: translateY(0); }
+
+/* When the numpad slides up, the Cancel / Review row rides up with it so
+   the user can submit without dismissing the keyboard. When the numpad
+   slides back down, the row falls back to the bottom of the screen. */
+.scr[data-id="s8"] .act-row {
+  transition: transform 320ms var(--ease);
+  background: var(--bg);
+  position: relative;
+  z-index: 31;
+}
+.scr[data-id="s8"]:has(.ios-numpad.is-open) .act-row {
+  transform: translateY(-234px);
+}
 .ios-key {
   position: relative;
   background: #6C6C70;
