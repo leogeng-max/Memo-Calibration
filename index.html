@@ -1456,6 +1456,30 @@ body.is-fullscreen .artboard-toggle {
 .v5-primary.is-arrow:hover  { background: rgba(255,255,255,0.02); }
 .v5-primary.is-arrow:active { background: rgba(255,255,255,0.04); }
 
+/* Edit-mode CTA — used when the user lands on a memo step via m6's
+   "Edit" affordance. Renders as a smaller right-aligned "Save changes →"
+   instead of the full-bleed primary, so it reads as "commit this edit"
+   rather than "complete the whole memo." */
+.v5-primary.is-arrow.is-save-changes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 64px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--p);
+}
+.v5-primary.is-arrow.is-save-changes .act-arrow {
+  font-size: 18px;
+  color: var(--p);
+  line-height: 1;
+}
+.v5-primary.is-arrow.is-save-changes:hover  { background: rgba(255,255,255,0.025); }
+.v5-primary.is-arrow.is-save-changes:active { background: rgba(255,255,255,0.045); }
+
 /* ─── Workflow card (mresearch) ───────────────────────────────────────
    Collapsible card styled like v5-tool-card. The ↓ chevron starts hidden
    and slides up into view after 1 s via JS class, then rotates 180° on
@@ -3057,6 +3081,173 @@ body.is-fullscreen .artboard-toggle {
 .forecast-section:first-child { padding-top: 0; }
 .forecast-section:last-child  { border-bottom: none; padding-bottom: 0; }
 
+/* ═══ s12 Prediction Block — institutional restyle of Horizon + Calibration.
+       One coherent prediction statement: confidence × hurdle × horizon.
+       No card chrome, lots of negative space, light typography. ═══ */
+.s12-pred,
+.s12-conf {
+  background: transparent;
+  border: none;
+  padding: 22px 0;
+  display: block;
+}
+.s12-conf { padding-bottom: 0; }
+
+/* Eyebrow label that opens the info modal. Stays calm — small, tracked,
+   secondary color, with a subtle ↗ when info-tappable. */
+.s12-pred-eyebrow,
+.s12-conf-eyebrow {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--t);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.s12-pred-eyebrow.is-info,
+.s12-conf-eyebrow.is-info { cursor: pointer; transition: color 180ms var(--ease); }
+.s12-pred-eyebrow.is-info:hover,
+.s12-conf-eyebrow.is-info:hover { color: var(--s); }
+.s12-pred-eyebrow.is-info::after,
+.s12-conf-eyebrow.is-info::after {
+  content: '↗';
+  font-size: 11px;
+  letter-spacing: 0;
+  color: var(--t-800);
+  transition: color 180ms var(--ease);
+}
+.s12-pred-eyebrow.is-info:hover::after,
+.s12-conf-eyebrow.is-info:hover::after { color: var(--s); }
+
+/* Single-statement prediction line. The hurdle % (inline) inherits the
+   existing uw-hurdle-inline styling so changes to the hurdle still
+   show here. */
+.s12-pred-statement {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--p);
+  letter-spacing: -0.015em;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.s12-pred-ticker {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--p);
+}
+
+/* Horizon segmented control — three flat tabs in a thin-bordered row.
+   Tabular monospace numbers for the year labels. */
+.s12-horizon-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border: 1px solid #1F1F1F;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.s12-horizon-tab {
+  background: transparent;
+  border: none;
+  border-right: 1px solid #1F1F1F;
+  padding: 16px 0;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--t);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: all 200ms var(--ease);
+}
+.s12-horizon-tab:last-child { border-right: none; }
+.s12-horizon-tab:hover { color: var(--s); background: rgba(255,255,255,0.015); }
+.s12-horizon-tab.is-on {
+  background: rgba(255,255,255,0.05);
+  color: var(--p);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* Confidence readout — big, light, centered. The number leads, the %
+   sign sits subordinate. */
+.s12-conf-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  margin: 14px 0 18px;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.s12-conf-num {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--p);
+  line-height: 1.1;
+}
+.s12-conf-pct {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--t);
+  margin-left: 2px;
+}
+
+.s12-conf-slider { width: 100%; margin: 0 0 8px; }
+
+.s12-conf-scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--t);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.s12-conf-msg {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--t-800);
+  font-size: 11px;
+  font-weight: 300;
+}
+
+.s12-conf-meta {
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px solid #161616;
+}
+.s12-conf-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 11px;
+  margin-bottom: 12px;
+  letter-spacing: -0.005em;
+}
+.s12-conf-meta-k { color: var(--t); }
+.s12-conf-meta-v { color: var(--s); font-variant-numeric: tabular-nums; }
+.s12-conf-disclaimer {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--t-800);
+  letter-spacing: -0.005em;
+  line-height: 1.55;
+}
+
 /* ═══ Underwriting Modules — Hurdle · Horizon · Calibration (s12) ═══ */
 .uw-module {
   background: #111;
@@ -3598,26 +3789,10 @@ body.is-fullscreen .artboard-toggle {
 }
 .s9-ledger-header {
   padding-bottom: 22px;
-  border-bottom: 1px solid #111;
   margin-bottom: 0;
   position: relative;
 }
-.s9-ledger-header::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 10px; height: 10px;
-  border-top: 1px solid #3A3A3A;
-  border-right: 1px solid #3A3A3A;
-}
-.s9-ledger-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 10px; height: 10px;
-  border-bottom: 1px solid #3A3A3A;
-  border-left: 1px solid #3A3A3A;
-}
+/* Corner frame marks removed — the header sits clean on the page. */
 .s9-ticker-hero {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 54px;
@@ -3644,12 +3819,37 @@ body.is-fullscreen .artboard-toggle {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+/* Line-by-line summary on s9 — clean vertical stack, no row dividers.
+   Spacing alone separates the rows so the receipt reads as one quiet
+   column. */
+.s9-summary {
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+.s9-summary .form-row {
+  border-bottom: none;
+  padding: 14px 0;
+}
+/* Taller Done button on s9 — matches the v5-primary 99px height so the
+   bottom action reads with the same weight as Hold-to-confirm. Higher
+   specificity + flex-shrink:0 so the section's flex layout can't squish it. */
+.scr[data-id="s9"] > button.lpb {
+  height: 99px;
+  min-height: 99px;
+  flex-shrink: 0;
+  font-size: 15px;
+}
 .s9-ledger-page .m6-ledger-section-head {
   margin-top: 20px;
 }
 .s9-last-row {
   border-bottom: none !important;
 }
+/* Remove every horizontal divider on s9 — the receipt reads as a quiet
+   vertical column. Covers the ledger memo-rows (ORDER DETAILS,
+   INVESTOR MEMO, CALIBRATION) and any other rule-based separators. */
+.scr[data-id="s9"] .m6-ledger .memo-row { border-bottom: none; }
+.scr[data-id="s9"] .m6-ledger-section-head { border-bottom: none; }
 
 /* V4.5 only — "I can't value this" required reason picker */
 .cantvalue-reasons {
@@ -4513,6 +4713,22 @@ body.is-fullscreen .artboard-toggle {
 .radio-row .lbl-block { display: flex; flex-direction: column; gap: 4px; }
 .radio-row .lbl-block .head { color: var(--p); font-size: 14px; line-height: 1.32; letter-spacing: -0.02em; }
 .radio-row .lbl-block .sub  { color: var(--t-700); font-size: 13px; line-height: 1.32; letter-spacing: -0.02em; }
+
+/* msell — Reduce/Exit reason picker. Six rows with descriptions need
+   more breathing room than the standard memo radio list, so each row
+   gets extra vertical padding and the head/sub stack gets more gap +
+   a looser line-height on the description for readability. Type sizes
+   stay on the canonical 14/13 radio-row scale; breathing room comes
+   from padding alone. */
+.scr[data-id="msell"] .radio-row {
+  padding: 22px 0;
+}
+.scr[data-id="msell"] .radio-row .lbl-block { gap: 8px; }
+.scr[data-id="msell"] .radio-row .lbl-block .sub {
+  line-height: 1.5;
+}
+.scr[data-id="msell"] .field-list[data-list="msell-reason"] { margin-top: 6px; }
+.scr[data-id="msell"] #msell-eyebrow { margin-bottom: 26px !important; }
 .radio-dot {
   flex-shrink: 0;
   width: 18px; height: 18px;
@@ -4581,8 +4797,84 @@ body.is-fullscreen .artboard-toggle {
 }
 .bracket--composer textarea { flex: none; width: 100%; min-height: 40px; overflow: hidden; }
 /* The Memo composer holds the full memo — start it taller. It still
-   auto-grows beyond this via autoExpand() as the text gets longer. */
+   auto-grows beyond this via autoExpand() as the text gets longer.
+   MVP V1 leans even taller so the empty space itself telegraphs
+   "this is long form" — no explicit word count needed. */
 #m5-note { min-height: 120px; }
+.scr[data-id="m5"] #m5-note { min-height: 280px; line-height: 1.6; }
+
+/* MVP V1 m5 composer — strip the bracket frame entirely. The blinking
+   caret indicator does the "this is where you type" work instead. */
+.m5-composer-wrap {
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  position: relative;
+}
+.m5-composer-wrap .c.tl,
+.m5-composer-wrap .c.tr,
+.m5-composer-wrap .c.bl,
+.m5-composer-wrap .c.br { display: none; }
+.m5-composer-wrap textarea {
+  background: transparent;
+  border: none;
+  padding: 0;
+  outline: none;
+}
+
+/* Thin divider line at the top of the composer — separates the
+   explainer paragraph from the action icons + textarea below. */
+.m5-composer-divider {
+  height: 1px;
+  background: #1F1F1F;
+  margin: 0 0 8px;
+}
+
+/* Action-icon row at the top of the composer (paste + attach).
+   Right-aligned via the leading flex spacer in the markup. */
+.m5-toolbar-top {
+  margin-top: 0;
+  padding-top: 0;
+  margin-bottom: 8px;
+  border-top: none;
+}
+
+/* Textarea wrap — anchors the blinking caret to the textarea's text
+   origin so the caret sits exactly where typing will start. */
+.m5-textarea-wrap {
+  position: relative;
+}
+
+/* Blinking caret — a thin vertical bar that pulses on the spot where
+   the user would start typing. Disappears as soon as they focus or
+   begin typing. */
+.m5-caret {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 2px;
+  height: 20px;
+  background: var(--p);
+  animation: m5-caret-blink 1.05s steps(2, jump-none) infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes m5-caret-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+/* Hide the fake caret once the user focuses or types — the native
+   browser caret takes over, and once content exists there's no need
+   for the affordance. */
+.m5-composer-wrap:focus-within .m5-caret { display: none; }
+.m5-composer-wrap:has(textarea:not(:placeholder-shown)) .m5-caret { display: none; }
+
+/* Placeholder is now a single short line — quiet, low-contrast. */
+#m5-note::placeholder {
+  color: var(--t-800);
+  opacity: 0.55;
+  line-height: 1.6;
+}
 .composer-toolbar {
   display: flex; align-items: center; justify-content: flex-end; gap: 4px;
   margin-top: 6px;
@@ -5049,6 +5341,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-top: 2px;
 }
 .s8-sub-text { font-size: 11px; color: var(--t); }
+.s8-sub-text--bright { color: var(--s); font-variant-numeric: tabular-nums; }
+/* "Max:" sub-line on the Shares row — tappable to fill the field with
+   the max affordable (Buy) or max held (Sell). */
+.s8-shares-max {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  padding: 4px 0;
+  margin-top: 4px;
+}
+.s8-shares-max:active { opacity: 0.6; }
+.s8-shares-max.is-disabled {
+  cursor: default;
+  opacity: 0.45;
+  pointer-events: none;
+}
 .s8-sub-info {
   width: 12px; height: 12px; border-radius: 50%;
   border: 1px solid var(--d);
@@ -5078,6 +5385,17 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   -ms-overflow-style: none;     /* legacy Edge / IE */
 }
 .s8-scroll::-webkit-scrollbar { display: none; }  /* Chrome / Safari / WebKit */
+
+/* When the numpad slides up, give the scroll area enough bottom padding
+   that the bottom rows (Shares, Limit Price) can scroll above the
+   keyboard line. Combined with the JS scrollIntoView call in
+   openNumpad, this makes the active row "rise above" the keyboard
+   instead of being clipped behind it. 234px = numpad height, plus a
+   60px buffer for the Cancel / Review row that rides up with it. */
+.scr[data-id="s8"]:has(.ios-numpad.is-open) .s8-scroll {
+  padding-bottom: 294px;
+  transition: padding-bottom 280ms var(--ease);
+}
 
 /* Full memo display on s8 — visible during initial-buy flow so the user
    can reference the commitment they just authored while sizing the
@@ -5140,14 +5458,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   position: relative;
   flex-shrink: 0;
 }
-.s4r-header::before {
-  content: '';
-  position: absolute;
-  top: 16px; right: 16px;
-  width: 10px; height: 10px;
-  border-top: 1px solid #3A3A3A;
-  border-right: 1px solid #3A3A3A;
-}
+/* Top-right corner-frame mark removed — header sits clean. */
+.s4r-header::before { content: none; }
 .s4r-header-inner {
   display: flex;
   align-items: flex-end;
@@ -5162,7 +5474,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .s4r-action {
   font-size: 10px; font-weight: 400;
   letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--accent-amber); padding-bottom: 7px;
+  color: var(--p); padding-bottom: 7px;
 }
 .s4r-header-meta {
   font-size: 11px; color: var(--t);
@@ -5170,6 +5482,18 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   display: flex; gap: 6px; align-items: center;
 }
 .s4r-meta-sep { color: var(--t-800); }
+/* Line-by-line summary block on s4 (matches the s8 review layout).
+   Each .form-row inside gets a thin divider so the rows read as a
+   structured form, like a brokerage order ticket. */
+.s4-summary {
+  padding: 4px 16px 8px;
+}
+.s4-summary .form-row {
+  border-bottom: 1px solid #161616;
+  padding: 16px 0;
+}
+.s4-summary .form-row:last-child { border-bottom: none; }
+
 .s4r-stats {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
   border-bottom: 1px solid #1C1C1C; flex-shrink: 0;
@@ -6954,15 +7278,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-bottom: 18px;
   position: relative;
 }
-/* Subtle corner marks — institutional document register */
-.m6-ledger-header::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 10px; height: 10px;
-  border-top: 1px solid #3A3A3A;
-  border-right: 1px solid #3A3A3A;
-}
+/* Corner mark removed — header sits clean without the institutional
+   bracket. */
+.m6-ledger-header::before { content: none; }
 .m6-ledger-meta {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 9px;
@@ -7210,8 +7528,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   text-transform: uppercase;
   flex-shrink: 0;
 }
-/* Inline memo body — eyebrow label (9px tracked) above a 12px textarea. */
-.m6-inline-memo { display: flex; flex-direction: column; gap: 8px; }
+/* Memo body — displayed as flat readable content (no scrollable box).
+   Eyebrow label + Edit affordance share a row; the body text flows
+   naturally below. Tap "Edit" to jump to the dedicated composer (m5). */
+.m6-inline-memo { display: flex; flex-direction: column; gap: 10px; }
+.m6-inline-memo-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
 .m6-inline-memo-label {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 9px;
@@ -7220,28 +7546,33 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: var(--t);
   text-transform: uppercase;
 }
-.m6-inline-memo-input {
+.m6-inline-memo-edit {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--t);
+  text-transform: uppercase;
+  transition: color 150ms var(--ease);
+}
+.m6-inline-memo-edit:hover { color: var(--s); }
+.m6-inline-memo-body {
   font-family: 'Inter', var(--font), sans-serif;
   font-size: 12px;
   font-weight: 300;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--s);
   letter-spacing: -0.005em;
-  background: transparent;
-  border: 1px solid #1C1C1C;
-  border-radius: 2px;
-  padding: 12px 12px;
-  min-height: 110px;
-  resize: vertical;
-  width: 100%;
-  box-sizing: border-box;
-  outline: none;
+  white-space: pre-line;
 }
-.m6-inline-memo-input::placeholder {
+.m6-inline-memo-body.is-empty {
   color: var(--t-800);
-  font-weight: 300;
+  font-style: italic;
 }
-.m6-inline-memo-input:focus { border-color: #3A3A3A; }
 
 /* MVP V1 returning save row — uses the canonical .v5-foot stack
    (.v5-foot-secondary above .v5-primary). No extra CSS needed beyond
@@ -7504,6 +7835,368 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 @keyframes spin-once {
   from { transform: rotate(0deg); }
   to   { transform: rotate(-360deg); }
+}
+
+/* ══════════════════════════════════════════════════════
+   ACCOUNT PICKER — macct screen (sits before mfork on first-time
+   and before madd/msell/m6 on returning). Mirrors the mfork
+   visual language so the two pages feel like one continuous flow.
+   ══════════════════════════════════════════════════════ */
+.macct-title-block {
+  padding: 22px 20px 24px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.macct-eyebrow {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--t);
+  text-transform: uppercase;
+}
+.macct-title {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--p);
+  line-height: 1.15;
+  margin: 0;
+}
+.macct-options {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 20px;
+  min-height: 0;
+}
+.macct-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 16px;
+  padding: 18px 0;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid #161616;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background 150ms var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.macct-option:last-child { border-bottom: none; }
+.macct-option:active { background: rgba(255,255,255,0.02); }
+.macct-lbl { display: flex; flex-direction: column; gap: 4px; }
+.macct-option-tag {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--p);
+  line-height: 1.3;
+}
+.macct-option-sub {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--t);
+  line-height: 1.4;
+}
+.macct-option-extra {
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  color: var(--t-800);
+  line-height: 1.4;
+}
+.macct-option.is-on .radio-dot { border-color: var(--p); }
+.macct-option.is-on .radio-dot::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--p); display: block; margin: auto;
+}
+
+/* ══════════════════════════════════════════════════════
+   MREREAD — Re-read your memo (MVP V1 Reduce / Exit)
+   Per the Position Change Flow brief. Memo content displayed
+   as flowing readable text. Continue gated on scroll-to-end.
+   ══════════════════════════════════════════════════════ */
+.mreread-offramp {
+  display: flex;
+  justify-content: flex-start;
+  margin: 4px 0 16px;
+}
+/* "Update memo instead" off-ramp — text-only link with a small
+   superscript ↗ arrow on the top-right of the phrase. Same mark used
+   by .memo-header-title.is-info. */
+.mreread-offramp-btn {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--s);
+  cursor: pointer;
+  transition: color 180ms var(--ease);
+}
+.mreread-offramp-btn:hover { color: var(--p); }
+.mreread-offramp-btn::after {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  vertical-align: super;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565B5E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='7' y1='17' x2='17' y2='7'/%3E%3Cpolyline points='7 7 17 7 17 17'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: filter 180ms var(--ease);
+}
+.mreread-offramp-btn:hover::after { filter: brightness(2.5); }
+.mreread-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.mreread-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mreread-block-key {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.mreread-block-body {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--s);
+  letter-spacing: -0.005em;
+}
+.mreread-block-body--prose {
+  font-size: 12px;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+.mreread-end {
+  /* Sentinel block — scroll-to-bottom detector watches this. The 1px
+     height keeps it invisible but observable. */
+  height: 1px;
+  margin-top: 28px;
+}
+/* Empty-state for positions with no memo on file. */
+.mreread-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0 12px;
+}
+.mreread-empty-eyebrow {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.mreread-empty-title {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--p);
+  line-height: 1.35;
+}
+.mreread-empty-body {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--t);
+  letter-spacing: -0.005em;
+}
+.mreread-empty-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ══════════════════════════════════════════════════════
+   MARTICULATE — Per-reason articulation (MVP V1 Reduce / Exit)
+   Single text field, label varies by reason. The reason itself
+   is shown at the top as read-only context (tap to revise).
+   ══════════════════════════════════════════════════════ */
+.marticulate-reason {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "key  edit"
+    "val  edit";
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 14px 0;
+  border-bottom: 1px solid #1A1A1A;
+  cursor: pointer;
+  margin-bottom: 22px;
+}
+.marticulate-reason-key {
+  grid-area: key;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.marticulate-reason-val {
+  grid-area: val;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  color: var(--s);
+  line-height: 1.55;
+}
+.marticulate-reason-edit {
+  grid-area: edit;
+  align-self: center;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.marticulate-prompt {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--p);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+/* Borderless composer — same pattern as m5. The prompt above the
+   textarea carries the framing; the field itself is just a blinking
+   caret + flowing text, no chrome. */
+.marticulate-field { display: flex; flex-direction: column; }
+.marticulate-toolbar {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 2px;
+  border-top: none;
+  justify-content: flex-end;
+}
+.marticulate-textarea-wrap { position: relative; }
+.marticulate-input {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  background: transparent;
+  border: none !important;
+  border-radius: 0;
+  padding: 0;
+  min-height: 220px;
+  resize: none;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none !important;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.marticulate-input:focus,
+.marticulate-input:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none;
+}
+/* Blinking caret — shows when the textarea is empty and unfocused.
+   Disappears as soon as the user focuses or types. */
+.marticulate-caret {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 2px;
+  height: 20px;
+  background: var(--p);
+  animation: m5-caret-blink 1.05s steps(2, jump-none) infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+.marticulate-textarea-wrap:focus-within .marticulate-caret { display: none; }
+.marticulate-textarea-wrap:has(textarea:not(:placeholder-shown)) .marticulate-caret { display: none; }
+
+/* ══════════════════════════════════════════════════════
+   MRECORDED — Recap screen (MVP V1 Reduce / Exit)
+   Confirms the journal entry was created. No celebration —
+   the record stands and the user proceeds.
+   ══════════════════════════════════════════════════════ */
+.mrecorded-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 0;
+  border-bottom: 1px solid #1A1A1A;
+}
+.mrecorded-block:last-of-type { border-bottom: none; }
+.mrecorded-block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.mrecorded-key {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+}
+.mrecorded-edit {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t);
+  transition: color 150ms var(--ease);
+}
+.mrecorded-edit:hover { color: var(--s); }
+.mrecorded-val {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  color: var(--s);
+  line-height: 1.55;
+}
+.mrecorded-val--prose {
+  line-height: 1.6;
+  white-space: pre-line;
+}
+.mrecorded-journal-link {
+  margin-top: 18px;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -8053,7 +8746,81 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 .pt-follow-copy:hover { color:var(--t); border-color:rgba(255,255,255,0.22); }
 .pt-follow-copy.is-copied { color:#7ec897; border-color:#7ec897; }
 
-/* ── MVP V1 toast (commit confirmation) ───────────────────────────────── */
+/* ── MVP V1 "Saved" transition screen — full-bleed page that appears
+   after the user saves the memo on m6 (returning). The message types
+   itself out, dwells briefly, then fades away and routes to the next
+   step (s8). User doesn't tap anything — purely automatic. ─────────── */
+.mvp1-saved-overlay {
+  /* Anchored inside the phone frame (.surface), not the viewport.
+     The overlay covers the phone screen area only — the device frame
+     stays visible around it. */
+  position: absolute;
+  inset: 0;
+  background: var(--bg, #0a0a0a);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease;
+  border-radius: 7.5%;
+}
+.mvp1-saved-overlay.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mvp1-saved-inner {
+  max-width: 320px;
+  padding: 24px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.mvp1-saved-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3FB950;
+}
+.mvp1-saved-mark::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #3FB950;
+  /* No pulse — the dot sits steady while the text types out. */
+}
+.mvp1-saved-text {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--p);
+  letter-spacing: -0.015em;
+  min-height: 5em;
+}
+.mvp1-saved-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--p);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: mvp1-saved-caret-blink 0.95s steps(2, jump-none) infinite;
+}
+@keyframes mvp1-saved-caret-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ── MVP V1 toast (legacy — kept for any non-commit confirmations) ───── */
 .mvp1-toast {
   position: fixed;
   left: 50%;
@@ -9106,7 +9873,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div class="cd-sheet-eyebrow" id="cd-sheet-eyebrow">AAPL · NASDAQ</div>
               <button class="cd-sheet-opt" onclick="pickCD('increase')">Increase exposure</button>
               <button class="cd-sheet-opt" onclick="pickCD('reduce')">Reduce exposure</button>
-              <button class="cd-sheet-opt" onclick="pickCD('exit')">Exit position</button>
+              <!-- Exit position removed — users zero out via Reduce exposure. -->
             </div>
           </div>
 
@@ -9146,7 +9913,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div class="memo-body--reveal">
               <!-- Returning-user notice — explains that editing here doesn't
                    overwrite the previous prediction; it creates a new one. -->
-              <div id="s12-returning-note" style="display:none;margin-bottom:16px;padding:11px 13px;border-left:2px solid rgba(217,164,65,0.45);background:rgba(217,164,65,0.04);font-size:12px;color:var(--s);letter-spacing:-0.01em;line-height:1.5">
+              <div id="s12-returning-note" style="display:none;margin-bottom:16px;padding:11px 13px;border-left:2px solid #2A2A2A;background:rgba(255,255,255,0.015);font-size:12px;color:var(--s);letter-spacing:-0.01em;line-height:1.5">
                 Changing your probability or horizon creates a <strong>new prediction</strong>. The previous one keeps running on its original horizon and stays in your history — nothing is overwritten.
               </div>
               <!-- COMPOUNDER VIEW -->
@@ -9161,46 +9928,40 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                 </div>
 
-                <!-- Module 2: Horizon -->
-                <div class="uw-module" id="s12-horizon-module">
-                  <div class="section-eyebrow is-info" onclick="showInfoModal('uw_horizon')" style="margin-bottom:10px">Exceptional Compounding Horizon</div>
-                  <div class="memo-subhead" id="s12-horizon-prompt" style="margin-bottom:20px">Over what time horizon does your underwriting support the possibility of intrinsic value compounding at approximately <span class="uw-hurdle-inline" id="s12-horizon-hurdle-num">20</span><span class="uw-hurdle-inline">%</span> annually?</div>
-                  <div class="field-list" data-list="s12-horizon-list">
-                    <button class="radio-row" data-horiz="y1" onclick="setHorizonSel('y1')" type="button">
-                      <div class="lbl-block"><div class="head">1 Year</div></div>
-                      <div class="radio-dot"></div>
-                    </button>
-                    <button class="radio-row" data-horiz="y3" onclick="setHorizonSel('y3')" type="button">
-                      <div class="lbl-block"><div class="head">3 Years</div></div>
-                      <div class="radio-dot"></div>
-                    </button>
-                    <button class="radio-row" data-horiz="y5p" onclick="setHorizonSel('y5p')" type="button">
-                      <div class="lbl-block"><div class="head">5+ Years</div></div>
-                      <div class="radio-dot"></div>
-                    </button>
+                <!-- ── Prediction block (replaces the prior Horizon + Calibration cards).
+                     One coherent statement: "How confident that AAPL compounds at
+                     20%/yr for [horizon] years?" — horizon as a 3-tab segmented
+                     control, confidence as a prominent number + slider. -->
+                <div class="s12-pred" id="s12-horizon-module">
+                  <div class="s12-pred-eyebrow is-info" onclick="showInfoModal('uw_horizon')">The prediction</div>
+                  <div class="s12-pred-statement" id="s12-horizon-prompt">
+                    How confident are you that <span class="s12-pred-ticker">AAPL</span> will compound at <span class="uw-hurdle-inline" id="s12-horizon-hurdle-num">20</span><span class="uw-hurdle-inline">%</span> per year over the next
                   </div>
-
+                  <div class="s12-horizon-seg" data-list="s12-horizon-list">
+                    <button class="s12-horizon-tab" data-horiz="y1" onclick="setHorizonSel('y1')" type="button">1 yr</button>
+                    <button class="s12-horizon-tab" data-horiz="y3" onclick="setHorizonSel('y3')" type="button">3 yrs</button>
+                    <button class="s12-horizon-tab" data-horiz="y5p" onclick="setHorizonSel('y5p')" type="button">5 yrs+</button>
+                  </div>
                 </div>
 
-                <!-- Module 3: Calibration (Compounder) -->
-                <div class="uw-module" id="s12-cal-module">
-                  <div class="section-eyebrow is-info" onclick="showInfoModal('uw_calibration')" style="margin-bottom:10px">Confidence Calibration</div>
-                  <div class="memo-subhead" style="margin-bottom:20px">What probability would you assign to your underwriting assumptions broadly proving correct over that horizon?</div>
-                  <div class="uw-cal-row">
-                    <span class="uw-cal-num"><span id="s12-prob-num">50</span><span style="font-size:11px;color:var(--p);margin-left:1px;vertical-align:baseline">%</span></span>
-                    <input class="horiz-range" id="s12-prob-range" type="range" min="10" max="90" value="50" step="10" oninput="setProb('s12', this.value)" style="width:100%">
+                <div class="s12-conf" id="s12-cal-module">
+                  <div class="s12-conf-eyebrow is-info" onclick="showInfoModal('uw_calibration')">Confidence</div>
+                  <div class="s12-conf-readout">
+                    <span class="s12-conf-num" id="s12-prob-num">0</span><span class="s12-conf-pct">%</span>
                   </div>
-                  <div class="horiz-ends" style="margin-top:2px">
-                    <span class="body-xs">10%</span>
-                    <span class="body-xs" id="s12-prob-msg" style="color:var(--t-700)">—</span>
-                    <span class="body-xs">90%</span>
+                  <input class="horiz-range s12-conf-slider" id="s12-prob-range" type="range" min="10" max="100" value="0" step="10" oninput="setProb('s12', this.value)">
+                  <div class="s12-conf-scale">
+                    <span>10</span>
+                    <span class="s12-conf-msg" id="s12-prob-msg">—</span>
+                    <span>100</span>
                   </div>
-                  <div class="cal-history-row">
-                    <span class="cal-history-label">Historical accuracy</span>
-                    <span class="cal-history-val">— · 2 positions</span>
+                  <div class="s12-conf-meta">
+                    <div class="s12-conf-meta-row">
+                      <span class="s12-conf-meta-k">Historical accuracy</span>
+                      <span class="s12-conf-meta-v">— · 2 positions</span>
+                    </div>
+                    <div class="s12-conf-disclaimer">Accuracy isn’t meaningful yet — once you’ve tracked more positions, this surfaces with a reliable number. Predictions reflect your own underwriting, not platform forecasts.</div>
                   </div>
-                  <div class="cal-no-data-note">Accuracy isn’t meaningful yet — once you’ve tracked more positions over a longer period, this percentage will surface with a reliable number.</div>
-                  <div class="memo-subhead" style="margin-top:14px">These estimates are inherently uncertain and reflect your own underwriting assumptions — not platform forecasts or guarantees. Your calibration will be tracked over time and surfaced in your Edge Analysis.</div>
                 </div>
 
               </div><!-- /#s12-comp-view -->
@@ -9537,6 +10298,52 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div class="v5-section-eyebrow">The five deeper prompts</div>
               <div class="v5-prose" style="margin-bottom:14px">Drill into a specific dimension. Each prompt has a baseline version and a deeper variant for closer calls.</div>
               <div id="mresearch-prompt-list"></div>
+            </div>
+          </section>
+
+          <!-- ════════ macct — Select account (MVP V1, first-time + returning) ════════
+               Lands before mfork on first-time and before madd/msell/m6 on
+               returning. Lets the user pick which brokerage account funds
+               (or holds the shares for) the trade. -->
+          <section class="scr" data-id="macct">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="backFromMacct()" type="button">‹</button>
+                <button class="exit-btn" onclick="exitMemo()" type="button">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="macct-title-block">
+              <div class="macct-eyebrow"><span class="memo-ctx-ticker">AAPL</span> · <span id="macct-action">BUY</span></div>
+              <div class="macct-title">Select account</div>
+            </div>
+            <div class="macct-options">
+              <button class="macct-option" id="macct-opt-nr" onclick="pickAccount('non-registered')" type="button">
+                <div class="macct-lbl">
+                  <div class="macct-option-tag">Non-Registered</div>
+                  <div class="macct-option-sub">$18,698.53 CAD Available</div>
+                </div>
+                <div class="radio-dot"></div>
+              </button>
+              <button class="macct-option" id="macct-opt-tfsa" onclick="pickAccount('tfsa')" type="button">
+                <div class="macct-lbl">
+                  <div class="macct-option-tag">TFSA</div>
+                  <div class="macct-option-sub">$531.23 CAD Available</div>
+                  <div class="macct-option-extra">300 Shares</div>
+                </div>
+                <div class="radio-dot"></div>
+              </button>
+              <button class="macct-option" id="macct-opt-rrsp" onclick="pickAccount('rrsp')" type="button">
+                <div class="macct-lbl">
+                  <div class="macct-option-tag">RRSP</div>
+                  <div class="macct-option-sub">$1,545.19 CAD Available</div>
+                  <div class="macct-option-extra">100 Shares</div>
+                </div>
+                <div class="radio-dot"></div>
+              </button>
+            </div>
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="macct-continue" onclick="continueFromMacct()" type="button">→</button>
             </div>
           </section>
 
@@ -10571,14 +11378,27 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <button class="field-ex-btn" id="ex-btn-m5-note" onclick="toggleFieldEx('m5-note')" type="button">[ex]</button>
                   </div>
                   <div class="memo-subhead" id="m5-subhead" style="margin-top:6px">Re-read when the kill line trips. Distinguish thesis-wrong from world-wrong.</div>
+                  <!-- Length hint — quiet visual cue that this is the long-form
+                       field. Not a hard rule. MVP V1 only (toggled by JS). -->
+                  <div class="m5-length-hint" id="m5-length-hint" style="display:none">
+                    <span class="m5-length-hint-mark">~</span>
+                    <span>300–500 words. Not a rule — just a signal of seriousness.</span>
+                  </div>
                 </div>
 
-                <div class="bracket bracket--composer">
+                <div class="bracket bracket--composer m5-composer-wrap">
                   <span class="c tl"></span><span class="c tr"></span>
                   <span class="c bl"></span><span class="c br"></span>
-                  <textarea id="m5-note" rows="2" placeholder="" oninput="onM5NoteInput(); autoExpand(this)"></textarea>
 
-                  <div class="composer-toolbar">
+                  <!-- Thin divider line separating the explainer paragraph
+                       above from the composer affordances below. -->
+                  <div class="m5-composer-divider" aria-hidden="true"></div>
+
+                  <!-- Action icons (paste / attach) sit on a row beneath the
+                       divider, aligned to the right. They open the composer
+                       — the textarea + blinking caret sit below them. -->
+                  <div class="composer-toolbar m5-toolbar-top">
+                    <span class="composer-toolbar-spacer"></span>
                     <button class="composer-icon-btn" onclick="pasteToTextarea('m5-note')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. AI output)">
                       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
@@ -10594,8 +11414,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                       </svg>
                     </button>
                     <input id="m5-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 'm5')">
-                    <span class="composer-toolbar-spacer"></span>
-                    <span class="composer-hint">Paste · attach context</span>
+                  </div>
+
+                  <!-- Textarea area — blinking caret aligned with the text
+                       start position; hides as soon as the user focuses or
+                       begins typing. -->
+                  <div class="m5-textarea-wrap">
+                    <span class="m5-caret" aria-hidden="true"></span>
+                    <textarea id="m5-note" rows="2" placeholder="" oninput="onM5NoteInput(); autoExpand(this)"></textarea>
                   </div>
                 </div>
                 <div id="m5-attachment" class="composer-attachment" style="display:none">
@@ -10701,8 +11527,8 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
                 <div class="memo-body--reveal">
                 <div>
-                  <div class="memo-subtitle">Origin of the idea.</div>
-                  <div class="memo-subhead">Tracks which inputs convert into good positions.</div>
+                  <div class="memo-subtitle" id="msrc-subtitle">Origin of the idea.</div>
+                  <div class="memo-subhead" id="msrc-subhead">Tracks which inputs convert into good positions.</div>
                   <div class="memo-subhead" style="margin-top:5px">Record honestly.</div>
                 </div>
 
@@ -10803,8 +11629,11 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <div class="m6-nudge-text" id="m6-nudge-text">—</div>
                   </div>
 
-                  <!-- 4 pre-filled declarations — tappable rows that match
-                       the existing m6-ledger memo-row pattern. -->
+                  <!-- 3 pre-filled declarations — Classification, Size, and a
+                       combined Calibration row (probability + hurdle + horizon
+                       in one descriptive line). The calibration row sits
+                       directly above the memo so it isn't buried below a long
+                       memo body. -->
                   <div class="m6-declarations">
                     <button type="button" class="m6-declaration" onclick="editFromReview('m1')">
                       <span class="m6-declaration-key">Classification</span>
@@ -10817,27 +11646,28 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                       <span class="m6-declaration-edit">Edit ›</span>
                     </button>
                     <button type="button" class="m6-declaration" onclick="editFromReview('s12')">
-                      <span class="m6-declaration-key">Confidence</span>
-                      <span class="m6-declaration-text" id="m6-decl-confid">—</span>
-                      <span class="m6-declaration-edit">Edit ›</span>
-                    </button>
-                    <button type="button" class="m6-declaration" onclick="editFromReview('s12')">
-                      <span class="m6-declaration-key">Horizon</span>
-                      <span class="m6-declaration-text" id="m6-decl-horizon">—</span>
+                      <span class="m6-declaration-key" id="m6-decl-cal-key">Probability of 20% / yr return over 3 years</span>
+                      <span class="m6-declaration-text" id="m6-decl-cal-val">—</span>
                       <span class="m6-declaration-edit">Edit ›</span>
                     </button>
                   </div>
 
-                  <!-- Inline memo body (per Q8 decision) -->
+                  <!-- Memo body — displayed as flat content, not a
+                       scrollable box. Tap the row to edit it on the
+                       dedicated memo composer (m5). -->
                   <div class="m6-inline-memo">
-                    <label class="m6-inline-memo-label" id="m6-inline-memo-label" for="m6-inline-memo-input">Your memo for this purchase</label>
-                    <textarea class="m6-inline-memo-input" id="m6-inline-memo-input"
-                              placeholder="A few honest sentences. What changed, what didn't, and why this trade now."
-                              oninput="onM6InlineMemoInput(this)"></textarea>
+                    <div class="m6-inline-memo-header">
+                      <span class="m6-inline-memo-label" id="m6-inline-memo-label">Investment case</span>
+                      <button class="m6-inline-memo-edit" type="button" onclick="editFromReview('m5')">Edit ›</button>
+                    </div>
+                    <div class="m6-inline-memo-body" id="m6-inline-memo-body">—</div>
                   </div>
                 </div>
 
-                <!-- Memo rows -->
+                <!-- Memo rows — split into two visual groups with the
+                     CALIBRATION block sitting between Size and Thesis so
+                     the prediction reads as a separator between "what
+                     the position is" and "why you took it". -->
                 <div>
                   <div class="m6-ledger-section-row">
                     <div class="m6-ledger-section-head">INVESTOR MEMO</div>
@@ -10845,6 +11675,27 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
                   <div class="memo-row" onclick="editFromReview('m1b')"><div class="k">Size</div><div class="v" id="m6-size">—</div></div>
+                </div>
+
+                <!-- Calibration block — sits between Size and the rest of
+                     the memo content. One descriptive row that bundles the
+                     user's confidence, the hurdle rate, and the horizon
+                     into a single readable statement. -->
+                <div id="m6-calibration-section">
+                  <div class="m6-ledger-section-head">CALIBRATION</div>
+                  <div class="memo-row m6-cal-summary-row" onclick="editFromReview('s12')">
+                    <div class="k" id="m6-cal-summary-key">Probability of 20% / yr return over 3 years</div>
+                    <div class="v" id="m6-cal-summary-val">—</div>
+                  </div>
+                  <!-- Legacy split rows kept hidden — older code paths may
+                       still read these IDs. The visible row above is the
+                       new canonical display. -->
+                  <div class="memo-row" style="display:none" onclick="editFromReview('s12')"><div class="k">Prob</div><div class="v" id="m6-prob">—</div></div>
+                  <div class="memo-row" style="display:none" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
+                </div>
+
+                <!-- Memo writing — Thesis through Note. -->
+                <div>
                   <div class="memo-row" onclick="editFromReview('m2')"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
                   <div class="memo-row" id="m6-timing-row" style="display:none" onclick="editFromReview('m2')"><div class="k">Why now</div><div class="v" id="m6-timing">—</div></div>
                   <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill</div><div class="v" id="m6-kill">—</div></div>
@@ -10853,13 +11704,6 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MOS</div><div class="v" id="m6-mos">—</div></div>
                   <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
                   <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
-                </div>
-
-                <!-- Calibration rows -->
-                <div id="m6-calibration-section">
-                  <div class="m6-ledger-section-head">CALIBRATION</div>
-                  <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Prob</div><div class="v" id="m6-prob">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
                 </div>
 
                 <!-- Footer note (buy / first-time framing) -->
@@ -10913,7 +11757,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 </button>
               </div>
               <button class="v5-primary m6-save-primary" id="m6-save-primary" type="button" onclick="onM6SealTap()" style="display:none">
-                <span id="m6-save-primary-label">Save as new memo &amp; add to position</span>
+                <span id="m6-save-primary-label">Save memo</span>
               </button>
               <!-- First-time / V4.5 seal arrow -->
               <button class="v5-primary is-arrow m6-hold-btn" id="m6-seal-btn" onclick="onM6SealTap()" type="button">→</button>
@@ -10944,13 +11788,92 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             </div>
           </section>
 
+          <!-- ════════ mreread — Re-read your memo (MVP V1 Reduce / Exit) ════════
+               Per the Position Change Flow brief: before the user picks a reason
+               to reduce or exit, force them to re-read their original memo.
+               No summary, no annotation. Continue is gated until the user has
+               scrolled to the bottom of the memo content. -->
+          <section class="scr" data-id="mreread">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('s0')" type="button">‹</button>
+                <button class="exit-btn" onclick="exitMemo()" type="button">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll" id="mreread-scroll">
+              <div class="memo-page">
+                <div class="memo-header">
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title" id="mreread-title">Before you decide, re-read what you wrote.</h1>
+                  </div>
+                  <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · Memo</div>
+                </div>
+                <div class="memo-body--reveal">
+                  <!-- "Update memo instead" off-ramp removed — the re-read
+                       screen exists to make the user confront the gap between
+                       what they wrote then and what they want to do now. If
+                       the thesis has changed, the user picks
+                       "Thesis has fundamentally changed" on the next screen
+                       and articulates it there — that's the right journal
+                       capture. Memo revisions are a separate action,
+                       reachable from the stock page (s0). -->
+
+                  <!-- Empty-state placeholder: shown when no memo exists for
+                       this position (a backfill case). Forces a retroactive
+                       note before the user can continue. -->
+                  <div id="mreread-empty" class="mreread-empty" style="display:none">
+                    <div class="mreread-empty-eyebrow">NO MEMO ON FILE</div>
+                    <div class="mreread-empty-title">You don't have a memo for this position yet.</div>
+                    <div class="mreread-empty-body">Before changing the position, write a brief retroactive note so future you can read it back.</div>
+                    <div class="mreread-empty-field">
+                      <label class="m6-inline-memo-label" for="mreread-empty-input">Retroactive note</label>
+                      <textarea class="m6-inline-memo-input" id="mreread-empty-input"
+                                placeholder="A few sentences about why you're holding this."
+                                oninput="onMrereadEmptyInput(this)"></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Memo content — full memo rendered as flowing readable
+                       text. Classification → Size → Calibration (the
+                       single descriptive prediction line) → Memo body. -->
+                  <div id="mreread-content" class="mreread-content">
+                    <div class="mreread-block">
+                      <div class="mreread-block-key">CLASSIFICATION</div>
+                      <div class="mreread-block-body" id="mreread-classify">—</div>
+                    </div>
+                    <div class="mreread-block">
+                      <div class="mreread-block-key">POSITION SIZE</div>
+                      <div class="mreread-block-body" id="mreread-size">—</div>
+                    </div>
+                    <div class="mreread-block">
+                      <div class="mreread-block-key" id="mreread-cal-key">PROBABILITY OF 20% / YR RETURN OVER 3 YEARS</div>
+                      <div class="mreread-block-body" id="mreread-cal-val">—</div>
+                    </div>
+                    <div class="mreread-block">
+                      <div class="mreread-block-key">INVESTMENT CASE</div>
+                      <div class="mreread-block-body mreread-block-body--prose" id="mreread-note">—</div>
+                    </div>
+                  </div>
+
+                  <!-- Footer marker — the scroll-to-bottom detector keys on this.
+                       When it's in view, the Continue button unlocks. -->
+                  <div id="mreread-end" class="mreread-end"></div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="mreread-next" onclick="continueFromMreread()" type="button">→</button>
+            </div>
+          </section>
+
           <!-- ════════ msell — Sell reason (MVP V1 Reduce / Exit) ════════
                Its own step before the memo review: name why you're trimming or
                closing. Styled like the m1 Classify chooser. -->
           <section class="scr" data-id="msell">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('s0')">‹</button>
+                <button class="back-btn" onclick="go('mreread')">‹</button>
                 <button class="exit-btn" onclick="exitMemo()">Exit</button>
               </div>
               <hr class="div">
@@ -10968,21 +11891,184 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 </div>
                 <div class="memo-body--reveal">
                   <div>
-                    <div class="section-eyebrow" id="msell-eyebrow">One question before you trim <span class="memo-ctx-ticker">AAPL</span>:</div>
-                    <div class="memo-subtitle" id="msell-subtitle" style="margin-top:6px;margin-bottom:6px">Why are you selling now?</div>
-                    <div class="memo-subhead" id="msell-subhead" style="margin-bottom:14px">No wrong answer — being honest here makes the next decision easier.</div>
+                    <div class="section-eyebrow" id="msell-eyebrow" style="margin-bottom:18px">Why are you changing this position?</div>
+                    <!-- Per the Position Change Flow brief: 6 reasons, each with
+                         a one-line description. Tap a reason to advance directly
+                         to the articulation screen (no Continue button needed). -->
                     <div class="field-list" data-list="msell-reason">
-                      <button class="radio-row" data-r="thesis"     onclick="pickSellReason('thesis')" type="button"><div class="lbl-block"><div class="head">The thesis has weakened</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="profit"     onclick="pickSellReason('profit')" type="button"><div class="lbl-block"><div class="head">Taking some profit</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="rebalance"  onclick="pickSellReason('rebalance')" type="button"><div class="lbl-block"><div class="head">Rebalancing — position got too big</div></div><div class="radio-dot"></div></button>
-                      <button class="radio-row" data-r="cash"       onclick="pickSellReason('cash')" type="button"><div class="lbl-block"><div class="head">Raising cash for something else</div></div><div class="radio-dot"></div></button>
+                      <button class="radio-row" data-r="kill_criterion" onclick="pickSellReason('kill_criterion')" type="button">
+                        <div class="lbl-block">
+                          <div class="head">Kill criterion triggered</div>
+                          <div class="sub">A specific condition you wrote in your memo has been met.</div>
+                        </div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="thesis_changed" onclick="pickSellReason('thesis_changed')" type="button">
+                        <div class="lbl-block">
+                          <div class="head">Thesis has fundamentally changed</div>
+                          <div class="sub">New information has emerged that changes the underlying case.</div>
+                        </div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="thesis_weakened" onclick="pickSellReason('thesis_weakened')" type="button">
+                        <div class="lbl-block">
+                          <div class="head">Thesis has weakened</div>
+                          <div class="sub">The case is weaker than when you wrote the memo, but no specific kill condition has been triggered.</div>
+                        </div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="better_opportunity" onclick="pickSellReason('better_opportunity')" type="button">
+                        <div class="lbl-block">
+                          <div class="head">Better opportunity identified</div>
+                          <div class="sub">Reallocating capital to a stronger position.</div>
+                        </div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="sizing_adjustment" onclick="pickSellReason('sizing_adjustment')" type="button">
+                        <div class="lbl-block">
+                          <div class="head">Position sizing adjustment</div>
+                          <div class="sub">Rebalancing without thesis change.</div>
+                        </div>
+                        <div class="radio-dot"></div>
+                      </button>
+                      <button class="radio-row" data-r="behavioral" onclick="pickSellReason('behavioral')" type="button">
+                        <div class="lbl-block">
+                          <div class="head">Behavioral decision</div>
+                          <div class="sub">Driven by emotion or pressure rather than analysis.</div>
+                        </div>
+                        <div class="radio-dot"></div>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="v5-foot memo-foot--reveal">
-              <button class="v5-primary is-arrow locked" id="msell-next" onclick="go('m6')">→</button>
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="msell-next" onclick="go('marticulate')" type="button">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ marticulate — Articulation (MVP V1 Reduce / Exit) ════════
+               Per the Position Change Flow brief: after the user picks a reason,
+               they articulate it in a single text field. The label / prompt
+               varies by reason — that's the value V1 captures. -->
+          <section class="scr" data-id="marticulate">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('msell')" type="button">‹</button>
+                <button class="exit-btn" onclick="exitMemo()" type="button">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="memo-header">
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title" id="marticulate-title">Articulate</h1>
+                  </div>
+                  <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · <span id="marticulate-tag">REASON</span></div>
+                </div>
+                <div class="memo-body--reveal">
+                  <!-- The selected reason — read-only context so the user knows
+                       what they're articulating. Tap to go back to the picker. -->
+                  <div class="marticulate-reason" onclick="go('msell')">
+                    <span class="marticulate-reason-key">REASON</span>
+                    <span class="marticulate-reason-val" id="marticulate-reason-val">—</span>
+                    <span class="marticulate-reason-edit">Change ›</span>
+                  </div>
+                  <!-- Per-reason prompt label, populated by hydrateMarticulate -->
+                  <div class="marticulate-prompt" id="marticulate-prompt">—</div>
+                  <!-- Single required text field. No min char count — the
+                       record stands whatever the user writes. No outer
+                       border; a blinking caret marks the entry point when
+                       empty (mirrors the m5 memo composer pattern). -->
+                  <div class="marticulate-field">
+                    <!-- Paste + attach icons sit on the top right, above the
+                         empty composer area. Same SVG glyphs as m5. -->
+                    <div class="composer-toolbar marticulate-toolbar">
+                      <span class="composer-toolbar-spacer"></span>
+                      <button class="composer-icon-btn" onclick="pasteToTextarea('marticulate-input')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard (e.g. AI output)">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                          <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                          <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                          <line x1="5.5" y1="7" x2="10.5" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                          <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                          <line x1="5.5" y1="12" x2="8.5" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        </svg>
+                      </button>
+                      <button class="composer-icon-btn" onclick="document.getElementById('marticulate-file-input').click()" type="button" aria-label="Attach file" title="Attach PDF / Word file">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                          <path d="M11.5 5.5L6.8 10.2c-0.6 0.6-0.6 1.6 0 2.2 0.6 0.6 1.6 0.6 2.2 0L13.7 7.7c1.2-1.2 1.2-3.2 0-4.4-1.2-1.2-3.2-1.2-4.4 0L4.6 8c-1.8 1.8-1.8 4.8 0 6.6 1.8 1.8 4.8 1.8 6.6 0L15 11" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                      <input id="marticulate-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 'marticulate')">
+                    </div>
+                    <!-- Textarea wrap with blinking caret indicator. The
+                         placeholder is a single space so the textarea is
+                         in :placeholder-shown state when empty — that's
+                         what drives the caret-visibility CSS. -->
+                    <div class="marticulate-textarea-wrap">
+                      <span class="marticulate-caret" aria-hidden="true"></span>
+                      <textarea class="marticulate-input" id="marticulate-input"
+                                placeholder=" "
+                                oninput="onMarticulateInput(this)"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow locked" id="marticulate-confirm" onclick="confirmMarticulate()" type="button">→</button>
+            </div>
+          </section>
+
+          <!-- ════════ mrecorded — Recorded recap (MVP V1 Reduce / Exit) ════════
+               Per the Position Change Flow brief: shows what was recorded —
+               reason, articulation, timestamp — then continues to order
+               placement. The journal entry exists at this point. -->
+          <section class="scr" data-id="mrecorded">
+            <div style="padding-top:0;flex-shrink:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+                <button class="back-btn" onclick="go('marticulate')" type="button">‹</button>
+                <button class="exit-btn" onclick="exitMemo()" type="button">Exit</button>
+              </div>
+              <hr class="div">
+            </div>
+            <div class="body-scroll">
+              <div class="memo-page">
+                <div class="memo-header">
+                  <div class="memo-header-top">
+                    <h1 class="memo-header-title">Recorded.</h1>
+                  </div>
+                  <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · Journal entry created</div>
+                </div>
+                <div class="memo-body--reveal">
+                  <!-- Both blocks are editable until the user holds to
+                       commit on s4. Tap "Edit ›" to route back to the
+                       relevant step; the prior selection / text is
+                       preserved. -->
+                  <div class="mrecorded-block">
+                    <div class="mrecorded-block-head">
+                      <div class="mrecorded-key">REASON</div>
+                      <button class="mrecorded-edit" type="button" onclick="go('msell')">Edit ›</button>
+                    </div>
+                    <div class="mrecorded-val" id="mrecorded-reason">—</div>
+                  </div>
+                  <div class="mrecorded-block">
+                    <div class="mrecorded-block-head">
+                      <div class="mrecorded-key">YOUR ARTICULATION</div>
+                      <button class="mrecorded-edit" type="button" onclick="go('marticulate')">Edit ›</button>
+                    </div>
+                    <div class="mrecorded-val mrecorded-val--prose" id="mrecorded-articulation">—</div>
+                  </div>
+                  <!-- Timestamp removed — captured in state.journalEntry
+                       but not shown to the user (they don't need it at
+                       this stage; it lives on the journal entry record). -->
+                </div>
+              </div>
+            </div>
+            <div class="v5-foot">
+              <button class="v5-primary is-arrow" id="mrecorded-next" onclick="continueFromRecorded()" type="button">→</button>
             </div>
           </section>
 
@@ -11011,8 +12097,8 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <div class="memo-body--reveal">
                   <div>
                     <div class="section-eyebrow">One question before you add to <span class="memo-ctx-ticker">AAPL</span>:</div>
-                    <div class="memo-subtitle" style="margin-top:6px;margin-bottom:6px">Is your thesis stronger — or is the stock just cheaper?</div>
-                    <div class="memo-subhead" style="margin-bottom:14px">No wrong answer — but "just cheaper" is how good investors talk themselves into bad averages. Be honest; this is the point.</div>
+                    <div class="memo-subtitle" style="margin-top:8px;margin-bottom:10px">Is your thesis stronger — or is the stock just cheaper?</div>
+                    <div class="memo-subhead" style="margin-bottom:34px">No wrong answer — but "just cheaper" is how good investors talk themselves into bad averages. Be honest; this is the point.</div>
                     <div class="field-list" data-list="madd-reason">
                       <button class="radio-row" data-r="stronger" onclick="pickAddReason('stronger')" type="button">
                         <div class="lbl-block"><div class="head">The case is stronger than before</div></div>
@@ -11032,7 +12118,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               </div>
             </div>
             <div class="v5-foot memo-foot--reveal">
-              <button class="v5-primary is-arrow locked" id="madd-next" onclick="go('m6')">→</button>
+              <button class="v5-primary is-arrow locked" id="madd-next" onclick="go('msrc')">→</button>
             </div>
           </section>
 
@@ -11173,7 +12259,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div class="form-row s8-tap" id="s8-limit-row" onclick="event.stopPropagation();openNumpad('limit')" style="align-items:flex-start">
                 <div>
                   <span class="body-md" style="color:var(--s)">Limit Price</span>
-                  <div class="s8-sub">
+                  <div class="s8-sub" onclick="event.stopPropagation();showInfoModal('quote_details')" style="cursor:pointer">
                     <span class="s8-sub-text">Market Price</span>
                     <span class="s8-sub-info">i</span>
                     <span class="s8-sub-text" style="color:var(--s)">192.35 USD</span>
@@ -11185,9 +12271,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div class="form-row s8-tap" id="s8-shares-row" onclick="event.stopPropagation();openNumpad('shares')" style="align-items:flex-start">
                 <div>
                   <span class="body-md" style="color:var(--s)">Shares</span>
-                  <!-- V4.5 only: dollar-equivalent caption updates live as
-                       the user types. Most retail mentally sizes in dollars,
-                       not shares. -->
+                  <!-- Max sub-line — verb-aware. Buy: max affordable from
+                       the selected account. Sell: shares held in the
+                       selected account. Tap to fill the field. -->
+                  <div class="s8-sub s8-shares-max" id="s8-shares-max" onclick="event.stopPropagation();fillSharesMax()">
+                    <span class="s8-sub-text">Max:</span>
+                    <span class="s8-sub-text s8-sub-text--bright" id="s8-shares-max-val">—</span>
+                    <span class="s8-sub-text" id="s8-shares-max-note"></span>
+                  </div>
                 </div>
                 <span class="body-md s8-value" id="s8-shares-disp" style="color:var(--p)">0</span>
               </div>
@@ -11197,9 +12288,20 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <span class="body-md" style="color:var(--t);display:inline-flex;align-items:center;gap:6px">Good for Day <span style="font-size:9px;color:var(--t-800)">⌄</span></span>
               </div>
 
+              <!-- Estimated Exchange Rate — tappable, opens the Currency
+                   Conversion info modal. Shown for non-CAD listings; in this
+                   demo, AAPL trades in USD and is funded from a CAD account. -->
+              <div class="form-row" onclick="event.stopPropagation();showInfoModal('currency_conversion')" style="cursor:pointer">
+                <span class="body-md" style="color:var(--s);display:inline-flex;align-items:center;gap:7px">
+                  Estimated Exchange Rate
+                  <span class="s8-sub-info" style="font-size:10px;line-height:1">i</span>
+                </span>
+                <span class="body-md" style="color:var(--t)" id="s8-fx-rate">1.36</span>
+              </div>
+
               <div class="form-row">
                 <span class="body-md" style="color:var(--s)">Estimated Cost</span>
-                <span class="body-md s8-value" id="s8-cost" style="color:var(--t)">0.00 USD</span>
+                <span class="body-md s8-value" id="s8-cost" style="color:var(--t)">0.00 CAD</span>
               </div>
             </div>
 
@@ -11208,7 +12310,8 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                  sizing the position. Mirrors s4's memo section but tighter to
                  fit alongside the form rows + numpad on the same screen. -->
             <div id="s8-memo-section" class="s8-memo-section" style="display:none">
-              <div class="lbl" style="margin-bottom:12px">Memo on file</div>
+              <!-- "Memo on file" label removed — the rows below speak for
+                   themselves. -->
               <div class="s8-memo-row" id="s8-memo-iv-row">
                 <span class="body-sm" style="color:var(--s);flex-shrink:0">Intrinsic value</span>
                 <span class="body-md" id="s8-memo-iv" style="text-align:right">—</span>
@@ -11279,36 +12382,45 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <div class="s4r-header-meta">
                   <span>Non-Registered</span>
                   <span class="s4r-meta-sep">·</span>
-                  <span>18,698.53 USD</span>
+                  <span>18,698.53 CAD</span>
                 </div>
               </div>
 
-              <!-- Key metrics strip -->
-              <div class="s4r-stats">
-                <div class="s4r-stat">
-                  <div class="s4r-stat-lbl">WT</div>
-                  <div class="s4r-stat-val" id="s4-weight">—</div>
+              <!-- Order summary — line-by-line review of the trade.
+                   Matches the s8 form-row layout: key on left, value on
+                   right, thin dividers between rows. Market Price and
+                   Estimated Exchange Rate are tappable to open the same
+                   info modals used on s8. -->
+              <div class="s4-summary">
+                <div class="form-row">
+                  <span class="body-md" style="color:var(--s)">Type</span>
+                  <span class="body-md" style="color:var(--t)" id="s4-type">Limit Buy</span>
                 </div>
-                <div class="s4r-stat">
-                  <div class="s4r-stat-lbl">SHR</div>
-                  <div class="s4r-stat-val" id="s4-shares">—</div>
+                <div class="form-row">
+                  <span class="body-md" style="color:var(--s)">Estimated Portfolio Weight</span>
+                  <span class="body-md" style="color:var(--t)" id="s4-weight">—</span>
                 </div>
-                <div class="s4r-stat">
-                  <div class="s4r-stat-lbl">COST</div>
-                  <div class="s4r-stat-val" id="s4-cost">—</div>
+                <div class="form-row">
+                  <span class="body-md" style="color:var(--s)">Shares</span>
+                  <span class="body-md" style="color:var(--t)" id="s4-shares">—</span>
                 </div>
-              </div>
-
-              <!-- Order section -->
-              <div class="s4r-section">
-                <div class="s4r-section-head">ORDER</div>
-                <div class="s4r-row">
-                  <div class="s4r-key">TYPE</div>
-                  <div class="s4r-val" id="s4-type">Market Buy</div>
+                <div class="form-row" onclick="event.stopPropagation();showInfoModal('quote_details')" style="cursor:pointer">
+                  <span class="body-md" style="color:var(--s);display:inline-flex;align-items:center;gap:7px">
+                    Market Price
+                    <span class="s8-sub-info" style="font-size:10px;line-height:1">i</span>
+                  </span>
+                  <span class="body-md" style="color:var(--t)" id="s4-mkt-price">192.35 USD</span>
                 </div>
-                <div class="s4r-row">
-                  <div class="s4r-key">PRICE</div>
-                  <div class="s4r-val">192.35 USD</div>
+                <div class="form-row" onclick="event.stopPropagation();showInfoModal('currency_conversion')" style="cursor:pointer">
+                  <span class="body-md" style="color:var(--s);display:inline-flex;align-items:center;gap:7px">
+                    Estimated Exchange Rate
+                    <span class="s8-sub-info" style="font-size:10px;line-height:1">i</span>
+                  </span>
+                  <span class="body-md" style="color:var(--t)" id="s4-fx-rate">1.36</span>
+                </div>
+                <div class="form-row">
+                  <span class="body-md" style="color:var(--s)">Estimated Cost</span>
+                  <span class="body-md" style="color:var(--t)" id="s4-cost">—</span>
                 </div>
               </div>
 
@@ -11316,6 +12428,26 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <div id="s4-stress" class="s4r-stress" data-min-version="4.5" style="display:none">
                 <div class="s4r-stress-label">If wrong</div>
                 <div class="s4r-stress-body" id="s4-stress-body">—</div>
+              </div>
+
+              <!-- Calibration — moved ABOVE the memo section so the prediction
+                   isn't buried below a long memo body. One descriptive row
+                   bundles the user's confidence, hurdle rate, and horizon. -->
+              <div class="s4r-section">
+                <div class="s4r-section-head">CALIBRATION</div>
+                <div class="s4r-row s4r-row--stack">
+                  <div class="s4r-key" id="s4-cal-summary-key">PROBABILITY OF 20% / YR RETURN OVER 3 YEARS</div>
+                  <div class="s4r-val" id="s4-cal-summary-val">—</div>
+                </div>
+                <!-- Legacy split fields kept hidden so older readers don't break. -->
+                <div class="s4r-row" style="display:none">
+                  <div class="s4r-key">PROB</div>
+                  <div class="s4r-val" id="s4-conf">—</div>
+                </div>
+                <div class="s4r-row" style="display:none">
+                  <div class="s4r-key">HORIZON</div>
+                  <div class="s4r-val" id="s4-horizon">—</div>
+                </div>
               </div>
 
               <!-- Memo section (initial buy only) -->
@@ -11336,7 +12468,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                 </div>
                 <div class="s4r-row s4r-row--stack" id="s4-memo-note-row" style="display:none">
-                  <div class="s4r-key">MEMO</div>
+                  <div class="s4r-key" id="s4-memo-note-key">INVESTMENT CASE</div>
                   <div class="s4r-val" id="s4-memo-note">—</div>
                 </div>
                 <div class="s4r-row s4r-row--stack" id="s4-memo-thesis-row">
@@ -11353,28 +12485,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 </div>
               </div>
 
-              <!-- Calibration section -->
-              <div class="s4r-section">
-                <div class="s4r-section-head">CALIBRATION</div>
-                <div class="s4r-row">
-                  <div class="s4r-key">PROB</div>
-                  <div class="s4r-val" id="s4-conf">—</div>
-                </div>
-                <div class="s4r-row">
-                  <div class="s4r-key">HORIZON</div>
-                  <div class="s4r-val" id="s4-horizon">—</div>
-                </div>
-              </div>
-
               <div style="height:20px"></div>
-            </div>
-
-            <!-- Paper trade -->
-            <div id="s4-paper-row" style="flex-shrink:0;padding:12px 16px;display:flex;justify-content:flex-start;background:var(--bg)" data-min-version="3">
-              <button class="act-btn" onclick="savePaperTrade()" type="button">
-                <span class="act-arrow">→</span>
-                <span>Log as paper trade — don't buy</span>
-              </button>
             </div>
 
             <!-- Hold to confirm -->
@@ -11399,19 +12510,36 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="s9-order-subtype" id="s9-type">Market Buy</div>
                 </div>
 
-                <!-- Stats strip — Shares · Cost · Weight -->
-                <div class="m6-stats-strip s9-stats-strip">
-                  <div class="m6-stat-cell">
-                    <div class="m6-stat-lbl">SHARES</div>
-                    <div class="m6-stat-val" id="s9-shares">—</div>
+                <!-- Vertical summary — line-by-line, matches the s4 / s8
+                     review layout. Each row reads as one fact rather than
+                     three competing columns. -->
+                <div class="s9-summary">
+                  <div class="form-row">
+                    <span class="body-md" style="color:var(--s)">Type</span>
+                    <span class="body-md" style="color:var(--t)" id="s9-sum-type">Limit Buy</span>
                   </div>
-                  <div class="m6-stat-cell">
-                    <div class="m6-stat-lbl">COST</div>
-                    <div class="m6-stat-val" id="s9-cost">—</div>
+                  <div class="form-row">
+                    <span class="body-md" style="color:var(--s)">Portfolio Weight</span>
+                    <span class="body-md" style="color:var(--t)" id="s9-weight">—</span>
                   </div>
-                  <div class="m6-stat-cell">
-                    <div class="m6-stat-lbl">WEIGHT</div>
-                    <div class="m6-stat-val" id="s9-weight">—</div>
+                  <div class="form-row">
+                    <span class="body-md" style="color:var(--s)">Shares</span>
+                    <span class="body-md" style="color:var(--t)" id="s9-shares">—</span>
+                  </div>
+                  <div class="form-row">
+                    <span class="body-md" style="color:var(--s)">Price</span>
+                    <span class="body-md" style="color:var(--t)" id="s9-sum-price">—</span>
+                  </div>
+                  <div class="form-row" onclick="event.stopPropagation();showInfoModal('currency_conversion')" style="cursor:pointer">
+                    <span class="body-md" style="color:var(--s);display:inline-flex;align-items:center;gap:7px">
+                      Exchange Rate
+                      <span class="s8-sub-info" style="font-size:10px;line-height:1">i</span>
+                    </span>
+                    <span class="body-md" style="color:var(--t)" id="s9-sum-fx">1.36</span>
+                  </div>
+                  <div class="form-row">
+                    <span class="body-md" style="color:var(--s)">Total Cost</span>
+                    <span class="body-md" style="color:var(--t)" id="s9-cost">—</span>
                   </div>
                 </div>
 
@@ -11442,6 +12570,27 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-row s9-last-row"><div class="k">TOTAL</div><div class="v" id="s9-od-total">—</div></div>
                 </div>
 
+                <!-- Calibration — moved ABOVE the memo so the prediction
+                     isn't buried below a long memo paragraph. Single
+                     descriptive row bundles confidence + hurdle + horizon. -->
+                <div>
+                  <div class="m6-ledger-section-head">CALIBRATION</div>
+                  <div class="memo-row s9-last-row">
+                    <div class="k" id="s9-cal-summary-key">PROBABILITY OF 20% / YR RETURN OVER 3 YEARS</div>
+                    <div class="v" id="s9-cal-summary-val">—</div>
+                  </div>
+                  <!-- Legacy split fields kept hidden for any older callers. -->
+                  <div class="memo-row" style="display:none"><div class="k">PROB</div><div class="v" id="s9-conf">—</div></div>
+                  <div class="memo-row" style="display:none"><div class="k">HRZ</div><div class="v" id="s9-horizon">—</div></div>
+                  <!-- Direct entry into calibration analytics · V4 -->
+                  <div style="padding:12px 0;display:flex;justify-content:flex-end" data-min-version="4">
+                    <button class="act-btn" onclick="go('s5')" style="padding:6px 0">
+                      <span class="act-arrow">→</span>
+                      <span>View calibration</span>
+                    </button>
+                  </div>
+                </div>
+
                 <!-- Memo recorded section (shown if state.hasMemo) -->
                 <div id="s9-memo-section" style="display:none">
                   <div class="m6-ledger-section-head">INVESTOR MEMO</div>
@@ -11450,20 +12599,6 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-row"><div class="k">THESIS</div><div class="v" id="s9-memo-thesis">—</div></div>
                   <div class="memo-row"><div class="k">KILL</div><div class="v" id="s9-memo-kill">—</div></div>
                   <div class="memo-row s9-last-row"><div class="k">MOS</div><div class="v" id="s9-memo-mos">—</div></div>
-                </div>
-
-                <!-- Calibration section -->
-                <div>
-                  <div class="m6-ledger-section-head">CALIBRATION</div>
-                  <div class="memo-row"><div class="k">PROB</div><div class="v" id="s9-conf">—</div></div>
-                  <div class="memo-row s9-last-row"><div class="k">HRZ</div><div class="v" id="s9-horizon">—</div></div>
-                  <!-- Direct entry into calibration analytics · V4 -->
-                  <div style="padding:12px 0;display:flex;justify-content:flex-end" data-min-version="4">
-                    <button class="act-btn" onclick="go('s5')" style="padding:6px 0">
-                      <span class="act-arrow">→</span>
-                      <span>View calibration</span>
-                    </button>
-                  </div>
                 </div>
 
                 <!-- Memo note -->
@@ -13913,6 +15048,17 @@ function persistTransactions() {
 }
 
 const HORIZON_LBL = { '1y':'1 year', '2y':'2 years', '3y':'3 years', '4y':'4 years', '5y':'5 years' };
+
+/* Single descriptive calibration label used on every review page:
+   "Probability of <hurdle>%/yr return over <horizon>". Pulls hurdle
+   from state.memo.hurdleRate (or the global default) and horizon from
+   state.horizon. Designed so the user sees the prediction summarised
+   in one sentence rather than three separate rows. */
+function formatCalibrationLabel() {
+  const hurdle = (state.memo && state.memo.hurdleRate) || state.defaultHurdleRate || 20;
+  const horizon = HORIZON_LBL[state.horizon] || state.horizon || '3 years';
+  return 'Probability of ' + hurdle + '% / yr return over ' + horizon;
+}
 const TYPE_LBL = { comp:'Compounder', emer:'Emerging Compounder', situ:'Situational Mispricing', spec:'Speculative' };
 const TYPE_SUB = {
   comp: 'Businesses compounding capital at above-market rates with durable competitive position.',
@@ -13932,6 +15078,75 @@ const MOS_LBL  = { below:'Meaningfully below intrinsic value', around:'Roughly a
 const MKTPRICE_USD = 192.35;
 const FX_USD_CAD   = 1.0;  // App is USD-only; multiplier left as a no-op so existing math doesn't need refactoring.
 const PORTVAL_CAD  = 285000;
+
+/* Live-price simulator. The AAPL price + today's % move tick every 10s
+   with small random drift so the memo headers feel like a real quote.
+   The baseline (MKTPRICE_USD) is the open price; aaplLivePrice drifts
+   from it, and aaplLiveDelta is recomputed from the gap. */
+let aaplLivePrice = MKTPRICE_USD;
+let aaplLiveDelta = 0.22; // % move today — starts at the s0 chip value
+
+function aaplPriceMoveHTML() {
+  const pct  = aaplLiveDelta;
+  const sign = pct >= 0 ? '+' : '';
+  // Pure white, no color cue — pct already shows the direction via the sign.
+  return aaplLivePrice.toFixed(2) + ' ' + sign + pct.toFixed(2) + '%';
+}
+
+/* m6 (returning) doc-label — anchors the memo to live market state + date.
+   Format: "AAPL · 192.35 +0.22% · Jun 1, 2026". Updates on every price
+   tick via refreshMemoHeaderPrice. */
+function m6DocLabelHTML() {
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return '<span class="memo-ctx-ticker">AAPL</span> · ' + aaplPriceMoveHTML() + ' · ' + today;
+}
+
+/* Sweep every memo-header-version span on the page and swap the trailing
+   "MEMO V1" stamp for the live AAPL price + delta. Runs on every go() so
+   the value stays consistent everywhere it appears, plus on every tick
+   so the visible spans update with the simulated quote. Core / treasury
+   memo headers keep their "CORE MEMO" stamp. */
+function refreshMemoHeaderPrice() {
+  document.querySelectorAll('.memo-header-version').forEach(el => {
+    const t = el.textContent || '';
+    // Match any AAPL header that's already showing a price OR carrying
+    // one of the legacy version stamps / per-flow verbs. Core/Treasury
+    // headers say "CORE MEMO" — we leave those alone.
+    const isAaplHeader =
+      t.indexOf('MEMO V1') !== -1 ||
+      t.indexOf('192.35') !== -1 ||
+      /\d+\.\d{2}\s*[+-]\d/.test(t) ||
+      /\bAAPL\b.*\b(ADD|REDUCE|EXIT)\b/.test(t);
+    if (!isAaplHeader) return;
+    el.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · ' + aaplPriceMoveHTML();
+  });
+  // m6 returning doc-label — only update if it's currently rendering the
+  // live-price format (i.e., the returning view is active). Detect by the
+  // presence of "AAPL" + a delta-style "+0.XX%" pattern in the text.
+  const docLbl = document.getElementById('m6-doc-label');
+  if (docLbl) {
+    const t = docLbl.textContent || '';
+    if (/AAPL\s*·\s*\d+\.\d{2}\s*[+-]\d/.test(t)) {
+      docLbl.innerHTML = m6DocLabelHTML();
+    }
+  }
+}
+
+/* Tick the price every 10s with a small random drift. The drift is
+   bounded so the demo never wanders too far from the seed value. */
+function tickAaplPrice() {
+  // Random walk ±0.10 USD per tick, clamped to ±0.80 from the open price.
+  const step = (Math.random() - 0.5) * 0.20;
+  let next = aaplLivePrice + step;
+  const lo = MKTPRICE_USD - 0.80;
+  const hi = MKTPRICE_USD + 0.80;
+  if (next < lo) next = lo;
+  if (next > hi) next = hi;
+  aaplLivePrice = next;
+  aaplLiveDelta = ((aaplLivePrice - MKTPRICE_USD) / MKTPRICE_USD) * 100;
+  refreshMemoHeaderPrice();
+}
+setInterval(tickAaplPrice, 10000);
 
 /* Canonical date formatter — every writer that records a date should
    use this so the rendered format stays consistent ("May 8, 2026"). */
@@ -14277,6 +15492,18 @@ const _DEMO_SCREEN_FIELDS = {
   msrc: ['source'],
 };
 
+/* Per-reason demo text for the marticulate field. Mapped to the 6
+   reasons on msell so the autofill produces a realistic journal entry
+   regardless of which reason the user happened to pick. */
+const _DEMO_ARTICULATIONS = {
+  kill_criterion:     'Services gross margin compressed below 70% for the second consecutive quarter (Q1 and Q2 FY26 prints). That was the explicit kill condition in my memo — the durable-pricing-power claim no longer holds. Exiting per pre-commitment.',
+  thesis_changed:     'Apple announced the AR/VR division is being spun off into a separate entity with external funding. The integrated-platform thesis I underwrote assumed Vision Pro would compound inside the services ecosystem; that assumption no longer holds and the case has materially changed.',
+  thesis_weakened:    'Services growth decelerated to 9% YoY this quarter, the lowest print in three years. No specific kill criterion has triggered, but my confidence in the >10% Services growth assumption is meaningfully lower than when I wrote the memo. Trimming exposure rather than holding to the original size.',
+  better_opportunity: 'Reallocating ~30% of this position to a new initiation in Constellation Software. CSU has stronger reinvestment economics (sustained 25% IRR on tuck-in acquisitions vs. AAPL\'s ~15% on buybacks) and a longer compounding runway. Same risk budget, better expected return.',
+  sizing_adjustment:  'Position has appreciated to 17% of the portfolio after a year of strong performance. Original target sizing was 10% (Core position). Trimming back to target — pure rebalancing, no thesis change.',
+  behavioral:         'Stock is down 14% this week on the latest China unit-volume scare. I\'m uncomfortable and want to reduce exposure. Acknowledging this is reactive — nothing in my underwriting has changed — but the discomfort is real and recording it as such rather than dressing it up as analysis.'
+};
+
 function refreshDemoBtnState() {
   const btn = document.getElementById('demoFillBtn');
   if (!btn) return;
@@ -14297,14 +15524,282 @@ function openS8InfoModal(type) {
   if (el) el.classList.add('is-on');
 }
 
+/* ══════════════════════════════════════════════════════
+   ACCOUNT PICKER (macct) — sits before mfork on first-time and
+   before madd/msell/m6 on returning. Records state.account.
+   ══════════════════════════════════════════════════════ */
+const ACCT_LBL = {
+  'non-registered': 'Non-Registered',
+  'tfsa':           'TFSA',
+  'rrsp':           'RRSP'
+};
+/* Per-account balances + holdings for the demo. Used by the Max
+   sub-line on s8 to compute max-affordable (Buy) or max-held (Sell).
+   Matches the numbers shown on the macct picker. */
+const ACCT_DATA = {
+  'non-registered': { cashCAD: 18698.53, sharesHeld:   0 },
+  'tfsa':           { cashCAD:   531.23, sharesHeld: 300 },
+  'rrsp':           { cashCAD:  1545.19, sharesHeld: 100 }
+};
+function pickAccount(acct) {
+  state.account = acct;
+  document.querySelectorAll('.macct-option').forEach(el => el.classList.remove('is-on'));
+  const idMap = { 'non-registered': 'macct-opt-nr', 'tfsa': 'macct-opt-tfsa', 'rrsp': 'macct-opt-rrsp' };
+  const sel = document.getElementById(idMap[acct]);
+  if (sel) sel.classList.add('is-on');
+  const cont = document.getElementById('macct-continue');
+  if (cont) cont.classList.remove('locked');
+}
+function hydrateMacct() {
+  // Restore the prior selection (so navigating back keeps the user's pick).
+  const acct = state.account;
+  document.querySelectorAll('.macct-option').forEach(el => el.classList.remove('is-on'));
+  const cont = document.getElementById('macct-continue');
+  if (!acct) {
+    if (cont) cont.classList.add('locked');
+  } else {
+    const idMap = { 'non-registered': 'macct-opt-nr', 'tfsa': 'macct-opt-tfsa', 'rrsp': 'macct-opt-rrsp' };
+    const sel = document.getElementById(idMap[acct]);
+    if (sel) sel.classList.add('is-on');
+    if (cont) cont.classList.remove('locked');
+  }
+  // Action label: BUY for initial / increase, SELL for reduce / exit.
+  const act = document.getElementById('macct-action');
+  if (act) {
+    const cd = state.cd;
+    act.textContent = (cd === 'reduce' || cd === 'exit') ? 'SELL' : 'BUY';
+  }
+}
+function continueFromMacct() {
+  if (!state.account) return;
+  // macct now sits at the start of order placement (after memo capture),
+  // so it always advances to s8 regardless of capital-decision flow.
+  go('s8');
+}
+function backFromMacct() {
+  // macct sits between the memo flow and the order flow. Route Back to
+  // whichever screen the user actually came from, so they can revise
+  // without losing the whole flow.
+  if (state.version === 'mvp1') {
+    // Reduce / Exit comes via marticulate (the articulation field is
+    // the immediate predecessor — no m6 in that flow anymore).
+    if (state.cd === 'reduce' || state.cd === 'exit') { go('marticulate'); return; }
+    // First-time and Increase both land on macct from m6.
+    if (state.cd === 'initial' || state.cd === 'increase') { go('m6'); return; }
+  }
+  // Fallback for any unexpected entry path.
+  go('s0');
+}
+
+/* ══════════════════════════════════════════════════════
+   MREREAD — Re-read your memo before reducing / exiting.
+   Hydrates from state.memo + state.predictions, gates the
+   Continue button on scroll-to-bottom of the memo content,
+   handles the "no memo on file" backfill case.
+   ══════════════════════════════════════════════════════ */
+function hydrateMreread() {
+  const m = state.memo || {};
+  const hasMemo = !!((m.note || '').trim() || m.type || m.size);
+  const contentEl = document.getElementById('mreread-content');
+  const emptyEl   = document.getElementById('mreread-empty');
+  if (contentEl) contentEl.style.display = hasMemo ? '' : 'none';
+  if (emptyEl)   emptyEl.style.display   = hasMemo ? 'none' : '';
+
+  const $ = id => document.getElementById(id);
+  if (hasMemo) {
+    if ($('mreread-classify')) $('mreread-classify').textContent = TYPE_LBL[m.type] || '—';
+    if ($('mreread-size'))     $('mreread-size').textContent     = SIZE_LBL[m.size] || '—';
+    // Single descriptive calibration row replaces the prior Confidence +
+    // Horizon split — same format as every other review page.
+    const orig = (typeof getOriginalPrediction === 'function') ? getOriginalPrediction() : null;
+    const probTxt = orig ? (orig.prob + '%') : '—';
+    if ($('mreread-cal-key')) $('mreread-cal-key').textContent = formatCalibrationLabel().toUpperCase();
+    if ($('mreread-cal-val')) $('mreread-cal-val').textContent = probTxt;
+    if ($('mreread-note'))    $('mreread-note').textContent    = (m.note || '').trim() || '—';
+  } else {
+    // Empty state — clear any prior retroactive note input
+    const ta = $('mreread-empty-input');
+    if (ta) ta.value = state._retroactiveNote || '';
+  }
+
+  // Reset the Continue lock + start the scroll observer fresh.
+  state._mrereadScrolled = false;
+  const nextBtn = document.getElementById('mreread-next');
+  if (nextBtn) nextBtn.classList.add('locked');
+  // Scroll to top so the re-read starts from the beginning
+  const scroller = document.getElementById('mreread-scroll');
+  if (scroller) scroller.scrollTop = 0;
+  // Defer observer setup so the section is laid out first
+  setTimeout(() => setupMrereadScrollDetect(hasMemo), 50);
+}
+
+let _mrereadObserver = null;
+function setupMrereadScrollDetect(hasMemo) {
+  const endEl = document.getElementById('mreread-end');
+  const scroller = document.getElementById('mreread-scroll');
+  if (!endEl || !scroller) return;
+  if (_mrereadObserver) { _mrereadObserver.disconnect(); _mrereadObserver = null; }
+
+  // Empty-state path: the Continue lock is driven by the retroactive
+  // note input (onMrereadEmptyInput) instead of scroll position.
+  if (!hasMemo) return;
+
+  _mrereadObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        state._mrereadScrolled = true;
+        const nextBtn = document.getElementById('mreread-next');
+        if (nextBtn) nextBtn.classList.remove('locked');
+      }
+    });
+  }, { root: scroller, threshold: 0.1 });
+  _mrereadObserver.observe(endEl);
+
+  // Edge case: memo is short enough that the end sentinel is already
+  // visible without scrolling. Unlock immediately in that case.
+  const sRect = scroller.getBoundingClientRect();
+  const eRect = endEl.getBoundingClientRect();
+  if (eRect.top <= sRect.bottom) {
+    state._mrereadScrolled = true;
+    const nextBtn = document.getElementById('mreread-next');
+    if (nextBtn) nextBtn.classList.remove('locked');
+  }
+}
+
+function onMrereadEmptyInput(el) {
+  state._retroactiveNote = el.value;
+  const nextBtn = document.getElementById('mreread-next');
+  const ok = (el.value || '').trim().length > 0;
+  if (nextBtn) nextBtn.classList.toggle('locked', !ok);
+}
+
+function continueFromMreread() {
+  // If the user filled in a retroactive note (backfill path), persist it
+  // as the memo body so downstream screens have something to work with.
+  if (state._retroactiveNote && !(state.memo.note || '').trim()) {
+    state.memo.note = state._retroactiveNote;
+    state._retroactiveNote = '';
+  }
+  go('msell');
+}
+
+function exitToUpdateMemo() {
+  // Off-ramp: user wants to revise the memo rather than reduce/exit.
+  // Reset the capital-decision context and drop them at m1 in edit mode.
+  state.cd = null;
+  state.editingFromReview = true;
+  go('m1');
+}
+
+/* ══════════════════════════════════════════════════════
+   MARTICULATE — Per-reason articulation page.
+   Hydrates with the reason the user picked on msell + the
+   matching prompt. Records state.articulation on confirm.
+   ══════════════════════════════════════════════════════ */
+function hydrateMarticulate() {
+  const reason = state.sellReason;
+  const reasonLbl = SELL_REASON_LBL[reason] || '—';
+  const prompt    = SELL_REASON_PROMPT[reason] || 'Describe your reasoning.';
+  const isExit = state.cd === 'exit';
+  // Header tag + title per verb
+  const t   = document.getElementById('marticulate-title');
+  const tag = document.getElementById('marticulate-tag');
+  if (t)   t.textContent   = isExit ? 'Closing Apple' : 'Trimming Apple';
+  if (tag) tag.textContent = isExit ? 'EXIT' : 'REDUCE';
+  // Selected reason (read-only context) + per-reason prompt
+  const rv = document.getElementById('marticulate-reason-val');
+  if (rv) rv.textContent = reasonLbl;
+  const pr = document.getElementById('marticulate-prompt');
+  if (pr) pr.textContent = prompt;
+  // Restore any prior typing so back-nav doesn't blank the field
+  const ta = document.getElementById('marticulate-input');
+  if (ta) {
+    ta.value = state.articulation || '';
+    // Re-evaluate lock state based on current content
+    onMarticulateInput(ta);
+  }
+}
+
+function onMarticulateInput(el) {
+  state.articulation = el.value;
+  const ok = (el.value || '').trim().length > 0;
+  const btn = document.getElementById('marticulate-confirm');
+  if (btn) btn.classList.toggle('locked', !ok);
+}
+
+function confirmMarticulate() {
+  if (!(state.articulation || '').trim()) return;
+  // Stamp the journal entry. Reason + articulation + timestamp are the
+  // V1 record. Append the prediction to the log too — the commit moment
+  // is here, since mrecorded (the old recap screen) was removed.
+  state.journalEntry = {
+    reason:       state.sellReason,
+    reasonLabel:  SELL_REASON_LBL[state.sellReason] || state.sellReason,
+    articulation: (state.articulation || '').trim(),
+    timestamp:    new Date().toISOString(),
+    cd:           state.cd
+  };
+  // Also persist the articulation into the memo body so downstream
+  // screens (s9 receipt etc.) can show what the user wrote.
+  if (state.memo) state.memo.note = state.journalEntry.articulation;
+  // Commit the prediction here (used to fire on continueFromRecorded).
+  if (typeof appendPrediction === 'function') {
+    const source = state.cd === 'reduce' ? 'trim'
+                 : state.cd === 'exit'   ? 'exit'
+                 : 'add';
+    try { appendPrediction(source); } catch(_) {}
+  }
+  // Skip the recap and go straight to the order-placement flow.
+  go('macct');
+}
+
+/* ══════════════════════════════════════════════════════
+   MRECORDED — Recap of what was captured.
+   Continue advances to the order-placement flow (macct → s8).
+   ══════════════════════════════════════════════════════ */
+function hydrateMrecorded() {
+  // Re-read fresh state every time — if the user came back via "Edit ›"
+  // on either row and changed their reason or articulation, the recap
+  // needs to reflect the latest values, not the stale snapshot from the
+  // first confirmMarticulate. We rebuild from state directly.
+  const reason       = state.sellReason || (state.journalEntry && state.journalEntry.reason);
+  const articulation = (state.articulation || '').trim() ||
+                       (state.journalEntry && state.journalEntry.articulation) || '';
+  const $ = id => document.getElementById(id);
+  if ($('mrecorded-reason'))       $('mrecorded-reason').textContent       = SELL_REASON_LBL[reason] || '—';
+  if ($('mrecorded-articulation')) $('mrecorded-articulation').textContent = articulation || '—';
+  // Keep state.journalEntry up-to-date so the s9 receipt reads the
+  // latest version if the user revised on mrecorded.
+  if (state.journalEntry) {
+    state.journalEntry.reason       = reason;
+    state.journalEntry.reasonLabel  = SELL_REASON_LBL[reason] || reason;
+    state.journalEntry.articulation = articulation;
+  }
+  // state.memo.note is the long-form record that downstream screens
+  // (s9 receipt etc.) read from — re-sync if the articulation changed.
+  if (state.memo) state.memo.note = articulation;
+}
+
+function continueFromRecorded() {
+  // Commit the prediction entry on the way out — this is the moment the
+  // memo change actually lands in the predictions log, since the user
+  // confirmed their articulation on the prior screen.
+  if (typeof appendPrediction === 'function') {
+    const source = state.cd === 'reduce' ? 'trim'
+                 : state.cd === 'exit'   ? 'exit'
+                 : 'add';
+    try { appendPrediction(source); } catch(_) {}
+  }
+  // Order placement flow starts at the account picker.
+  go('macct');
+}
+
 function backFromMfork() {
   if (state.cd === 'draft')               { go('s0');  return; }
   if (state.cd && state.cd !== 'initial') { go('s19'); return; }
-  // MVP V1 has no orientation pages — bounce straight to s0.
-  if (!state.hasMemo) {
-    go(state.version === 'mvp1' ? 's0' : 'mresearch');
-    return;
-  }
+  // MVP V1 first-time path: mfork is the first screen, back exits to s0.
+  if (state.version === 'mvp1') { go('s0'); return; }
+  if (!state.hasMemo) { go('mresearch'); return; }
   go('s0');
 }
 
@@ -14973,6 +16468,38 @@ function _demoFillScreen(id) {
     // MVP V1 fills the note with a complete worked memo; V4.5 keeps the
     // short research-note example. Falls through to the common tail below.
     state.memo.note = (state.version === 'mvp1') ? MVP_EXAMPLE_MEMO : _DEMO_VALUES.note;
+  } else if (id === 'msell') {
+    // Pick a default reason. "Thesis has fundamentally changed" exercises
+    // the full articulation flow downstream.
+    state.sellReason = 'thesis_changed';
+    try { hydrateMsell(); } catch(_) {}
+    return;
+  } else if (id === 'marticulate') {
+    // Reason-aware demo articulation so the field reads as a real
+    // user's writing, not a Lorem-Ipsum stub. Falls back to a generic
+    // line if the user hasn't picked a reason yet.
+    state.articulation = (_DEMO_ARTICULATIONS[state.sellReason] ||
+      'My case for this position has changed. Reducing exposure to reflect the updated view.');
+    try { hydrateMarticulate(); } catch(_) {}
+    return;
+  } else if (id === 'madd') {
+    state.addReason = 'stronger';
+    try { hydrateMadd(); } catch(_) {}
+    return;
+  } else if (id === 'macct') {
+    state.account = 'non-registered';
+    try { hydrateMacct(); } catch(_) {}
+    return;
+  } else if (id === 'mreread') {
+    // No data to fill — just unlock the Continue button so the user can
+    // proceed without scrolling through the memo end-to-end.
+    state._mrereadScrolled = true;
+    const nextBtn = document.getElementById('mreread-next');
+    if (nextBtn) nextBtn.classList.remove('locked');
+    return;
+  } else if (id === 'mrecorded') {
+    // Recap screen — nothing to fill (values come from the prior commit).
+    return;
   } else {
     const fields = _DEMO_SCREEN_FIELDS[id];
     if (fields) fields.forEach(f => { state.memo[f] = _DEMO_VALUES[f]; });
@@ -15044,6 +16571,29 @@ function _demoClearScreen(id) {
     state.memo.coreConditions = ['', ''];
     try { persistMemoDraft(); } catch(_) {}
     try { renderMc5(); } catch(_) {}
+    return;
+  } else if (id === 'msell') {
+    state.sellReason = null;
+    try { hydrateMsell(); } catch(_) {}
+    return;
+  } else if (id === 'marticulate') {
+    state.articulation = '';
+    try { hydrateMarticulate(); } catch(_) {}
+    return;
+  } else if (id === 'madd') {
+    state.addReason = null;
+    try { hydrateMadd(); } catch(_) {}
+    return;
+  } else if (id === 'macct') {
+    state.account = null;
+    try { hydrateMacct(); } catch(_) {}
+    return;
+  } else if (id === 'mreread') {
+    state._mrereadScrolled = false;
+    const nextBtn = document.getElementById('mreread-next');
+    if (nextBtn) nextBtn.classList.add('locked');
+    return;
+  } else if (id === 'mrecorded') {
     return;
   } else {
     const fields = _DEMO_SCREEN_FIELDS[id];
@@ -15694,6 +17244,10 @@ function go(id) {
   if (id === 'mvprecord') renderMvpRecord();
   if (id === 'msell') hydrateMsell();
   if (id === 'madd')  hydrateMadd();
+  if (id === 'macct') hydrateMacct();
+  if (id === 'mreread')     hydrateMreread();
+  if (id === 'marticulate') hydrateMarticulate();
+  if (id === 'mrecorded')   hydrateMrecorded();
   if (id === 's19') renderS19();
   // Test-scenario caption — shown on memo review screens during the returning
   // increase flow so reviewers know why the user is going through all 8 steps.
@@ -15711,6 +17265,8 @@ function go(id) {
   // Keep the side-menu persona toggle in sync with the screen the user is
   // actually on — never let the toggle disagree with what's visible.
   if (typeof refreshModeButtons === 'function') refreshModeButtons();
+  // Swap "MEMO V1" stamps for live AAPL price + today's % move, everywhere.
+  if (typeof refreshMemoHeaderPrice === 'function') refreshMemoHeaderPrice();
   refreshProtocolReferenceMode(id);
   if (id === 's12' || id === 'm6') refreshMemoLocks();
   if (id === 's12') { hydrateForecastThreshold(); refreshCalibSummary(); }
@@ -16272,23 +17828,24 @@ function pickCD(choice) {
     state._memoEditedThisFlow = false;
     hydrateAaplMemoFromSeed();
     if (!(state.memo.note || '').trim()) state.memo.note = MVP_EXAMPLE_MEMO;
-    // Seed the in-progress draft from the on-file prediction so the s12 form
-    // is pre-filled with what the user actually committed to. state.position
-    // stays the immutable source of truth until a fresh commit changes it.
+    // Seed the in-progress draft from the on-file prediction.
     state.prob = state.position.prob;
     state.horizon = state.position.horizon;
     state._increaseSeeded = true;
-    // Pressure test was completed at the original buy — carry it as confirmed
-    // (used by the Increase flow; sells replace PT with the reason page).
     state.memo.ptStatus    = 'done';
     state.memo.ptConfirmed = true;
     state.sellReason       = null;
     state.addReason        = null;
-    // Each capital decision names a reason on its own page before the memo
-    // review. Reduce / Exit → msell. Increase → madd (single reflection
-    // question: "stronger thesis vs just cheaper").
-    if (choice === 'reduce' || choice === 'exit') { go('msell'); return; }
-    if (choice === 'increase') { go('madd'); return; }
+    state.account          = null;
+    state.articulation     = '';
+    state.journalEntry     = null;
+    // Capital decision flow per the Position Change Flow brief:
+    //   Reduce / Exit → mreread (force re-read) → msell → marticulate →
+    //                   mrecorded → macct → s8
+    //   Increase      → madd (single reflection question) → m6 → macct → s8
+    // macct moves to the start of order placement, not memo capture.
+    if (choice === 'reduce' || choice === 'exit') { go('mreread'); return; }
+    if (choice === 'increase')                    { go('madd');    return; }
     go('m6');
     return;
   }
@@ -16311,19 +17868,42 @@ function isMvpReturning() { return state.version === 'mvp1' && state.cd && state
 const MVP_POS_SHARES = 47;
 
 const SELL_REASON_LBL = {
-  thesis:     'The thesis has weakened',
+  // Position Change Flow brief — 6 reasons, distinct for behavioral
+  // analytics. Each maps to a per-reason articulation prompt downstream.
+  kill_criterion:     'Kill criterion triggered',
+  thesis_changed:     'Thesis has fundamentally changed',
+  thesis_weakened:    'Thesis has weakened',
+  better_opportunity: 'Better opportunity identified',
+  sizing_adjustment:  'Position sizing adjustment',
+  behavioral:         'Behavioral decision',
+  // Legacy keys (older drafts / sm-flow / earlier MVP V1 set) — keep so
+  // older state doesn't blank out.
+  thesis:     'Thesis has weakened',
   profit:     'Taking some profit',
   rebalance:  'Rebalancing — position got too big',
   cash:       'Raising cash for something else',
-  // Legacy keys — keep so old saved drafts don't blank out
   killline:   'Hit my exit conditions',
   fairvalue:  'Fairly valued now',
   betteridea: 'Better opportunity elsewhere',
   capital:    'Need the capital'
 };
+/* Per-reason articulation prompts for the marticulate screen. The brief
+   specifies a different question per reason — the reason categorizes,
+   the articulation makes it real. */
+const SELL_REASON_PROMPT = {
+  kill_criterion:     'Describe how the kill criterion has been met.',
+  thesis_changed:     'What changed?',
+  thesis_weakened:    'What specifically has weakened?',
+  better_opportunity: 'What is the better opportunity?',
+  sizing_adjustment:  'What is the sizing adjustment and why?',
+  behavioral:         'What is driving this decision?'
+};
 
 /* Reduce / Exit: the reason is captured on its own page (msell) before the
    memo review. Picking one unlocks that page's Continue arrow. */
+/* Tap a reason → highlight it and unlock the bottom-right Continue
+   arrow. The user taps the arrow to advance to marticulate. Back-nav
+   from marticulate keeps the prior selection highlighted. */
 function pickSellReason(r) {
   state.sellReason = r;
   try { persistMemoDraft(); } catch(_) {}
@@ -16333,26 +17913,18 @@ function pickSellReason(r) {
   if (next) next.classList.remove('locked');
 }
 
-/* Hydrate the sell-reason page for Reduce vs Exit. Per MVP V1 spec:
-   - Reduce → "Trimming Apple", "One question before you trim AAPL:"
-   - Exit   → "Closing Apple",  "One question before you close AAPL:"
-   Both share the same 4 reason options + helper line. */
+/* Hydrate the sell-reason page. Title swaps between Trimming / Closing
+   Apple based on state.cd. The top-right "AAPL · REDUCE" tag is no
+   longer set here — refreshMemoHeaderPrice() replaces that whole span
+   with the live AAPL price + delta on every navigation. */
 function hydrateMsell() {
   const isExit = state.cd === 'exit';
-  const t  = document.getElementById('msell-title');
-  const ey = document.getElementById('msell-eyebrow');
-  const st = document.getElementById('msell-subtitle');
-  const sh = document.getElementById('msell-subhead');
-  const tag= document.getElementById('msell-tag');
-  if (t)   t.textContent  = isExit ? 'Closing Apple' : 'Trimming Apple';
-  if (ey)  ey.innerHTML   = isExit
-    ? 'One question before you close <span class="memo-ctx-ticker">AAPL</span>:'
-    : 'One question before you trim <span class="memo-ctx-ticker">AAPL</span>:';
-  if (st)  st.textContent = isExit ? 'Why are you closing this position?' : 'Why are you selling now?';
-  if (sh)  sh.textContent = 'No wrong answer — being honest here makes the next decision easier.';
-  if (tag) tag.textContent= isExit ? 'EXIT' : 'REDUCE';
+  const t = document.getElementById('msell-title');
+  if (t) t.textContent = isExit ? 'Closing Apple' : 'Trimming Apple';
   document.querySelectorAll('[data-list="msell-reason"] .radio-row').forEach(b =>
     b.classList.toggle('is-on', b.dataset.r === state.sellReason));
+  // Lock the Continue arrow until a reason is picked. Back-nav from
+  // marticulate restores the prior selection so the arrow stays unlocked.
   const next = document.getElementById('msell-next');
   if (next) next.classList.toggle('locked', !state.sellReason);
 }
@@ -16534,9 +18106,18 @@ function backFromMintro() {
    The increase / reduce / exit flow skips the sequence and lands directly
    on m6 from s19, so back should return there. */
 function backFromM6() {
-  // MVP V1: sells came through the reason page; buys/increase came from s0.
-  if (state.version === 'mvp1' && isSellFlow())                                       { go('msell'); return; }
-  if (state.version === 'mvp1' && state.cd && state.cd !== 'initial' && state.cd !== 'draft') { go('s0'); return; }
+  // MVP V1: both first-time and Increase land on m6 from msrc (which is
+  // the last step before review in both flows). Send the user back there
+  // so they don't lose progress by being dumped at the dashboard.
+  if (state.version === 'mvp1') {
+    // Sells route through msell/marticulate, not m6 — but keep the
+    // legacy fallback in case some path still reaches m6 in a sell ctx.
+    if (isSellFlow()) { go('msell'); return; }
+    // First-time + Increase both have msrc as the immediate predecessor.
+    if (state.cd === 'initial' || state.cd === 'increase') { go('msrc'); return; }
+    go('s0');
+    return;
+  }
   if (state.cd && state.cd !== 'initial' && state.cd !== 'draft') { go('s19'); return; }
   go('m5');
 }
@@ -17605,12 +19186,15 @@ function refreshCalibSummary() {
   if (probEl)    probEl.textContent    = state.prob + '%';
   if (horizonEl) horizonEl.textContent = HORIZON_LBL[state.horizon] || state.horizon;
 
-  // Past calibrations entry — only show when we have recorded history
+  // Past calibrations entry — only show when we have recorded history.
+  // Hidden entirely in MVP V1 (no calibration-history surface yet).
   const link  = document.getElementById('s12-past-link');
   const count = document.getElementById('s12-past-count');
   const past  = (state.thesisReviews || []).concat(state.transactions || []).filter(t => !t.paper);
   if (link) {
-    if (past.length > 0) {
+    if (state.version === 'mvp1') {
+      link.style.display = 'none';
+    } else if (past.length > 0) {
       link.style.display = '';
       if (count) count.textContent = `· ${past.length} record${past.length === 1 ? '' : 's'}`;
     } else {
@@ -17733,12 +19317,16 @@ function renderS12Modules() {
     const returning = state.cd && state.cd !== 'initial' && state.cd !== 'draft';
     returningNote.style.display = returning ? '' : 'none';
   }
-  // MVP V1 locks horizon at 3 years — hide the picker and force the state.
+  // MVP V1 defaults the horizon to 3 years but shows the 1y / 3y / 5+y
+  // picker so the user can change it if they want. Only set the default
+  // when nothing has been picked yet — don't clobber an existing choice.
   if (state.version === 'mvp1') {
-    state.horizon = '3y';
-    state.memo.horizonSel = 'y3';
+    if (!state.memo.horizonSel) {
+      state.horizon = '3y';
+      state.memo.horizonSel = 'y3';
+    }
     const horizonModule = document.getElementById('s12-horizon-module');
-    if (horizonModule) horizonModule.style.display = 'none';
+    if (horizonModule) horizonModule.style.display = '';
   }
   // Hydrate hurdle display — prefer the global standard set on mintro
   const savedRate = parseInt(localStorage.getItem('mogo.defaultHurdleRate') || '0', 10);
@@ -17860,7 +19448,11 @@ function setHorizonSel(val) {
 }
 
 function renderHorizonSel(val) {
-  document.querySelectorAll('[data-list="s12-horizon-list"] .radio-row').forEach(btn => {
+  // Restyled s12 uses .s12-horizon-tab segmented control instead of the
+  // old .radio-row rows. Toggle is-on across whichever class is present
+  // so older callers still work.
+  const sel = '[data-list="s12-horizon-list"] .s12-horizon-tab, [data-list="s12-horizon-list"] .radio-row';
+  document.querySelectorAll(sel).forEach(btn => {
     btn.classList.toggle('is-on', btn.dataset.horiz === val);
   });
 }
@@ -18112,6 +19704,18 @@ function hydrateMemoScreen(screenId) {
     if (list) {
       list.querySelectorAll('.radio-row').forEach(r => r.classList.toggle('is-on', r.dataset.radio === m.source));
     }
+    // Verb-aware copy: Increase asks about the source of THIS DECISION
+    // (what put the trade in front of you), first-time asks about the
+    // origin of the idea itself.
+    const subtitleEl = document.getElementById('msrc-subtitle');
+    const subheadEl  = document.getElementById('msrc-subhead');
+    const isIncrease = state.version === 'mvp1' && state.cd === 'increase';
+    if (subtitleEl) subtitleEl.textContent = isIncrease
+      ? 'What put this trade in front of you?'
+      : 'Origin of the idea.';
+    if (subheadEl) subheadEl.textContent = isIncrease
+      ? 'Tracks which inputs prompt good trades.'
+      : 'Tracks which inputs convert into good positions.';
     const detailBlock = document.getElementById('msrc-detail-block');
     if (detailBlock) detailBlock.style.display = m.source ? '' : 'none';
     const detailInput = document.getElementById('msrc-detail');
@@ -18120,11 +19724,14 @@ function hydrateMemoScreen(screenId) {
       detailInput.placeholder = sourcePlaceholderFor(m.source);
     }
     hideSourceSuggestions();
-    // V4.5: hydrate the per-source hit-rate caption under each option
-    if (state.version >= 4.5) refreshSourceHitRates();
-    // V4.5: promote "Friend" to the second slot (word-of-mouth is the most
+    // Hydrate the per-source hit-rate caption under each option. MVP V1
+    // is a fork of V4.5 — same data, same surface — so the gate is "V4.5+
+    // OR MVP V1" rather than strict numeric.
+    const showHitRates = state.version === 'mvp1' || state.version >= 4.5;
+    if (showHitRates) refreshSourceHitRates();
+    // Promote "Friend" to the second slot (word-of-mouth is the most
     // common AND most mis-evaluated source — surfacing higher is honest)
-    if (state.version >= 4.5 && list) {
+    if (showHitRates && list) {
       const friendRow = list.querySelector('[data-radio="friend"]');
       const screenerRow = list.querySelector('[data-radio="screener"]');
       if (friendRow && screenerRow && friendRow !== screenerRow.previousElementSibling) {
@@ -18840,7 +20447,7 @@ function refreshMemoLocks() {
    size, calibration, and the free-form note/attachment — the thesis,
    kill, IV, MOS and source-attribution screens are routed around.   */
 const MEMO_FLOW_V45  = ['m1','m1b','m2','m3','miv','s12','msrc','m5','m6'];
-const MEMO_FLOW_MVP1 = ['m1','m1b','m5','s12','m6'];
+const MEMO_FLOW_MVP1 = ['m1','m1b','m5','s12','msrc','m6'];
 
 /* ── MVP V1 microcopy bank ─────────────────────────────────────────────
    Every user-facing string for the Add/Reduce/Exit returning flows lives
@@ -18855,16 +20462,16 @@ const MVP1_COPY = {
     exit:     'Closing Apple'
   },
   // Chip below the title — anchors the user to "this is the latest memo"
-  newMemoChip: 'NEW MEMO · SAVED WITH TODAY\'S TRADE',
+  newMemoChip: 'MEMO ON FILE',
   // Banner copy under the chip — flow-specific framing
   banner: {
-    increase: 'You\'re adding to a position you already hold. This memo replaces the latest one on file.',
-    reduce:   'You\'re trimming a position you already hold. This memo replaces the latest one on file.',
-    exit:     'You\'re closing this position. This memo records why — your original 3-year call is still tracked separately.'
+    increase: 'You\'re adding to a position you already hold. This memo replaces the latest one on file. Edit if needed.',
+    reduce:   'You\'re trimming a position you already hold. This memo replaces the latest one on file. Edit if needed.',
+    exit:     'You\'re closing this position. This memo records why — your original 3-year call is still tracked separately. Edit if needed.'
   },
   // Memo body section label (per Q8 decision)
   memoBodyLabel: {
-    increase: 'Your memo for this purchase',
+    increase: 'Investment case',
     reduce:   'Why you\'re trimming',
     exit:     'Why you\'re closing'
   },
@@ -18878,9 +20485,9 @@ const MVP1_COPY = {
   },
   // Save CTA (primary + secondary)
   saveCta: {
-    increase: { primary: 'Save as new memo & add to position', secondary: 'Discard changes' },
-    reduce:   { primary: 'Save as new memo & reduce position', secondary: 'Discard changes' },
-    exit:     { primary: 'Save as new memo & close position',  secondary: 'Discard changes' }
+    increase: { primary: 'Save memo', secondary: 'Discard changes' },
+    reduce:   { primary: 'Save memo', secondary: 'Discard changes' },
+    exit:     { primary: 'Save memo', secondary: 'Discard changes' }
   },
   // Toast on commit
   toast: {
@@ -18935,6 +20542,18 @@ function hydrateMemoStepNav(stepId) {
   if (flow.indexOf(stepId) === -1) return;
   const scr = document.querySelector(`.scr[data-id="${stepId}"]`);
   if (!scr) return;
+  // Increase-flow override for msrc — when the user came from madd
+  // (not the first-time flow), msrc is the 2nd step of a 3-page sub-
+  // sequence (madd → msrc → m6), not the 5th of 6. Set the meta to
+  // match madd's framing ("Capital decision") and route Back to madd.
+  const isIncreaseFlow = state.version === 'mvp1' && state.cd === 'increase';
+  if (isIncreaseFlow && stepId === 'msrc') {
+    const meta = scr.querySelector('.memo-header-meta');
+    if (meta) meta.textContent = 'Capital decision';
+    const backBtn = scr.querySelector('.back-btn');
+    if (backBtn) backBtn.setAttribute('onclick', "go('madd')");
+    return;
+  }
   // Step counter (m6 manages its own ticker meta inside renderM6)
   if (stepId !== 'm6') {
     const counter = getMemoStepCounter(stepId);
@@ -18961,7 +20580,9 @@ function hydrateMemoStepNav(stepId) {
     const sh      = document.getElementById('m5-subhead');
     const exBtn   = document.getElementById('ex-btn-m5-note');
     if (t) {
-      t.textContent = isMvp1 ? 'Memo' : 'Note';
+      // MVP V1: the long-form writing surface is the "Investment case" —
+      // distinct from the broader memo flow which is still called Memo.
+      t.textContent = isMvp1 ? 'Investment case' : 'Note';
       // MVP V1: the title carries an info arrow that opens the worked example.
       if (isMvp1) {
         t.classList.add('is-info');
@@ -18972,10 +20593,20 @@ function hydrateMemoStepNav(stepId) {
       }
     }
     if (st) st.textContent = isMvp1
-      ? 'This is the memo serious investors write before committing capital — a record of why you believe what you believe, and what would change your mind.'
+      ? 'Why you believe what you believe — and what would change your mind. If it helps, start with an AI prompt to draft, paste it in, then refine it in your own voice.'
       : 'The work behind it.';
     if (sh) sh.style.display = isMvp1 ? 'none' : '';
     if (exBtn)  exBtn.style.display  = isMvp1 ? 'none' : '';
+    // Length hint removed — the tall empty composer + blinking caret do
+    // the "this is long form" work without prescribing a word count.
+    const hint = document.getElementById('m5-length-hint');
+    if (hint) hint.style.display = 'none';
+    const ta = document.getElementById('m5-note');
+    if (ta) {
+      // Single quiet line — biases toward pasting an AI draft, doesn't
+      // preclude writing from scratch.
+      ta.placeholder = isMvp1 ? 'Paste your AI draft to begin or start typing' : '';
+    }
   }
 }
 
@@ -19048,11 +20679,15 @@ function refreshEditModeUI(id) {
   const ctaBtn  = document.getElementById(_MEMO_STEP_CTA_IDS[id]);
   if (state.editingFromReview) {
     if (backBtn) backBtn.setAttribute('onclick', 'exitReviewEdit()');
-    if (ctaBtn && !ctaBtn.dataset._origLabel) {
-      ctaBtn.dataset._origLabel = ctaBtn.textContent;
-      ctaBtn.textContent = 'Save changes';
-    } else if (ctaBtn) {
-      ctaBtn.textContent = 'Save changes';
+    if (ctaBtn) {
+      if (!ctaBtn.dataset._origLabel) {
+        ctaBtn.dataset._origLabel = ctaBtn.textContent;
+      }
+      // Render as a smaller right-aligned text + arrow rather than the
+      // full-width primary CTA. Use innerHTML so we can render the arrow
+      // as a sibling span (matches the .act-btn pattern used elsewhere).
+      ctaBtn.innerHTML = '<span>Save changes</span><span class="act-arrow">→</span>';
+      ctaBtn.classList.add('is-save-changes');
     }
   } else {
     // Restore the back-button onclick. For memo-flow steps with a simple
@@ -19060,15 +20695,24 @@ function refreshEditModeUI(id) {
     // skips the screens it routes around). m1 / m6 keep their custom
     // backFromX() handlers since those do state cleanup.
     if (backBtn) {
-      const flowPrev = (id !== 'm1' && id !== 'm6') ? getPrevMemoStep(id) : null;
-      if (flowPrev) {
-        backBtn.setAttribute('onclick', `go('${flowPrev}')`);
+      // Increase-flow override: on msrc, the user came from madd (not
+      // from s12 in the first-time array). Route Back to madd.
+      const isIncreaseMsrc = id === 'msrc' && state.version === 'mvp1' && state.cd === 'increase';
+      if (isIncreaseMsrc) {
+        backBtn.setAttribute('onclick', "go('madd')");
       } else {
-        backBtn.setAttribute('onclick', _MEMO_STEP_BACK_HANDLERS[id]);
+        const flowPrev = (id !== 'm1' && id !== 'm6') ? getPrevMemoStep(id) : null;
+        if (flowPrev) {
+          backBtn.setAttribute('onclick', `go('${flowPrev}')`);
+        } else {
+          backBtn.setAttribute('onclick', _MEMO_STEP_BACK_HANDLERS[id]);
+        }
       }
     }
     if (ctaBtn && ctaBtn.dataset._origLabel) {
+      // Restore the original bare-arrow primary appearance.
       ctaBtn.textContent = ctaBtn.dataset._origLabel;
+      ctaBtn.classList.remove('is-save-changes');
     }
   }
 }
@@ -19365,13 +21009,16 @@ function renderM6() {
     if (timingVal) { timingRow.style.display = ''; timingDisp.textContent = timingVal; }
     else           { timingRow.style.display = 'none'; }
   }
-  // Note (optional) — only show the row when populated
+  // Note (optional) — only show the row when populated.
+  // MVP V1 calls the long-form writing "Investment case", not "Note".
   const noteRow  = document.getElementById('m6-note-row');
   const noteDisp = document.getElementById('m6-note-display');
   const noteVal  = (m.note || '').trim();
   if (noteRow && noteDisp) {
     if (noteVal) { noteRow.style.display = ''; noteDisp.textContent = noteVal; }
     else         { noteRow.style.display = 'none'; }
+    const noteKey = noteRow.querySelector('.k');
+    if (noteKey) noteKey.textContent = (state.version === 'mvp1') ? 'Investment case' : 'Note';
   }
   document.getElementById('m6-kill').textContent    = m.kill   || '—';
   // Downside floor (optional) — show when populated
@@ -19403,6 +21050,14 @@ function renderM6() {
   }
   document.getElementById('m6-prob').textContent    = state.prob + '%';
   document.getElementById('m6-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
+  // New calibration summary row — bundles hurdle + horizon into a single
+  // descriptive label with the user's confidence as the value. Surfaces
+  // the prediction in one readable sentence so it doesn't get buried
+  // below a long memo body.
+  const calKey = document.getElementById('m6-cal-summary-key');
+  const calVal = document.getElementById('m6-cal-summary-val');
+  if (calKey) calKey.textContent = formatCalibrationLabel();
+  if (calVal) calVal.textContent = state.prob + '%';
 
   // Stats strip — populate if present (live default design)
   const classifyEl = document.getElementById('m6-classify');
@@ -19438,12 +21093,13 @@ function renderM6() {
     const row = el ? el.closest('.memo-row') : null;
     if (row) row.style.display = isMvp1 ? 'none' : '';
   });
-  // Note row — always visible in MVP V1 (this IS the memo), labelled "Memo".
+  // Note row — always visible in MVP V1 (this is the long-form
+  // investment case the user wrote on m5). Labelled "Investment case".
   {
     const noteRow  = document.getElementById('m6-note-row');
     const noteDisp = document.getElementById('m6-note-display');
     const noteKey  = noteRow ? noteRow.querySelector('.k') : null;
-    if (noteKey) noteKey.textContent = isMvp1 ? 'Memo' : 'Note';
+    if (noteKey) noteKey.textContent = isMvp1 ? 'Investment case' : 'Note';
     if (isMvp1) {
       if (noteRow)  noteRow.style.display = '';
       if (noteDisp) noteDisp.textContent = (m.note || '').trim() || '—';
@@ -19475,14 +21131,12 @@ function renderM6() {
     }
   }
 
-  // LIVE badge — shown when reviewing an existing (live) position, i.e. any
-  // returning capital decision (increase / reduce / exit). Hidden first-time.
+  // LIVE badge — removed. The header reads cleaner without it; flow
+  // context is carried by the title (Adding to Apple / Trimming Apple
+  // / Closing Apple) plus the NEW MEMO chip on the returning view.
   {
     const liveBadge = document.getElementById('m6-live-badge');
-    const header    = document.getElementById('m6-ledger-header');
-    const live = !!(state.cd && state.cd !== 'initial' && state.cd !== 'draft');
-    if (liveBadge) liveBadge.style.display = live ? '' : 'none';
-    if (header)    header.classList.toggle('has-live', live);
+    if (liveBadge) liveBadge.style.display = 'none';
   }
 
   // ── Sell flows (Reduce / Exit): reframe the review away from "author /
@@ -19590,6 +21244,11 @@ function renderMvp1ReturningView() {
     savePrimary:    document.getElementById('m6-save-primary')
   };
   const memoRowsWrap = ids.rowsSection ? ids.rowsSection.parentElement : null;
+  // The second memo-rows wrap (Thesis → Note) sits below the calibration
+  // section after the recent restructure. Find it via the note row's
+  // parent so we can hide it too in returning mode.
+  const noteRowEl  = document.getElementById('m6-note-row');
+  const memoRowsWrap2 = noteRowEl ? noteRowEl.parentElement : null;
 
   if (!isReturning) {
     // First-time / V4.5: bare arrow seal owns the footer, and the ticker
@@ -19599,6 +21258,24 @@ function renderMvp1ReturningView() {
     if (ids.savePrimary) ids.savePrimary.style.display = 'none';
     const hdrA = document.getElementById('m6-ledger-header');
     if (hdrA) hdrA.classList.remove('is-prose-title');
+    // Restore every element the returning view mutates — otherwise a
+    // prior returning render leaks into this first-time render (title
+    // stays "Adding to Apple", header pieces stay hidden, etc.).
+    const titleEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero');
+    if (titleEl) titleEl.innerHTML = '<span class="memo-ctx-ticker">AAPL</span>';
+    const tickerMeta = document.getElementById('m6-ticker-meta');
+    if (tickerMeta) tickerMeta.style.display = '';
+    const allocLbl = document.querySelector('.scr[data-id="m6"] .alloc-type-lbl');
+    if (allocLbl) allocLbl.style.display = '';
+    const dateEl = document.getElementById('m6-date');
+    if (dateEl) dateEl.style.display = '';
+    // Restore the V4.5 memo-rows wraps (Type/Size + Thesis-through-Note)
+    // that were hidden by a prior returning render.
+    if (memoRowsWrap)  memoRowsWrap.style.display  = '';
+    if (memoRowsWrap2) memoRowsWrap2.style.display = '';
+    if (ids.calSection) ids.calSection.style.display = '';
+    if (ids.buyFooter)  ids.buyFooter.style.display  = '';
+    if (ids.immut)      ids.immut.style.display      = '';
     return;
   }
   // Returning mode: ticker hero shows a prose title ("Adding to Apple")
@@ -19608,6 +21285,7 @@ function renderMvp1ReturningView() {
 
   // Hide the V4.5 / first-time pieces — the new view owns the page.
   if (memoRowsWrap)  memoRowsWrap.style.display  = 'none';
+  if (memoRowsWrap2) memoRowsWrap2.style.display = 'none';
   if (ids.calSection) ids.calSection.style.display = 'none';
   if (ids.buyFooter)  ids.buyFooter.style.display  = 'none';
   if (ids.sellFooter) ids.sellFooter.style.display = 'none';
@@ -19625,20 +21303,26 @@ function renderMvp1ReturningView() {
   const verb = getMvp1Verb();
   const titleEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero');
   if (titleEl) titleEl.innerHTML = MVP1_COPY.title[verb] || titleEl.innerHTML;
+  // Ticker meta line ("AAPL · New memo") removed in returning mode —
+  // the doc-label below already carries the AAPL + live-price line, so
+  // a separate meta caption above the title is redundant.
   const tickerMeta = document.getElementById('m6-ticker-meta');
-  if (tickerMeta) tickerMeta.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · New memo';
+  if (tickerMeta) tickerMeta.style.display = 'none';
+  // Alloc-lbl removed in returning mode — the title ("Adding to Apple")
+  // already carries the verb, so a separate "Adding more" line is noise.
   const allocLbl = document.querySelector('.scr[data-id="m6"] .alloc-type-lbl');
-  if (allocLbl) {
-    const verbLbl = { increase: 'Adding more', reduce: 'Trimming back', exit: 'Closing out' }[verb] || 'Updating';
-    allocLbl.textContent = verbLbl;
-  }
+  if (allocLbl) allocLbl.style.display = 'none';
   const classifyEl = document.getElementById('m6-classify');
   if (classifyEl) classifyEl.textContent = (TYPE_LBL[state.memo.type] || '') +
     (state.memo.size ? ' · ' + (SIZE_LBL[state.memo.size] || '') : '');
+  // Doc label now anchors the memo to live market state + date: the
+  // moment-in-time the decision is being made. Updated on every price
+  // tick by refreshMemoHeaderPrice().
   const docLbl = document.getElementById('m6-doc-label');
-  // Doc label keeps the existing "INVESTMENT MEMO · V<n>" voice. Bump the
-  // version so the user sees this is a NEW version, not the original.
-  if (docLbl) docLbl.textContent = 'INVESTMENT MEMO · V2';
+  if (docLbl) docLbl.innerHTML = m6DocLabelHTML();
+  // Separate date row is folded into the doc-label line above.
+  const dateEl = document.getElementById('m6-date');
+  if (dateEl) dateEl.style.display = 'none';
 
   // Chip
   const chipLabel = document.getElementById('m6-newmemo-chip-label');
@@ -19665,25 +21349,35 @@ function renderMvp1ReturningView() {
   const $d = id => document.getElementById(id);
   if ($d('m6-decl-classify')) $d('m6-decl-classify').textContent = decl.classify.replace('{classify}', classifyTxt);
   if ($d('m6-decl-size'))     $d('m6-decl-size').textContent     = decl.size.replace('{size}', sizeTxt);
-  if ($d('m6-decl-confid'))   $d('m6-decl-confid').textContent   = decl.confid.replace('{prob}', state.prob);
-  if ($d('m6-decl-horizon'))  $d('m6-decl-horizon').textContent  = decl.horizon;
+  // Combined calibration row — single descriptive label, user's
+  // confidence as the value. Replaces the prior split Confidence + Horizon.
+  if ($d('m6-decl-cal-key')) $d('m6-decl-cal-key').textContent = formatCalibrationLabel();
+  if ($d('m6-decl-cal-val')) $d('m6-decl-cal-val').textContent = state.prob + '%';
 
-  // Inline memo body
+  // Memo body — flat display, no scrollable box. Tap "Edit" on the
+  // header to open the dedicated composer (m5). When the memo is empty
+  // we show a faint italic placeholder line in its place.
   const memoLabel = document.getElementById('m6-inline-memo-label');
-  const memoInput = document.getElementById('m6-inline-memo-input');
-  if (memoLabel) memoLabel.textContent = MVP1_COPY.memoBodyLabel[verb] || 'Your memo';
-  if (memoInput) {
-    memoInput.value = m.note || '';
-    memoInput.placeholder = (verb === 'increase')
-      ? 'A few honest sentences. What changed, what didn\'t, and why this trade now.'
-      : (verb === 'reduce')
-        ? 'A few honest sentences. What\'s pulling you to trim now?'
-        : 'A few honest sentences. What\'s closing the case?';
+  const memoBody  = document.getElementById('m6-inline-memo-body');
+  if (memoLabel) memoLabel.textContent = MVP1_COPY.memoBodyLabel[verb] || 'Investment case';
+  if (memoBody) {
+    const note = (m.note || '').trim();
+    if (note) {
+      memoBody.textContent = note;
+      memoBody.classList.remove('is-empty');
+    } else {
+      memoBody.textContent = (verb === 'increase')
+        ? 'No investment case yet. Tap Edit to write one.'
+        : (verb === 'reduce')
+          ? 'No investment case yet. Tap Edit to record why you\'re trimming.'
+          : 'No investment case yet. Tap Edit to record why you\'re closing.';
+      memoBody.classList.add('is-empty');
+    }
   }
 
   // Save CTA label (primary)
   const primary = document.getElementById('m6-save-primary-label');
-  if (primary) primary.textContent = (MVP1_COPY.saveCta[verb] || {}).primary || 'Save as new memo';
+  if (primary) primary.textContent = (MVP1_COPY.saveCta[verb] || {}).primary || 'Save memo';
 
   // Mismatch nudges (Step 6)
   renderMvp1Nudge();
@@ -19708,35 +21402,12 @@ function onM6InlineMemoInput(el) {
    3. Thesis weakened but confidence still high (Reduce/Exit context)
    4. No memo edits but price moved (Add/Reduce context)               */
 function renderMvp1Nudge() {
+  // Nudge hidden — the editable rows below speak for themselves; the
+  // "you can edit any part of the memo" prompt was redundant. The
+  // element + the conditional mismatch nudges in MVP1_COPY are kept
+  // for future re-enable.
   const nudgeEl = document.getElementById('m6-nudge');
-  const nudgeTx = document.getElementById('m6-nudge-text');
-  if (!nudgeEl || !nudgeTx) return;
-  const verb = getMvp1Verb();
-  const orig = (typeof getOriginalPrediction === 'function') ? getOriginalPrediction() : null;
-  const origProb = orig ? orig.prob : 60;
-  const draftProb = state.prob;
-  const sizeIsBig = state.memo && (state.memo.size === 'core' || state.memo.size === 'large' || state.memo.size === 'big');
-  let msg = null;
-
-  // Case 1: Confidence dropped while adding
-  if (verb === 'increase' && draftProb < origProb) {
-    msg = MVP1_COPY.nudges.confDroppedAdding;
-  }
-  // Case 2: Sized big with low confidence (sub-50%)
-  else if (verb === 'increase' && sizeIsBig && draftProb < 50) {
-    msg = MVP1_COPY.nudges.sizeConfMismatch;
-  }
-  // Case 3: Thesis weakened but still high confidence (Reduce/Exit)
-  else if ((verb === 'reduce' || verb === 'exit') && state.sellReason === 'thesis' && draftProb >= 70) {
-    msg = MVP1_COPY.nudges.thesisWeakenedHighConf;
-  }
-  // Case 4: No memo edits this flow but the user is acting anyway
-  else if ((verb === 'increase' || verb === 'reduce') && state._memoEditedThisFlow === false) {
-    msg = MVP1_COPY.nudges.noChangeButPriceMoved;
-  }
-
-  if (msg) { nudgeEl.style.display = ''; nudgeTx.textContent = msg; }
-  else     { nudgeEl.style.display = 'none'; }
+  if (nudgeEl) nudgeEl.style.display = 'none';
 }
 
 /* V4.5 — Verb-specific Continue labels on each memo step CTA. Each Continue
@@ -20062,13 +21733,9 @@ function _commitMemoInner() {
       syncPositionAlias();
     } else if (returning) {
       appendPrediction(source);
-      // Toast: confirms the new memo is on file and the original 3-yr call
-      // is still tracked separately. Only fires for MVP V1 returning flows.
-      if (state.version === 'mvp1') {
-        try { showMvp1Toast(state.cd === 'increase' ? 'increase'
-                              : state.cd === 'reduce'   ? 'reduce'
-                              : 'exit'); } catch(_) {}
-      }
+      // MVP V1 returning: the full-screen "Saved" transition fires below
+      // (after navigation prep) so it can defer the go('s8') hop until
+      // after the typing animation + dwell completes.
     }
   }
   // Persist source attribution into the global per-source history so the
@@ -20103,7 +21770,13 @@ function _commitMemoInner() {
   state.hasMemo = true;
   persistHasMemo(true);
   clearMemoDraft();
-  go('s8');
+  // MVP V1: macct is the first step of order placement, so commit routes
+  // there next. Reduce/Exit don't reach this path — they commit on
+  // marticulate via confirmMarticulate. The typed "Saved" transition was
+  // removed in favour of jumping straight to the order flow. The
+  // showMvp1SavedScreen helper is kept in the codebase for future use.
+  const nextScreen = (state.version === 'mvp1') ? 'macct' : 's8';
+  go(nextScreen);
 }
 
 /* ═════════════════════════════════════════════════
@@ -20409,6 +22082,7 @@ function renderS8() {
   // holding (the user can still trim it down if they change their mind).
   if (state.cd === 'exit' && !state.shares) state.shares = String(MVP_POS_SHARES);
   updateInputsDisplay();
+  refreshSharesMax();
   // Auto-open the numpad on Limit Price when entering the page — the user's
   // first task here is to enter the price. After they tap a value and the
   // limit is set, they tap Shares to enter quantity. Defer one frame so the
@@ -20479,6 +22153,57 @@ function renderS8() {
   }
 }
 
+/* "Max:" sub-line on the Shares row. Recomputes whenever s8 renders
+   or any input that affects the math changes (limit price, account).
+   Verb-aware:
+     - Buy  → max affordable from the selected account, after FX.
+     - Sell → shares held in the selected account.
+   Tap the sub-line to fill the Shares field with the max value. */
+function refreshSharesMax() {
+  const el     = document.getElementById('s8-shares-max');
+  const valEl  = document.getElementById('s8-shares-max-val');
+  const noteEl = document.getElementById('s8-shares-max-note');
+  if (!el || !valEl) return;
+  const sell  = isSellFlow();
+  const acct  = state.account || 'non-registered';
+  const data  = ACCT_DATA[acct] || ACCT_DATA['non-registered'];
+  const limit = parseFloat(state.limitPrice) || 0;
+  const priceUSD = limit > 0 ? limit : MKTPRICE_USD;
+  const FX = 1.36;
+  let maxN = 0;
+  let note = '';
+  if (sell) {
+    maxN = data.sharesHeld || 0;
+    note = '(all shares in ' + (ACCT_LBL[acct] || 'this account') + ')';
+  } else {
+    const perShareCAD = priceUSD * FX;
+    maxN = perShareCAD > 0 ? Math.floor((data.cashCAD || 0) / perShareCAD) : 0;
+    note = '(affordable from ' + (ACCT_LBL[acct] || 'this account') + ')';
+  }
+  valEl.textContent  = maxN.toLocaleString('en-US');
+  if (noteEl) noteEl.textContent = note;
+  el.classList.toggle('is-disabled', maxN <= 0);
+}
+function fillSharesMax() {
+  const sell  = isSellFlow();
+  const acct  = state.account || 'non-registered';
+  const data  = ACCT_DATA[acct] || ACCT_DATA['non-registered'];
+  const limit = parseFloat(state.limitPrice) || 0;
+  const priceUSD = limit > 0 ? limit : MKTPRICE_USD;
+  const FX = 1.36;
+  let maxN = 0;
+  if (sell) maxN = data.sharesHeld || 0;
+  else {
+    const perShareCAD = priceUSD * FX;
+    maxN = perShareCAD > 0 ? Math.floor((data.cashCAD || 0) / perShareCAD) : 0;
+  }
+  if (maxN <= 0) return;
+  state.shares    = String(maxN);
+  state.activeInput = 'shares';
+  if (typeof updateInputsDisplay === 'function') updateInputsDisplay();
+  refreshSharesMax();
+}
+
 function openNumpad(which) {
   state.activeInput = which;
   const pad = document.getElementById('s8-numpad');
@@ -20488,6 +22213,21 @@ function openNumpad(which) {
   const sharesRow = document.getElementById('s8-shares-row');
   if (limitRow)  limitRow.classList.toggle('is-active',  which === 'limit');
   if (sharesRow) sharesRow.classList.toggle('is-active', which === 'shares');
+  // Slide the active row up above the keyboard line. The CSS rule above
+  // gives the scroll area enough bottom padding to let this happen; the
+  // delay matches the numpad's slide-in animation so the row moves with
+  // it rather than jumping ahead.
+  const activeRow = which === 'limit' ? limitRow : sharesRow;
+  if (activeRow) {
+    setTimeout(() => {
+      try {
+        activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (_) {
+        // Older browsers — fall back to instant scroll
+        activeRow.scrollIntoView();
+      }
+    }, 120);
+  }
 }
 function closeNumpad() {
   state.activeInput = null;
@@ -20540,13 +22280,23 @@ function updateInputsDisplay() {
   const limitDisp = document.getElementById('s8-limit-disp');
   if (limitDisp) limitDisp.textContent = state.limitPrice.length > 0 ? state.limitPrice : '0.00';
 
+  // Limit price changes affect Buy affordability — recompute the Max
+  // sub-line on every input. Sell case is account-only so it's stable
+  // here, but the helper is cheap.
+  if (typeof refreshSharesMax === 'function') refreshSharesMax();
+
   // Use the limit price (if set) for cost / weight math; fall back to market price.
   const priceUSD = limit > 0 ? limit : MKTPRICE_USD;
   const costCAD = n * priceUSD * FX_USD_CAD;
+  // Estimated cost is displayed in CAD using the same FX rate shown in
+  // the "Estimated Exchange Rate" row directly above. Order is funded
+  // from a CAD account even though AAPL trades in USD.
+  const FX_DISPLAY = 1.36;
+  const costCadDisplay = n * priceUSD * FX_DISPLAY;
   const w = document.getElementById('s8-weight');
   const c = document.getElementById('s8-cost');
   if (w) w.textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
-  if (c) c.textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD';
+  if (c) c.textContent = costCadDisplay.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
 
   // V4.5 only: live $ caption under the Shares row
   const sharesDollar = document.getElementById('s8-shares-dollar');
@@ -20591,11 +22341,23 @@ function renderS4() {
   if (paperRow) paperRow.style.display = sell ? 'none' : '';
   document.getElementById('s4-weight').textContent = n ? (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%' : '—';
   document.getElementById('s4-shares').textContent = n || '—';
+  // Estimated cost is displayed in CAD using the same 1.36 FX shown one
+  // row above, matching the s8 review screen.
+  const FX_DISPLAY = 1.36;
+  const costCadDisplay = n * priceUSD * FX_DISPLAY;
   document.getElementById('s4-cost').textContent = n
-    ? costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD'
+    ? costCadDisplay.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD'
     : '—';
+  // Live market price reflects the simulated quote on this screen too.
+  const mp = document.getElementById('s4-mkt-price');
+  if (mp) mp.textContent = (typeof aaplLivePrice === 'number' ? aaplLivePrice : MKTPRICE_USD).toFixed(2) + ' USD';
   document.getElementById('s4-conf').textContent = state.prob + '%';
   document.getElementById('s4-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
+  // New combined calibration row — single descriptive label, user's % as value.
+  const s4CalKey = document.getElementById('s4-cal-summary-key');
+  const s4CalVal = document.getElementById('s4-cal-summary-val');
+  if (s4CalKey) s4CalKey.textContent = formatCalibrationLabel().toUpperCase();
+  if (s4CalVal) s4CalVal.textContent = state.prob + '%';
 
   // V4.5 only: stress test. Show what a 30% drop would do in dollars +
   // portfolio impact. Most impactful when sized as a Core position.
@@ -20688,7 +22450,16 @@ function renderS9() {
   }
   document.getElementById('s9-shares').textContent = n;
   document.getElementById('s9-weight').textContent = (costCAD / PORTVAL_CAD * 100).toFixed(2) + '%';
-  document.getElementById('s9-cost').textContent = costCAD.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' USD';
+  // Total cost now displays in CAD using the same 1.36 FX rate shown
+  // one row above; matches the s4 / s8 review screens.
+  const FX_DISPLAY = 1.36;
+  const costCadDisplay = n * priceUSD * FX_DISPLAY;
+  document.getElementById('s9-cost').textContent = costCadDisplay.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' CAD';
+  // Summary block — Type, Price (USD) populated from the order context.
+  const sumType  = document.getElementById('s9-sum-type');
+  const sumPrice = document.getElementById('s9-sum-price');
+  if (sumType)  sumType.textContent  = (isLimit ? 'Limit ' : 'Market ') + (isSellFlow() ? 'Sell' : 'Buy');
+  if (sumPrice) sumPrice.textContent = priceUSD.toFixed(2) + ' USD';
   const sell = isSellFlow();
   const s9Type = document.getElementById('s9-type');
   if (s9Type) s9Type.textContent = (isLimit ? 'Limit ' : 'Market ') + (sell ? 'Sell' : 'Buy');
@@ -20698,6 +22469,11 @@ function renderS9() {
                                     : 'Order Filled';
   document.getElementById('s9-conf').textContent = state.prob + '%';
   document.getElementById('s9-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
+  // New combined calibration row — single descriptive label, user's % as value.
+  const s9CalKey = document.getElementById('s9-cal-summary-key');
+  const s9CalVal = document.getElementById('s9-cal-summary-val');
+  if (s9CalKey) s9CalKey.textContent = formatCalibrationLabel().toUpperCase();
+  if (s9CalVal) s9CalVal.textContent = state.prob + '%';
   /* s9-top3 removed — Top 3 idea no longer captured */
   // Filled-at timestamp — generated at execution
   const filledEl = document.getElementById('s9-filled-at');
@@ -20755,7 +22531,7 @@ function renderS9() {
           noteRow = document.createElement('div');
           noteRow.id = 's9-memo-note-row';
           noteRow.className = 'memo-row';
-          noteRow.innerHTML = '<div class="k">MEMO</div><div class="v" id="s9-memo-note-val">—</div>';
+          noteRow.innerHTML = '<div class="k">INVESTMENT CASE</div><div class="v" id="s9-memo-note-val">—</div>';
           memoMosRow.parentNode.insertBefore(noteRow, memoMosRow.nextSibling);
         }
       }
@@ -20884,7 +22660,7 @@ function setMode(m) {
    increase / reduce / exit) count as Returning. When neither applies,
    we fall back to state.hasMemo. */
 const FIRST_TIME_SCREENS = ['mintro','mresearch','mfork','mfork-info'];
-const RETURNING_ONLY_SCREENS = ['msell','madd'];
+const RETURNING_ONLY_SCREENS = ['msell','madd','mreread','marticulate'];
 function inferPersonaFromScreen() {
   const id = window._currentScreenId;
   if (!id) return state.hasMemo ? 'return' : 'first';
@@ -20970,8 +22746,65 @@ drawerClose.addEventListener('click', closeDrawer);
 drawerBackdrop.addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
+/* MVP V1 jumper — curated list of the screens that matter for the
+   first-time + returning flows. Names are written for humans, not
+   internal IDs, so the user can navigate without memorising codes. */
+const MVP1_JUMP_GROUPS = [
+  {
+    name: 'MVP V1 · First-time',
+    items: [
+      { id: 'mfork', name: 'Decision type' },
+      { id: 'm1',    name: 'Classify (Type)' },
+      { id: 'm1b',   name: 'Position size' },
+      { id: 's12',   name: 'Calibration · prediction' },
+      { id: 'm5',    name: 'Investment case (long form)' },
+      { id: 'msrc',  name: 'Source · origin of idea' },
+      { id: 'm6',    name: 'Final review & commit' },
+      { id: 'macct', name: 'Select account' },
+      { id: 's8',    name: 'Enter shares (numpad)' },
+      { id: 's4',    name: 'Review & execute' },
+      { id: 's9',    name: 'Order filled' }
+    ]
+  },
+  {
+    name: 'MVP V1 · Returning · Increase',
+    items: [
+      { id: 's0',    name: 'Stock page (home)' },
+      { id: 'madd',  name: 'Reflection question' },
+      { id: 'msrc',  name: 'Source · what put this in front of you?' },
+      { id: 'm6',    name: 'Memo review' },
+      { id: 'macct', name: 'Select account' },
+      { id: 's8',    name: 'Enter shares (numpad)' },
+      { id: 's4',    name: 'Review & execute' },
+      { id: 's9',    name: 'Order filled' }
+    ]
+  },
+  {
+    name: 'MVP V1 · Returning · Reduce / Exit',
+    items: [
+      { id: 's0',          name: 'Stock page (home)' },
+      { id: 'mreread',     name: 'Re-read your memo' },
+      { id: 'msell',       name: 'Reason (6 options)' },
+      { id: 'marticulate', name: 'Articulate' },
+      { id: 'macct',       name: 'Select account' },
+      { id: 's8',          name: 'Enter shares (numpad)' },
+      { id: 's4',          name: 'Review & execute' },
+      { id: 's9',          name: 'Order filled' }
+    ]
+  }
+];
+
 function buildDrawerJumper() {
-  // Filter screens to those available in the current version
+  // MVP V1 uses a curated list so the user sees only the screens that
+  // matter for the first-time + returning flows, with friendly names.
+  if (state.version === 'mvp1') {
+    drawerJumper.innerHTML = MVP1_JUMP_GROUPS.map(g => `
+      <div class="drawer-group">${g.name}</div>
+      ${g.items.map(it => `<button data-go="${it.id}" onclick="go('${it.id}'); closeDrawer();">${it.name}</button>`).join('')}
+    `).join('');
+    return;
+  }
+  // V4.5+ keeps the auto-generated jumper grouped by SCREENS metadata.
   const visible = SCREENS.filter(s => (s.minVersion || 1) <= state.version);
   const groups = [];
   let cur = null;
@@ -21020,7 +22853,10 @@ function startMvpFirstFlow() {
   state.cd = 'initial';
   state.prob = 0;
   state._memoEditedThisFlow = false;
+  state.account = null;
   if (state.memo) state.memo.allocationType = null;
+  // First-time MVP V1 starts at the allocation fork. macct moves to the
+  // start of order placement (between m6 commit and s8).
   go('mfork');
 }
 
@@ -21649,6 +23485,32 @@ function closeCalDropdown()  { document.getElementById('cal-mode-menu').classLis
    INLINE INFO MODAL — explain individual input fields
    ═════════════════════════════════════════════════ */
 const INFO_MODALS = {
+  quote_details: {
+    eyebrow: 'AAPL',
+    title:   'Quote Details',
+    bodyHtml: `
+<p>Real-time consolidated market data:</p>
+
+<div style="display:grid;grid-template-columns:1fr auto;gap:18px 12px;margin-top:18px;font-family:'Inter',sans-serif;font-size:14px;line-height:1.4">
+  <span style="color:var(--t)">Last Traded Price</span><span style="color:var(--s);font-variant-numeric:tabular-nums;text-align:right">192.35 USD</span>
+  <span style="color:var(--t)">Bid</span><span style="color:var(--s);font-variant-numeric:tabular-nums;text-align:right">192.35 USD</span>
+  <span style="color:var(--t)">Ask</span><span style="color:var(--s);font-variant-numeric:tabular-nums;text-align:right">192.35 USD</span>
+</div>
+`
+  },
+  currency_conversion: {
+    eyebrow: '',
+    title:   'Currency Conversion',
+    bodyHtml: `
+<p>Orders in non-Canadian securities are converted to CAD at execution using our corporate exchange rate.</p>
+
+<p>The corporate exchange rate includes a spread, which may vary with market conditions.</p>
+
+<p>We do not charge a separate FX Conversion Fee.</p>
+
+<p>The final exchange rate will appear in your order confirmation.</p>
+`
+  },
   business_type: {
     eyebrow: 'Classify',
     title:   'What kind of business is this?',
@@ -22176,10 +24038,10 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
     edit: 'hurdle'
   },
   mvp_memo_example: {
-    eyebrow: 'Memo',
-    title:   'What goes in a memo.',
-    bodyHtml: `<p>A memo is the written case for a position — the reasoning you commit to before you buy, so a sharper version of you can later judge whether the decision was sound, not just whether it happened to work out.</p>
-<p>A complete memo covers four things, in plain language:</p>
+    eyebrow: 'Investment case',
+    title:   'What goes in an investment case.',
+    bodyHtml: `<p>Your investment case is the written reasoning behind a position — the case you commit to before you buy, so a sharper version of you can later judge whether the decision was sound, not just whether it happened to work out.</p>
+<p>A complete investment case covers four things, in plain language:</p>
 <ul class="info-list">
   <li><strong>Thesis</strong> — why the market is wrong, and what you see that it doesn't.</li>
   <li><strong>Value</strong> — roughly what the business is worth, and the margin of safety at today's price.</li>
@@ -22192,7 +24054,7 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
 <p>My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.</p>
 <p>The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.</p>
 <p>I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.</p>
-<p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written memo.</p>`
+<p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written investment case.</p>`
   },
   core_why: {
     eyebrow: 'Capital placement',
@@ -24740,6 +26602,69 @@ function showMvp1Toast(verb) {
   toast.classList.add('is-on');
   clearTimeout(toast._t);
   toast._t = setTimeout(() => toast.classList.remove('is-on'), 5200);
+}
+
+/* Full-screen "Saved" transition page for the MVP V1 returning commit.
+   Fades in, types out the verb-specific confirmation, dwells briefly,
+   fades out, then fires the onDone callback (typically go('s8')).
+   The user doesn't tap anything — the whole sequence is automatic. */
+function showMvp1SavedScreen(verb, onDone) {
+  const msg = (MVP1_COPY.toast && MVP1_COPY.toast[verb]) ||
+              'Saved. This is now your latest memo for Apple.';
+  let overlay = document.getElementById('mvp1-saved-overlay');
+  // Mount the overlay inside the phone frame (.surface) so it stays
+  // bounded to the device screen rather than covering the entire viewport.
+  const surface = document.querySelector('.surface') || document.body;
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'mvp1-saved-overlay';
+    overlay.className = 'mvp1-saved-overlay';
+    overlay.innerHTML =
+      '<div class="mvp1-saved-inner">' +
+        '<span class="mvp1-saved-mark">SAVED</span>' +
+        '<div class="mvp1-saved-text">' +
+          '<span id="mvp1-saved-text-content"></span>' +
+          '<span class="mvp1-saved-caret" id="mvp1-saved-caret"></span>' +
+        '</div>' +
+      '</div>';
+    surface.appendChild(overlay);
+  } else if (overlay.parentElement !== surface) {
+    // If the overlay was previously appended elsewhere (e.g. body from a
+    // pre-rewrite session), move it into the phone frame.
+    surface.appendChild(overlay);
+  }
+  const textEl  = overlay.querySelector('#mvp1-saved-text-content');
+  const caretEl = overlay.querySelector('#mvp1-saved-caret');
+  textEl.textContent = '';
+  if (caretEl) caretEl.style.display = '';
+  // Force a reflow so the opacity transition restarts cleanly
+  void overlay.offsetWidth;
+  overlay.classList.add('is-on');
+
+  // Typing animation — left-to-right, character by character.
+  let i = 0;
+  const speed = 34; // ms per character — slow enough to feel deliberate
+  function tick() {
+    if (i < msg.length) {
+      textEl.textContent = msg.slice(0, ++i);
+      setTimeout(tick, speed);
+    } else if (caretEl) {
+      // Stop blinking once typing is done so the dwell feels settled
+      caretEl.style.display = 'none';
+    }
+  }
+  tick();
+
+  // After typing + dwell, fade out and call onDone. Longer dwell so the
+  // user has time to actually read what was just typed.
+  const typingDuration = msg.length * speed;
+  const dwellAfter     = 3000;   // ms to dwell after typing finishes
+  const fadeOutMs      = 320;    // matches the CSS transition
+  clearTimeout(overlay._t);
+  overlay._t = setTimeout(() => {
+    overlay.classList.remove('is-on');
+    setTimeout(() => { if (typeof onDone === 'function') onDone(); }, fadeOutMs);
+  }, typingDuration + dwellAfter);
 }
 </script>
 
