@@ -1197,12 +1197,12 @@ body.is-fullscreen .artboard-toggle {
   gap: 14px;
 }
 .memo-header-title {
-  font-size: 26px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-size: 22px;            /* PDF: h1 = 22 */
+  font-weight: 400;
+  letter-spacing: -0.06em;    /* PDF: h1 tracking = -6% */
   color: var(--p);
   margin: 0;
-  line-height: 1.15;
+  line-height: 1.2;           /* PDF: 115-125% */
 }
 /* Info-tappable title — subtle hover so the affordance is discoverable
    without screaming. The page identity stays calm; the body does the work. */
@@ -1229,7 +1229,7 @@ body.is-fullscreen .artboard-toggle {
   font-family: var(--font);
   font-size: 11px;
   letter-spacing: 0.10em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   font-weight: 400;
   white-space: nowrap;
@@ -1243,10 +1243,9 @@ body.is-fullscreen .artboard-toggle {
 }
 .memo-header-version .memo-ctx-ticker { color: var(--s); }
 .alloc-type-lbl {
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--p);
   text-align: right;
 }
@@ -1313,10 +1312,9 @@ body.is-fullscreen .artboard-toggle {
 .field-ex-block.is-open { display: block; }
 .field-ex-lbl {
   font-family: var(--font);
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--t);
   margin-bottom: 7px;
 }
@@ -1552,7 +1550,7 @@ body.is-fullscreen .artboard-toggle {
   gap: 12px;
 }
 .hurdle-card-left  { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.hurdle-card-lbl   { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t-800); }
+.hurdle-card-lbl   { font-size: 11px; letter-spacing: 0; color: var(--t-800); }
 .hurdle-card-val   { font-size: 15px; font-weight: 500; color: var(--p); letter-spacing: -0.015em; }
 .hurdle-card-hint  { font-size: 11px; color: var(--t-800); letter-spacing: -0.005em; transition: opacity 200ms ease; margin-top: 6px; }
 .hurdle-card-dot {
@@ -1627,9 +1625,8 @@ body.is-fullscreen .artboard-toggle {
   to   { transform: translateY(0); }
 }
 .cd-sheet-eyebrow {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t);
   margin-bottom: 18px;
 }
@@ -2314,9 +2311,8 @@ body.is-fullscreen .artboard-toggle {
 }
 .miv-input-lbl {
   font-family: var(--font);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t);
   margin-bottom: 8px;
 }
@@ -2410,9 +2406,8 @@ body.is-fullscreen .artboard-toggle {
 }
 .miv-method-lbl {
   font-family: var(--font);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t);
   margin-bottom: 10px;
 }
@@ -2448,7 +2443,7 @@ body.is-fullscreen .artboard-toggle {
   font-family: var(--font);
   font-size: 10px;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .miv-price-val {
@@ -3098,11 +3093,10 @@ body.is-fullscreen .artboard-toggle {
 .s12-pred-eyebrow,
 .s12-conf-eyebrow {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0;
   color: var(--t);
-  text-transform: uppercase;
   margin-bottom: 18px;
   cursor: default;
   display: inline-flex;
@@ -3113,16 +3107,23 @@ body.is-fullscreen .artboard-toggle {
 .s12-conf-eyebrow.is-info { cursor: pointer; transition: color 180ms var(--ease); }
 .s12-pred-eyebrow.is-info:hover,
 .s12-conf-eyebrow.is-info:hover { color: var(--s); }
+/* Info-tappable ↗ arrow — same SVG used by the "20% per year ↗" hurdle
+   link and the .memo-header-title.is-info marks. Replaces the unicode
+   ↗ character so all arrows on the page read at one weight. */
 .s12-pred-eyebrow.is-info::after,
 .s12-conf-eyebrow.is-info::after {
-  content: '↗';
-  font-size: 11px;
-  letter-spacing: 0;
-  color: var(--t-800);
-  transition: color 180ms var(--ease);
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565B5E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='7' y1='17' x2='17' y2='7'/%3E%3Cpolyline points='7 7 17 7 17 17'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: filter 180ms var(--ease);
 }
 .s12-pred-eyebrow.is-info:hover::after,
-.s12-conf-eyebrow.is-info:hover::after { color: var(--s); }
+.s12-conf-eyebrow.is-info:hover::after { filter: brightness(2.5); }
 
 /* Single-statement prediction line. The hurdle % (inline) inherits the
    existing uw-hurdle-inline styling so changes to the hurdle still
@@ -3212,7 +3213,7 @@ body.is-fullscreen .artboard-toggle {
   font-weight: 400;
   letter-spacing: 0.14em;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
   font-variant-numeric: tabular-nums;
 }
 .s12-conf-msg {
@@ -3269,7 +3270,7 @@ body.is-fullscreen .artboard-toggle {
 .uw-module-label {
   font-size: 10px;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t-800);
   margin-bottom: 6px;
 }
@@ -3491,9 +3492,8 @@ body.is-fullscreen .artboard-toggle {
   animation: cd-sheet-up 240ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 .uw-hurdle-sheet-eyebrow {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t);
   margin-bottom: 16px;
 }
@@ -3562,9 +3562,8 @@ body.is-fullscreen .artboard-toggle {
 }
 .forecast-eyebrow {
   font-family: var(--font);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t);
   margin-bottom: 14px;
 }
@@ -3795,18 +3794,17 @@ body.is-fullscreen .artboard-toggle {
 /* Corner frame marks removed — the header sits clean on the page. */
 .s9-ticker-hero {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 54px;
-  font-weight: 200;
-  letter-spacing: -0.055em;
-  line-height: 0.9;
+  font-size: 34px;            /* PDF: hero/ticker = 34 */
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   color: #EBEBEB;
   margin-bottom: 12px;
 }
 .s9-event-label {
-  font-size: 9px;
-  letter-spacing: 0.16em;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t-800);
-  text-transform: uppercase;
   margin-bottom: 4px;
 }
 .s9-order-subtype {
@@ -4026,7 +4024,7 @@ body.is-fullscreen .artboard-toggle {
   font-family: var(--font);
   font-size: 10px;
   letter-spacing: 0.09em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   background: none;
   border: 0.5px solid var(--t-800);
@@ -4315,7 +4313,7 @@ body.is-fullscreen .artboard-toggle {
 .kill-slot.is-filled .kill-slot-preview { color: var(--s); }
 .kill-slot-badge {
   font-size: 9px; color: var(--t); font-family: var(--font);
-  letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0;
+  letter-spacing: 0.08em; text-transform: none; flex-shrink: 0;
 }
 .kill-slot.is-required .kill-slot-badge { color: var(--t); }
 .kill-slot-body { display: none; padding: 0 14px 12px; }
@@ -4328,7 +4326,7 @@ body.is-fullscreen .artboard-toggle {
 .kill-criterion-action { padding: 10px 0 4px; }
 .kill-criterion-action-lbl {
   font-size: 10px; font-family: var(--font); color: var(--t-800);
-  text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 7px; display: block;
+  text-transform: none; letter-spacing: 0.09em; margin-bottom: 7px; display: block;
 }
 .kill-criterion-chips { display: flex; gap: 6px; }
 .kill-criterion-chip {
@@ -5007,7 +5005,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 11px;
   color: var(--t);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 8px;
 }
 .sm-prior-body {
@@ -5033,7 +5031,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 11px;
   color: var(--t);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .sm-anchor-val {
   font-size: 17px;
@@ -5105,7 +5103,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 11px;
   color: var(--t);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .sm-exec-memo-chip-val {
   font-size: 13px;
@@ -5473,7 +5471,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .s4r-action {
   font-size: 10px; font-weight: 400;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  letter-spacing: 0.14em; text-transform: none;
   color: var(--p); padding-bottom: 7px;
 }
 .s4r-header-meta {
@@ -5494,6 +5492,50 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .s4-summary .form-row:last-child { border-bottom: none; }
 
+/* Tap-to-edit affordances on s4. Any row, section, or header tile
+   marked .s4r-editable becomes clickable; the small "Edit ›" indicator
+   makes the affordance discoverable without crowding the value. */
+.s4r-editable {
+  cursor: pointer;
+  transition: background 120ms var(--ease);
+}
+.s4r-editable:active { background: rgba(255,255,255,0.02); }
+.s4r-edit-mark { display: none; }
+/* "Tap each line to edit" hint — sits at the top right of s4, just
+   below the institutional header. Tells the user every row below is
+   tappable without putting an icon on every line. */
+.s4r-edit-hint {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  color: var(--t);
+  text-align: right;
+  padding: 8px 16px 0;
+}
+/* Right-hand cluster for the s4-summary rows so the value + edit mark
+   sit together on the right. */
+.s4r-row-right {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+}
+/* Stacked-row variant where the section-head key + Edit mark sit on the
+   same line, with the value flowing below. */
+.s4r-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+/* Make the header account-meta tile look tappable when editable. */
+.s4r-header-meta.s4r-editable {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .s4r-stats {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
   border-bottom: 1px solid #1C1C1C; flex-shrink: 0;
@@ -5505,7 +5547,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .s4r-stat:last-child { border-right: none; }
 .s4r-stat-lbl {
   font-size: 8px; letter-spacing: 0.14em;
-  color: var(--t); text-transform: uppercase; margin-bottom: 5px;
+  color: var(--t); text-transform: none; margin-bottom: 5px;
 }
 .s4r-stat-val {
   font-size: 15px; font-weight: 200;
@@ -5513,8 +5555,8 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .s4r-section { padding: 20px 16px 0; }
 .s4r-section-head {
-  font-size: 8px; font-weight: 400; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--t); margin-bottom: 6px;
+  font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--s); margin-bottom: 8px;
 }
 .s4r-row {
   display: grid; grid-template-columns: 1fr;
@@ -5524,16 +5566,17 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .s4r-row:last-child { border-bottom: none; }
 .s4r-row--stack { grid-template-columns: 1fr; gap: 5px; }
 .s4r-key {
-  font-size: 9px; font-weight: 400; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--t); padding-top: 1px;
+  font-size: 11px; font-weight: 400; letter-spacing: 0;
+  color: var(--t); padding-top: 1px;
 }
 .s4r-val {
-  font-size: 12px; font-weight: 300;
-  color: var(--s); line-height: 1.55;
+  font-size: 13px; font-weight: 400;     /* PDF: body/sm = 13 */
+  color: var(--s); line-height: 1.4;
+  letter-spacing: -0.02em;
 }
 .s4r-val-sub {
-  font-size: 11px; font-weight: 300;
-  color: var(--t-800); line-height: 1.45;
+  font-size: 11px; font-weight: 400;     /* PDF: body/xs = 11 */
+  color: var(--t-800); line-height: 1.4;
   letter-spacing: -0.005em; margin-top: 3px;
 }
 .s4r-stress {
@@ -5544,7 +5587,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border-radius: 3px;
 }
 .s4r-stress-label {
-  font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 8px; letter-spacing: 0.14em; text-transform: none;
   color: var(--accent-amber); margin-bottom: 5px; font-weight: 400;
 }
 .s4r-stress-body {
@@ -6671,11 +6714,40 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .info-modal-sheet::-webkit-scrollbar { width: 0; }
 .info-modal.is-active .info-modal-sheet { transform: translateY(0); }
 .info-modal-close {
-  position: absolute; top: 18px; right: 18px;
-  background: none; border: none;
-  color: var(--t); font-size: 18px;
-  line-height: 1; padding: 4px;
+  /* Sticky to the top of the scrollable sheet so the close button is
+     always reachable regardless of scroll position. A small top band of
+     surface-coloured background travels with it so the X doesn't sit on
+     top of the body text below as the user scrolls past the title. */
+  position: sticky;
+  top: 0;
+  margin-left: auto;        /* push to right edge of sticky band */
+  margin-right: -10px;      /* nudge into the sheet's right padding */
+  margin-top: -10px;        /* nudge above the sheet's top padding */
+  margin-bottom: 6px;
+  z-index: 10;
+  background: var(--surface);
+  border: none;
+  color: var(--t);
+  font-size: 18px;
+  line-height: 1;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: block;
 }
+/* Top fade so the body text gets a soft backdrop as it scrolls under
+   the sticky X — keeps the corner readable without a hard band. */
+.info-modal-sheet::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 0;
+  margin-bottom: -42px;
+  z-index: 9;
+  background: linear-gradient(to bottom, var(--surface) 60%, rgba(0,0,0,0));
+  pointer-events: none;
+}
+.info-modal.is-active .info-modal-sheet::before { height: 42px; }
 .info-modal-eyebrow {
   font-size: 10px; letter-spacing: 0.16em; text-transform: none;
   color: var(--t); margin-bottom: 8px;
@@ -6733,6 +6805,116 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   padding: 0;
   list-style: none;
 }
+
+/* ── Structured example memo (Aritzia) ─────────────────────────────────
+   Used inside the mvp_memo_example info modal to render a multi-section
+   example: numbered section headers, kill-criteria sub-cards, scenario
+   tables, probability tables. Keeps the "long honest write-up" feel
+   while showing the kind of structure a serious investor would use. */
+.info-modal-body.is-html .memo-ex-section {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid #1A1A1A;
+}
+.info-modal-body.is-html .memo-ex-section:first-of-type {
+  margin-top: 18px;
+  padding-top: 18px;
+}
+.info-modal-body.is-html .memo-ex-num {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--t);
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.info-modal-body.is-html .memo-ex-section-title {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--p);
+  margin-bottom: 14px;
+  line-height: 1.25;
+}
+/* Kill-criteria sub-cards — each row is a numbered, indented mini-card
+   with Metric / Threshold / Action labels. */
+.info-modal-body.is-html .memo-ex-kill {
+  padding: 14px 0;
+  border-top: 1px solid #161616;
+}
+.info-modal-body.is-html .memo-ex-kill:first-of-type { border-top: none; padding-top: 6px; }
+.info-modal-body.is-html .memo-ex-kill-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.info-modal-body.is-html .memo-ex-kill-num {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--t);
+  letter-spacing: 0.04em;
+  min-width: 12px;
+}
+.info-modal-body.is-html .memo-ex-kill-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--p);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.info-modal-body.is-html .memo-ex-kill-detail {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--s);
+  letter-spacing: -0.005em;
+  margin: 4px 0 0 24px;
+}
+.info-modal-body.is-html .memo-ex-kill-k {
+  color: var(--t);
+  font-weight: 400;
+}
+/* Scenario / probability tables — title + two-column rows of key/value. */
+.info-modal-body.is-html .memo-ex-scenario,
+.info-modal-body.is-html .memo-ex-prob {
+  padding: 10px 0;
+  border-top: 1px solid #161616;
+}
+.info-modal-body.is-html .memo-ex-scenario:first-of-type,
+.info-modal-body.is-html .memo-ex-prob:first-of-type {
+  border-top: none;
+  padding-top: 4px;
+}
+.info-modal-body.is-html .memo-ex-scenario-title,
+.info-modal-body.is-html .memo-ex-prob-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--p);
+  letter-spacing: -0.005em;
+  margin-bottom: 8px;
+}
+.info-modal-body.is-html .memo-ex-scenario-rows,
+.info-modal-body.is-html .memo-ex-prob-rows {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 14px;
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+.info-modal-body.is-html .memo-ex-scenario-rows .k,
+.info-modal-body.is-html .memo-ex-prob-rows .k {
+  color: var(--t);
+  font-weight: 400;
+}
+.info-modal-body.is-html .memo-ex-scenario-rows .v,
+.info-modal-body.is-html .memo-ex-prob-rows .v {
+  color: var(--s);
+  font-weight: 300;
+}
 .info-modal-body.is-html .info-list li {
   position: relative;
   padding-left: 14px;
@@ -6771,7 +6953,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   margin-bottom: 8px;
 }
@@ -7250,7 +7432,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-quality-strip-lbl {
   font-size: 10px;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t-800);
   flex-shrink: 0;
 }
@@ -7283,10 +7465,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-ledger-header::before { content: none; }
 .m6-ledger-meta {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.16em;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t-800);
-  text-transform: uppercase;
   margin-bottom: 16px;
 }
 /* Live indicator — pulsating green dot + "LIVE", top-right of the ledger
@@ -7298,10 +7479,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   align-items: center;
   gap: 6px;
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: #3FB950;
   z-index: 2;
 }
@@ -7319,21 +7499,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-ledger-header.has-live::before { display: none; }
 .m6-ledger .m6-ticker-hero {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 54px;
-  font-weight: 200;
-  letter-spacing: -0.055em;
-  line-height: 0.9;
+  font-size: 34px;            /* PDF: hero/ticker = 34 */
+  font-weight: 400;           /* PDF: Inter Regular */
+  letter-spacing: -0.02em;    /* PDF: -2% */
+  line-height: 1.2;           /* PDF: 115-125% */
   color: #EBEBEB;
   margin-bottom: 12px;
 }
 /* MVP V1 returning mode swaps the ticker (short "AAPL") for a prose
-   title ("Adding to Apple"). Drop down to the canonical memo-header
-   title size so it sits alongside m1 / m1b / s12 / madd / msell etc. */
+   title ("Adding to Apple"). Use the canonical h1 size (22px) so it
+   sits alongside m1 / m1b / s12 / madd / msell etc. */
 .m6-ledger-header.is-prose-title .m6-ticker-hero {
-  font-size: 26px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-size: 22px;            /* PDF: h1 = 22 */
+  font-weight: 400;
+  letter-spacing: -0.06em;    /* PDF: h1 tracking = -6% */
+  line-height: 1.2;
   color: var(--p);
   margin-bottom: 6px;
 }
@@ -7359,17 +7539,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .m6-ledger-doc-label {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.14em;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t-800);
-  text-transform: uppercase;
   margin-top: 0;
 }
 .m6-ledger-date {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   color: var(--t-800);
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   margin-top: 4px;
 }
 
@@ -7401,18 +7580,19 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-newmemo-chip {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   align-self: flex-start;
   padding: 0;
   border: none;
   background: none;
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #3FB950;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--p);
 }
+/* Green pulsing dot — same green / pulse rate as the LIVE badge. */
 .m6-newmemo-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
@@ -7423,10 +7603,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
    sentence. No box, no background — matches the existing m6 row-sub style. */
 .m6-twoclocks {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  line-height: 1.4;
   color: var(--t-800);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.02em;
   margin-top: -8px;
 }
 /* Flow banner — same body size as memo-row .v (12px / weight 300), thin
@@ -7435,11 +7615,11 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   border-left: 1px solid #1C1C1C;
   padding: 2px 0 2px 12px;
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.55;
+  font-size: 13px;            /* PDF: body/sm = 13 */
+  font-weight: 400;
+  line-height: 1.4;
   color: var(--s);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.02em;
   background: transparent;
 }
 /* Nudge — quiet eyebrow label + body, no icon, no fill. Same left rule
@@ -7456,10 +7636,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .m6-nudge-icon {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 8px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--t);
   background: none;
   width: auto; height: auto;
@@ -7470,11 +7649,11 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .m6-nudge-text {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.55;
+  font-size: 13px;            /* PDF: body/sm = 13 */
+  font-weight: 400;
+  line-height: 1.4;           /* PDF: 125-140% */
   color: var(--s);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.02em;    /* PDF: -2% */
 }
 /* Declarations — match the existing m6-ledger memo-row pattern.
    Key (9px tracked uppercase) stacks above value (12px weight 300).
@@ -7504,29 +7683,31 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-declaration:last-child { border-bottom: none; }
 .m6-declaration-key {
   grid-area: key;
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--t);
 }
 .m6-declaration-text {
   grid-area: val;
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--s);
-  letter-spacing: -0.005em;
-  line-height: 1.55;
-}
-.m6-declaration-edit {
-  grid-area: edit;
-  align-self: center;
-  font-size: 9px;
+  font-size: 13px;            /* PDF: body/sm = 13 */
   font-weight: 400;
-  letter-spacing: 0.1em;
+  color: var(--s);
+  letter-spacing: -0.02em;    /* PDF: -2% */
+  line-height: 1.4;           /* PDF: 125-140% */
+}
+.m6-declaration-edit { display: none; }
+/* "Tap each line to edit" hint — sits above the declarations block on
+   the m6 returning view. One quiet meta line replaces the per-row
+   pencil icons for a less crowded read. */
+.m6-mvp1-edit-hint {
+  font-family: 'Inter', var(--font), sans-serif;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--t);
-  text-transform: uppercase;
-  flex-shrink: 0;
+  text-align: right;
+  margin-bottom: 4px;
 }
 /* Memo body — displayed as flat readable content (no scrollable box).
    Eyebrow label + Edit affordance share a row; the body text flows
@@ -7540,33 +7721,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 }
 .m6-inline-memo-label {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0;
   color: var(--t);
-  text-transform: uppercase;
 }
 .m6-inline-memo-edit {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  color: var(--t);
-  text-transform: uppercase;
-  transition: color 150ms var(--ease);
+  display: none;
 }
-.m6-inline-memo-edit:hover { color: var(--s); }
 .m6-inline-memo-body {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.6;
+  font-size: 13px;            /* PDF: body/sm = 13 */
+  font-weight: 400;
+  line-height: 1.4;           /* PDF: 125-140% */
   color: var(--s);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.02em;    /* PDF: -2% */
   white-space: pre-line;
 }
 .m6-inline-memo-body.is-empty {
@@ -7593,31 +7762,87 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-stat-cell:last-child { border-right: none; }
 .m6-stat-lbl {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 8px;
-  letter-spacing: 0.14em;
+  font-size: 11px;            /* PDF: body/xs = 11 */
+  letter-spacing: 0;
   color: var(--t);
-  text-transform: uppercase;
   margin-bottom: 5px;
 }
 .m6-stat-val {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 16px;
-  font-weight: 200;
+  font-size: 18px;            /* PDF: $/md = 18 */
+  font-weight: 400;
   color: var(--s);
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .m6-ledger-section-head {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 8px;
-  letter-spacing: 0.2em;
-  color: var(--t);
-  text-transform: uppercase;
+  font-size: 15px;            /* PDF: section title = 15 */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--s);
   padding-bottom: 10px;
-  border-bottom: 1px solid #1C1C1C;
+  border-bottom: 1px solid var(--c-1000);
   margin-bottom: 0;
 }
+/* First-time MVP V1: promote the "INVESTOR MEMO" section head into a
+   hero treatment so the moment reads as the user creating their first
+   memo — bigger, bolder, mixed case, white. The "Tap each to update"
+   hint sits subordinate beside it. */
+.m6-ledger-section-row.is-first-memo {
+  border-bottom: 1px solid #1C1C1C;
+  padding-bottom: 14px;
+  margin-bottom: 4px;
+  align-items: baseline;
+}
+.m6-ledger-section-row.is-first-memo .m6-ledger-section-head {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--p);
+  text-transform: none;
+  padding-bottom: 0;
+  border-bottom: none;
+  line-height: 1.15;
+}
+.m6-ledger-section-row.is-first-memo .m6-section-edit-hint {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--t);
+}
+/* Blinking caret beside the section head while it types out. Removes
+   itself when typing finishes. Same animation cadence as the m5 caret
+   and the mvp1-saved overlay caret so all "typed" moments feel
+   consistent. */
+.m6-ledger-section-row.is-first-memo .m6-ledger-section-head.is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  background: var(--p);
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  animation: m5-caret-blink 1.05s steps(2, jump-none) infinite;
+}
+/* Matching caret on the AAPL hero ticker. Thicker stroke (4px) so it
+   reads at the larger type size; same blink cadence as the section
+   head caret so the two typing moments feel synchronized. */
+.m6-ledger .m6-ticker-hero .memo-ctx-ticker.is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 0.78em;
+  background: var(--p);
+  margin-left: 6px;
+  vertical-align: baseline;
+  animation: m5-caret-blink 1.05s steps(2, jump-none) infinite;
+}
+/* Stage-in cascade for m6 first-time view. JS sets the initial hidden
+   state on selected elements, then 300-350ms after typing starts adds
+   inline styles to fade each in from a small left offset. No CSS keyframe
+   needed — transitions on inline opacity/transform carry it. */
 .m6-ledger .memo-row {
   grid-template-columns: 1fr;
   gap: 6px;
@@ -7628,10 +7853,9 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .m6-ledger .memo-row:last-of-type { border-bottom: none; }
 .m6-ledger .memo-row .k {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0;
   color: var(--t);
   padding-top: 2px;
 }
@@ -7805,7 +8029,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   white-space: pre-line;
 }
 .eng-notes-panel-head {
-  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: none;
   color: var(--accent-amber); margin: 0 4px 4px;
   font-family: var(--font); font-weight: 500;
 }
@@ -7851,11 +8075,11 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 }
 .macct-eyebrow {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;            /* PDF: body/xs = 11 */
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0;
   color: var(--t);
-  text-transform: uppercase;
+  text-transform: none;
 }
 .macct-title {
   font-size: 26px;
@@ -7970,15 +8194,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 }
 .mreread-block-key {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--t);
 }
 .mreread-block-body {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 12px;
+  font-size: 13px;            /* PDF: body/sm = 13 */
   font-weight: 300;
   line-height: 1.55;
   color: var(--s);
@@ -8007,7 +8230,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .mreread-empty-title {
@@ -8054,10 +8277,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 .marticulate-reason-key {
   grid-area: key;
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--t);
 }
 .marticulate-reason-val {
@@ -8076,7 +8298,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
 }
 .marticulate-prompt {
@@ -8163,10 +8385,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 }
 .mrecorded-key {
   font-family: 'Inter', var(--font), sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--t);
 }
 .mrecorded-edit {
@@ -8178,7 +8399,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--t);
   transition: color 150ms var(--ease);
 }
@@ -8374,7 +8595,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 }
 .mc5-path-badge {
   font-size: 9px; font-weight: 400; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--t); margin-bottom: 10px;
+  text-transform: none; color: var(--t); margin-bottom: 10px;
 }
 .mc5-ticker-hero {
   font-family: var(--font); font-size: 54px; font-weight: 200;
@@ -8382,7 +8603,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 }
 .mc5-doc-label {
   font-size: 9px; font-weight: 400; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--t-800);
+  text-transform: none; color: var(--t-800);
 }
 .mc5-date { font-size: 11px; color: var(--t-800); margin-top: 4px; }
 .mc5-hold-btn {
@@ -8429,7 +8650,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 9.5px;
   letter-spacing: 0.16em;
   color: rgba(255,255,255,0.18);
-  text-transform: uppercase;
+  text-transform: none;
   text-align: center;
 }
 .artboard-grid {
@@ -8447,7 +8668,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 9px;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.22);
-  text-transform: uppercase;
+  text-transform: none;
 }
 .artboard-phone {
   width: 216px;
@@ -8511,7 +8732,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 10px;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.25);
-  text-transform: uppercase;
+  text-transform: none;
   margin-right: 8px;
 }
 .artboard-act-btn {
@@ -8787,7 +9008,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
+  text-transform: none;
   color: #3FB950;
 }
 .mvp1-saved-mark::before {
@@ -9903,7 +10124,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 </div>
                 <div class="memo-header-meta">6 / 9</div>
                 <div class="memo-header-right">
-                  <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                  <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                   <span class="alloc-type-lbl">Active allocation</span>
                   <div class="memo-context-chip" data-memo-context hidden></div>
                 </div>
@@ -10314,7 +10535,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <hr class="div">
             </div>
             <div class="macct-title-block">
-              <div class="macct-eyebrow"><span class="memo-ctx-ticker">AAPL</span> · <span id="macct-action">BUY</span></div>
+              <div class="macct-eyebrow"><span class="memo-ctx-ticker">AAPL</span> · <span id="macct-action">Buy</span></div>
               <div class="macct-title">Select account</div>
             </div>
             <div class="macct-options">
@@ -10398,7 +10619,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-header-meta">1 / 5</div>
                   <div></div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · Core Memo</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
                   </div>
                 </div>
@@ -10433,7 +10654,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">1 / 4</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · Core Memo</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
                   </div>
                 </div>
@@ -10474,7 +10695,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">2 / 4</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · Core Memo</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
                   </div>
                 </div>
@@ -10529,7 +10750,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">3 / 4</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · CORE MEMO</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">—</span> · Core Memo</span>
                     <span class="alloc-type-lbl">Core / Treasury</span>
                   </div>
                 </div>
@@ -10579,7 +10800,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <!-- Review rows -->
                 <div>
                   <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">INVESTOR MEMO</div>
+                    <div class="m6-ledger-section-head">Investor Memo</div>
                     <span class="m6-section-edit-hint">Tap each to update</span>
                   </div>
                   <div class="memo-row" onclick="go('mfork')"><div class="k">Path</div><div class="v">Core / Treasury</div></div>
@@ -10624,7 +10845,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">1 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -10676,7 +10897,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">2 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -10733,7 +10954,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">3 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -10864,7 +11085,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">4 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -11171,7 +11392,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">5 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -11365,7 +11586,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">8 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -11519,7 +11740,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">7 / 9</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · MEMO V1</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Memo v1</span>
                     <span class="alloc-type-lbl">Active allocation</span>
                     <div class="memo-context-chip" data-memo-context hidden></div>
                   </div>
@@ -11590,7 +11811,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="m6-ledger-classify" id="m6-classify">—</div>
                   <div id="m6-title" style="display:none"></div>
                   <!-- Gray sub-description: doc label + drafted date -->
-                  <div class="m6-ledger-doc-label" id="m6-doc-label">INVESTMENT MEMO · V1</div>
+                  <div class="m6-ledger-doc-label" id="m6-doc-label">Investment Memo · v1</div>
                   <div id="m6-date" class="m6-ledger-date">—</div>
                 </div>
 
@@ -11633,7 +11854,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                        combined Calibration row (probability + hurdle + horizon
                        in one descriptive line). The calibration row sits
                        directly above the memo so it isn't buried below a long
-                       memo body. -->
+                       memo body. The "Tap each line to edit" hint at the top
+                       right tells the user every row is interactive. -->
+                  <div class="m6-mvp1-edit-hint">Tap each line to edit</div>
                   <div class="m6-declarations">
                     <button type="button" class="m6-declaration" onclick="editFromReview('m1')">
                       <span class="m6-declaration-key">Classification</span>
@@ -11648,6 +11871,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <button type="button" class="m6-declaration" onclick="editFromReview('s12')">
                       <span class="m6-declaration-key" id="m6-decl-cal-key">Probability of 20% / yr return over 3 years</span>
                       <span class="m6-declaration-text" id="m6-decl-cal-val">—</span>
+                      <span class="m6-declaration-edit">Edit ›</span>
+                    </button>
+                    <!-- Source — sits directly above the investment case
+                         so the user can revise it without leaving m6.
+                         Tap to edit (routes to msrc; Save returns here). -->
+                    <button type="button" class="m6-declaration" id="m6-decl-source-row" onclick="editFromReview('msrc')">
+                      <span class="m6-declaration-key">Source</span>
+                      <span class="m6-declaration-text" id="m6-decl-source-val">—</span>
                       <span class="m6-declaration-edit">Edit ›</span>
                     </button>
                   </div>
@@ -11670,7 +11901,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      the position is" and "why you took it". -->
                 <div>
                   <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">INVESTOR MEMO</div>
+                    <div class="m6-ledger-section-head">Investor Memo</div>
                     <span class="m6-section-edit-hint">Tap each to update</span>
                   </div>
                   <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
@@ -11682,9 +11913,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      user's confidence, the hurdle rate, and the horizon
                      into a single readable statement. -->
                 <div id="m6-calibration-section">
-                  <div class="m6-ledger-section-head">CALIBRATION</div>
+                  <div class="m6-ledger-section-head">Calibration</div>
                   <div class="memo-row m6-cal-summary-row" onclick="editFromReview('s12')">
-                    <div class="k" id="m6-cal-summary-key">Probability of 20% / yr return over 3 years</div>
+                    <div class="k" id="m6-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
                     <div class="v" id="m6-cal-summary-val">—</div>
                   </div>
                   <!-- Legacy split rows kept hidden — older code paths may
@@ -11701,7 +11932,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill</div><div class="v" id="m6-kill">—</div></div>
                   <div class="memo-row" id="m6-floor-row" style="display:none" onclick="editFromReview('m3')"><div class="k">Floor</div><div class="v" id="m6-floor-disp">—</div></div>
                   <div class="memo-row" onclick="editFromReview('miv')"><div class="k">IV</div><div class="v" id="m6-iv">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MOS</div><div class="v" id="m6-mos">—</div></div>
+                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MoS</div><div class="v" id="m6-mos">—</div></div>
                   <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
                   <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
                 </div>
@@ -11839,19 +12070,27 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                        single descriptive prediction line) → Memo body. -->
                   <div id="mreread-content" class="mreread-content">
                     <div class="mreread-block">
-                      <div class="mreread-block-key">CLASSIFICATION</div>
+                      <div class="mreread-block-key">Classification</div>
                       <div class="mreread-block-body" id="mreread-classify">—</div>
                     </div>
                     <div class="mreread-block">
-                      <div class="mreread-block-key">POSITION SIZE</div>
+                      <div class="mreread-block-key">Position Size</div>
                       <div class="mreread-block-body" id="mreread-size">—</div>
                     </div>
                     <div class="mreread-block">
-                      <div class="mreread-block-key" id="mreread-cal-key">PROBABILITY OF 20% / YR RETURN OVER 3 YEARS</div>
+                      <div class="mreread-block-key" id="mreread-cal-key">Probability of 20% / yr Return Over 3 Years</div>
                       <div class="mreread-block-body" id="mreread-cal-val">—</div>
                     </div>
+                    <!-- Source — sits directly above the investment case to
+                         mirror the m6 / s4 / s9 review ordering. Read-only
+                         on this re-read screen (mreread is for reflection,
+                         not edits). Hidden when no source was recorded. -->
+                    <div class="mreread-block" id="mreread-source-block" style="display:none">
+                      <div class="mreread-block-key">Source</div>
+                      <div class="mreread-block-body" id="mreread-source-val">—</div>
+                    </div>
                     <div class="mreread-block">
-                      <div class="mreread-block-key">INVESTMENT CASE</div>
+                      <div class="mreread-block-key">Investment Case</div>
                       <div class="mreread-block-body mreread-block-body--prose" id="mreread-note">—</div>
                     </div>
                   </div>
@@ -11886,7 +12125,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">Capital decision</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · <span id="msell-tag">REDUCE</span></span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · <span id="msell-tag">Reduce</span></span>
                   </div>
                 </div>
                 <div class="memo-body--reveal">
@@ -11966,13 +12205,13 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-header-top">
                     <h1 class="memo-header-title" id="marticulate-title">Articulate</h1>
                   </div>
-                  <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · <span id="marticulate-tag">REASON</span></div>
+                  <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · <span id="marticulate-tag">Reason</span></div>
                 </div>
                 <div class="memo-body--reveal">
                   <!-- The selected reason — read-only context so the user knows
                        what they're articulating. Tap to go back to the picker. -->
                   <div class="marticulate-reason" onclick="go('msell')">
-                    <span class="marticulate-reason-key">REASON</span>
+                    <span class="marticulate-reason-key">Reason</span>
                     <span class="marticulate-reason-val" id="marticulate-reason-val">—</span>
                     <span class="marticulate-reason-edit">Change ›</span>
                   </div>
@@ -12049,14 +12288,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                        preserved. -->
                   <div class="mrecorded-block">
                     <div class="mrecorded-block-head">
-                      <div class="mrecorded-key">REASON</div>
+                      <div class="mrecorded-key">Reason</div>
                       <button class="mrecorded-edit" type="button" onclick="go('msell')">Edit ›</button>
                     </div>
                     <div class="mrecorded-val" id="mrecorded-reason">—</div>
                   </div>
                   <div class="mrecorded-block">
                     <div class="mrecorded-block-head">
-                      <div class="mrecorded-key">YOUR ARTICULATION</div>
+                      <div class="mrecorded-key">Your Articulation</div>
                       <button class="mrecorded-edit" type="button" onclick="go('marticulate')">Edit ›</button>
                     </div>
                     <div class="mrecorded-val mrecorded-val--prose" id="mrecorded-articulation">—</div>
@@ -12091,7 +12330,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                   <div class="memo-header-meta">Capital decision</div>
                   <div class="memo-header-right">
-                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · ADD</span>
+                    <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Add</span>
                   </div>
                 </div>
                 <div class="memo-body--reveal">
@@ -12118,7 +12357,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               </div>
             </div>
             <div class="v5-foot memo-foot--reveal">
-              <button class="v5-primary is-arrow locked" id="madd-next" onclick="go('msrc')">→</button>
+              <button class="v5-primary is-arrow locked" id="madd-next" onclick="go('m6')">→</button>
             </div>
           </section>
 
@@ -12373,18 +12612,24 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             </div>
 
             <div class="body-scroll">
-              <!-- Institutional header -->
+              <!-- Institutional header — account row tappable so the user
+                   can swap account before committing the trade. -->
               <div class="s4r-header">
                 <div class="s4r-header-inner">
                   <div class="s4r-ticker">AAPL</div>
-                  <div class="s4r-action" id="s4-action">BUY</div>
+                  <div class="s4r-action" id="s4-action">Buy</div>
                 </div>
-                <div class="s4r-header-meta">
+                <div class="s4r-header-meta s4r-editable" onclick="editFromS4('macct')">
                   <span>Non-Registered</span>
                   <span class="s4r-meta-sep">·</span>
                   <span>18,698.53 CAD</span>
+                  <span class="s4r-edit-mark">Edit ›</span>
                 </div>
               </div>
+
+              <!-- Single hint that every row below is tappable. Replaces
+                   the per-row pencil icons with one quiet line at the top. -->
+              <div class="s4r-edit-hint">Tap each line to edit</div>
 
               <!-- Order summary — line-by-line review of the trade.
                    Matches the s8 form-row layout: key on left, value on
@@ -12392,17 +12637,23 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                    Estimated Exchange Rate are tappable to open the same
                    info modals used on s8. -->
               <div class="s4-summary">
-                <div class="form-row">
+                <div class="form-row s4r-editable" onclick="editFromS4('s8')">
                   <span class="body-md" style="color:var(--s)">Type</span>
-                  <span class="body-md" style="color:var(--t)" id="s4-type">Limit Buy</span>
+                  <span class="s4r-row-right">
+                    <span class="body-md" style="color:var(--t)" id="s4-type">Limit Buy</span>
+                    <span class="s4r-edit-mark">Edit ›</span>
+                  </span>
                 </div>
                 <div class="form-row">
                   <span class="body-md" style="color:var(--s)">Estimated Portfolio Weight</span>
                   <span class="body-md" style="color:var(--t)" id="s4-weight">—</span>
                 </div>
-                <div class="form-row">
+                <div class="form-row s4r-editable" onclick="editFromS4('s8')">
                   <span class="body-md" style="color:var(--s)">Shares</span>
-                  <span class="body-md" style="color:var(--t)" id="s4-shares">—</span>
+                  <span class="s4r-row-right">
+                    <span class="body-md" style="color:var(--t)" id="s4-shares">—</span>
+                    <span class="s4r-edit-mark">Edit ›</span>
+                  </span>
                 </div>
                 <div class="form-row" onclick="event.stopPropagation();showInfoModal('quote_details')" style="cursor:pointer">
                   <span class="body-md" style="color:var(--s);display:inline-flex;align-items:center;gap:7px">
@@ -12434,53 +12685,76 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                    isn't buried below a long memo body. One descriptive row
                    bundles the user's confidence, hurdle rate, and horizon. -->
               <div class="s4r-section">
-                <div class="s4r-section-head">CALIBRATION</div>
-                <div class="s4r-row s4r-row--stack">
-                  <div class="s4r-key" id="s4-cal-summary-key">PROBABILITY OF 20% / YR RETURN OVER 3 YEARS</div>
+                <div class="s4r-section-head">Calibration</div>
+                <div class="s4r-row s4r-row--stack s4r-editable" onclick="editFromS4('s12')">
+                  <div class="s4r-row-head">
+                    <div class="s4r-key" id="s4-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
+                    <span class="s4r-edit-mark">Edit ›</span>
+                  </div>
                   <div class="s4r-val" id="s4-cal-summary-val">—</div>
                 </div>
                 <!-- Legacy split fields kept hidden so older readers don't break. -->
                 <div class="s4r-row" style="display:none">
-                  <div class="s4r-key">PROB</div>
+                  <div class="s4r-key">Prob</div>
                   <div class="s4r-val" id="s4-conf">—</div>
                 </div>
                 <div class="s4r-row" style="display:none">
-                  <div class="s4r-key">HORIZON</div>
+                  <div class="s4r-key">Horizon</div>
                   <div class="s4r-val" id="s4-horizon">—</div>
                 </div>
               </div>
 
               <!-- Memo section (initial buy only) -->
               <div id="s4-memo-section" class="s4r-section" style="display:none">
-                <div class="s4r-section-head">INVESTOR MEMO</div>
-                <div class="s4r-row">
-                  <div class="s4r-key">TYPE</div>
+                <div class="s4r-section-head">Investor Memo</div>
+                <div class="s4r-row s4r-editable" onclick="editFromS4('m1')">
+                  <div class="s4r-key">Type</div>
                   <div class="s4r-val">
-                    <span id="s4-memo-type">—</span>
+                    <div class="s4r-row-head">
+                      <span id="s4-memo-type">—</span>
+                      <span class="s4r-edit-mark">Edit ›</span>
+                    </div>
                     <div class="s4r-val-sub" id="s4-memo-type-sub"></div>
                   </div>
                 </div>
-                <div class="s4r-row">
-                  <div class="s4r-key">SIZE</div>
+                <div class="s4r-row s4r-editable" onclick="editFromS4('m1b')">
+                  <div class="s4r-key">Size</div>
                   <div class="s4r-val">
-                    <span id="s4-memo-size">—</span>
+                    <div class="s4r-row-head">
+                      <span id="s4-memo-size">—</span>
+                      <span class="s4r-edit-mark">Edit ›</span>
+                    </div>
                     <div class="s4r-val-sub" id="s4-memo-size-sub"></div>
                   </div>
                 </div>
-                <div class="s4r-row s4r-row--stack" id="s4-memo-note-row" style="display:none">
-                  <div class="s4r-key" id="s4-memo-note-key">INVESTMENT CASE</div>
+                <!-- Source — sits directly above the investment case row.
+                     Visible whenever a source has been recorded. -->
+                <div class="s4r-row s4r-editable" id="s4-memo-source-row" style="display:none" onclick="editFromS4('msrc')">
+                  <div class="s4r-key">Source</div>
+                  <div class="s4r-val">
+                    <div class="s4r-row-head">
+                      <span id="s4-memo-source">—</span>
+                      <span class="s4r-edit-mark">Edit ›</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="s4r-row s4r-row--stack s4r-editable" id="s4-memo-note-row" style="display:none" onclick="editFromS4('m5')">
+                  <div class="s4r-row-head">
+                    <div class="s4r-key" id="s4-memo-note-key">Investment Case</div>
+                    <span class="s4r-edit-mark">Edit ›</span>
+                  </div>
                   <div class="s4r-val" id="s4-memo-note">—</div>
                 </div>
                 <div class="s4r-row s4r-row--stack" id="s4-memo-thesis-row">
-                  <div class="s4r-key">THESIS</div>
+                  <div class="s4r-key">Thesis</div>
                   <div class="s4r-val" id="s4-memo-thesis">—</div>
                 </div>
                 <div class="s4r-row s4r-row--stack" id="s4-memo-kill-row">
-                  <div class="s4r-key">KILL</div>
+                  <div class="s4r-key">Kill</div>
                   <div class="s4r-val" id="s4-memo-kill">—</div>
                 </div>
                 <div class="s4r-row" id="s4-memo-mos-row">
-                  <div class="s4r-key">MOS</div>
+                  <div class="s4r-key">MoS</div>
                   <div class="s4r-val" id="s4-memo-mos">—</div>
                 </div>
               </div>
@@ -12557,31 +12831,31 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      duration, submitted / executed timestamps, type, price,
                      entered / filled quantity, total cost. -->
                 <div id="s9-order-details">
-                  <div class="m6-ledger-section-head">ORDER DETAILS</div>
-                  <div class="memo-row"><div class="k">ACCOUNT</div><div class="v" id="s9-od-account">Non-Registered</div></div>
-                  <div class="memo-row"><div class="k">STATUS</div><div class="v" id="s9-od-status">Filled</div></div>
-                  <div class="memo-row"><div class="k">DURATION</div><div class="v" id="s9-od-duration">Good for Day</div></div>
-                  <div class="memo-row"><div class="k">SUBMITTED</div><div class="v" id="s9-od-submitted">—</div></div>
-                  <div class="memo-row"><div class="k">EXECUTED</div><div class="v" id="s9-od-executed">—</div></div>
-                  <div class="memo-row"><div class="k">TYPE</div><div class="v" id="s9-od-type">—</div></div>
-                  <div class="memo-row"><div class="k">PRICE</div><div class="v" id="s9-od-price">—</div></div>
-                  <div class="memo-row"><div class="k">ENTERED</div><div class="v" id="s9-od-entered">—</div></div>
-                  <div class="memo-row"><div class="k">FILLED</div><div class="v" id="s9-od-filled">—</div></div>
-                  <div class="memo-row s9-last-row"><div class="k">TOTAL</div><div class="v" id="s9-od-total">—</div></div>
+                  <div class="m6-ledger-section-head">Order Details</div>
+                  <div class="memo-row"><div class="k">Account</div><div class="v" id="s9-od-account">Non-Registered</div></div>
+                  <div class="memo-row"><div class="k">Status</div><div class="v" id="s9-od-status">Filled</div></div>
+                  <div class="memo-row"><div class="k">Duration</div><div class="v" id="s9-od-duration">Good for Day</div></div>
+                  <div class="memo-row"><div class="k">Submitted</div><div class="v" id="s9-od-submitted">—</div></div>
+                  <div class="memo-row"><div class="k">Executed</div><div class="v" id="s9-od-executed">—</div></div>
+                  <div class="memo-row"><div class="k">Type</div><div class="v" id="s9-od-type">—</div></div>
+                  <div class="memo-row"><div class="k">Price</div><div class="v" id="s9-od-price">—</div></div>
+                  <div class="memo-row"><div class="k">Entered</div><div class="v" id="s9-od-entered">—</div></div>
+                  <div class="memo-row"><div class="k">Filled</div><div class="v" id="s9-od-filled">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">Total</div><div class="v" id="s9-od-total">—</div></div>
                 </div>
 
                 <!-- Calibration — moved ABOVE the memo so the prediction
                      isn't buried below a long memo paragraph. Single
                      descriptive row bundles confidence + hurdle + horizon. -->
                 <div>
-                  <div class="m6-ledger-section-head">CALIBRATION</div>
+                  <div class="m6-ledger-section-head">Calibration</div>
                   <div class="memo-row s9-last-row">
-                    <div class="k" id="s9-cal-summary-key">PROBABILITY OF 20% / YR RETURN OVER 3 YEARS</div>
+                    <div class="k" id="s9-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
                     <div class="v" id="s9-cal-summary-val">—</div>
                   </div>
                   <!-- Legacy split fields kept hidden for any older callers. -->
-                  <div class="memo-row" style="display:none"><div class="k">PROB</div><div class="v" id="s9-conf">—</div></div>
-                  <div class="memo-row" style="display:none"><div class="k">HRZ</div><div class="v" id="s9-horizon">—</div></div>
+                  <div class="memo-row" style="display:none"><div class="k">Prob</div><div class="v" id="s9-conf">—</div></div>
+                  <div class="memo-row" style="display:none"><div class="k">Hrz</div><div class="v" id="s9-horizon">—</div></div>
                   <!-- Direct entry into calibration analytics · V4 -->
                   <div style="padding:12px 0;display:flex;justify-content:flex-end" data-min-version="4">
                     <button class="act-btn" onclick="go('s5')" style="padding:6px 0">
@@ -12593,12 +12867,12 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
                 <!-- Memo recorded section (shown if state.hasMemo) -->
                 <div id="s9-memo-section" style="display:none">
-                  <div class="m6-ledger-section-head">INVESTOR MEMO</div>
-                  <div class="memo-row"><div class="k">TYPE</div><div class="v" id="s9-memo-type">—</div></div>
-                  <div class="memo-row"><div class="k">SIZE</div><div class="v" id="s9-memo-size">—</div></div>
-                  <div class="memo-row"><div class="k">THESIS</div><div class="v" id="s9-memo-thesis">—</div></div>
-                  <div class="memo-row"><div class="k">KILL</div><div class="v" id="s9-memo-kill">—</div></div>
-                  <div class="memo-row s9-last-row"><div class="k">MOS</div><div class="v" id="s9-memo-mos">—</div></div>
+                  <div class="m6-ledger-section-head">Investor Memo</div>
+                  <div class="memo-row"><div class="k">Type</div><div class="v" id="s9-memo-type">—</div></div>
+                  <div class="memo-row"><div class="k">Size</div><div class="v" id="s9-memo-size">—</div></div>
+                  <div class="memo-row"><div class="k">Thesis</div><div class="v" id="s9-memo-thesis">—</div></div>
+                  <div class="memo-row"><div class="k">Kill</div><div class="v" id="s9-memo-kill">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">MoS</div><div class="v" id="s9-memo-mos">—</div></div>
                 </div>
 
                 <!-- Memo note -->
@@ -12618,7 +12892,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="closeMvpRecord()" type="button">‹</button>
-                <span class="memo-header-version" style="font-size:9px">RECORD</span>
+                <span class="memo-header-version" style="font-size:9px">Record</span>
               </div>
               <hr class="div">
             </div>
@@ -12635,31 +12909,31 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
                 <!-- Stats strip -->
                 <div class="m6-stats-strip s9-stats-strip">
-                  <div class="m6-stat-cell"><div class="m6-stat-lbl">SHARES</div><div class="m6-stat-val" id="mvprec-shares">—</div></div>
-                  <div class="m6-stat-cell"><div class="m6-stat-lbl">COST</div><div class="m6-stat-val" id="mvprec-cost">—</div></div>
-                  <div class="m6-stat-cell"><div class="m6-stat-lbl">WEIGHT</div><div class="m6-stat-val" id="mvprec-weight">—</div></div>
+                  <div class="m6-stat-cell"><div class="m6-stat-lbl">Shares</div><div class="m6-stat-val" id="mvprec-shares">—</div></div>
+                  <div class="m6-stat-cell"><div class="m6-stat-lbl">Cost</div><div class="m6-stat-val" id="mvprec-cost">—</div></div>
+                  <div class="m6-stat-cell"><div class="m6-stat-lbl">Weight</div><div class="m6-stat-val" id="mvprec-weight">—</div></div>
                 </div>
 
                 <!-- Trade detail -->
                 <div>
-                  <div class="m6-ledger-section-head">ORDER</div>
-                  <div class="memo-row"><div class="k">PRICE</div><div class="v" id="mvprec-price">—</div></div>
-                  <div class="memo-row s9-last-row"><div class="k">FILLED</div><div class="v" id="mvprec-filled">—</div></div>
+                  <div class="m6-ledger-section-head">Order</div>
+                  <div class="memo-row"><div class="k">Price</div><div class="v" id="mvprec-price">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">Filled</div><div class="v" id="mvprec-filled">—</div></div>
                 </div>
 
                 <!-- Memo -->
                 <div>
-                  <div class="m6-ledger-section-head">INVESTOR MEMO</div>
-                  <div class="memo-row"><div class="k">TYPE</div><div class="v" id="mvprec-mtype">—</div></div>
-                  <div class="memo-row"><div class="k">SIZE</div><div class="v" id="mvprec-msize">—</div></div>
-                  <div class="memo-row s9-last-row"><div class="k">MEMO</div><div class="v" id="mvprec-note">—</div></div>
+                  <div class="m6-ledger-section-head">Investor Memo</div>
+                  <div class="memo-row"><div class="k">Type</div><div class="v" id="mvprec-mtype">—</div></div>
+                  <div class="memo-row"><div class="k">Size</div><div class="v" id="mvprec-msize">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">Memo</div><div class="v" id="mvprec-note">—</div></div>
                 </div>
 
                 <!-- Calibration -->
                 <div>
-                  <div class="m6-ledger-section-head">CALIBRATION</div>
-                  <div class="memo-row"><div class="k">PROB</div><div class="v" id="mvprec-prob">—</div></div>
-                  <div class="memo-row s9-last-row"><div class="k">HORIZON</div><div class="v" id="mvprec-hrz">—</div></div>
+                  <div class="m6-ledger-section-head">Calibration</div>
+                  <div class="memo-row"><div class="k">Prob</div><div class="v" id="mvprec-prob">—</div></div>
+                  <div class="memo-row s9-last-row"><div class="k">Horizon</div><div class="v" id="mvprec-hrz">—</div></div>
                 </div>
 
                 <div class="t-bsm" style="line-height:1.6;color:var(--t-800);margin-top:8px">
@@ -15056,8 +15330,10 @@ const HORIZON_LBL = { '1y':'1 year', '2y':'2 years', '3y':'3 years', '4y':'4 yea
    in one sentence rather than three separate rows. */
 function formatCalibrationLabel() {
   const hurdle = (state.memo && state.memo.hurdleRate) || state.defaultHurdleRate || 20;
-  const horizon = HORIZON_LBL[state.horizon] || state.horizon || '3 years';
-  return 'Probability of ' + hurdle + '% / yr return over ' + horizon;
+  const horizon = HORIZON_LBL[state.horizon] || state.horizon || '3 Years';
+  // Title-cased: emit Years/Year capital (per doctrine — labels are Title Case)
+  const horizonTC = horizon.replace(/\b(year|years|month|months|day|days)\b/gi, (m) => m.charAt(0).toUpperCase() + m.slice(1).toLowerCase());
+  return 'Probability of ' + hurdle + '% / yr Return Over ' + horizonTC;
 }
 const TYPE_LBL = { comp:'Compounder', emer:'Emerging Compounder', situ:'Situational Mispricing', spec:'Speculative' };
 const TYPE_SUB = {
@@ -15111,12 +15387,12 @@ function refreshMemoHeaderPrice() {
     const t = el.textContent || '';
     // Match any AAPL header that's already showing a price OR carrying
     // one of the legacy version stamps / per-flow verbs. Core/Treasury
-    // headers say "CORE MEMO" — we leave those alone.
+    // headers say "Core Memo" — we leave those alone.
     const isAaplHeader =
-      t.indexOf('MEMO V1') !== -1 ||
+      /Memo\s*v1/i.test(t) ||
       t.indexOf('192.35') !== -1 ||
       /\d+\.\d{2}\s*[+-]\d/.test(t) ||
-      /\bAAPL\b.*\b(ADD|REDUCE|EXIT)\b/.test(t);
+      /\bAAPL\b.*\b(Add|Reduce|Exit)\b/i.test(t);
     if (!isAaplHeader) return;
     el.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · ' + aaplPriceMoveHTML();
   });
@@ -15470,17 +15746,120 @@ const _DEMO_VALUES = {
   coreConditions:  ['Employment situation changes such that this capital is needed before the planned 25-year horizon.', 'Total portfolio structure changes materially enough that this allocation percentage no longer fits the intended framework.'],
 };
 
-/* MVP V1 demo note — a full memo in one pass, matching the worked example on
-   the mexample page (thesis → valuation → catalysts → exit). The low-friction
-   flow expects the whole memo to live in this one field, so its demo fill is a
-   complete write-up rather than a one-line note. */
-const MVP_EXAMPLE_MEMO = `Apple is mispriced because the market still treats it as a hardware-cycle story. The real engine is the installed base — over two billion active devices throwing off recurring, high-margin services revenue at gross margins north of 70%.
+/* MVP V1 demo note — a full investment case in one pass, structured the
+   same way the in-modal worked example is structured (thesis, kill
+   criteria, why-now, intrinsic value, probability). The low-friction
+   flow expects the whole investment case to live in this one field, so
+   the demo fill is a complete write-up matching the example. */
+const MVP_EXAMPLE_MEMO = `01. Thesis
 
-My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.
+Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare.
 
-The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.
+Structural decomposition of the five-year return:
+• Revenue ≈ unit growth (~12–13 new US boutiques/year, low-teens square-footage growth) + comparable sales (decelerating from ~27% toward guided mid-teens) + e-commerce penetration. FY2027 guided to C$4.4–4.6B (+19–24%).
+• Margin ≈ gross-margin expansion (IMU + occupancy leverage, guided +150–200bps in FY2027) net of ~50bps incremental tariff/de-minimis drag, plus SG&A leverage from the "smart spending" initiative.
+• Capital returns ≈ buybacks (C$207M in FY2026; no dividend) modestly shrinking the count against stock-comp dilution.
+• Multiple ≈ the swing factor; at an C$80 entry (~25x trailing) the rating embeds far less optimism than the live ~47x.
 
-I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.`;
+The load-bearing assumption: that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding — i.e., US demand is supply-constrained, not the reverse. Every other input is downstream of this. The model works only if the marginal new US store, increasingly in smaller and less-proven markets, keeps approaching the productivity and sub-12-month payback of the existing fleet. If new-store productivity mean-reverts toward ordinary specialty-retail levels, the unit-growth algorithm degrades, comps normalize, and the multiple compresses at the same time. Buying at a conservative multiple is the defense against that convergence.
+
+02. Kill Criteria
+
+1. Demand saturation / brand fatigue
+   Metric: Comparable sales growth
+   Threshold: Two consecutive quarters below +3% absent a broad recession
+   Action: Exit / re-underwrite. Comps are the brand-health vital sign.
+
+2. Unit-growth engine breaks (load-bearing)
+   Metric: New US boutique payback / new-store productivity vs. fleet
+   Threshold: Payback beyond ~24 months, or new-store sales/sq-ft >20% below the fleet
+   Action: Trim hard / exit. This is the entire thesis.
+
+3. Pricing-power / markdown erosion
+   Metric: Annual gross margin (ex one-time tariff step)
+   Threshold: Below ~42% for a full year, not attributable to tariffs
+   Action: Re-underwrite. Signals discounting to move product.
+
+4. Inventory ahead of sales
+   Metric: Inventory growth vs. revenue growth
+   Threshold: Inventory growth exceeds revenue growth by >10pts for two consecutive quarters
+   Action: Caution / trim. The exact tell before the FY2024 stumble.
+
+5. Paying a growth multiple for non-growth
+   Metric: Forward P/E vs. revenue growth
+   Threshold: Forward P/E >45x while revenue growth decelerates below 15%
+   Action: Do not add / trim.
+
+6. Governance / key-person
+   Metric: Founder share sales, senior merchandising turnover (under dual-class control)
+   Threshold: Material undisclosed insider selling or another abrupt senior merchant/creative departure
+   Action: Review control alignment.
+
+03. Why Now
+
+Operational. FY2026 (reported 7 May 2026) was a clean beat-and-raise. Aritzia hit its FY2027 revenue target a full year early, posted +27% comps, grew US revenue 38%, and expanded adjusted EBITDA margin ~260bps despite ~260bps of tariff and de-minimis drag. Direct evidence of pricing power and cost discipline. It launched the Aritzia app (deeper engagement and first-party data), renewed its NCIB, and guided FY2027 to another ~20%+ revenue year with gross margin up 150–200bps. Execution and the US flywheel are firing.
+
+Valuation (the reason this is a buy). At the illustrative C$80 entry, the franchise trades around 25x trailing / ~18x forward earnings, roughly a market multiple for a business compounding revenue ~20% with ~20% ROIC. The "why now" is the rare alignment of a proven, accelerating operating model with an entry price that does not require the premium rating to persist. The base case clears the hurdle on earnings growth alone; multiple stability is upside, not a requirement.
+
+04. Intrinsic Value
+
+Method. A multi-stage DCF on a fashion retailer with double-digit comp volatility produces false precision; terminal value would dominate and rest on the same unprovable long-run assumptions. I use an EPS-and-exit-multiple framework over five years (FY2026 → FY2031), cross-checked against free cash flow, because the equity return here is mechanically forward earnings × terminal multiple, and because it forces the multiple, the dominant swing factor, into the open.
+
+Base inputs: FY2026 diluted EPS C$3.20; ~115M diluted shares (held roughly flat as buybacks offset stock comp).
+
+Three scenarios (FY2031):
+
+Bull
+  Rev. CAGR: 20%
+  FY31 Revenue: ~C$9.2B
+  Net margin: 13.0%
+  FY31 EPS: ~C$10.7
+  Exit P/E: 32x
+  FY31 price: ~C$342
+  5-yr IRR from C$80: ~34%
+
+Base
+  Rev. CAGR: 15%
+  FY31 Revenue: ~C$7.4B
+  Net margin: 11.5%
+  FY31 EPS: ~C$7.4
+  Exit P/E: 26x
+  FY31 price: ~C$192
+  5-yr IRR from C$80: ~19%
+
+Bear
+  Rev. CAGR: 8%
+  FY31 Revenue: ~C$5.4B
+  Net margin: 9.5%
+  FY31 EPS: ~C$4.4
+  Exit P/E: 16x
+  FY31 price: ~C$70
+  5-yr IRR from C$80: ~ −3%
+
+Conservative intrinsic value. The hurdle-clearing entry price for each scenario (FY31 price ÷ 2.49) is bull C$137, base C$77, bear C$28. Probability-weighting (30% / 45% / 25%) gives a hurdle-clearing entry of ~C$80 and a conservative IV band of C$80–100.
+
+Margin of safety. At the C$80 entry against the C$80–100 conservative IV, the margin of safety is adequate (roughly 0–20%): the base case clears the hurdle on earnings alone, the bull case clears it comfortably, and only the bear case (which embeds both a growth stall and a de-rating to 16x) loses money, and modestly. The asymmetry is favorable: ~+34% / +19% / −3% across bull / base / bear.
+
+05. Probability
+
+To clear 20% annualized from C$80, the price must reach ~C$96 in 1 year, ~C$138 in 3 years, and ~C$199 in 5 years.
+
+1-year
+  Target price: ~C$96
+  Probability: ~55%
+  Reasoning: A +20% move is well within range given FY2027 guided +19–24% revenue and continued beat-and-raise momentum; the conservative entry multiple removes de-rating risk as the main obstacle.
+
+3-year (binding)
+  Target price: ~C$138
+  Probability: ~55%
+  Reasoning: Bull and base scenarios both clear (base reaches ~C$135 on +19% IRR; bull ~C$209). Only the bear case fails. Weighted central tendency sits just above the hurdle.
+
+5-year
+  Target price: ~C$199
+  Probability: ~58%
+  Reasoning: Longer compounding lets earnings growth carry the return even with moderate multiple compression; base case lands ~C$192, essentially at target, with the bull tail providing cushion.
+
+Conclusion. 1-year probability ~55%, 3-year probability ~55%, 5-year probability ~58%. Conviction is grounded in earnings growth alone clearing the hurdle in the base case, with multiple stability and the bull tail as upside.`;
 
 const _DEMO_SCREEN_FIELDS = {
   m1:   ['type', 'size'],
@@ -15567,7 +15946,7 @@ function hydrateMacct() {
   const act = document.getElementById('macct-action');
   if (act) {
     const cd = state.cd;
-    act.textContent = (cd === 'reduce' || cd === 'exit') ? 'SELL' : 'BUY';
+    act.textContent = (cd === 'reduce' || cd === 'exit') ? 'Sell' : 'Buy';
   }
 }
 function continueFromMacct() {
@@ -15613,8 +15992,20 @@ function hydrateMreread() {
     // Horizon split — same format as every other review page.
     const orig = (typeof getOriginalPrediction === 'function') ? getOriginalPrediction() : null;
     const probTxt = orig ? (orig.prob + '%') : '—';
-    if ($('mreread-cal-key')) $('mreread-cal-key').textContent = formatCalibrationLabel().toUpperCase();
+    if ($('mreread-cal-key')) $('mreread-cal-key').textContent = formatCalibrationLabel();
     if ($('mreread-cal-val')) $('mreread-cal-val').textContent = probTxt;
+    // Source block — hidden when no source was recorded.
+    const srcBlock = $('mreread-source-block');
+    const srcVal   = $('mreread-source-val');
+    if (srcBlock && srcVal) {
+      const src = m.source;
+      if (src) {
+        srcBlock.style.display = '';
+        srcVal.textContent = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS[src]) || src;
+      } else {
+        srcBlock.style.display = 'none';
+      }
+    }
     if ($('mreread-note'))    $('mreread-note').textContent    = (m.note || '').trim() || '—';
   } else {
     // Empty state — clear any prior retroactive note input
@@ -15705,7 +16096,7 @@ function hydrateMarticulate() {
   const t   = document.getElementById('marticulate-title');
   const tag = document.getElementById('marticulate-tag');
   if (t)   t.textContent   = isExit ? 'Closing Apple' : 'Trimming Apple';
-  if (tag) tag.textContent = isExit ? 'EXIT' : 'REDUCE';
+  if (tag) tag.textContent = isExit ? 'Exit' : 'Reduce';
   // Selected reason (read-only context) + per-reason prompt
   const rv = document.getElementById('marticulate-reason-val');
   if (rv) rv.textContent = reasonLbl;
@@ -19724,11 +20115,21 @@ function hydrateMemoScreen(screenId) {
       detailInput.placeholder = sourcePlaceholderFor(m.source);
     }
     hideSourceSuggestions();
-    // Hydrate the per-source hit-rate caption under each option. MVP V1
-    // is a fork of V4.5 — same data, same surface — so the gate is "V4.5+
-    // OR MVP V1" rather than strict numeric.
-    const showHitRates = state.version === 'mvp1' || state.version >= 4.5;
-    if (showHitRates) refreshSourceHitRates();
+    // Hydrate the per-source hit-rate caption under each option. V4.5+
+    // shows the rates; MVP V1 hides them entirely (no analytics surface
+    // yet — showing fabricated stats would lie about a feature that
+    // doesn't exist).
+    const showHitRates = state.version >= 4.5 && state.version !== 'mvp1';
+    if (showHitRates) {
+      refreshSourceHitRates();
+    } else {
+      // Clear any prior hit-rate text so the rows render as a clean
+      // single-line label without the sub caption.
+      document.querySelectorAll('.source-hitrate').forEach(el => {
+        el.textContent = '';
+        el.style.display = 'none';
+      });
+    }
     // Promote "Friend" to the second slot (word-of-mouth is the most
     // common AND most mis-evaluated source — surfacing higher is honest)
     if (showHitRates && list) {
@@ -20462,7 +20863,7 @@ const MVP1_COPY = {
     exit:     'Closing Apple'
   },
   // Chip below the title — anchors the user to "this is the latest memo"
-  newMemoChip: 'MEMO ON FILE',
+  newMemoChip: 'Memo',
   // Banner copy under the chip — flow-specific framing
   banner: {
     increase: 'You\'re adding to a position you already hold. This memo replaces the latest one on file. Edit if needed.',
@@ -20630,8 +21031,19 @@ function advanceMemo(target) {
    of the flow while in the middle of a single-field edit. */
 function editFromReview(stepId) {
   state.editingFromReview = true;
+  state._editReturnTo = 'm6';
   // Mark the memo as having been touched this flow so the transaction
   // snapshot logic knows this isn't a "carried-over" memo on commit.
+  state._memoEditedThisFlow = true;
+  go(stepId);
+}
+/* Edit-from-s4 — same pattern as editFromReview but returns the user to
+   the s4 Review & Execute screen on Save, not to m6. Used by all the
+   tap-to-edit rows on s4 so the user can revise any field before
+   holding to confirm. */
+function editFromS4(stepId) {
+  state.editingFromReview = true;
+  state._editReturnTo = 's4';
   state._memoEditedThisFlow = true;
   go(stepId);
 }
@@ -20639,8 +21051,10 @@ function editFromReview(stepId) {
    values are already persisted via each step's existing onchange / oninput
    handlers, so "save" is just navigation. */
 function exitReviewEdit() {
+  const target = state._editReturnTo || 'm6';
   state.editingFromReview = false;
-  go('m6');
+  state._editReturnTo = null;
+  go(target);
 }
 /* Stored "original" inline back-handlers per memo step so we can swap
    them out when entering edit mode and restore on exit. Keyed by step id. */
@@ -21155,7 +21569,7 @@ function renderM6() {
     const editHint  = document.querySelector('.scr[data-id="m6"] .m6-section-edit-hint');
 
     if (sell) {
-      if (docLbl)  docLbl.textContent = isExit ? 'CLOSE POSITION' : 'REDUCE POSITION';
+      if (docLbl)  docLbl.textContent = isExit ? 'Close Position' : 'Reduce Position';
       // Buy-only notices don't apply to a sell.
       if (buyFoot) buyFoot.style.display = 'none';
       if (immut)   immut.style.display   = 'none';
@@ -21251,24 +21665,151 @@ function renderMvp1ReturningView() {
   const memoRowsWrap2 = noteRowEl ? noteRowEl.parentElement : null;
 
   if (!isReturning) {
-    // First-time / V4.5: bare arrow seal owns the footer, and the ticker
-    // hero is the giant "AAPL" — drop the prose-title modifier.
+    // First-time / V4.5: bare arrow seal owns the footer.
     if (ids.sealBtn)     ids.sealBtn.style.display     = '';
     if (ids.saveSecRow)  ids.saveSecRow.style.display  = 'none';
     if (ids.savePrimary) ids.savePrimary.style.display = 'none';
     const hdrA = document.getElementById('m6-ledger-header');
-    if (hdrA) hdrA.classList.remove('is-prose-title');
-    // Restore every element the returning view mutates — otherwise a
-    // prior returning render leaks into this first-time render (title
-    // stays "Adding to Apple", header pieces stay hidden, etc.).
-    const titleEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero');
-    if (titleEl) titleEl.innerHTML = '<span class="memo-ctx-ticker">AAPL</span>';
+    // Restore every element the returning view mutates.
+    const titleEl    = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero');
     const tickerMeta = document.getElementById('m6-ticker-meta');
+    const allocLbl   = document.querySelector('.scr[data-id="m6"] .alloc-type-lbl');
+    const dateEl     = document.getElementById('m6-date');
+    const docLbl     = document.getElementById('m6-doc-label');
+    const isMvp1First = (state.version === 'mvp1' && state.cd === 'initial');
+    // Both MVP V1 first-time and V4.5 keep AAPL as the giant ticker hero.
+    // The "INVESTOR MEMO" prominence comes from the bigger section-head
+    // below (driven via the .is-first-memo class on the section row).
+    if (hdrA) hdrA.classList.remove('is-prose-title');
+    if (titleEl) titleEl.innerHTML = '<span class="memo-ctx-ticker">AAPL</span>';
     if (tickerMeta) tickerMeta.style.display = '';
-    const allocLbl = document.querySelector('.scr[data-id="m6"] .alloc-type-lbl');
     if (allocLbl) allocLbl.style.display = '';
-    const dateEl = document.getElementById('m6-date');
     if (dateEl) dateEl.style.display = '';
+    if (isMvp1First && docLbl) {
+      // Doc-label hidden in MVP V1 first-time — the date row below and
+      // the "Investor Memo" section head carry enough context.
+      docLbl.style.display = 'none';
+    } else if (docLbl) {
+      // Restore the doc-label for V4.5 / other flows.
+      docLbl.style.display = '';
+    }
+    // Flag the page so the CSS can promote the "INVESTOR MEMO" section
+    // head to a hero treatment on first-time MVP V1 only.
+    const sectionRow  = document.querySelector('.scr[data-id="m6"] .m6-ledger-section-row');
+    const sectionHead = sectionRow ? sectionRow.querySelector('.m6-ledger-section-head') : null;
+    if (sectionRow)  sectionRow.classList.toggle('is-first-memo', !!isMvp1First);
+    if (sectionHead) {
+      if (isMvp1First && !state._investorMemoTyped) {
+        // First visit to m6 first-time in MVP V1 — type "AAPL" and
+        // "Investor Memo" in PARALLEL, then cascade the rest of the
+        // page in from a small left offset starting ~320ms after the
+        // typing starts. Mark as typed so re-visits skip the show.
+        state._investorMemoTyped = true;
+        const tickerEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero .memo-ctx-ticker');
+
+        // 1. Hide the section head + ticker contents and arm carets.
+        sectionHead.textContent = '';
+        sectionHead.classList.add('is-typing');
+        if (tickerEl) {
+          tickerEl.textContent = '';
+          tickerEl.classList.add('is-typing');
+        }
+
+        // 2. Pre-stage the surrounding content: hidden + nudged left.
+        //    The two typing targets stay full opacity; everything else
+        //    eases back to its natural position 320ms after typing starts.
+        const m6Scr = document.querySelector('.scr[data-id="m6"]');
+        const stageTargets = [];
+        if (m6Scr) {
+          const order = [
+            m6Scr.querySelector('.alloc-type-lbl'),
+            m6Scr.querySelector('#m6-classify'),
+            m6Scr.querySelector('#m6-doc-label'),
+            m6Scr.querySelector('#m6-date'),
+            m6Scr.querySelector('.m6-section-edit-hint'),
+            // The Type / Size memo rows live as siblings of the
+            // m6-ledger-section-row inside the same wrapper div.
+            ...Array.from((sectionRow && sectionRow.parentElement)
+              ? sectionRow.parentElement.querySelectorAll(':scope > .memo-row')
+              : []),
+            m6Scr.querySelector('#m6-calibration-section'),
+            // The thesis-through-note row block is the next-sibling div
+            // after #m6-calibration-section.
+            (m6Scr.querySelector('#m6-calibration-section') || {}).nextElementSibling,
+            m6Scr.querySelector('#m6-buy-footer'),
+            m6Scr.querySelector('.m6-immutability'),
+          ];
+          order.forEach(el => { if (el && el.nodeType === 1) stageTargets.push(el); });
+        }
+        stageTargets.forEach(el => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(-8px)';
+          el.style.transition = 'opacity 540ms var(--ease), transform 540ms var(--ease)';
+        });
+
+        // 3. Parallel typing loops. Same character cadence for both —
+        //    AAPL (4 chars) finishes first; "Investor Memo" (13 chars)
+        //    keeps going for ~9 more ticks.
+        const memoText = 'Investor Memo';
+        const tickerText = 'AAPL';
+        const speed = 70;
+        let mi = 0, ti = 0;
+        const tickMemo = () => {
+          if (mi < memoText.length) {
+            sectionHead.textContent = memoText.slice(0, ++mi);
+            setTimeout(tickMemo, speed);
+          } else {
+            setTimeout(() => sectionHead.classList.remove('is-typing'), 600);
+          }
+        };
+        const tickTicker = () => {
+          if (!tickerEl) return;
+          if (ti < tickerText.length) {
+            tickerEl.textContent = tickerText.slice(0, ++ti);
+            setTimeout(tickTicker, speed);
+          } else {
+            setTimeout(() => tickerEl.classList.remove('is-typing'), 600);
+          }
+        };
+
+        // 4. Kick the show. Both typers fire simultaneously; the stage
+        //    cascade starts ~320ms later (after AAPL finishes typing and
+        //    "Investor Memo" is partway through).
+        const startDwell = 350;       // settle page transition first
+        const stageStart = 320;       // ms after typing begins
+        const stageStep  = 55;        // cascade stagger per element
+        setTimeout(() => { tickMemo(); tickTicker(); }, startDwell);
+        setTimeout(() => {
+          stageTargets.forEach((el, i) => {
+            el.style.transitionDelay = (i * stageStep) + 'ms';
+            el.style.opacity = '1';
+            el.style.transform = 'translateX(0)';
+          });
+          // Clear inline styles once the cascade completes so they don't
+          // linger if the user navigates away and back.
+          const cleanupAfter = 540 + (stageTargets.length * stageStep) + 200;
+          setTimeout(() => {
+            stageTargets.forEach(el => {
+              el.style.opacity = '';
+              el.style.transform = '';
+              el.style.transition = '';
+              el.style.transitionDelay = '';
+            });
+          }, cleanupAfter);
+        }, startDwell + stageStart);
+      } else {
+        sectionHead.textContent = isMvp1First ? 'Investor Memo' : 'INVESTOR MEMO';
+        sectionHead.classList.remove('is-typing');
+        // Ensure the AAPL ticker is restored on re-visits (the !isReturning
+        // branch above already rewrites the hero innerHTML, but in case
+        // any prior typing run left it cleared we guard here too).
+        const tickerEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero .memo-ctx-ticker');
+        if (tickerEl) {
+          if (!tickerEl.textContent || tickerEl.textContent.length < 4) tickerEl.textContent = 'AAPL';
+          tickerEl.classList.remove('is-typing');
+        }
+      }
+    }
     // Restore the V4.5 memo-rows wraps (Type/Size + Thesis-through-Note)
     // that were hidden by a prior returning render.
     if (memoRowsWrap)  memoRowsWrap.style.display  = '';
@@ -21353,6 +21894,18 @@ function renderMvp1ReturningView() {
   // confidence as the value. Replaces the prior split Confidence + Horizon.
   if ($d('m6-decl-cal-key')) $d('m6-decl-cal-key').textContent = formatCalibrationLabel();
   if ($d('m6-decl-cal-val')) $d('m6-decl-cal-val').textContent = state.prob + '%';
+  // Source declaration — hidden when no source is on file.
+  const srcRow = $d('m6-decl-source-row');
+  const srcVal = $d('m6-decl-source-val');
+  if (srcRow && srcVal) {
+    const src = state.memo && state.memo.source;
+    if (src) {
+      srcRow.style.display = '';
+      srcVal.textContent = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS[src]) || src;
+    } else {
+      srcRow.style.display = 'none';
+    }
+  }
 
   // Memo body — flat display, no scrollable box. Tap "Edit" on the
   // header to open the dedicated composer (m5). When the memo is empty
@@ -22356,7 +22909,7 @@ function renderS4() {
   // New combined calibration row — single descriptive label, user's % as value.
   const s4CalKey = document.getElementById('s4-cal-summary-key');
   const s4CalVal = document.getElementById('s4-cal-summary-val');
-  if (s4CalKey) s4CalKey.textContent = formatCalibrationLabel().toUpperCase();
+  if (s4CalKey) s4CalKey.textContent = formatCalibrationLabel();
   if (s4CalVal) s4CalVal.textContent = state.prob + '%';
 
   // V4.5 only: stress test. Show what a 30% drop would do in dollars +
@@ -22406,6 +22959,20 @@ function renderS4() {
       noteRow.style.display = isMvp1 ? '' : 'none';
       if (isMvp1) {
         document.getElementById('s4-memo-note').textContent = (state.memo.note || '').trim() || '—';
+      }
+    }
+    // Source row — shown when a source has been recorded. Sits directly
+    // above the investment case row for both MVP V1 first-time and
+    // Increase flows.
+    const sourceRow = document.getElementById('s4-memo-source-row');
+    const sourceVal = document.getElementById('s4-memo-source');
+    if (sourceRow && sourceVal) {
+      const src = state.memo && state.memo.source;
+      if (src) {
+        sourceRow.style.display = '';
+        sourceVal.textContent = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS[src]) || src;
+      } else {
+        sourceRow.style.display = 'none';
       }
     }
   } else {
@@ -22472,7 +23039,7 @@ function renderS9() {
   // New combined calibration row — single descriptive label, user's % as value.
   const s9CalKey = document.getElementById('s9-cal-summary-key');
   const s9CalVal = document.getElementById('s9-cal-summary-val');
-  if (s9CalKey) s9CalKey.textContent = formatCalibrationLabel().toUpperCase();
+  if (s9CalKey) s9CalKey.textContent = formatCalibrationLabel();
   if (s9CalVal) s9CalVal.textContent = state.prob + '%';
   /* s9-top3 removed — Top 3 idea no longer captured */
   // Filled-at timestamp — generated at execution
@@ -22531,13 +23098,33 @@ function renderS9() {
           noteRow = document.createElement('div');
           noteRow.id = 's9-memo-note-row';
           noteRow.className = 'memo-row';
-          noteRow.innerHTML = '<div class="k">INVESTMENT CASE</div><div class="v" id="s9-memo-note-val">—</div>';
+          noteRow.innerHTML = '<div class="k">Investment Case</div><div class="v" id="s9-memo-note-val">—</div>';
           memoMosRow.parentNode.insertBefore(noteRow, memoMosRow.nextSibling);
         }
       }
       if (noteRow) noteRow.style.display = '';
       const noteVal = document.getElementById('s9-memo-note-val');
       if (noteVal) noteVal.textContent = (state.memo.note || '').trim() || '—';
+
+      // Insert (once) a SOURCE row immediately before the investment case row.
+      let sourceRow = document.getElementById('s9-memo-source-row');
+      if (!sourceRow && noteRow && noteRow.parentNode) {
+        sourceRow = document.createElement('div');
+        sourceRow.id = 's9-memo-source-row';
+        sourceRow.className = 'memo-row';
+        sourceRow.innerHTML = '<div class="k">Source</div><div class="v" id="s9-memo-source-val">—</div>';
+        noteRow.parentNode.insertBefore(sourceRow, noteRow);
+      }
+      if (sourceRow) {
+        const src = state.memo && state.memo.source;
+        if (src) {
+          sourceRow.style.display = '';
+          const sv = document.getElementById('s9-memo-source-val');
+          if (sv) sv.textContent = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS[src]) || src;
+        } else {
+          sourceRow.style.display = 'none';
+        }
+      }
 
       // On a sell, surface the reason (the key signal on a sell receipt).
       let reasonRow = document.getElementById('s9-sell-reason-row');
@@ -22548,7 +23135,7 @@ function renderS9() {
             reasonRow = document.createElement('div');
             reasonRow.id = 's9-sell-reason-row';
             reasonRow.className = 'memo-row';
-            reasonRow.innerHTML = '<div class="k">REASON</div><div class="v" id="s9-sell-reason-val">—</div>';
+            reasonRow.innerHTML = '<div class="k">Reason</div><div class="v" id="s9-sell-reason-val">—</div>';
             anchor.parentNode.insertBefore(reasonRow, anchor.nextSibling);
           }
         }
@@ -24050,11 +24637,161 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
 </ul>
 <p>No template and no sections are required. One honest write-up that a sharper reader could challenge is enough.</p>
 <h4>An example</h4>
-<p>Apple is mispriced because the market still treats it as a hardware-cycle story. The real engine is the installed base — over two billion active devices throwing off recurring, high-margin services revenue at gross margins north of 70%.</p>
-<p>My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.</p>
-<p>The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.</p>
-<p>I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.</p>
-<p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written investment case.</p>`
+
+<div class="memo-ex-section">
+  <div class="memo-ex-num">01</div>
+  <div class="memo-ex-section-title">Thesis</div>
+  <p><strong>Thesis.</strong> Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare.</p>
+  <p>Structural decomposition of the five-year return:</p>
+  <ul class="info-list">
+    <li><strong>Revenue</strong> ≈ unit growth (~12–13 new US boutiques/year, low-teens square-footage growth) + comparable sales (decelerating from ~27% toward guided mid-teens) + e-commerce penetration. FY2027 guided to C$4.4–4.6B (+19–24%).</li>
+    <li><strong>Margin</strong> ≈ gross-margin expansion (IMU + occupancy leverage, guided +150–200bps in FY2027) net of ~50bps incremental tariff/de-minimis drag, plus SG&amp;A leverage from the "smart spending" initiative.</li>
+    <li><strong>Capital returns</strong> ≈ buybacks (C$207M in FY2026; no dividend) modestly shrinking the count against stock-comp dilution.</li>
+    <li><strong>Multiple</strong> ≈ the swing factor; at an C$80 entry (~25x trailing) the rating embeds far less optimism than the live ~47x.</li>
+  </ul>
+  <p><strong>The load-bearing assumption:</strong> <em>that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding</em> — i.e., US demand is supply-constrained, not the reverse. Every other input is downstream of this. The model works only if the marginal new US store, increasingly in smaller and less-proven markets, keeps approaching the productivity and sub-12-month payback of the existing fleet. If new-store productivity mean-reverts toward ordinary specialty-retail levels, the unit-growth algorithm degrades, comps normalize, and the multiple compresses at the same time. Buying at a conservative multiple is the defense against that convergence.</p>
+</div>
+
+<div class="memo-ex-section">
+  <div class="memo-ex-num">02</div>
+  <div class="memo-ex-section-title">Kill Criteria</div>
+
+  <div class="memo-ex-kill">
+    <div class="memo-ex-kill-head"><span class="memo-ex-kill-num">1</span><span class="memo-ex-kill-title">Demand saturation / brand fatigue</span></div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Metric:</span> Comparable sales growth</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Threshold:</span> Two consecutive quarters below +3% absent a broad recession</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Action:</span> Exit / re-underwrite. Comps are the brand-health vital sign.</div>
+  </div>
+
+  <div class="memo-ex-kill">
+    <div class="memo-ex-kill-head"><span class="memo-ex-kill-num">2</span><span class="memo-ex-kill-title">Unit-growth engine breaks (load-bearing)</span></div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Metric:</span> New US boutique payback / new-store productivity vs. fleet</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Threshold:</span> Payback beyond ~24 months, or new-store sales/sq-ft &gt;20% below the fleet</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Action:</span> Trim hard / exit. This is the entire thesis.</div>
+  </div>
+
+  <div class="memo-ex-kill">
+    <div class="memo-ex-kill-head"><span class="memo-ex-kill-num">3</span><span class="memo-ex-kill-title">Pricing-power / markdown erosion</span></div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Metric:</span> Annual gross margin (ex one-time tariff step)</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Threshold:</span> Below ~42% for a full year, not attributable to tariffs</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Action:</span> Re-underwrite. Signals discounting to move product.</div>
+  </div>
+
+  <div class="memo-ex-kill">
+    <div class="memo-ex-kill-head"><span class="memo-ex-kill-num">4</span><span class="memo-ex-kill-title">Inventory ahead of sales</span></div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Metric:</span> Inventory growth vs. revenue growth</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Threshold:</span> Inventory growth exceeds revenue growth by &gt;10pts for two consecutive quarters</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Action:</span> Caution / trim. The exact tell before the FY2024 stumble.</div>
+  </div>
+
+  <div class="memo-ex-kill">
+    <div class="memo-ex-kill-head"><span class="memo-ex-kill-num">5</span><span class="memo-ex-kill-title">Paying a growth multiple for non-growth</span></div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Metric:</span> Forward P/E vs. revenue growth</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Threshold:</span> Forward P/E &gt;45x while revenue growth decelerates below 15%</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Action:</span> Do not add / trim.</div>
+  </div>
+
+  <div class="memo-ex-kill">
+    <div class="memo-ex-kill-head"><span class="memo-ex-kill-num">6</span><span class="memo-ex-kill-title">Governance / key-person</span></div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Metric:</span> Founder share sales, senior merchandising turnover (under dual-class control)</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Threshold:</span> Material undisclosed insider selling or another abrupt senior merchant/creative departure</div>
+    <div class="memo-ex-kill-detail"><span class="memo-ex-kill-k">Action:</span> Review control alignment.</div>
+  </div>
+</div>
+
+<div class="memo-ex-section">
+  <div class="memo-ex-num">03</div>
+  <div class="memo-ex-section-title">Why Now</div>
+  <p><strong>Operational.</strong> FY2026 (reported 7 May 2026) was a clean beat-and-raise. Aritzia hit its FY2027 revenue target a full year early, posted +27% comps, grew US revenue 38%, and <em>expanded</em> adjusted EBITDA margin ~260bps despite ~260bps of tariff and de-minimis drag. Direct evidence of pricing power and cost discipline. It launched the Aritzia app (deeper engagement and first-party data), renewed its NCIB, and guided FY2027 to another ~20%+ revenue year with gross margin up 150–200bps. Execution and the US flywheel are firing.</p>
+  <p><strong>Valuation (the reason this is a buy).</strong> At the illustrative C$80 entry, the franchise trades around <strong>25x trailing / ~18x forward earnings</strong>, roughly a market multiple for a business compounding revenue ~20% with ~20% ROIC. The "why now" is the rare alignment of a proven, accelerating operating model with an entry price that does not require the premium rating to persist. The base case clears the hurdle on earnings growth alone; multiple stability is upside, not a requirement.</p>
+</div>
+
+<div class="memo-ex-section">
+  <div class="memo-ex-num">04</div>
+  <div class="memo-ex-section-title">Intrinsic Value</div>
+  <p><strong>Method.</strong> A multi-stage DCF on a fashion retailer with double-digit comp volatility produces false precision; terminal value would dominate and rest on the same unprovable long-run assumptions. I use an <strong>EPS-and-exit-multiple framework</strong> over five years (FY2026 → FY2031), cross-checked against free cash flow, because the equity return here is mechanically <em>forward earnings × terminal multiple</em>, and because it forces the multiple, the dominant swing factor, into the open.</p>
+  <p><strong>Base inputs:</strong> FY2026 diluted EPS C$3.20; ~115M diluted shares (held roughly flat as buybacks offset stock comp).</p>
+  <p>Three scenarios (FY2031):</p>
+
+  <div class="memo-ex-scenario">
+    <div class="memo-ex-scenario-title">Bull</div>
+    <div class="memo-ex-scenario-rows">
+      <span class="k">Rev. CAGR:</span><span class="v">20%</span>
+      <span class="k">FY31 Revenue:</span><span class="v">~C$9.2B</span>
+      <span class="k">Net margin:</span><span class="v">13.0%</span>
+      <span class="k">FY31 EPS:</span><span class="v">~C$10.7</span>
+      <span class="k">Exit P/E:</span><span class="v">32x</span>
+      <span class="k">FY31 price:</span><span class="v">~C$342</span>
+      <span class="k">5-yr IRR from C$80:</span><span class="v">~34%</span>
+    </div>
+  </div>
+
+  <div class="memo-ex-scenario">
+    <div class="memo-ex-scenario-title">Base</div>
+    <div class="memo-ex-scenario-rows">
+      <span class="k">Rev. CAGR:</span><span class="v">15%</span>
+      <span class="k">FY31 Revenue:</span><span class="v">~C$7.4B</span>
+      <span class="k">Net margin:</span><span class="v">11.5%</span>
+      <span class="k">FY31 EPS:</span><span class="v">~C$7.4</span>
+      <span class="k">Exit P/E:</span><span class="v">26x</span>
+      <span class="k">FY31 price:</span><span class="v">~C$192</span>
+      <span class="k">5-yr IRR from C$80:</span><span class="v">~19%</span>
+    </div>
+  </div>
+
+  <div class="memo-ex-scenario">
+    <div class="memo-ex-scenario-title">Bear</div>
+    <div class="memo-ex-scenario-rows">
+      <span class="k">Rev. CAGR:</span><span class="v">8%</span>
+      <span class="k">FY31 Revenue:</span><span class="v">~C$5.4B</span>
+      <span class="k">Net margin:</span><span class="v">9.5%</span>
+      <span class="k">FY31 EPS:</span><span class="v">~C$4.4</span>
+      <span class="k">Exit P/E:</span><span class="v">16x</span>
+      <span class="k">FY31 price:</span><span class="v">~C$70</span>
+      <span class="k">5-yr IRR from C$80:</span><span class="v">~ −3%</span>
+    </div>
+  </div>
+
+  <p><strong>Conservative intrinsic value.</strong> The hurdle-clearing entry price for each scenario (FY31 price ÷ 2.49) is bull C$137, base C$77, bear C$28. Probability-weighting (30% / 45% / 25%) gives a hurdle-clearing entry of <strong>~C$80</strong> and a conservative IV band of <strong>C$80–100</strong>.</p>
+  <p><strong>Margin of safety.</strong> At the C$80 entry against the C$80–100 conservative IV, the margin of safety is adequate (roughly 0–20%): the base case clears the hurdle on earnings alone, the bull case clears it comfortably, and only the bear case (which embeds both a growth stall and a de-rating to 16x) loses money, and modestly. The asymmetry is favorable: <strong>~+34% / +19% / −3%</strong> across bull / base / bear.</p>
+</div>
+
+<div class="memo-ex-section">
+  <div class="memo-ex-num">05</div>
+  <div class="memo-ex-section-title">Probability</div>
+  <p>To clear 20% annualized from C$80, the price must reach <strong>~C$96 in 1 year, ~C$138 in 3 years, and ~C$199 in 5 years</strong>.</p>
+
+  <div class="memo-ex-prob">
+    <div class="memo-ex-prob-title">1-year</div>
+    <div class="memo-ex-prob-rows">
+      <span class="k">Target price:</span><span class="v">~C$96</span>
+      <span class="k">Probability:</span><span class="v">~55%</span>
+      <span class="k">Reasoning:</span><span class="v">A +20% move is well within range given FY2027 guided +19–24% revenue and continued beat-and-raise momentum; the conservative entry multiple removes de-rating risk as the main obstacle.</span>
+    </div>
+  </div>
+
+  <div class="memo-ex-prob">
+    <div class="memo-ex-prob-title">3-year (binding)</div>
+    <div class="memo-ex-prob-rows">
+      <span class="k">Target price:</span><span class="v">~C$138</span>
+      <span class="k">Probability:</span><span class="v">~55%</span>
+      <span class="k">Reasoning:</span><span class="v">Bull and base scenarios both clear (base reaches ~C$135 on +19% IRR; bull ~C$209). Only the bear case fails. Weighted central tendency sits just above the hurdle.</span>
+    </div>
+  </div>
+
+  <div class="memo-ex-prob">
+    <div class="memo-ex-prob-title">5-year</div>
+    <div class="memo-ex-prob-rows">
+      <span class="k">Target price:</span><span class="v">~C$199</span>
+      <span class="k">Probability:</span><span class="v">~58%</span>
+      <span class="k">Reasoning:</span><span class="v">Longer compounding lets earnings growth carry the return even with moderate multiple compression; base case lands ~C$192, essentially at target, with the bull tail providing cushion.</span>
+    </div>
+  </div>
+
+  <p><strong>Conclusion.</strong> 1-year probability ~55%, 3-year probability ~55%, 5-year probability ~58%. Conviction is grounded in earnings growth alone clearing the hurdle in the base case, with multiple stability and the bull tail as upside.</p>
+</div>
+
+<p class="info-disclaimer">An illustrative example, not a recommendation or a view on Aritzia. It shows how the thesis, kill criteria, valuation, intrinsic value, and probability all live within a single written investment case.</p>`
   },
   core_why: {
     eyebrow: 'Capital placement',
