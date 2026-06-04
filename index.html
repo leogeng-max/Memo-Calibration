@@ -3050,14 +3050,14 @@ body.is-fullscreen .artboard-toggle {
 }
 .radio-opt:last-child { border-bottom: none; }
 .radio-circle {
-  width: 18px; height: 18px;
+  width: 12px; height: 12px;
   border: 1px solid var(--d);
   border-radius: 50%;
   flex-shrink: 0;
   display: grid; place-items: center;
 }
 .radio-circle.on::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--p);
+  content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--p);
 }
 
 /* ═══════════════ FORECAST CAPTURE (s12) ═══════════════
@@ -4729,7 +4729,7 @@ body.is-fullscreen .artboard-toggle {
 .scr[data-id="msell"] #msell-eyebrow { margin-bottom: 26px !important; }
 .radio-dot {
   flex-shrink: 0;
-  width: 18px; height: 18px;
+  width: 12px; height: 12px;
   border-radius: 50%;
   border: 1px solid var(--t-800);
   display: grid; place-items: center;
@@ -4737,7 +4737,7 @@ body.is-fullscreen .artboard-toggle {
   margin-top: 2px;
 }
 .radio-row.is-on .radio-dot::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--p);
+  content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--p);
 }
 
 .field-list { display: flex; flex-direction: column; }
@@ -5284,12 +5284,16 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 
 /* When the numpad slides up, the Cancel / Review row rides up with it so
    the user can submit without dismissing the keyboard. When the numpad
-   slides back down, the row falls back to the bottom of the screen. */
+   slides back down, the row falls back to the bottom of the screen.
+   Background matches the numpad (#1C1C1E) so the row reads as the same
+   surface — feels like one fixed action bar above the keys rather than a
+   floating strip on a black gap. */
 .scr[data-id="s8"] .act-row {
   transition: transform 320ms var(--ease);
-  background: var(--bg);
+  background: #1C1C1E;
   position: relative;
   z-index: 31;
+  padding-top: 14px !important;
 }
 .scr[data-id="s8"]:has(.ios-numpad.is-open) .act-row {
   transform: translateY(-234px);
@@ -5578,6 +5582,104 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   font-size: 11px; font-weight: 400;     /* PDF: body/xs = 11 */
   color: var(--t-800); line-height: 1.4;
   letter-spacing: -0.005em; margin-top: 3px;
+}
+/* ───────────────────────────────────────────────────────────────
+   s4 Memo card — groups the entire memo block (Type, Size, Source,
+   Investment Case, Thesis, Kill, MoS) into a single discrete surface
+   so the memo reads as a self-contained unit, distinct from the
+   calibration block above and the Hold-to-confirm below. Mirrors the
+   Memo card pattern used on the stock detail page.
+
+   Card frame: subtle white-tint background + 0.5px hairline border,
+   10px rounded corners, sits inset 16px from the page edges. Header
+   "● Memo" carries a green pulsing dot (same cadence as the LIVE
+   badge); hairline separator below the title splits header from data.
+   ─────────────────────────────────────────────────────────────── */
+.scr[data-id="s4"] #s4-memo-section {
+  margin: 16px 16px 0;
+  padding: 0;                       /* rows carry their own padding */
+  background: rgba(255,255,255,0.025);
+  border: 0.5px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+}
+
+/* Card header — pulsing green dot + "Memo" title + chevron, hairline below.
+   Entire header is tappable to collapse / expand the card body. */
+.scr[data-id="s4"] #s4-memo-section .s4r-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 16px 12px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  color: var(--p);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-bottom-color 240ms var(--ease);
+}
+.scr[data-id="s4"] #s4-memo-section .s4r-section-head:active {
+  background: rgba(255,255,255,0.02);
+}
+.scr[data-id="s4"] #s4-memo-section .s4r-section-head::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3FB950;
+  animation: m6-live-pulse 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+/* Chevron sits at the far right of the header. Points down when expanded,
+   rotates to "right" (-90°) when collapsed — same idiom iOS uses for
+   disclosure rows. */
+.scr[data-id="s4"] #s4-memo-section .s4-memo-chevron {
+  margin-left: auto;
+  color: var(--t);
+  flex-shrink: 0;
+  transition: transform 240ms var(--ease);
+}
+.scr[data-id="s4"] #s4-memo-section.is-collapsed .s4-memo-chevron {
+  transform: rotate(-90deg);
+}
+
+/* Collapsing body — max-height transition rather than display:none so
+   the open / close eases instead of snapping. Border under the header
+   fades to transparent in the collapsed state so the card reads as a
+   single rounded chip when closed. */
+.scr[data-id="s4"] #s4-memo-section .s4-memo-body {
+  max-height: 4000px;
+  overflow: hidden;
+  transition: max-height 360ms var(--ease), opacity 220ms var(--ease);
+  opacity: 1;
+}
+.scr[data-id="s4"] #s4-memo-section.is-collapsed .s4-memo-body {
+  max-height: 0;
+  opacity: 0;
+}
+.scr[data-id="s4"] #s4-memo-section.is-collapsed .s4r-section-head {
+  border-bottom-color: transparent;
+  padding-bottom: 14px;
+}
+
+/* Internal rows — same stacked layout as before, but with side padding
+   so they don't hit the card edge, and softer internal dividers. */
+.scr[data-id="s4"] #s4-memo-section .s4r-row {
+  padding: 14px 16px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.04);
+}
+.scr[data-id="s4"] #s4-memo-section .s4r-row:last-child {
+  border-bottom: none;
+}
+
+/* Active state on the editable rows — keep the existing soft fill but
+   slightly stronger inside the card so the affordance reads through
+   the card's own background tint. */
+.scr[data-id="s4"] #s4-memo-section .s4r-editable:active {
+  background: rgba(255,255,255,0.04);
 }
 .s4r-stress {
   margin: 16px 16px 0;
@@ -6625,7 +6727,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
 .review-answer-row .sub  { color: var(--t-700); font-size: 13px; line-height: 1.32; letter-spacing: -0.02em; margin-top: 4px; }
 .review-answer-row .dot {
   flex-shrink: 0;
-  width: 18px; height: 18px;
+  width: 12px; height: 12px;
   border-radius: 50%;
   border: 1px solid var(--t-800);
   display: grid; place-items: center;
@@ -6633,7 +6735,7 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-top: 2px;
 }
 .review-answer-row.is-on .dot::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--p);
+  content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--p);
 }
 
 /* Status pill — used on review-saved + review history list */
@@ -7599,6 +7701,190 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   background: #3FB950;
   animation: m6-live-pulse 1.6s ease-in-out infinite;
 }
+/* Draft view — the "Draft" chip is fully hidden. The top-right
+   "Clear draft memo" action plus the page title ("Apple") communicate
+   the draft context; the chip was redundant. */
+.scr[data-id="m6"].is-draft-view .m6-newmemo-chip {
+  display: none;
+}
+
+/* Draft view — Example memo pill. Sits at the top of the m6 body in
+   draft mode only. Card-style row with subtle background lift, hairline
+   border, rounded corners. Tap opens the mvp_memo_example info modal. */
+.m6-draft-example-pill {
+  display: none;
+}
+.scr[data-id="m6"].is-draft-view .m6-draft-example-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.025);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font);
+  color: var(--s);
+  transition: background 180ms var(--ease), border-color 180ms var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.scr[data-id="m6"].is-draft-view .m6-draft-example-pill:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.14);
+}
+.m6-draft-example-pill-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.m6-draft-example-pill-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--p);
+  letter-spacing: -0.01em;
+}
+.m6-draft-example-pill-sub {
+  font-size: 11px;
+  color: var(--t);
+  letter-spacing: 0;
+}
+.m6-draft-example-pill-arrow {
+  color: var(--t);
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+/* Clear draft memo bottom sheet — reuses the cd-sheet layout. The
+   destructive "Clear" option is the first action (lit white); Cancel
+   sits below in a quieter tone. */
+#clear-draft-sheet .clear-draft-prose {
+  font-size: 13px;
+  color: var(--t);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+  padding-right: 8px;
+}
+#clear-draft-sheet .clear-draft-confirm {
+  color: var(--p);
+  font-weight: 500;
+}
+#clear-draft-sheet .clear-draft-confirm:hover { color: #E55353; }
+#clear-draft-sheet .clear-draft-cancel {
+  color: var(--t);
+}
+
+/* Save-before-leave bottom sheet — reuses the cd-sheet layout.
+   Save is the primary (lit white), Discard reads as secondary, Cancel
+   sits below in the quietest gray. */
+#save-draft-sheet .clear-draft-prose {
+  font-size: 13px;
+  color: var(--t);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+  padding-right: 8px;
+}
+#save-draft-sheet .save-draft-confirm {
+  color: var(--p);
+  font-weight: 500;
+}
+#save-draft-sheet .save-draft-discard {
+  color: var(--s);
+}
+#save-draft-sheet .save-draft-discard:hover { color: #E55353; }
+#save-draft-sheet .save-draft-cancel {
+  color: var(--t);
+}
+
+/* Top-right Clear draft button — same chrome-text style as Exit. */
+.m6-clear-draft-btn { font-weight: 400; }
+
+/* ───────────────────────────────────────────────────────────────
+   MEXAMPLE — Read-only example draft memo
+   Standalone page reached from Draft persona via "See example memo".
+   Reuses m6-ledger / m6-declaration / m6-inline-memo visual treatment
+   so the example reads as a real memo, not a doc preview. Banner +
+   non-interactive rows distinguish it from the editable draft view.
+   ─────────────────────────────────────────────────────────────── */
+.scr[data-id="mexample"] .mexample-banner {
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--t-800);
+  line-height: 1.5;
+  letter-spacing: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  margin: -4px 0 4px;
+}
+.scr[data-id="mexample"] .mexample-decl {
+  cursor: default;
+}
+.scr[data-id="mexample"] .mexample-decl .m6-declaration-edit { display: none; }
+.scr[data-id="mexample"] .mexample-case .m6-inline-memo-edit  { display: none; }
+.scr[data-id="mexample"] .mexample-case .m6-inline-memo-body {
+  /* No clamp on the example — it's a reference, full prose is the point. */
+  display: block;
+  white-space: pre-line;
+}
+
+/* mexample — Investment case row mirrors the m6 collapsible pattern.
+   Default: 3-line clamp with native "…" ellipsis. Chevron at top right
+   rotates 180° when expanded. */
+.scr[data-id="mexample"] #mexample-case-row {
+  border-bottom: none;
+  padding-top: 4px;
+}
+.scr[data-id="mexample"] #mexample-case-row .m6-note-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+.scr[data-id="mexample"] #mexample-case-row .m6-note-chevron {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: var(--t);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 280ms var(--ease), color 180ms var(--ease);
+}
+.scr[data-id="mexample"] #mexample-case-row .m6-note-chevron:hover { color: var(--p); }
+.scr[data-id="mexample"] #mexample-case-row.is-expanded .m6-note-chevron {
+  transform: rotate(180deg);
+}
+.scr[data-id="mexample"] #mexample-case-row #mexample-case-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+}
+.scr[data-id="mexample"] #mexample-case-row.is-expanded #mexample-case-body {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+/* Section divider between the example memo and the research prompt.
+   Same hairline weight as elsewhere in the design system. */
+.scr[data-id="mexample"] .mexample-divider {
+  border: none;
+  border-top: 0.5px solid var(--c-1000);
+  margin: 24px 0 18px;
+}
 /* Two-clocks horizon line — sits inline under the chip as a single quiet
    sentence. No box, no background — matches the existing m6 row-sub style. */
 .m6-twoclocks {
@@ -7713,6 +7999,21 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
    Eyebrow label + Edit affordance share a row; the body text flows
    naturally below. Tap "Edit" to jump to the dedicated composer (m5). */
 .m6-inline-memo { display: flex; flex-direction: column; gap: 10px; }
+/* Tappable variant — entire Investment case block routes to m5 on tap.
+   Subtle background lift on press so the user sees the affordance is
+   responsive. No hover styling (mobile-first), no border — the block
+   reads as a row that happens to have a stacked layout. */
+.m6-inline-memo--tappable {
+  cursor: pointer;
+  padding: 4px 0;
+  margin: -4px 0;
+  border-radius: 4px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 120ms var(--ease);
+}
+.m6-inline-memo--tappable:active {
+  background: rgba(255,255,255,0.025);
+}
 .m6-inline-memo-header {
   display: flex;
   align-items: baseline;
@@ -7839,6 +8140,170 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   vertical-align: baseline;
   animation: m5-caret-blink 1.05s steps(2, jump-none) infinite;
 }
+/* ──────────────────────────────────────────────────────────────────────
+   M6 FIRST-TIME — INSTITUTIONAL LAYOUT
+   The first-time memo review reads as a clean memorandum: one big
+   "Memo" hero at the top, a compact sub-meta block, then evenly-spaced
+   sections separated by consistent hairlines. Calibration gets its own
+   prediction-hero treatment (big 70% number) so the prediction reads
+   as the key data point. Scoped via `.is-institutional` on the m6 scr
+   (toggled by JS only when MVP V1 first-time).
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Tighten the header chrome — the meta block should feel like the front
+   plate of a document, not a stack of disconnected lines. */
+.scr[data-id="m6"].is-institutional .m6-ledger-header {
+  margin-bottom: 4px;
+}
+.scr[data-id="m6"].is-institutional .m6-ledger-meta {
+  margin-bottom: 22px;       /* breathing room before the Memo hero */
+}
+.scr[data-id="m6"].is-institutional .alloc-type-lbl {
+  font-size: 12px;
+  color: var(--t-800);
+  margin-bottom: 2px;
+}
+.scr[data-id="m6"].is-institutional .m6-ledger-classify {
+  font-size: 12px;
+  color: var(--t-800);
+  margin-bottom: 2px;
+  letter-spacing: 0;
+}
+.scr[data-id="m6"].is-institutional .m6-ledger-date {
+  font-size: 11px;
+  color: var(--t-800);
+  margin-top: 0;
+}
+
+/* Promote the "Memo" section head into the page anchor — bigger, more
+   breathing room above. Replaces the existing 22px is-first-memo size
+   when in institutional mode. */
+.scr[data-id="m6"].is-institutional .m6-ledger-section-row.is-first-memo .m6-ledger-section-head {
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--p);
+  padding-bottom: 0;
+  margin-top: 24px;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+.scr[data-id="m6"].is-institutional .m6-ledger-section-row.is-first-memo {
+  display: block;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+}
+.scr[data-id="m6"].is-institutional .m6-section-edit-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--t-800);
+}
+
+/* Section dividers — explicit hairlines between the three content
+   groups. Above the Memo hero (separates header chrome from content),
+   above the Calibration block (separates Type/Size from prediction),
+   above the Thesis-through-Note block (separates prediction from rest). */
+.scr[data-id="m6"].is-institutional .m6-ledger-section-row.is-first-memo {
+  border-top: 0.5px solid var(--c-1000);
+  padding-top: 24px;
+}
+.scr[data-id="m6"].is-institutional #m6-calibration-section {
+  border-top: 0.5px solid var(--c-1000);
+  padding-top: 22px;
+}
+.scr[data-id="m6"].is-institutional #m6-calibration-section + div {
+  border-top: 0.5px solid var(--c-1000);
+  padding-top: 18px;
+  margin-top: 6px;
+}
+
+/* Calibration — restructure as a prediction-hero block. The 70% number
+   becomes the focal point; the descriptive label sits below as a caption. */
+.scr[data-id="m6"].is-institutional #m6-calibration-section {
+  padding-top: 18px;
+}
+.scr[data-id="m6"].is-institutional #m6-calibration-section .m6-ledger-section-head {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--t);
+  padding-bottom: 6px;
+  border-bottom: none;
+  margin-bottom: 8px;
+}
+.scr[data-id="m6"].is-institutional #m6-calibration-section .m6-cal-summary-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-bottom: none;
+  padding: 0;
+}
+.scr[data-id="m6"].is-institutional #m6-calibration-section #m6-cal-summary-val {
+  order: 1;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  color: var(--p);
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+.scr[data-id="m6"].is-institutional #m6-calibration-section #m6-cal-summary-key {
+  order: 2;
+  font-size: 12px;
+  color: var(--t);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+/* Investment Case prose — truncates to 3 lines with a native ellipsis
+   ("…") at the end of the third line via -webkit-line-clamp. The
+   chevron at the top right toggles expansion. Tapping anywhere else on
+   the row routes to m5 for editing (the chevron uses stopPropagation
+   to keep the two affordances cleanly separated). */
+.scr[data-id="m6"] #m6-note-row .m6-note-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.scr[data-id="m6"] #m6-note-row .m6-note-chevron {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: var(--t);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 280ms var(--ease), color 180ms var(--ease);
+}
+.scr[data-id="m6"] #m6-note-row .m6-note-chevron:hover { color: var(--p); }
+.scr[data-id="m6"] #m6-note-row.is-expanded .m6-note-chevron {
+  transform: rotate(180deg);
+}
+.scr[data-id="m6"] #m6-note-row #m6-note-display {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.scr[data-id="m6"] #m6-note-row.is-expanded #m6-note-display {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+/* If the prose is short enough to fit in 3 lines (no overflow), hide
+   the chevron — there's nothing to expand. */
+.scr[data-id="m6"] #m6-note-row.is-no-overflow .m6-note-chevron { display: none; }
+
+/* Probability value — tabular-nums so the count-up digits don't jitter
+   as they tick up. */
+#m6-cal-summary-val { font-variant-numeric: tabular-nums; }
+
 /* Stage-in cascade for m6 first-time view. JS sets the initial hidden
    state on selected elements, then 300-350ms after typing starts adds
    inline styles to fade each in from a small left offset. No CSS keyframe
@@ -8138,8 +8603,8 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 }
 .macct-option.is-on .radio-dot { border-color: var(--p); }
 .macct-option.is-on .radio-dot::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--p); display: block; margin: auto;
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--p);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -8478,8 +8943,8 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 /* Radio dot state driven by mfork parent */
 .mfork-option.is-on .radio-dot { border-color: var(--p); }
 .mfork-option.is-on .radio-dot::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--p); display: block; margin: auto;
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--p);
 }
 /* Legacy check hidden — replaced by radio-dot in HTML */
 .mfork-option-check {
@@ -8493,7 +8958,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   border-color: var(--p);
 }
 .mfork-option.is-on .mfork-option-check::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--p);
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--p);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -8560,8 +9025,8 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 .mc-role-row .lbl-block .sub  { color: var(--t-700); font-size: 12px; line-height: 1.4; letter-spacing: -0.02em; }
 .mc-role-row.is-on .radio-dot { border-color: var(--p); }
 .mc-role-row.is-on .radio-dot::after {
-  content: ''; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--p); display: block;
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--p);
 }
 .mc-condition-wrap { display: flex; flex-direction: column; gap: 10px; }
 .mc-condition-input {
@@ -9483,6 +9948,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
       <div class="drawer-toggle">
         <button id="mode-first"  onclick="setMode('first')">First-time</button>
         <button id="mode-return" onclick="setMode('return')">Returning</button>
+        <button id="mode-draft"  onclick="setMode('draft')">Draft memo</button>
       </div>
     </div>
     <div class="drawer-row">
@@ -10095,6 +10561,34 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <button class="cd-sheet-opt" onclick="pickCD('increase')">Increase exposure</button>
               <button class="cd-sheet-opt" onclick="pickCD('reduce')">Reduce exposure</button>
               <!-- Exit position removed — users zero out via Reduce exposure. -->
+            </div>
+          </div>
+
+          <!-- Clear draft memo bottom sheet — confirmation before wiping
+               the draft. Reuses the cd-sheet idiom: backdrop dim + slide-up
+               panel. Only ever opened from Draft persona's top-right action. -->
+          <div class="cd-sheet" id="clear-draft-sheet" style="display:none" aria-modal="true">
+            <div class="cd-sheet-backdrop" onclick="closeClearDraftSheet()"></div>
+            <div class="cd-sheet-panel">
+              <div class="cd-sheet-eyebrow">Clear draft memo</div>
+              <div class="clear-draft-prose">Anything you've drafted will be cleared. You can start over from a blank memo.</div>
+              <button class="cd-sheet-opt clear-draft-confirm" onclick="confirmClearDraft()">Clear draft memo</button>
+              <button class="cd-sheet-opt clear-draft-cancel" onclick="closeClearDraftSheet()">Cancel</button>
+            </div>
+          </div>
+
+          <!-- Save-before-leave bottom sheet — fired when the user taps
+               the back chevron in Draft mode and has written anything.
+               Three options: Save (persist + leave), Discard (wipe +
+               leave), Cancel (stay on m6). -->
+          <div class="cd-sheet" id="save-draft-sheet" style="display:none" aria-modal="true">
+            <div class="cd-sheet-backdrop" onclick="closeSaveDraftSheet()"></div>
+            <div class="cd-sheet-panel">
+              <div class="cd-sheet-eyebrow">Save this draft?</div>
+              <div class="clear-draft-prose">You've started writing. Save your draft so you can pick up where you left off.</div>
+              <button class="cd-sheet-opt save-draft-confirm" onclick="confirmSaveDraftAndLeave()">Save draft memo</button>
+              <button class="cd-sheet-opt save-draft-discard" onclick="confirmDiscardDraftAndLeave()">Discard</button>
+              <button class="cd-sheet-opt save-draft-cancel" onclick="closeSaveDraftSheet()">Cancel</button>
             </div>
           </div>
 
@@ -10800,7 +11294,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <!-- Review rows -->
                 <div>
                   <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">Investor Memo</div>
+                    <div class="m6-ledger-section-head">Memo</div>
                     <span class="m6-section-edit-hint">Tap each to update</span>
                   </div>
                   <div class="memo-row" onclick="go('mfork')"><div class="k">Path</div><div class="v">Core / Treasury</div></div>
@@ -11669,52 +12163,98 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             </div>
           </section>
 
-          <!-- ════════ mexample — Research prompt + worked example (MVP V1) ════════ -->
+          <!-- ════════ mexample — Read-only example draft memo
+               ════════
+               Standalone reference page reached from the Draft persona
+               via "See example memo". Top→bottom layout mirrors the
+               actual draft m6 page (Classification · Position size ·
+               Probability · Investment case with chevron collapse),
+               populated with the canonical Aritzia example. Below that,
+               the AI research prompt that helps users write a memo of
+               their own. -->
           <section class="scr" data-id="mexample">
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
-                <button class="back-btn" onclick="go('m5')">‹</button>
-                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+                <button class="back-btn" onclick="goBackFromExample()">‹</button>
               </div>
               <hr class="div">
             </div>
             <div class="body-scroll">
-              <div class="memo-page">
-                <div class="memo-header">
-                  <div class="memo-header-top"><h1 class="memo-header-title">Write your memo</h1></div>
-                  <div class="memo-header-meta">Reference</div>
+              <div class="memo-page m6-ledger" style="gap:16px">
+
+                <!-- Header — mirrors the draft m6 view so the example
+                     reads as a real memo, not a doc preview. -->
+                <div class="m6-ledger-header is-prose-title">
+                  <div class="m6-ledger-meta"><span class="memo-ctx-ticker">AAPL</span> · Example memo</div>
+                  <div class="m6-ticker-hero">Apple</div>
+                  <div class="m6-ledger-classify">Compounder · Core Position</div>
+                  <div class="m6-ledger-date">Drafted Jun 4, 2026</div>
                 </div>
 
-                <!-- Research prompt -->
-                <div class="memo-body--reveal">
-                  <div>
-                    <div class="section-eyebrow">Research prompt</div>
-                    <div class="memo-subhead" style="margin-top:6px;margin-bottom:12px">Paste this into any AI, fill in the bracketed company details, and it returns a first draft of every memo input.</div>
-                    <div class="prompt-card">
-                      <pre class="prompt-text" id="mexample-prompt-text"></pre>
-                    </div>
-                    <button class="prompt-copy-btn" id="mexample-copy-btn" onclick="copyResearchPrompt()" type="button">
-                      <svg class="prompt-copy-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
-                        <rect x="3" y="2.5" width="9" height="11" rx="1.2" stroke="currentColor" stroke-width="1"/>
-                        <path d="M5.5 2.5V1.6A0.6 0.6 0 0 1 6.1 1h6A0.6 0.6 0 0 1 12.7 1.6v9.4a0.6 0.6 0 0 1-0.6 0.6h-0.9" stroke="currentColor" stroke-width="1"/>
+                <!-- Read-only banner — distinguishes this from an
+                     editable draft. Same surface treatment as the
+                     "See example memo" pill on the draft view. -->
+                <div class="mexample-banner">A complete draft memo. Use it as a reference for yours.</div>
+
+                <!-- The example memo itself — 4 declarations (Classification,
+                     Position size, Probability, Source) in the same row
+                     format the user sees on their own draft. Read-only;
+                     no tap-to-edit affordances. -->
+                <div class="m6-declarations mexample-decls">
+                  <div class="m6-declaration mexample-decl">
+                    <span class="m6-declaration-key">Classification</span>
+                    <span class="m6-declaration-text">Compounder</span>
+                  </div>
+                  <div class="m6-declaration mexample-decl">
+                    <span class="m6-declaration-key">Position size</span>
+                    <span class="m6-declaration-text">Core Position</span>
+                  </div>
+                  <div class="m6-declaration mexample-decl">
+                    <span class="m6-declaration-key">Probability of 20% / yr Return Over 3 Years</span>
+                    <span class="m6-declaration-text">65%</span>
+                  </div>
+                  <div class="m6-declaration mexample-decl">
+                    <span class="m6-declaration-key">Source</span>
+                    <span class="m6-declaration-text">Screener</span>
+                  </div>
+                </div>
+
+                <!-- Investment case — collapsible, starts collapsed at
+                     3 lines with native "…" ellipsis. Chevron at top
+                     right toggles. Mirrors the m6-note-row pattern. -->
+                <div class="memo-row mexample-case-row" id="mexample-case-row">
+                  <div class="m6-note-head">
+                    <div class="k">Investment case</div>
+                    <button class="m6-note-chevron" type="button" aria-label="Toggle full memo" onclick="toggleMexampleCase()">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <path d="M4 5.5 L7 8.5 L10 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
-                      <span id="mexample-copy-label">Copy prompt</span>
                     </button>
                   </div>
-
-                  <!-- Worked example -->
-                  <div style="margin-top:8px">
-                    <div class="section-eyebrow">Example memo</div>
-                    <div class="memo-subhead" style="margin-top:6px;margin-bottom:12px">A complete memo, written in one pass.</div>
-                    <div class="example-memo-body">
-                      <p>Apple is mispriced because the market still treats it as a hardware-cycle story. The real engine is the installed base — over two billion active devices throwing off recurring, high-margin services revenue at gross margins north of 70%.</p>
-                      <p>My thesis rests on two things holding: Services revenue keeps compounding above 10% as the App Store, advertising, and financial services scale, and hardware gross margins stay above 38% even as iPhone unit growth flattens — proof that pricing power is real and the AI-silicon capex is paying for itself. I value the business around $255 a share — roughly 18× FY26 product earnings plus 22× services free cash flow, blended and discounted 15% for execution risk — which leaves a margin of safety near 25% at today's price.</p>
-                      <p>The near-term catalysts I'm watching are WWDC in June 2026 (AI-feature pricing), the iPhone 18 cycle in September, and the Q4 print where the Services run-rate should clear $120B annualized.</p>
-                      <p>I'll close the position if any one of three things happens: Services revenue growth drops below 8% for two consecutive quarters, hardware gross margin falls below 36% on a trailing-quarter basis, or iPhone unit volumes contract in Greater China for three consecutive quarters. Any of those breaks the durable-pricing-power claim, and I exit within ten trading days.</p>
-                      <p class="info-disclaimer">An illustrative example, not a recommendation or a view on Apple. It shows how the thesis, valuation, catalysts, and exit conditions can live in a single written memo.</p>
-                    </div>
-                  </div>
+                  <div class="v" id="mexample-case-body">—</div>
                 </div>
+
+                <!-- Section divider before the research-prompt block. -->
+                <hr class="mexample-divider">
+
+                <!-- Research prompt — moved BELOW the example memo so the
+                     user reads the worked memo first, then sees the AI
+                     prompt that produces output like it. -->
+                <div>
+                  <div class="section-eyebrow">Research prompt</div>
+                  <div class="memo-subhead" style="margin-top:6px;margin-bottom:12px">Paste this into any AI, fill in the bracketed company details, and it returns a first draft of every memo input.</div>
+                  <div class="prompt-card">
+                    <pre class="prompt-text" id="mexample-prompt-text"></pre>
+                  </div>
+                  <button class="prompt-copy-btn" id="mexample-copy-btn" onclick="copyResearchPrompt()" type="button">
+                    <svg class="prompt-copy-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <rect x="3" y="2.5" width="9" height="11" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                      <path d="M5.5 2.5V1.6A0.6 0.6 0 0 1 6.1 1h6A0.6 0.6 0 0 1 12.7 1.6v9.4a0.6 0.6 0 0 1-0.6 0.6h-0.9" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                    <span id="mexample-copy-label">Copy prompt</span>
+                  </button>
+                </div>
+
               </div>
             </div>
           </section>
@@ -11789,7 +12329,10 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
             <div style="padding-top:0;flex-shrink:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
                 <button class="back-btn" onclick="backFromM6()">‹</button>
-                <button class="exit-btn" onclick="exitMemo()">Exit</button>
+                <!-- Default top-right: Exit. Swapped to "Clear draft memo"
+                     in draft mode by renderMvp1ReturningView. -->
+                <button class="exit-btn" id="m6-exit-btn" onclick="exitMemo()">Exit</button>
+                <button class="exit-btn m6-clear-draft-btn" id="m6-clear-draft-btn" onclick="openClearDraftSheet()" style="display:none">Clear draft memo</button>
               </div>
               <hr class="div">
             </div>
@@ -11827,6 +12370,17 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      of increase/reduce/exit. Replaces the standard memo rows
                      with the spec's 4 declarations + inline memo body. -->
                 <div class="m6-mvp1-returning" id="m6-mvp1-returning" style="display:none">
+                  <!-- Draft persona — Example memo pill.  Sits at the very top
+                       of the draft view so users see a complete reference
+                       before they start filling fields. Tapping opens the
+                       canonical mvp_memo_example info modal (Aritzia memo). -->
+                  <button class="m6-draft-example-pill" id="m6-draft-example-pill" type="button" onclick="openExampleMemoPage()">
+                    <span class="m6-draft-example-pill-text">
+                      <span class="m6-draft-example-pill-title">See example memo</span>
+                      <span class="m6-draft-example-pill-sub">A complete draft memo to reference</span>
+                    </span>
+                    <span class="m6-draft-example-pill-arrow" aria-hidden="true">→</span>
+                  </button>
                   <!-- New-memo chip (anchors "this is the latest memo") -->
                   <div class="m6-newmemo-chip" id="m6-newmemo-chip">
                     <span class="m6-newmemo-dot"></span>
@@ -11886,10 +12440,15 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <!-- Memo body — displayed as flat content, not a
                        scrollable box. Tap the row to edit it on the
                        dedicated memo composer (m5). -->
-                  <div class="m6-inline-memo">
+                  <!-- Entire block is tappable to route to m5. The
+                       Edit › chevron stays hidden (it duplicates the
+                       row-level tap affordance), but the wrapper now
+                       has the click handler so any spot — label, body,
+                       or whitespace — opens the composer. -->
+                  <div class="m6-inline-memo m6-inline-memo--tappable" onclick="editFromReview('m5')" role="button" tabindex="0">
                     <div class="m6-inline-memo-header">
                       <span class="m6-inline-memo-label" id="m6-inline-memo-label">Investment case</span>
-                      <button class="m6-inline-memo-edit" type="button" onclick="editFromReview('m5')">Edit ›</button>
+                      <button class="m6-inline-memo-edit" type="button" onclick="event.stopPropagation();editFromReview('m5')">Edit ›</button>
                     </div>
                     <div class="m6-inline-memo-body" id="m6-inline-memo-body">—</div>
                   </div>
@@ -11901,7 +12460,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      the position is" and "why you took it". -->
                 <div>
                   <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">Investor Memo</div>
+                    <div class="m6-ledger-section-head">Memo</div>
                     <span class="m6-section-edit-hint">Tap each to update</span>
                   </div>
                   <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
@@ -11913,7 +12472,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      user's confidence, the hurdle rate, and the horizon
                      into a single readable statement. -->
                 <div id="m6-calibration-section">
-                  <div class="m6-ledger-section-head">Calibration</div>
+                  <div class="m6-ledger-section-head">Confidence</div>
                   <div class="memo-row m6-cal-summary-row" onclick="editFromReview('s12')">
                     <div class="k" id="m6-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
                     <div class="v" id="m6-cal-summary-val">—</div>
@@ -11934,7 +12493,22 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-row" onclick="editFromReview('miv')"><div class="k">IV</div><div class="v" id="m6-iv">—</div></div>
                   <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MoS</div><div class="v" id="m6-mos">—</div></div>
                   <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
-                  <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')"><div class="k">Note</div><div class="v" id="m6-note-display">—</div></div>
+                  <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')">
+                    <!-- Header row — key on the left, chevron at top right.
+                         Chevron toggles expansion; tap anywhere else on
+                         the row still routes to m5 for editing. -->
+                    <div class="m6-note-head">
+                      <div class="k">Note</div>
+                      <button class="m6-note-chevron" type="button" aria-label="Toggle full memo" onclick="event.stopPropagation();toggleM6NoteExpand()">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                          <path d="M4 5.5 L7 8.5 L10 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <!-- Prose truncates to 3 lines with native iOS-style "…"
+                         (-webkit-line-clamp). Tap the chevron to expand. -->
+                    <div class="v" id="m6-note-display">—</div>
+                  </div>
                 </div>
 
                 <!-- Footer note (buy / first-time framing) -->
@@ -11942,16 +12516,12 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   The memo and calibration are recorded. Future buys of AAPL will skip the memo unless you choose to re-enter it.
                 </div>
 
-                <!-- Immutability notice (buy) -->
-                <div class="m6-immutability" id="m6-immutability">
-                  This version is permanent once confirmed. Edits create new versions.
-                </div>
-
                 <!-- Footer note (sell: reduce / exit) -->
                 <div class="t-bsm" id="m6-sell-footer" style="line-height:1.6;color:var(--t-800);display:none"></div>
 
               </div>
             </div>
+
 
 
             <!-- Pressure Test — required step before sealing (buy / increase) -->
@@ -11992,6 +12562,15 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               </button>
               <!-- First-time / V4.5 seal arrow -->
               <button class="v5-primary is-arrow m6-hold-btn" id="m6-seal-btn" onclick="onM6SealTap()" type="button">→</button>
+              <!-- Draft persona footer — single primary "Save draft memo"
+                   CTA. No purchase trigger; the memo lives as a draft
+                   until the user explicitly promotes it. The Clear
+                   affordance lives at the top-right of the screen
+                   (not in the footer) so it doesn't compete visually
+                   with the primary save action. -->
+              <button class="v5-primary" id="m6-draft-save" type="button" onclick="onDraftSave()" style="display:none">
+                <span>Save draft memo</span>
+              </button>
             </div>
 
             <!-- Edit-confirmation modal — appears when the user is on a returning
@@ -12575,10 +13154,11 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
             </div><!-- /.s8-scroll -->
 
-            <div class="act-row" style="flex-shrink:0;padding:0 26px 18px;justify-content:space-between">
-              <button class="act-btn" onclick="event.stopPropagation();goBackFromShares()">
-                <span>→ Cancel</span>
-              </button>
+            <!-- Action row — only Review.  Cancel was removed: it
+                 duplicated the top-left back chevron, which already
+                 navigates the user back to s4. One forward affordance
+                 (Review) sits in the canonical bottom-right slot. -->
+            <div class="act-row" style="flex-shrink:0;padding:0 26px 18px;justify-content:flex-end">
               <button class="act-btn locked" id="s8-review-btn" onclick="event.stopPropagation();goToReview()">
                 <span>→ Review</span>
               </button>
@@ -12685,7 +13265,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                    isn't buried below a long memo body. One descriptive row
                    bundles the user's confidence, hurdle rate, and horizon. -->
               <div class="s4r-section">
-                <div class="s4r-section-head">Calibration</div>
+                <div class="s4r-section-head">Confidence</div>
                 <div class="s4r-row s4r-row--stack s4r-editable" onclick="editFromS4('s12')">
                   <div class="s4r-row-head">
                     <div class="s4r-key" id="s4-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
@@ -12704,58 +13284,70 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 </div>
               </div>
 
-              <!-- Memo section (initial buy only) -->
+              <!-- Memo section (initial buy only)
+                   Card layout — header is tappable to collapse / expand
+                   the body. Default state is expanded so the user can
+                   verify the memo at a glance; the Investment Case prose
+                   can be long, so the toggle keeps the page from feeling
+                   unwieldy on smaller screens. -->
               <div id="s4-memo-section" class="s4r-section" style="display:none">
-                <div class="s4r-section-head">Investor Memo</div>
-                <div class="s4r-row s4r-editable" onclick="editFromS4('m1')">
-                  <div class="s4r-key">Type</div>
-                  <div class="s4r-val">
-                    <div class="s4r-row-head">
-                      <span id="s4-memo-type">—</span>
-                      <span class="s4r-edit-mark">Edit ›</span>
-                    </div>
-                    <div class="s4r-val-sub" id="s4-memo-type-sub"></div>
-                  </div>
+                <div class="s4r-section-head" onclick="toggleS4Memo()" role="button" aria-expanded="true">
+                  <span class="s4-memo-title">Memo</span>
+                  <svg class="s4-memo-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M3 4.5 L6 7.5 L9 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </div>
-                <div class="s4r-row s4r-editable" onclick="editFromS4('m1b')">
-                  <div class="s4r-key">Size</div>
-                  <div class="s4r-val">
-                    <div class="s4r-row-head">
-                      <span id="s4-memo-size">—</span>
-                      <span class="s4r-edit-mark">Edit ›</span>
-                    </div>
-                    <div class="s4r-val-sub" id="s4-memo-size-sub"></div>
-                  </div>
-                </div>
-                <!-- Source — sits directly above the investment case row.
-                     Visible whenever a source has been recorded. -->
-                <div class="s4r-row s4r-editable" id="s4-memo-source-row" style="display:none" onclick="editFromS4('msrc')">
-                  <div class="s4r-key">Source</div>
-                  <div class="s4r-val">
-                    <div class="s4r-row-head">
-                      <span id="s4-memo-source">—</span>
-                      <span class="s4r-edit-mark">Edit ›</span>
+                <div class="s4-memo-body">
+                  <div class="s4r-row s4r-editable" onclick="editFromS4('m1')">
+                    <div class="s4r-key">Type</div>
+                    <div class="s4r-val">
+                      <div class="s4r-row-head">
+                        <span id="s4-memo-type">—</span>
+                        <span class="s4r-edit-mark">Edit ›</span>
+                      </div>
+                      <div class="s4r-val-sub" id="s4-memo-type-sub"></div>
                     </div>
                   </div>
-                </div>
-                <div class="s4r-row s4r-row--stack s4r-editable" id="s4-memo-note-row" style="display:none" onclick="editFromS4('m5')">
-                  <div class="s4r-row-head">
-                    <div class="s4r-key" id="s4-memo-note-key">Investment Case</div>
-                    <span class="s4r-edit-mark">Edit ›</span>
+                  <div class="s4r-row s4r-editable" onclick="editFromS4('m1b')">
+                    <div class="s4r-key">Size</div>
+                    <div class="s4r-val">
+                      <div class="s4r-row-head">
+                        <span id="s4-memo-size">—</span>
+                        <span class="s4r-edit-mark">Edit ›</span>
+                      </div>
+                      <div class="s4r-val-sub" id="s4-memo-size-sub"></div>
+                    </div>
                   </div>
-                  <div class="s4r-val" id="s4-memo-note">—</div>
-                </div>
-                <div class="s4r-row s4r-row--stack" id="s4-memo-thesis-row">
-                  <div class="s4r-key">Thesis</div>
-                  <div class="s4r-val" id="s4-memo-thesis">—</div>
-                </div>
-                <div class="s4r-row s4r-row--stack" id="s4-memo-kill-row">
-                  <div class="s4r-key">Kill</div>
-                  <div class="s4r-val" id="s4-memo-kill">—</div>
-                </div>
-                <div class="s4r-row" id="s4-memo-mos-row">
-                  <div class="s4r-key">MoS</div>
-                  <div class="s4r-val" id="s4-memo-mos">—</div>
+                  <!-- Source — sits directly above the investment case row.
+                       Visible whenever a source has been recorded. -->
+                  <div class="s4r-row s4r-editable" id="s4-memo-source-row" style="display:none" onclick="editFromS4('msrc')">
+                    <div class="s4r-key">Source</div>
+                    <div class="s4r-val">
+                      <div class="s4r-row-head">
+                        <span id="s4-memo-source">—</span>
+                        <span class="s4r-edit-mark">Edit ›</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s4r-row s4r-row--stack s4r-editable" id="s4-memo-note-row" style="display:none" onclick="editFromS4('m5')">
+                    <div class="s4r-row-head">
+                      <div class="s4r-key" id="s4-memo-note-key">Investment Case</div>
+                      <span class="s4r-edit-mark">Edit ›</span>
+                    </div>
+                    <div class="s4r-val" id="s4-memo-note">—</div>
+                  </div>
+                  <div class="s4r-row s4r-row--stack" id="s4-memo-thesis-row">
+                    <div class="s4r-key">Thesis</div>
+                    <div class="s4r-val" id="s4-memo-thesis">—</div>
+                  </div>
+                  <div class="s4r-row s4r-row--stack" id="s4-memo-kill-row">
+                    <div class="s4r-key">Kill</div>
+                    <div class="s4r-val" id="s4-memo-kill">—</div>
+                  </div>
+                  <div class="s4r-row" id="s4-memo-mos-row">
+                    <div class="s4r-key">MoS</div>
+                    <div class="s4r-val" id="s4-memo-mos">—</div>
+                  </div>
                 </div>
               </div>
 
@@ -12848,7 +13440,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                      isn't buried below a long memo paragraph. Single
                      descriptive row bundles confidence + hurdle + horizon. -->
                 <div>
-                  <div class="m6-ledger-section-head">Calibration</div>
+                  <div class="m6-ledger-section-head">Confidence</div>
                   <div class="memo-row s9-last-row">
                     <div class="k" id="s9-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
                     <div class="v" id="s9-cal-summary-val">—</div>
@@ -12867,7 +13459,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
                 <!-- Memo recorded section (shown if state.hasMemo) -->
                 <div id="s9-memo-section" style="display:none">
-                  <div class="m6-ledger-section-head">Investor Memo</div>
+                  <div class="m6-ledger-section-head">Memo</div>
                   <div class="memo-row"><div class="k">Type</div><div class="v" id="s9-memo-type">—</div></div>
                   <div class="memo-row"><div class="k">Size</div><div class="v" id="s9-memo-size">—</div></div>
                   <div class="memo-row"><div class="k">Thesis</div><div class="v" id="s9-memo-thesis">—</div></div>
@@ -12923,15 +13515,15 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
                 <!-- Memo -->
                 <div>
-                  <div class="m6-ledger-section-head">Investor Memo</div>
+                  <div class="m6-ledger-section-head">Memo</div>
                   <div class="memo-row"><div class="k">Type</div><div class="v" id="mvprec-mtype">—</div></div>
                   <div class="memo-row"><div class="k">Size</div><div class="v" id="mvprec-msize">—</div></div>
                   <div class="memo-row s9-last-row"><div class="k">Memo</div><div class="v" id="mvprec-note">—</div></div>
                 </div>
 
-                <!-- Calibration -->
+                <!-- Confidence -->
                 <div>
-                  <div class="m6-ledger-section-head">Calibration</div>
+                  <div class="m6-ledger-section-head">Confidence</div>
                   <div class="memo-row"><div class="k">Prob</div><div class="v" id="mvprec-prob">—</div></div>
                   <div class="memo-row s9-last-row"><div class="k">Horizon</div><div class="v" id="mvprec-hrz">—</div></div>
                 </div>
@@ -13255,9 +13847,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
 
               <hr class="div" style="margin:24px 0 0">
 
-              <!-- Investor memo section -->
+              <!-- Memo section -->
               <div style="padding:48px 0 14px">
-                <div class="section-header">Investor memo</div>
+                <div class="section-header">Memo</div>
                 <div style="font-size:13px;color:var(--t);margin-top:0;line-height:1.5;letter-spacing:-0.01em">
                   The current memo on file for AAPL.
                 </div>
@@ -15370,11 +15962,11 @@ function aaplPriceMoveHTML() {
 }
 
 /* m6 (returning) doc-label — anchors the memo to live market state + date.
-   Format: "AAPL · 192.35 +0.22% · Jun 1, 2026". Updates on every price
+   Format: "AAPL 192.35 +0.22% · Jun 1, 2026". Updates on every price
    tick via refreshMemoHeaderPrice. */
 function m6DocLabelHTML() {
   const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return '<span class="memo-ctx-ticker">AAPL</span> · ' + aaplPriceMoveHTML() + ' · ' + today;
+  return '<span class="memo-ctx-ticker">AAPL</span> ' + aaplPriceMoveHTML() + ' · ' + today;
 }
 
 /* Sweep every memo-header-version span on the page and swap the trailing
@@ -15394,7 +15986,7 @@ function refreshMemoHeaderPrice() {
       /\d+\.\d{2}\s*[+-]\d/.test(t) ||
       /\bAAPL\b.*\b(Add|Reduce|Exit)\b/i.test(t);
     if (!isAaplHeader) return;
-    el.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> · ' + aaplPriceMoveHTML();
+    el.innerHTML = '<span class="memo-ctx-ticker">AAPL</span> ' + aaplPriceMoveHTML();
   });
   // m6 returning doc-label — only update if it's currently rendering the
   // live-price format (i.e., the returning view is active). Detect by the
@@ -17560,6 +18152,7 @@ const SCREENS = [
   { id: 'msrc',group: 'Memo',    name: 'Source',                       sub: '7 / 9 · where did this come from?',                          minVersion: 2 },
   { id: 'm5',  group: 'Memo',    name: 'Note',                         sub: '8 / 9 · optional context',                                   minVersion: 2 },
   { id: 'm6',  group: 'Review',        name: 'Final review & commit',        sub: '9 / 9 · memo + calibration',                          minVersion: 2 },
+  { id: 'mexample', group: 'Memo',     name: 'Example memo',                 sub: 'read-only · reference for Draft persona',              minVersion: 2 },
   { id: 's19', group: 'Returning user',name: 'Increase · reason',            sub: 'why',                                                  minVersion: 2 },
   { id: 's8',  group: 'Order',         name: 'Enter shares',                 sub: 'numpad',                                               minVersion: 2 },
   { id: 's4',  group: 'Order',         name: 'Review & execute',             sub: 'hold to confirm',                                      minVersion: 2 },
@@ -18254,6 +18847,7 @@ function pickCD(choice) {
 function isSellFlow() { return state.cd === 'reduce' || state.cd === 'exit'; }
 /* MVP V1 returning = any capital-decision flow that isn't a first-time buy. */
 function isMvpReturning() { return state.version === 'mvp1' && state.cd && state.cd !== 'initial' && state.cd !== 'draft'; }
+function isMvpDraftView() { return state.version === 'mvp1' && state.cd === 'draft' && state.memo && state.memo.status === 'draft'; }
 
 /* Shares on file for the demo position (used by sell "on file" + Exit default). */
 const MVP_POS_SHARES = 47;
@@ -18496,7 +19090,66 @@ function backFromMintro() {
    numbered steps to reach m6 so back returns to the previous step (msrc).
    The increase / reduce / exit flow skips the sequence and lands directly
    on m6 from s19, so back should return there. */
+/* Draft persona — has the user touched any memo field?
+   Used to decide whether to prompt before leaving via the back chevron. */
+function draftHasContent() {
+  if (state.cd !== 'draft') return false;
+  if (!state.memo) return false;
+  const m = state.memo;
+  if (m.type) return true;
+  if (m.size) return true;
+  if (m.source) return true;
+  if ((m.note || '').trim()) return true;
+  if (state.prob != null) return true;
+  return false;
+}
+
+/* Save-before-leave bottom sheet — open / close / confirm.
+   Fired when the user taps the back chevron on m6 in Draft mode and
+   has written anything. Three options: Save (persist + leave),
+   Discard (wipe + leave), Cancel (stay on m6). */
+function openSaveDraftSheet() {
+  const s = document.getElementById('save-draft-sheet');
+  if (s) s.style.display = '';
+}
+function closeSaveDraftSheet() {
+  const s = document.getElementById('save-draft-sheet');
+  if (s) s.style.display = 'none';
+}
+function confirmSaveDraftAndLeave() {
+  // State is already persisted via each field's onchange — just route.
+  closeSaveDraftSheet();
+  go('s0');
+}
+function confirmDiscardDraftAndLeave() {
+  // Wipe content but keep status='draft' so a future Draft persona
+  // entry lands on a clean empty state.
+  state.memo = {
+    type:null, size:null, thesis:'', kill:'', mos:null, top3:null,
+    note:'', source:null, sourceDetail:'',
+    intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false,
+    kill1Action:null, kill2Action:null, kill3Action:null,
+    kill4:'', kill4Action:null,
+    whatChangesMind:'',
+    ivLow:'', ivHigh:'',
+    cantValueReason:'',
+    ptStatus:null,
+    status:'draft'
+  };
+  state.prob = null;
+  clearMemoDraft();
+  closeSaveDraftSheet();
+  go('s0');
+}
+
 function backFromM6() {
+  // Draft persona — intercept the back action with a save-before-leave
+  // bottom sheet whenever the user has written anything, so they don't
+  // lose work by tapping the back chevron.
+  if (state.cd === 'draft' && state.memo && state.memo.status === 'draft' && draftHasContent()) {
+    openSaveDraftSheet();
+    return;
+  }
   // MVP V1: both first-time and Increase land on m6 from msrc (which is
   // the last step before review in both flows). Send the user back there
   // so they don't lose progress by being dumped at the dashboard.
@@ -20994,7 +21647,7 @@ function hydrateMemoStepNav(stepId) {
       }
     }
     if (st) st.textContent = isMvp1
-      ? 'Why you believe what you believe — and what would change your mind. If it helps, start with an AI prompt to draft, paste it in, then refine it in your own voice.'
+      ? 'Paste your finalized investment case here — the research and analysis behind this position. A strong case typically covers your thesis, kill criteria, intrinsic value, and margin of safety.'
       : 'The work behind it.';
     if (sh) sh.style.display = isMvp1 ? 'none' : '';
     if (exBtn)  exBtn.style.display  = isMvp1 ? 'none' : '';
@@ -21004,9 +21657,9 @@ function hydrateMemoStepNav(stepId) {
     if (hint) hint.style.display = 'none';
     const ta = document.getElementById('m5-note');
     if (ta) {
-      // Single quiet line — biases toward pasting an AI draft, doesn't
-      // preclude writing from scratch.
-      ta.placeholder = isMvp1 ? 'Paste your AI draft to begin or start typing' : '';
+      // Single quiet line — biases toward pasting a finalized case from
+      // research (Fiscal, prompt, or otherwise), doesn't preclude typing.
+      ta.placeholder = isMvp1 ? 'Paste your investment case or start typing' : '';
     }
   }
 }
@@ -21046,6 +21699,118 @@ function editFromS4(stepId) {
   state._editReturnTo = 's4';
   state._memoEditedThisFlow = true;
   go(stepId);
+}
+/* m6 Investment Case — collapsible prose.
+   Truncates to 3 lines with a native "…" ellipsis (via
+   -webkit-line-clamp). Tap the chevron at the top right to expand /
+   collapse. Tapping elsewhere on the row still routes to m5 for edit;
+   the chevron uses stopPropagation to keep the two affordances apart.
+   The chevron rotates 180° via CSS when `.is-expanded` is set. */
+function toggleM6NoteExpand() {
+  const row = document.getElementById('m6-note-row');
+  if (!row) return;
+  row.classList.toggle('is-expanded');
+}
+
+/* Detect whether the note prose actually overflows 3 lines. If it
+   doesn't, hide the chevron — there's nothing to expand. Called after
+   the note display is populated. Compares scrollHeight vs clientHeight
+   in the collapsed state. */
+function checkM6NoteOverflow() {
+  const row = document.getElementById('m6-note-row');
+  if (!row) return;
+  const disp = document.getElementById('m6-note-display');
+  if (!disp) return;
+  // Temporarily clear is-expanded so we measure against the 3-line cap.
+  const wasExpanded = row.classList.contains('is-expanded');
+  if (wasExpanded) row.classList.remove('is-expanded');
+  const overflows = disp.scrollHeight > disp.clientHeight + 1;
+  row.classList.toggle('is-no-overflow', !overflows);
+  if (wasExpanded) row.classList.add('is-expanded');
+}
+
+/* Draft persona — Save action.  Persists nothing new (each field's
+   change handler already updates state.memo on its own), then closes
+   the memo flow. The user can re-open the Draft persona from the side
+   menu to keep editing. Could in future show a "Saved" toast — for
+   now the navigation back to s0 is the affordance. */
+function onDraftSave() {
+  // Stay in Draft persona so re-entry lands here; just leave the m6 screen.
+  go('s0');
+}
+
+/* Draft persona — open the standalone example memo page.
+   Navigates to the mexample screen, populates the investment-case
+   prose with the canonical AAPL / Aritzia example, resets the case
+   row to collapsed state, and remembers where the user came from so
+   the back button can return them. */
+function openExampleMemoPage() {
+  state._exampleReturnTo = window._currentScreenId || 'm6';
+  const body = document.getElementById('mexample-case-body');
+  if (body) body.textContent = (typeof MVP_EXAMPLE_MEMO === 'string')
+    ? MVP_EXAMPLE_MEMO
+    : 'A worked example will appear here.';
+  // Reset the Investment case row to collapsed so re-entries always
+  // open with the truncated preview.
+  const row = document.getElementById('mexample-case-row');
+  if (row) row.classList.remove('is-expanded');
+  go('mexample');
+}
+function goBackFromExample() {
+  const to = state._exampleReturnTo || 'm6';
+  state._exampleReturnTo = null;
+  go(to);
+}
+/* mexample Investment case — chevron toggle for the 3-line / full
+   prose collapse. Same idiom as toggleM6NoteExpand on the live memo. */
+function toggleMexampleCase() {
+  const row = document.getElementById('mexample-case-row');
+  if (row) row.classList.toggle('is-expanded');
+}
+
+/* Draft persona — Clear bottom sheet open / close / confirm.
+   Triggered by the top-right "Clear draft memo" action. Confirmation
+   uses the canonical cd-sheet pattern (slide-up panel) so the
+   destructive action requires a deliberate tap. */
+function openClearDraftSheet() {
+  const s = document.getElementById('clear-draft-sheet');
+  if (s) s.style.display = '';
+}
+function closeClearDraftSheet() {
+  const s = document.getElementById('clear-draft-sheet');
+  if (s) s.style.display = 'none';
+}
+function confirmClearDraft() {
+  // Wipe content but preserve status='draft' so the page rerenders as
+  // the empty draft state, ready for the user to start over.
+  state.memo = {
+    type:null, size:null, thesis:'', kill:'', mos:null, top3:null,
+    note:'', source:null, sourceDetail:'',
+    intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false,
+    kill1Action:null, kill2Action:null, kill3Action:null,
+    kill4:'', kill4Action:null,
+    whatChangesMind:'',
+    ivLow:'', ivHigh:'',
+    cantValueReason:'',
+    ptStatus:null,
+    status:'draft'
+  };
+  state.prob = null;
+  clearMemoDraft();
+  closeClearDraftSheet();
+  // Re-render m6 to show the cleared empty state.
+  if (window._currentScreenId === 'm6') go('m6');
+}
+
+/* Collapse / expand the s4 Memo card. Default state is expanded (the
+   user wants to verify the memo on a confirmation screen); tapping the
+   header toggles. Body animates via max-height; chevron rotates. */
+function toggleS4Memo() {
+  const sec = document.getElementById('s4-memo-section');
+  if (!sec) return;
+  const collapsed = sec.classList.toggle('is-collapsed');
+  const head = sec.querySelector('.s4r-section-head');
+  if (head) head.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
 }
 /* Commit the in-progress edit and return to the review screen. Field
    values are already persisted via each step's existing onchange / oninput
@@ -21433,6 +22198,12 @@ function renderM6() {
     else         { noteRow.style.display = 'none'; }
     const noteKey = noteRow.querySelector('.k');
     if (noteKey) noteKey.textContent = (state.version === 'mvp1') ? 'Investment case' : 'Note';
+    // Reset expand state so the row starts collapsed on every render,
+    // then run the overflow check on the next frame (layout needs to
+    // settle before scrollHeight is measurable). The chevron rotation
+    // resets automatically since it's driven by the `.is-expanded` class.
+    noteRow.classList.remove('is-expanded');
+    requestAnimationFrame(() => { try { checkM6NoteOverflow(); } catch(_) {} });
   }
   document.getElementById('m6-kill').textContent    = m.kill   || '—';
   // Downside floor (optional) — show when populated
@@ -21642,7 +22413,22 @@ function renderMvp1ReturningView() {
   const block = document.getElementById('m6-mvp1-returning');
   if (!block) return;
   const isReturning = isMvpReturning();
-  block.style.display = isReturning ? '' : 'none';
+  const isDraft = isMvpDraftView();
+  // Draft view shares the returning-view chrome (chip + declarations +
+  // inline memo body) but with draft-specific overrides applied below.
+  block.style.display = (isReturning || isDraft) ? '' : 'none';
+  // Flag the m6 screen for draft-specific CSS overrides (gray dot,
+  // hidden two-clocks / banner / nudge, etc.).
+  const scrEl = document.querySelector('.scr[data-id="m6"]');
+  if (scrEl) scrEl.classList.toggle('is-draft-view', isDraft);
+  // Footer swap — draft footer (Save draft memo) replaces the seal arrow.
+  const draftSaveBtn = document.getElementById('m6-draft-save');
+  if (draftSaveBtn) draftSaveBtn.style.display = isDraft ? '' : 'none';
+  // Top-right chrome swap — Exit becomes "Clear draft memo" in draft mode.
+  const m6ExitBtn  = document.getElementById('m6-exit-btn');
+  const m6ClearBtn = document.getElementById('m6-clear-draft-btn');
+  if (m6ExitBtn)  m6ExitBtn.style.display  = isDraft ? 'none' : '';
+  if (m6ClearBtn) m6ClearBtn.style.display = isDraft ? '' : 'none';
 
   const ids = {
     rowsSection:    document.querySelector('.scr[data-id="m6"] .m6-ledger-section-row'),
@@ -21664,7 +22450,7 @@ function renderMvp1ReturningView() {
   const noteRowEl  = document.getElementById('m6-note-row');
   const memoRowsWrap2 = noteRowEl ? noteRowEl.parentElement : null;
 
-  if (!isReturning) {
+  if (!isReturning && !isDraft) {
     // First-time / V4.5: bare arrow seal owns the footer.
     if (ids.sealBtn)     ids.sealBtn.style.display     = '';
     if (ids.saveSecRow)  ids.saveSecRow.style.display  = 'none';
@@ -21677,11 +22463,15 @@ function renderMvp1ReturningView() {
     const dateEl     = document.getElementById('m6-date');
     const docLbl     = document.getElementById('m6-doc-label');
     const isMvp1First = (state.version === 'mvp1' && state.cd === 'initial');
-    // Both MVP V1 first-time and V4.5 keep AAPL as the giant ticker hero.
-    // The "INVESTOR MEMO" prominence comes from the bigger section-head
-    // below (driven via the .is-first-memo class on the section row).
+    // V4.5 keeps AAPL as the giant ticker hero. MVP V1 first-time hides
+    // it — "AAPL · Review" already shows in the meta row above, so the
+    // big ticker is redundant. The "Memo" section head below carries the
+    // moment-of-creation prominence via .is-first-memo.
     if (hdrA) hdrA.classList.remove('is-prose-title');
-    if (titleEl) titleEl.innerHTML = '<span class="memo-ctx-ticker">AAPL</span>';
+    if (titleEl) {
+      titleEl.innerHTML = '<span class="memo-ctx-ticker">AAPL</span>';
+      titleEl.style.display = isMvp1First ? 'none' : '';
+    }
     if (tickerMeta) tickerMeta.style.display = '';
     if (allocLbl) allocLbl.style.display = '';
     if (dateEl) dateEl.style.display = '';
@@ -21698,26 +22488,38 @@ function renderMvp1ReturningView() {
     const sectionRow  = document.querySelector('.scr[data-id="m6"] .m6-ledger-section-row');
     const sectionHead = sectionRow ? sectionRow.querySelector('.m6-ledger-section-head') : null;
     if (sectionRow)  sectionRow.classList.toggle('is-first-memo', !!isMvp1First);
+
+    // Institutional document treatment — corner brackets, audit signature,
+    // settle pulse. Applied to MVP V1 first-time only. Always present in
+    // first-time mode (not just on the first animation pass); the sealed
+    // sub-state (.is-sealed) controls the actual reveal of corners +
+    // audit hairline and is only set after the cascade fires.
+    const scrInst = document.querySelector('.scr[data-id="m6"]');
+    if (scrInst) {
+      scrInst.classList.toggle('is-institutional', !!isMvp1First);
+      // On re-visits (already typed), the seal state stays on so the
+      // corners + audit stay visible without re-animating.
+      if (isMvp1First && state._investorMemoTyped) scrInst.classList.add('is-sealed');
+      if (!isMvp1First) scrInst.classList.remove('is-sealed');
+    }
     if (sectionHead) {
       if (isMvp1First && !state._investorMemoTyped) {
-        // First visit to m6 first-time in MVP V1 — type "AAPL" and
-        // "Investor Memo" in PARALLEL, then cascade the rest of the
-        // page in from a small left offset starting ~320ms after the
-        // typing starts. Mark as typed so re-visits skip the show.
+        // First visit to m6 first-time in MVP V1 — type "Memo" into the
+        // section head, then cascade the rest of the page in from a
+        // small left offset ~320ms after typing starts. The big AAPL
+        // ticker hero is hidden in this view (AAPL · Review already
+        // appears in the meta row above), so only the section head
+        // animates here. Mark as typed so re-visits skip the show.
         state._investorMemoTyped = true;
-        const tickerEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero .memo-ctx-ticker');
 
-        // 1. Hide the section head + ticker contents and arm carets.
+
+        // 1. Hide the section head contents and arm caret.
         sectionHead.textContent = '';
         sectionHead.classList.add('is-typing');
-        if (tickerEl) {
-          tickerEl.textContent = '';
-          tickerEl.classList.add('is-typing');
-        }
 
         // 2. Pre-stage the surrounding content: hidden + nudged left.
-        //    The two typing targets stay full opacity; everything else
-        //    eases back to its natural position 320ms after typing starts.
+        //    The typing target stays full opacity; everything else eases
+        //    back to its natural position ~320ms after typing starts.
         const m6Scr = document.querySelector('.scr[data-id="m6"]');
         const stageTargets = [];
         if (m6Scr) {
@@ -21747,13 +22549,12 @@ function renderMvp1ReturningView() {
           el.style.transition = 'opacity 540ms var(--ease), transform 540ms var(--ease)';
         });
 
-        // 3. Parallel typing loops. Same character cadence for both —
-        //    AAPL (4 chars) finishes first; "Investor Memo" (13 chars)
-        //    keeps going for ~9 more ticks.
-        const memoText = 'Investor Memo';
-        const tickerText = 'AAPL';
+        // 3. Typing loop for the section head — "Memo" types in one
+        //    character at a time at 70ms/char. Caret blinks for 600ms
+        //    after the last character before being removed.
+        const memoText = 'Memo';
         const speed = 70;
-        let mi = 0, ti = 0;
+        let mi = 0;
         const tickMemo = () => {
           if (mi < memoText.length) {
             sectionHead.textContent = memoText.slice(0, ++mi);
@@ -21762,23 +22563,14 @@ function renderMvp1ReturningView() {
             setTimeout(() => sectionHead.classList.remove('is-typing'), 600);
           }
         };
-        const tickTicker = () => {
-          if (!tickerEl) return;
-          if (ti < tickerText.length) {
-            tickerEl.textContent = tickerText.slice(0, ++ti);
-            setTimeout(tickTicker, speed);
-          } else {
-            setTimeout(() => tickerEl.classList.remove('is-typing'), 600);
-          }
-        };
 
-        // 4. Kick the show. Both typers fire simultaneously; the stage
-        //    cascade starts ~320ms later (after AAPL finishes typing and
-        //    "Investor Memo" is partway through).
+        // 4. Kick the show. Section head starts typing after a brief
+        //    page-settle dwell; the cascade fires ~320ms later (overlapping
+        //    the end of the type-in for a smooth handoff into the body).
         const startDwell = 350;       // settle page transition first
         const stageStart = 320;       // ms after typing begins
         const stageStep  = 55;        // cascade stagger per element
-        setTimeout(() => { tickMemo(); tickTicker(); }, startDwell);
+        setTimeout(tickMemo, startDwell);
         setTimeout(() => {
           stageTargets.forEach((el, i) => {
             el.style.transitionDelay = (i * stageStep) + 'ms';
@@ -21797,17 +22589,43 @@ function renderMvp1ReturningView() {
             });
           }, cleanupAfter);
         }, startDwell + stageStart);
-      } else {
-        sectionHead.textContent = isMvp1First ? 'Investor Memo' : 'INVESTOR MEMO';
-        sectionHead.classList.remove('is-typing');
-        // Ensure the AAPL ticker is restored on re-visits (the !isReturning
-        // branch above already rewrites the hero innerHTML, but in case
-        // any prior typing run left it cleared we guard here too).
-        const tickerEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero .memo-ctx-ticker');
-        if (tickerEl) {
-          if (!tickerEl.textContent || tickerEl.textContent.length < 4) tickerEl.textContent = 'AAPL';
-          tickerEl.classList.remove('is-typing');
+
+        // 5. Probability count-up — once the calibration row fades into
+        //    view, tick the value from 0 to the target probability with
+        //    an ease-out curve. Tabular-nums keeps the digits stable.
+        const probTargetEl = document.getElementById('m6-cal-summary-val');
+        if (probTargetEl) {
+          const targetProb = parseInt(state.prob, 10) || 0;
+          const countUpDuration = 900;
+          const countUpDelay = startDwell + stageStart + (stageStep * 6) + 80;
+          probTargetEl.textContent = '0%';
+          setTimeout(() => {
+            const startT = performance.now ? performance.now() : Date.now();
+            const ease = (t) => 1 - Math.pow(1 - t, 3); // ease-out cubic
+            const tick = (now) => {
+              const elapsed = (now - startT);
+              const t = Math.min(1, elapsed / countUpDuration);
+              const v = Math.round(ease(t) * targetProb);
+              probTargetEl.textContent = v + '%';
+              if (t < 1) requestAnimationFrame(tick);
+              else       probTargetEl.textContent = targetProb + '%';
+            };
+            requestAnimationFrame(tick);
+          }, countUpDelay);
         }
+
+        // 6. Apply `.is-sealed` once the cascade settles. Currently a
+        //    no-op for visual effect (corner brackets + settle pulse
+        //    were removed) but kept as a marker class so downstream
+        //    states (e.g., audit hairline reveal) can hook into it.
+        const sealAfter = startDwell + stageStart + (stageStep * stageTargets.length) + 540 + 200;
+        setTimeout(() => {
+          const scrSealEl = document.querySelector('.scr[data-id="m6"]');
+          if (scrSealEl) scrSealEl.classList.add('is-sealed');
+        }, sealAfter);
+      } else {
+        sectionHead.textContent = isMvp1First ? 'Memo' : 'INVESTOR MEMO';
+        sectionHead.classList.remove('is-typing');
       }
     }
     // Restore the V4.5 memo-rows wraps (Type/Size + Thesis-through-Note)
@@ -21819,8 +22637,9 @@ function renderMvp1ReturningView() {
     if (ids.immut)      ids.immut.style.display      = '';
     return;
   }
-  // Returning mode: ticker hero shows a prose title ("Adding to Apple")
-  // so swap to the canonical 26px memo-header size.
+  // Returning / Draft mode: ticker hero shows a prose title ("Adding to
+  // Apple" / "Apple draft") so swap to the canonical 26px memo-header
+  // size.
   const hdr = document.getElementById('m6-ledger-header');
   if (hdr) hdr.classList.add('is-prose-title');
 
@@ -21834,16 +22653,24 @@ function renderMvp1ReturningView() {
   if (ids.posStatus)  ids.posStatus.style.display  = 'none';
   if (ids.ptStep)     ids.ptStep.style.display     = 'none';
   if (ids.reasonSec)  ids.reasonSec.style.display  = 'none';
-  // Footer swap: hide the bare arrow seal, show the canonical stack
-  // ("Discard changes" above the full-width primary save CTA).
+  // Footer swap. Returning shows the canonical save stack; Draft shows
+  // the Edit / Delete affordances (the m6-draft-footer is toggled in
+  // the early section above). Both hide the bare arrow seal.
   if (ids.sealBtn)     ids.sealBtn.style.display     = 'none';
-  if (ids.saveSecRow)  ids.saveSecRow.style.display  = '';
-  if (ids.savePrimary) ids.savePrimary.style.display = '';
+  if (ids.saveSecRow)  ids.saveSecRow.style.display  = isDraft ? 'none' : '';
+  if (ids.savePrimary) ids.savePrimary.style.display = isDraft ? 'none' : '';
 
   // Header: title (verb + company), ticker meta, alloc lbl, classify, doc label
   const verb = getMvp1Verb();
   const titleEl = document.querySelector('.scr[data-id="m6"] .m6-ticker-hero');
-  if (titleEl) titleEl.innerHTML = MVP1_COPY.title[verb] || titleEl.innerHTML;
+  if (titleEl) {
+    titleEl.innerHTML = isDraft
+      ? 'Apple'
+      : (MVP1_COPY.title[verb] || titleEl.innerHTML);
+    // Returning view uses the title element for the prose verb ("Adding
+    // to Apple"). Re-show it in case the first-time branch hid it.
+    titleEl.style.display = '';
+  }
   // Ticker meta line ("AAPL · New memo") removed in returning mode —
   // the doc-label below already carries the AAPL + live-price line, so
   // a separate meta caption above the title is redundant.
@@ -21865,21 +22692,26 @@ function renderMvp1ReturningView() {
   const dateEl = document.getElementById('m6-date');
   if (dateEl) dateEl.style.display = 'none';
 
-  // Chip
+  // Chip — "Memo" in returning mode, "Draft" in draft mode. The dot
+  // color is overridden via CSS (.is-draft-view turns it gray).
   const chipLabel = document.getElementById('m6-newmemo-chip-label');
-  if (chipLabel) chipLabel.textContent = MVP1_COPY.newMemoChip;
+  if (chipLabel) chipLabel.textContent = isDraft ? 'Draft' : MVP1_COPY.newMemoChip;
 
-  // Two-clocks horizon block (Step 8)
+  // Two-clocks horizon block (Step 8) — hidden in draft mode (the
+  // horizon clock only starts when capital is committed).
   const twoclocks  = document.getElementById('m6-twoclocks');
   const twoText    = document.getElementById('m6-twoclocks-text');
   const tcStr      = (typeof formatTwoClocks === 'function') ? formatTwoClocks() : null;
   if (twoclocks && twoText) {
-    if (tcStr) { twoclocks.style.display = ''; twoText.textContent = tcStr; }
-    else       { twoclocks.style.display = 'none'; }
+    if (!isDraft && tcStr) { twoclocks.style.display = ''; twoText.textContent = tcStr; }
+    else                   { twoclocks.style.display = 'none'; }
   }
 
-  // Flow-specific banner
+  // Flow-specific banner — hidden in draft mode (no flow-specific copy
+  // applies; the user is just exploring).
+  const bannerEl = document.getElementById('m6-flow-banner');
   const bannerText = document.getElementById('m6-flow-banner-text');
+  if (bannerEl) bannerEl.style.display = isDraft ? 'none' : '';
   if (bannerText) bannerText.textContent = MVP1_COPY.banner[verb] || '';
 
   // 4 declarations
@@ -21920,7 +22752,7 @@ function renderMvp1ReturningView() {
       memoBody.classList.remove('is-empty');
     } else {
       memoBody.textContent = (verb === 'increase')
-        ? 'No investment case yet. Tap Edit to write one.'
+        ? 'Tap to write one'
         : (verb === 'reduce')
           ? 'No investment case yet. Tap Edit to record why you\'re trimming.'
           : 'No investment case yet. Tap Edit to record why you\'re closing.';
@@ -23227,14 +24059,46 @@ function setMode(m) {
     state.transactions = []; persistTransactions();
     state.notes = []; persistNotes();
     state.thesisReviews = []; persistThesisReviews();
-    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false, kill1Action:null, kill2Action:null, kill3Action:null, kill4:'', kill4Action:null, whatChangesMind:'', ivLow:'', ivHigh:'', cantValueReason:'', ptStatus:null };
+    state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false, kill1Action:null, kill2Action:null, kill3Action:null, kill4:'', kill4Action:null, whatChangesMind:'', ivLow:'', ivHigh:'', cantValueReason:'', ptStatus:null, status:'draft' };
     clearMemoDraft();
     state.reviewPending = false; persistReviewPending(false);
+    state.cd = 'initial';
+  } else if (m === 'draft') {
+    // Draft persona — MVP V1 only. The memo starts EMPTY. The user
+    // taps each field to fill it in; nothing is committed until they
+    // explicitly Save. The reference content (Aritzia memo) is shown
+    // separately via the "Example memo" affordance at the top of m6.
+    state.hasMemo = true;  persistHasMemo(true);
+    state.usingSeedPersona = true;
+    state.transactions = []; persistTransactions();
+    state.notes = []; persistNotes();
+    state.thesisReviews = []; persistThesisReviews();
+    state.reviewPending = false; persistReviewPending(false);
+    state.cd = 'draft';
+    // Empty draft — no pre-populated content.
+    state.memo = {
+      type: null, size: null,
+      thesis: '', kill: '', mos: null, top3: null,
+      note: '',
+      source: null, sourceDetail: '',
+      intrinsicValue: '', ivMethod: '', marginEnough: null,
+      cantValue: false,
+      kill1Action: null, kill2Action: null, kill3Action: null,
+      kill4: '', kill4Action: null,
+      whatChangesMind: '',
+      ivLow: '', ivHigh: '',
+      cantValueReason: '',
+      ptStatus: null,
+      status: 'draft'
+    };
+    state.prob = null;
+    state.horizon = '3y';
   } else {
     state.hasMemo = true;  persistHasMemo(true);
     state.usingSeedPersona = true;
     // Returning persona re-arms the review prompt so the demo always lights up
     state.reviewPending = true; persistReviewPending(true);
+    if (state.memo) state.memo.status = 'investment';
   }
   refreshModeButtons();
   if (state.version === 'mvp1') { enterMvp(); } else { go('s10'); }
@@ -23251,20 +24115,26 @@ const RETURNING_ONLY_SCREENS = ['msell','madd','mreread','marticulate'];
 function inferPersonaFromScreen() {
   const id = window._currentScreenId;
   if (!id) return state.hasMemo ? 'return' : 'first';
+  // Draft persona — keyed off state.memo.status='draft' regardless of
+  // which memo screen the user is on. Distinct from the first-time
+  // capital-decision flow (which has state.cd === 'initial').
+  if (state.memo && state.memo.status === 'draft' && state.cd === 'draft') return 'draft';
   if (FIRST_TIME_SCREENS.indexOf(id) !== -1) return 'first';
   if (RETURNING_ONLY_SCREENS.indexOf(id) !== -1) return 'return';
   // Capital-decision flows on shared memo screens (m1/m1b/m5/s12/m6) —
   // state.cd disambiguates the persona for the shared steps.
   if (state.cd === 'increase' || state.cd === 'reduce' || state.cd === 'exit') return 'return';
-  if (state.cd === 'initial' || state.cd === 'draft') return 'first';
+  if (state.cd === 'initial') return 'first';
   return state.hasMemo ? 'return' : 'first';
 }
 function refreshModeButtons() {
   const persona = inferPersonaFromScreen();
   const first = document.getElementById('mode-first');
   const ret   = document.getElementById('mode-return');
+  const draft = document.getElementById('mode-draft');
   if (first) first.classList.toggle('on', persona === 'first');
   if (ret)   ret.classList.toggle('on',   persona === 'return');
+  if (draft) draft.classList.toggle('on', persona === 'draft');
 }
 function resetFlow() {
   state.shares = '';
@@ -23451,6 +24321,12 @@ function startMvpFirstFlow() {
    first memo). Returning persona (memo already on file) → the stock page,
    where Capital decision opens Increase / Reduce / Exit. */
 function enterMvp() {
+  // Draft persona — go straight to m6 in draft-viewing mode. The memo
+  // IS the screen; no buy/sell flow involved.
+  if (state.cd === 'draft' && state.memo && state.memo.status === 'draft') {
+    go('m6');
+    return;
+  }
   if (state.hasMemo) { state.cd = null; go('s0'); }
   else                startMvpFirstFlow();
 }
