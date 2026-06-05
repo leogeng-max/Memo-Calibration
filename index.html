@@ -1241,14 +1241,72 @@ body.is-fullscreen .artboard-toggle {
   color: var(--t);
   margin-top: 10px;
 }
-.memo-header-version .memo-ctx-ticker { color: var(--s); }
-.alloc-type-lbl {
-  font-size: 11px;            /* PDF: body/xs = 11 */
+.memo-header-version .memo-ctx-ticker { color: var(--s); font-weight: 500; letter-spacing: 0.04em; }
+/* Price + percentage live in the same header-version span. Give each
+   its own visual weight so the line reads as "TICKER  PRICE  CHANGE"
+   rather than one continuous number string. */
+.memo-header-version .memo-px {
+  color: var(--s);
   font-weight: 400;
   letter-spacing: 0;
-  color: var(--p);
-  text-align: right;
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
 }
+.memo-header-version .memo-pct {
+  color: var(--t-800);
+  font-weight: 400;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+.alloc-type-lbl {
+  font-size: 12px;            /* slightly bigger than body/xs for legibility */
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--t);            /* read-only gray but legible (was var(--t-800)) */
+  text-align: right;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 180ms var(--ease);
+}
+.alloc-type-lbl:hover { color: var(--s); }
+.alloc-type-lbl:active { opacity: 0.55; }
+/* External-arrow SVG suffix — same icon used on .section-eyebrow.is-info,
+   .s12-conf-eyebrow.is-info, .memo-header-title.is-info etc. Signals
+   "tap to learn" with the design-system arrow, not the unicode ↗. */
+.alloc-type-lbl::after {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-left: 5px;
+  vertical-align: middle;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565B5E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='7' y1='17' x2='17' y2='7'/%3E%3Cpolyline points='7 7 17 7 17 17'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: filter 180ms var(--ease);
+}
+.alloc-type-lbl:hover::after { filter: brightness(2.5); }
+/* s4 variant — sits under the ticker, left-aligned. */
+.s4-alloc-lbl {
+  text-align: left;
+  font-size: 12px;
+  color: var(--t);
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+/* s9 / mvprecord variant — the receipt header is LEFT-aligned (ticker,
+   event label, order subtype all sit flush left), so the allocation
+   label follows suit: left-aligned, flush under the AAPL hero column. */
+.s9-alloc-lbl {
+  text-align: left;
+  align-self: flex-start;
+  font-size: 12px;
+  color: var(--t);
+  margin-top: 6px;
+}
+.s9-alloc-lbl::after { vertical-align: -1px; }
 .memo-header .memo-header-meta  { margin-top: 0; align-self: start; grid-column: 1; grid-row: 2; }
 .memo-header > .memo-header-right { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; align-self: start; }
 .memo-header > .memo-header-right .memo-context-chip { margin: 0; padding: 0; }
@@ -3434,6 +3492,18 @@ body.is-fullscreen .artboard-toggle {
   font-weight: 500;
   color: var(--p);
 }
+/* Inline 20% in the prediction sentence is tappable — opens the combined
+   hurdle info modal. Dotted underline matches the lbl-tap pattern from
+   the reference design, signaling "tap for context" without screaming. */
+.uw-hurdle-tap {
+  cursor: pointer;
+  border-bottom: 0.5px dotted var(--t-800);
+  padding-bottom: 1px;
+  transition: border-bottom-color 180ms var(--ease), color 180ms var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.uw-hurdle-tap:hover { border-bottom-color: var(--t); }
+.uw-hurdle-tap:active { opacity: 0.55; }
 .uw-hurdle-inline.is-updating {
   opacity: 0;
   transition: opacity 150ms;
@@ -6836,20 +6906,10 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   cursor: pointer;
   display: block;
 }
-/* Top fade so the body text gets a soft backdrop as it scrolls under
-   the sticky X — keeps the corner readable without a hard band. */
-.info-modal-sheet::before {
-  content: '';
-  position: sticky;
-  top: 0;
-  display: block;
-  height: 0;
-  margin-bottom: -42px;
-  z-index: 9;
-  background: linear-gradient(to bottom, var(--surface) 60%, rgba(0,0,0,0));
-  pointer-events: none;
-}
-.info-modal.is-active .info-modal-sheet::before { height: 42px; }
+/* Top fade overlay removed — the sticky X has its own `var(--surface)`
+   background which keeps the corner readable, and the gradient was
+   sitting on z-index 9 above the (non-sticky) title text, covering
+   the title as the user scrolled the modal body. */
 .info-modal-eyebrow {
   font-size: 10px; letter-spacing: 0.16em; text-transform: none;
   color: var(--t); margin-bottom: 8px;
@@ -7050,6 +7110,17 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-top: 22px;
   padding-top: 18px;
   border-top: 1px solid rgba(255,255,255,0.08);
+}
+/* Lead variant — when the wheel is the FIRST section of the modal body
+   (combined uw_hurdle modal). Borders and margins swap to bottom so
+   the wheel reads as the opening element, not the trailing footer. */
+.hurdle-wheel-picker--lead {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .hurdle-wheel-eyebrow {
   font-size: 9px;
@@ -7627,15 +7698,15 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   color: var(--s);
   margin-bottom: 18px;     /* space before the gray doc-label / date sub block */
 }
-/* Override the small dim default for alloc-type-lbl when it sits inside the
-   m6 ledger header — it becomes a highlighted primary metadata line directly
-   under the AAPL hero, paired with classify above the dim sub block. */
+/* m6 ledger header — alloc-type-lbl is now READ-ONLY (allocation type
+   pre-baked per ticker). Sits as a quiet gray meta line, left-aligned,
+   tappable to open the explainer modal. The trailing ↗ from the base
+   .alloc-type-lbl rule signals "tap to learn", not "tap to edit". */
 .m6-ledger-header .alloc-type-lbl {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: -0.01em;
-  color: var(--p);
-  text-transform: none;
+  letter-spacing: 0;
+  color: var(--t-800);
   text-align: left;
   margin: 0 0 4px 0;
 }
@@ -8150,24 +8221,56 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
    (toggled by JS only when MVP V1 first-time).
    ────────────────────────────────────────────────────────────────────── */
 
-/* Tighten the header chrome — the meta block should feel like the front
-   plate of a document, not a stack of disconnected lines. */
+/* Header chrome — slimmer, sits as quiet meta above the section
+   title. Drops the per-line stack feel; the data the user needs at
+   this point is in the card below. Active allocation + classify
+   become invisible (their info moves into the Decision / Classification
+   rows inside the card). */
 .scr[data-id="m6"].is-institutional .m6-ledger-header {
-  margin-bottom: 4px;
+  margin-bottom: 24px;
 }
 .scr[data-id="m6"].is-institutional .m6-ledger-meta {
-  margin-bottom: 22px;       /* breathing room before the Memo hero */
+  margin-bottom: 14px;
 }
-.scr[data-id="m6"].is-institutional .alloc-type-lbl {
-  font-size: 12px;
-  color: var(--t-800);
-  margin-bottom: 2px;
+/* mfork_decision modal — the dynamic "Why we classified X as Y" block
+   sits at the top of the body. Subtle hairline-bordered section so the
+   reasoning reads as system-determined context, not editorial prose. */
+.info-modal-body.is-html .info-why-classified {
+  border: 0.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.018);
+  padding: 14px 14px 4px;
+  margin-bottom: 18px;
+  border-radius: 8px;
 }
-.scr[data-id="m6"].is-institutional .m6-ledger-classify {
+.info-modal-body.is-html .info-why-classified h4 {
+  margin: 0 0 10px;
   font-size: 12px;
-  color: var(--t-800);
-  margin-bottom: 2px;
-  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--s);
+  letter-spacing: -0.01em;
+}
+.info-modal-body.is-html .info-why-classified p {
+  font-size: 12.5px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: var(--s);
+  margin-bottom: 10px;
+}
+.info-modal-body.is-html .info-why-classified .info-why-readonly {
+  color: var(--t);
+  font-size: 11.5px;
+  margin-bottom: 8px;
+}
+
+/* m6 institutional: classify is hidden (Classification + Sizing rows
+   inside the card cover that ground). The alloc-type-lbl stays visible
+   as a read-only, tap-to-learn label since allocation type is no longer
+   a user choice (it's pre-baked per ticker). */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-ledger-classify { display: none; }
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .alloc-type-lbl {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 .scr[data-id="m6"].is-institutional .m6-ledger-date {
   font-size: 11px;
@@ -8175,102 +8278,299 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   margin-top: 0;
 }
 
-/* Promote the "Memo" section head into the page anchor — bigger, more
-   breathing room above. Replaces the existing 22px is-first-memo size
-   when in institutional mode. */
-.scr[data-id="m6"].is-institutional .m6-ledger-section-row.is-first-memo .m6-ledger-section-head {
-  font-size: 32px;
-  font-weight: 400;
+/* "Memo" section title — small inline header above the card, with a
+   green pulsing live-dot prefix. Matches the reference design's
+   `.section-title + .live-dot` pattern. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-ledger-section-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: none;
+  border-bottom: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-ledger-section-row .m6-ledger-section-head {
+  font-size: 15px;
+  font-weight: 500;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.2;
   color: var(--p);
   padding-bottom: 0;
-  margin-top: 24px;
-  margin-bottom: 0;
+  margin: 0;
   border-bottom: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.scr[data-id="m6"].is-institutional .m6-ledger-section-row.is-first-memo {
-  display: block;
-  border-bottom: none;
-  padding-bottom: 0;
-  margin-bottom: 20px;
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-ledger-section-row .m6-ledger-section-head::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3FB950;
+  animation: m6-live-pulse 1.6s ease-in-out infinite;
+  flex-shrink: 0;
 }
-.scr[data-id="m6"].is-institutional .m6-section-edit-hint {
-  display: block;
-  margin-top: 4px;
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-section-edit-hint {
   font-size: 11px;
   color: var(--t-800);
+  letter-spacing: 0;
 }
 
-/* Section dividers — explicit hairlines between the three content
-   groups. Above the Memo hero (separates header chrome from content),
-   above the Calibration block (separates Type/Size from prediction),
-   above the Thesis-through-Note block (separates prediction from rest). */
-.scr[data-id="m6"].is-institutional .m6-ledger-section-row.is-first-memo {
-  border-top: 0.5px solid var(--c-1000);
-  padding-top: 24px;
-}
-.scr[data-id="m6"].is-institutional #m6-calibration-section {
-  border-top: 0.5px solid var(--c-1000);
-  padding-top: 22px;
-}
-.scr[data-id="m6"].is-institutional #m6-calibration-section + div {
-  border-top: 0.5px solid var(--c-1000);
-  padding-top: 18px;
-  margin-top: 6px;
+/* MEMO CARD — single hairline-bordered container that holds all the
+   row content (Type, Size, Calibration, Source, Investment case).
+   Mirrors the reference design's `.memo-block` pattern. Same look on
+   m6 (memo review) AND s4 (order review) so the two review surfaces
+   share one visual language for the memo block. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-card,
+.scr[data-id="s4"] #s4-memo-section .m6-card {
+  border: 0.5px solid var(--c-1000);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* Calibration — restructure as a prediction-hero block. The 70% number
-   becomes the focal point; the descriptive label sits below as a caption. */
-.scr[data-id="m6"].is-institutional #m6-calibration-section {
-  padding-top: 18px;
+/* Side-by-side rows inside the card — key left, value right. Replaces
+   the default stacked memo-row pattern when inside .m6-card. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-card .memo-row,
+.scr[data-id="s4"] #s4-memo-section .m6-card .memo-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0;
+  /* No internal hairlines — the card itself supplies the only frame.
+     Internal separators read as visual noise inside such a compact
+     card, so the base .memo-row border-top is killed here too. */
+  border-top: none;
+  border-bottom: none;
 }
-.scr[data-id="m6"].is-institutional #m6-calibration-section .m6-ledger-section-head {
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-card .memo-row .k,
+.scr[data-id="s4"] #s4-memo-section .m6-card .memo-row .k {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--t);
+  padding-top: 0;
+  flex-shrink: 0;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-card .memo-row .v,
+.scr[data-id="s4"] #s4-memo-section .m6-card .memo-row .v {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--s);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+}
+/* The sub-description under Classification / Sizing (e.g. "Businesses
+   compounding capital..."). Sits below the value, lighter color. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-card .memo-row-sub,
+.scr[data-id="s4"] #s4-memo-section .m6-card .memo-row-sub {
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0;
-  color: var(--t);
-  padding-bottom: 6px;
-  border-bottom: none;
-  margin-bottom: 8px;
+  color: var(--t-800);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  margin-top: 3px;
 }
-.scr[data-id="m6"].is-institutional #m6-calibration-section .m6-cal-summary-row {
+
+/* Group spacing — small gap between Type+Size group and the Calibration
+   block; tighter gaps WITHIN each group. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-card > div,
+.scr[data-id="s4"] #s4-memo-section .m6-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Calibration — restructured as a single side-by-side row matching the
+   reference's "Confidence    60%" pattern. The eyebrow "Confidence"
+   section-head is hidden inside the card. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) #m6-calibration-section .m6-ledger-section-head,
+.scr[data-id="s4"] #s4-calibration-section .m6-ledger-section-head {
+  display: none;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) #m6-calibration-section,
+.scr[data-id="s4"] #s4-calibration-section {
+  padding-top: 0;
+  border-top: none;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) #m6-calibration-section .m6-cal-summary-row,
+.scr[data-id="s4"] #s4-calibration-section .m6-cal-summary-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0;
+  border-bottom: none;
+}
+/* Confidence row — main label "Confidence" stacked over a sub-line
+   that names the underlying hurdle + horizon ("20% / yr over 3 years").
+   The value (60–70%) sits right-aligned next to the main label.
+   Shared between the m6 Memo Review and the s4 Order Review cards. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) #m6-cal-summary-key,
+.scr[data-id="s4"] #s4-cal-summary-key {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--t);
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-cal-key-main,
+.scr[data-id="s4"] .m6-cal-key-main {
+  font-size: 13px;
+  color: var(--t);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-cal-key-sub,
+.scr[data-id="s4"] .m6-cal-key-sub {
+  font-size: 11px;
+  color: var(--t-800);
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) .m6-cal-summary-row,
+.scr[data-id="s4"] #s4-calibration-section .m6-cal-summary-row {
+  align-items: flex-start;
+}
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) #m6-cal-summary-val,
+.scr[data-id="s4"] #s4-cal-summary-val {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--s);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  padding-top: 1px;
+}
+
+/* Investment Case inside the card — no top divider; the row stacks
+   directly under Source with the same group gap. Eyebrow + chevron
+   sit above the truncated body. */
+.scr[data-id="m6"]:is(.is-institutional,.is-card-memo) #m6-note-row {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* mc5 (Core / Treasury allocation review) — apply the same institutional
+   chrome and card treatment as the live m6 review, so the user sees one
+   consistent "review page" shape regardless of allocation type. */
+.scr[data-id="mc5"] .m6-ledger-meta {
+  font-size: 11px;
+  color: var(--t-800);
+  letter-spacing: 0;
+  margin-bottom: 14px;
+}
+.scr[data-id="mc5"] .mc5-alloc-lbl {
+  text-align: left;
+  margin: 0 0 4px;
+}
+.scr[data-id="mc5"] .m6-ledger-date {
+  font-size: 11px;
+  color: var(--t-800);
+}
+.scr[data-id="mc5"] .mc5-section-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: none;
   border-bottom: none;
   padding: 0;
+  margin: 0 0 10px 0;
 }
-.scr[data-id="m6"].is-institutional #m6-calibration-section #m6-cal-summary-val {
-  order: 1;
-  font-size: 28px;
-  font-weight: 300;
-  letter-spacing: -0.03em;
+.scr[data-id="mc5"] .mc5-section-row .m6-ledger-section-head {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   color: var(--p);
-  line-height: 1.05;
-  margin-bottom: 6px;
+  padding-bottom: 0;
+  margin: 0;
+  border-bottom: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.scr[data-id="m6"].is-institutional #m6-calibration-section #m6-cal-summary-key {
-  order: 2;
-  font-size: 12px;
+.scr[data-id="mc5"] .mc5-section-row .m6-ledger-section-head::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3FB950;
+  animation: m6-live-pulse 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.scr[data-id="mc5"] .m6-section-edit-hint {
+  font-size: 11px;
+  color: var(--t-800);
+}
+.scr[data-id="mc5"] .m6-card {
+  border: 0.5px solid var(--c-1000);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.scr[data-id="mc5"] .m6-card .memo-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0;
+  border-bottom: none;
+}
+.scr[data-id="mc5"] .m6-card .memo-row .k {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
   color: var(--t);
-  line-height: 1.4;
-  letter-spacing: 0;
+  padding-top: 0;
+  flex-shrink: 0;
+}
+.scr[data-id="mc5"] .m6-card .memo-row .v {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--s);
+  text-align: right;
+  line-height: 1.45;
+}
+.scr[data-id="mc5"] .m6-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* Investment Case prose — truncates to 3 lines with a native ellipsis
    ("…") at the end of the third line via -webkit-line-clamp. The
    chevron at the top right toggles expansion. Tapping anywhere else on
    the row routes to m5 for editing (the chevron uses stopPropagation
-   to keep the two affordances cleanly separated). */
-.scr[data-id="m6"] #m6-note-row .m6-note-head {
+   to keep the two affordances cleanly separated). Shared between m6 +
+   s4 since both reviews carry the same Investment-case prose. */
+.scr[data-id="m6"] #m6-note-row .m6-note-head,
+.scr[data-id="s4"] #s4-memo-note-row .m6-note-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   width: 100%;
 }
-.scr[data-id="m6"] #m6-note-row .m6-note-chevron {
+.scr[data-id="m6"] #m6-note-row .m6-note-chevron,
+.scr[data-id="s4"] #s4-memo-note-row .m6-note-chevron {
   background: none;
   border: none;
   padding: 4px 0;
@@ -8282,19 +8582,34 @@ body.is-fullscreen .memo-review-caption { display: none !important; }
   flex-shrink: 0;
   transition: transform 280ms var(--ease), color 180ms var(--ease);
 }
-.scr[data-id="m6"] #m6-note-row .m6-note-chevron:hover { color: var(--p); }
-.scr[data-id="m6"] #m6-note-row.is-expanded .m6-note-chevron {
+.scr[data-id="m6"] #m6-note-row .m6-note-chevron:hover,
+.scr[data-id="s4"] #s4-memo-note-row .m6-note-chevron:hover { color: var(--p); }
+.scr[data-id="m6"] #m6-note-row.is-expanded .m6-note-chevron,
+.scr[data-id="s4"] #s4-memo-note-row.is-expanded .m6-note-chevron {
   transform: rotate(180deg);
 }
-.scr[data-id="m6"] #m6-note-row #m6-note-display {
+.scr[data-id="m6"] #m6-note-row #m6-note-display,
+.scr[data-id="s4"] #s4-memo-note-row #s4-memo-note {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.scr[data-id="m6"] #m6-note-row.is-expanded #m6-note-display {
+.scr[data-id="m6"] #m6-note-row.is-expanded #m6-note-display,
+.scr[data-id="s4"] #s4-memo-note-row.is-expanded #s4-memo-note {
   display: block;
   -webkit-line-clamp: unset;
+}
+/* s4 note row: column layout so the head sits above the prose.
+   No top divider — internal hairlines inside .m6-card were too noisy;
+   spacing alone separates Investment case from Source. */
+.scr[data-id="s4"] #s4-memo-note-row {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 6px;
+  border-top: none;
+  padding-top: 0 !important;
+  margin-top: 0;
 }
 /* If the prose is short enough to fit in 3 lines (no overflow), hide
    the chevron — there's nothing to expand. */
@@ -9028,17 +9343,43 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   content: ''; width: 4px; height: 4px; border-radius: 50%;
   background: var(--p);
 }
-.mc-condition-wrap { display: flex; flex-direction: column; gap: 10px; }
+.mc-condition-wrap { display: flex; flex-direction: column; gap: 18px; }
+/* Each condition row uses a thin left border + small label + free-type
+   area underneath. No boxed input — feels like a notepad entry instead
+   of a form field. */
+.mc-condition-row {
+  border-left: 1px solid rgba(255,255,255,0.14);
+  padding: 2px 0 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mc-condition-lbl {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--t);
+  line-height: 1.2;
+}
 .mc-condition-input {
-  width: 100%; background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08); border-radius: 4px;
-  padding: 12px 14px; font-family: var(--font); font-size: 13px;
-  font-weight: 300; letter-spacing: -0.01em; color: var(--p);
-  line-height: 1.5; resize: none; min-height: 68px;
-  transition: border-color 150ms; box-sizing: border-box;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  padding: 0;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--p);
+  line-height: 1.5;
+  resize: none;
+  min-height: 22px;
+  box-sizing: border-box;
 }
 .mc-condition-input::placeholder { color: var(--t-800); }
-.mc-condition-input:focus { border-color: rgba(255,255,255,0.18); outline: none; }
+.mc-condition-input:focus { outline: none; }
 .mc-add-condition {
   font-family: var(--font); font-size: 12px; color: var(--t);
   background: none; border: 1px solid rgba(255,255,255,0.08);
@@ -9179,6 +9520,206 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   transition: background 100ms ease, color 100ms ease;
 }
 .artboard-close-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+
+/* ────────────────────────────────────────────────────────────────
+   M6 ARTBOARD — Signature animations per iteration tile
+   Each iteration's tile loops its own animation so users can read
+   the design feel without needing to interact. Monochrome only
+   (black / gray / white) — matches the doctrine constraint.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Shared: green pulse on the live-dot used by Iteration 1. */
+.artboard-phone .iter-pulse-dot {
+  animation: iter-pulse 1.6s ease-in-out infinite;
+}
+@keyframes iter-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.42; }
+}
+
+/* Iteration 1 — Current: each row gently fades down then back up
+   in a staggered cascade, looping every 5.5s. The cascade reads as
+   the page settling rather than a re-load. */
+@keyframes iter-1-cascade {
+  0%, 88% { opacity: 1; transform: translateX(0); }
+  90%     { opacity: 0; transform: translateX(-3px); }
+  92%     { opacity: 0; transform: translateX(-3px); }
+  100%    { opacity: 1; transform: translateX(0); }
+}
+.iter-1-tile .iter-row {
+  animation: iter-1-cascade 5.5s ease-out infinite;
+}
+.iter-1-tile .iter-row:nth-of-type(2) { animation-delay: 0.18s; }
+.iter-1-tile .iter-row:nth-of-type(3) { animation-delay: 0.36s; }
+.iter-1-tile .iter-row:nth-of-type(4) { animation-delay: 0.54s; }
+
+/* Iteration 2 — Terminal: matrix-style character cycling on each
+   value. CSS-only fallback (opacity flicker) — the JS runtime swaps
+   text via runArtboardMatrix() to drive the real char-cycling. */
+@keyframes iter-2-flicker {
+  0%, 90% { opacity: 1; }
+  92%, 96% { opacity: 0.35; }
+  100% { opacity: 1; }
+}
+.iter-2-tile .iter-typeval {
+  animation: iter-2-flicker 6s steps(1, end) infinite;
+  font-variant-numeric: tabular-nums;
+}
+.iter-2-tile .iter-cell:nth-child(2) .iter-typeval { animation-delay: 0.25s; }
+.iter-2-tile .iter-cell:nth-child(3) .iter-typeval { animation-delay: 0.5s; }
+.iter-2-tile .iter-cell:nth-child(4) .iter-typeval { animation-delay: 0.75s; }
+
+/* Iteration 3 — Stack: each card oscillates up/down on a 4s sine
+   wave, with a staggered phase offset so the stack feels alive,
+   like cards hovering on a desktop. */
+@keyframes iter-3-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+.iter-3-tile .iter-float-card {
+  animation: iter-3-float 4s ease-in-out infinite;
+}
+.iter-3-tile .iter-float-card:nth-of-type(2) { animation-delay: 0.5s; }
+.iter-3-tile .iter-float-card:nth-of-type(3) { animation-delay: 1.0s; }
+.iter-3-tile .iter-float-card:nth-of-type(4) { animation-delay: 1.5s; }
+.iter-3-tile .iter-float-card:nth-of-type(5) { animation-delay: 2.0s; }
+
+/* Iteration 4 — Document: each row's dotted leader DRAWS in from
+   left to right (mask animation), the row's value fades in last.
+   Cascade loops every 5s.
+   Implemented via a left-aligned ::before mask layered over the
+   dotted border so the dots reveal progressively. */
+.iter-4-tile .iter-leader {
+  position: relative;
+  overflow: hidden;
+}
+.iter-4-tile .iter-leader::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #000;
+  animation: iter-4-leader 5s ease-out infinite;
+}
+@keyframes iter-4-leader {
+  0%, 10% { transform: translateX(0); }
+  60%, 100% { transform: translateX(100%); }
+}
+.iter-4-tile .iter-leader-row:nth-of-type(2) .iter-leader::after { animation-delay: 0.15s; }
+.iter-4-tile .iter-leader-row:nth-of-type(3) .iter-leader::after { animation-delay: 0.3s; }
+.iter-4-tile .iter-leader-row:nth-of-type(4) .iter-leader::after { animation-delay: 0.45s; }
+@keyframes iter-4-value {
+  0%, 50% { opacity: 0; }
+  85%, 100% { opacity: 1; }
+}
+.iter-4-tile .iter-leader-row > span:last-child {
+  animation: iter-4-value 5s ease-out infinite;
+}
+.iter-4-tile .iter-leader-row:nth-of-type(2) > span:last-child { animation-delay: 0.15s; }
+.iter-4-tile .iter-leader-row:nth-of-type(3) > span:last-child { animation-delay: 0.3s; }
+.iter-4-tile .iter-leader-row:nth-of-type(4) > span:last-child { animation-delay: 0.45s; }
+
+/* Iteration 5 — Ticket: the ticket "prints down" from the top with a
+   mask reveal (clip-path shrinks from 100% bottom), then the perforated
+   edge gets a subtle dash-shimmer. Loops every 6s. */
+@keyframes iter-5-print {
+  0%   { clip-path: inset(0 0 100% 0); }
+  35%  { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+.iter-5-tile .iter-5-head,
+.iter-5-tile .iter-5-perf {
+  animation: iter-5-print 6s ease-out infinite;
+}
+.iter-5-tile .iter-5-perf {
+  animation-delay: 0.15s;
+}
+
+/* Iteration 6 — Atlas: hero card pops in with a subtle scale, then
+   mini-cards cascade up with stagger so the cards feel placed one at
+   a time. Cascades top-down, loops every 5.5s. */
+@keyframes iter-6-pop {
+  0%, 88% { opacity: 1; transform: scale(1) translateY(0); }
+  91%     { opacity: 0; transform: scale(0.96) translateY(3px); }
+  100%    { opacity: 1; transform: scale(1) translateY(0); }
+}
+.iter-6-tile .iter-6-hero { animation: iter-6-pop 5.5s ease-out infinite; }
+.iter-6-tile .iter-6-mini { animation: iter-6-pop 5.5s ease-out infinite; }
+.iter-6-tile .iter-6-mini:nth-of-type(1) { animation-delay: 0.12s; }
+.iter-6-tile .iter-6-mini:nth-of-type(2) { animation-delay: 0.24s; }
+.iter-6-tile .iter-6-mini:nth-of-type(3) { animation-delay: 0.36s; }
+.iter-6-tile .iter-6-mini:nth-of-type(4) { animation-delay: 0.48s; }
+
+/* Iteration 7 — Editorial: numbered sections fade up in sequence,
+   like reading down a column. Bottom border under the masthead draws
+   in from left to right at the start. Loops every 5s. */
+@keyframes iter-7-section-in {
+  0%, 88% { opacity: 1; transform: translateY(0); }
+  91%     { opacity: 0; transform: translateY(4px); }
+  100%    { opacity: 1; transform: translateY(0); }
+}
+.iter-7-tile .iter-7-section {
+  animation: iter-7-section-in 5s ease-out infinite;
+}
+.iter-7-tile .iter-7-section:nth-child(2) { animation-delay: 0.12s; }
+.iter-7-tile .iter-7-section:nth-child(3) { animation-delay: 0.24s; }
+.iter-7-tile .iter-7-section:nth-child(4) { animation-delay: 0.36s; }
+
+/* ────────────────────────────────────────────────────────────────
+   ARTBOARD — Investment case collapse / expand
+   Each tile's "Investment case" section contains the full Aritzia
+   memo body and starts collapsed at 3 lines with native "…" via
+   -webkit-line-clamp. A chevron button at the top-right toggles
+   .is-expanded on the wrapping .iter-case-block, removing the
+   clamp and letting the prose flow.
+   ──────────────────────────────────────────────────────────────── */
+.artboard-phone .iter-case-prose {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+.artboard-phone .iter-case-block.is-expanded .iter-case-prose {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  white-space: pre-line;
+}
+.artboard-phone .iter-case-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 2px 0 2px 4px;
+  margin: -2px 0 -2px 0;
+  color: #929292;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 280ms cubic-bezier(0.32,0.72,0,1), color 180ms ease;
+  font-family: inherit;
+  line-height: 1;
+}
+.artboard-phone .iter-case-chev:hover { color: #fff; }
+.artboard-phone .iter-case-block.is-expanded .iter-case-chev {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iter-1-tile .iter-row,
+  .iter-2-tile .iter-typeval,
+  .iter-3-tile .iter-float-card,
+  .iter-4-tile .iter-leader::after,
+  .iter-4-tile .iter-leader-row > span:last-child,
+  .iter-5-tile .iter-5-head,
+  .iter-5-tile .iter-5-perf,
+  .iter-6-tile .iter-6-hero,
+  .iter-6-tile .iter-6-mini,
+  .iter-7-tile .iter-7-section,
+  .artboard-phone .iter-pulse-dot {
+    animation: none !important;
+  }
+}
 
 /* Action bar */
 #artboard-action-bar {
@@ -9603,7 +10144,274 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
   <div class="artboard-lbl">Review page · Design iterations<br><span style="color:rgba(255,255,255,0.08);font-size:8px;letter-spacing:0.08em">Ctrl + scroll to zoom · Middle mouse to pan · Tap to select</span></div>
   <div class="artboard-grid">
 
-    <!-- ── Iteration A: The Document (left-aligned, data-forward) ── -->
+    <!-- ── Iteration 1: Current (mirror of live m6 first-time design) ── -->
+    <div class="artboard-col" data-iter="1" onclick="selectIteration('1')">
+      <div class="artboard-col-lbl">1 — Current</div>
+      <div class="artboard-phone iter-1-tile">
+        <div style="height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-feature-settings:'lnum' 1,'tnum' 1;padding:13px;box-sizing:border-box;color:#fff;background:#000">
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:9px;color:#565B5E">‹</span><span style="font-size:8px;color:#929292">Exit</span></div>
+          <div style="border-top:0.5px solid #1C1C1C;margin:0 -13px 13px"></div>
+          <div style="font-size:7px;color:#565B5E;margin-bottom:8px;letter-spacing:-0.01em">AAPL · Review</div>
+          <div style="font-size:7px;color:#565B5E;margin-bottom:14px;letter-spacing:-0.01em">Drafted Jun 5, 2026</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:9.5px;font-weight:500;color:#fff;display:inline-flex;align-items:center;gap:5px;letter-spacing:-0.02em"><span class="iter-pulse-dot" style="width:4px;height:4px;border-radius:50%;background:#30D158"></span>Memo</span>
+            <span style="font-size:7px;color:#565B5E;letter-spacing:-0.01em">Tap each to update</span>
+          </div>
+          <div style="border:0.5px solid #1C1C1C;padding:9px;display:flex;flex-direction:column;gap:7px">
+            <div class="iter-row" style="display:flex;justify-content:space-between;font-size:8px;letter-spacing:-0.02em"><span style="color:#929292">Classification</span><span style="color:#C7C7C7">Compounder</span></div>
+            <div class="iter-row" style="display:flex;justify-content:space-between;font-size:8px;letter-spacing:-0.02em"><span style="color:#929292">Sizing</span><span style="color:#C7C7C7">Core Position</span></div>
+            <div class="iter-row" style="display:flex;justify-content:space-between;font-size:8px;letter-spacing:-0.02em;align-items:flex-start">
+              <span style="color:#929292;display:flex;flex-direction:column;gap:1px"><span>Confidence</span><span style="font-size:6px;color:#565B5E">20% / yr over 3 years</span></span>
+              <span style="color:#C7C7C7;font-variant-numeric:tabular-nums">70%</span>
+            </div>
+            <div class="iter-row" style="display:flex;justify-content:space-between;font-size:8px;letter-spacing:-0.02em"><span style="color:#929292">Source</span><span style="color:#C7C7C7">Social media</span></div>
+            <div class="iter-case-block" style="border-top:0.5px solid #1C1C1C;padding-top:7px;margin-top:2px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:8px;color:#929292;letter-spacing:-0.02em">Investment case</span><button class="iter-case-chev" type="button" onclick="event.stopPropagation();toggleIterCase(this)" style="font-size:8px;color:#929292">⌄</button></div>
+              <div class="iter-case-prose" style="font-size:7.5px;color:#C7C7C7;line-height:1.45;letter-spacing:-0.02em">Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare. The load-bearing assumption is that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding.</div>
+            </div>
+          </div>
+          <div style="margin-top:auto;display:flex;justify-content:flex-end"><span style="font-size:12px;color:#fff">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Iteration 2: Terminal (Palantir-style 2×2 grid + matrix typing) ── -->
+    <div class="artboard-col" data-iter="2" onclick="selectIteration('2')">
+      <div class="artboard-col-lbl">2 — Terminal</div>
+      <div class="artboard-phone iter-2-tile">
+        <div style="height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-feature-settings:'lnum' 1,'tnum' 1;padding:13px;box-sizing:border-box;color:#fff;background:#000">
+          <div style="display:flex;justify-content:space-between;margin-bottom:11px"><span style="font-size:9px;color:#565B5E">‹</span><span style="font-size:8px;color:#929292">Exit</span></div>
+          <div style="border:0.5px solid #1C1C1C;padding:5px 9px;display:flex;justify-content:space-between;font-size:7px;letter-spacing:-0.01em;color:#929292;margin-bottom:13px">
+            <span>memo / aapl / v1</span>
+            <span>jun 5, 2026</span>
+          </div>
+          <div style="font-size:18px;font-weight:300;letter-spacing:-0.025em;color:#fff;line-height:1.1;margin-bottom:12px">Apple</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;border:0.5px solid #1C1C1C;flex-shrink:0">
+            <div class="iter-cell" style="padding:8px;border-right:0.5px solid #1C1C1C;border-bottom:0.5px solid #1C1C1C">
+              <div style="font-size:6.5px;color:#565B5E;margin-bottom:4px;letter-spacing:-0.01em">Classification</div>
+              <div class="iter-typeval" data-val="Compounder" style="font-size:9px;color:#fff;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">Compounder</div>
+            </div>
+            <div class="iter-cell" style="padding:8px;border-bottom:0.5px solid #1C1C1C">
+              <div style="font-size:6.5px;color:#565B5E;margin-bottom:4px;letter-spacing:-0.01em">Sizing</div>
+              <div class="iter-typeval" data-val="Core Position" style="font-size:9px;color:#fff;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">Core Position</div>
+            </div>
+            <div class="iter-cell" style="padding:8px;border-right:0.5px solid #1C1C1C">
+              <div style="font-size:6.5px;color:#565B5E;margin-bottom:4px;letter-spacing:-0.01em">Confidence</div>
+              <div class="iter-typeval" data-val="70%" style="font-size:9px;color:#fff;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">70%</div>
+            </div>
+            <div class="iter-cell" style="padding:8px">
+              <div style="font-size:6.5px;color:#565B5E;margin-bottom:4px;letter-spacing:-0.01em">Source</div>
+              <div class="iter-typeval" data-val="Screener" style="font-size:9px;color:#fff;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">Screener</div>
+            </div>
+          </div>
+          <div class="iter-case-block" style="border:0.5px solid #1C1C1C;border-top:none;padding:8px;flex:1;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:6.5px;color:#565B5E;letter-spacing:-0.01em">Investment case</span><button class="iter-case-chev" type="button" onclick="event.stopPropagation();toggleIterCase(this)" style="font-size:8px;color:#929292">⌄</button></div>
+            <div class="iter-case-prose" style="font-size:7.5px;color:#C7C7C7;line-height:1.55;letter-spacing:-0.02em">Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare. The load-bearing assumption is that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding.</div>
+          </div>
+          <div style="margin-top:8px;display:flex;justify-content:flex-end"><span style="font-size:12px;color:#fff">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Iteration 3: Stack (floating mini-cards) ── -->
+    <div class="artboard-col" data-iter="3" onclick="selectIteration('3')">
+      <div class="artboard-col-lbl">3 — Stack</div>
+      <div class="artboard-phone iter-3-tile">
+        <div style="height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-feature-settings:'lnum' 1,'tnum' 1;padding:13px;box-sizing:border-box;color:#fff;background:#000">
+          <div style="display:flex;justify-content:space-between;margin-bottom:9px"><span style="font-size:9px;color:#565B5E">‹</span><span style="font-size:8px;color:#929292">Exit</span></div>
+          <div style="font-size:7px;color:#565B5E;margin-bottom:6px;letter-spacing:-0.01em">AAPL · Review</div>
+          <div style="font-size:13px;font-weight:500;color:#fff;letter-spacing:-0.025em;margin-bottom:11px">Apple</div>
+          <div style="display:flex;flex-direction:column;gap:5px;flex:1;overflow:hidden">
+            <div class="iter-float-card" style="border:0.5px solid #1C1C1C;padding:7px 10px;display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:7px;color:#929292;letter-spacing:-0.01em">Classification</span>
+              <span style="font-size:9px;color:#fff;letter-spacing:-0.02em">Compounder</span>
+            </div>
+            <div class="iter-float-card" style="border:0.5px solid #1C1C1C;padding:7px 10px;display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:7px;color:#929292;letter-spacing:-0.01em">Sizing</span>
+              <span style="font-size:9px;color:#fff;letter-spacing:-0.02em">Core Position</span>
+            </div>
+            <div class="iter-float-card" style="border:0.5px solid #1C1C1C;padding:7px 10px;display:flex;justify-content:space-between;align-items:flex-start">
+              <span style="font-size:7px;color:#929292;display:flex;flex-direction:column;gap:1px;letter-spacing:-0.01em"><span>Confidence</span><span style="font-size:5.5px;color:#565B5E">20% / yr over 3 years</span></span>
+              <span style="font-size:11px;color:#fff;font-weight:300;letter-spacing:-0.025em;font-variant-numeric:tabular-nums">70%</span>
+            </div>
+            <div class="iter-float-card" style="border:0.5px solid #1C1C1C;padding:7px 10px;display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:7px;color:#929292;letter-spacing:-0.01em">Source</span>
+              <span style="font-size:9px;color:#fff;letter-spacing:-0.02em">Social media</span>
+            </div>
+            <div class="iter-float-card iter-case-block" style="border:0.5px solid #1C1C1C;padding:8px 10px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:7px;color:#929292;letter-spacing:-0.01em">Investment case</span><button class="iter-case-chev" type="button" onclick="event.stopPropagation();toggleIterCase(this)" style="font-size:8px;color:#929292">⌄</button></div>
+              <div class="iter-case-prose" style="font-size:7.5px;color:#C7C7C7;line-height:1.5;letter-spacing:-0.02em;--clamp-lines:3">Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare. The load-bearing assumption is that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding.</div>
+            </div>
+          </div>
+          <div style="margin-top:7px;display:flex;justify-content:flex-end"><span style="font-size:12px;color:#fff">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Iteration 4: Document (dotted-leader brutalist) ── -->
+    <div class="artboard-col" data-iter="4" onclick="selectIteration('4')">
+      <div class="artboard-col-lbl">4 — Document</div>
+      <div class="artboard-phone iter-4-tile">
+        <div style="height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-feature-settings:'lnum' 1,'tnum' 1;padding:13px;box-sizing:border-box;color:#fff;background:#000">
+          <div style="display:flex;justify-content:space-between;margin-bottom:15px"><span style="font-size:9px;color:#565B5E">‹</span><span style="font-size:8px;color:#929292">Exit</span></div>
+          <div style="font-size:16px;color:#fff;font-weight:400;letter-spacing:-0.03em;margin-bottom:3px">Memo</div>
+          <div style="font-size:7px;color:#565B5E;margin-bottom:14px;letter-spacing:-0.01em">Apple · Drafted Jun 5, 2026</div>
+          <div style="border-top:0.5px solid #1C1C1C;padding-top:11px;flex:1;display:flex;flex-direction:column;gap:7px">
+            <div class="iter-leader-row" style="display:flex;align-items:baseline;gap:6px;font-size:7.5px;letter-spacing:-0.02em">
+              <span style="color:#565B5E;width:11px;font-variant-numeric:tabular-nums">01</span>
+              <span style="color:#929292;flex-shrink:0">Classification</span>
+              <span class="iter-leader" style="flex:1;border-bottom:0.5px dotted #1C1C1C;margin-bottom:3px"></span>
+              <span style="color:#C7C7C7">Compounder</span>
+            </div>
+            <div class="iter-leader-row" style="display:flex;align-items:baseline;gap:6px;font-size:7.5px;letter-spacing:-0.02em">
+              <span style="color:#565B5E;width:11px;font-variant-numeric:tabular-nums">02</span>
+              <span style="color:#929292;flex-shrink:0">Sizing</span>
+              <span class="iter-leader" style="flex:1;border-bottom:0.5px dotted #1C1C1C;margin-bottom:3px"></span>
+              <span style="color:#C7C7C7">Core Position</span>
+            </div>
+            <div class="iter-leader-row" style="display:flex;align-items:baseline;gap:6px;font-size:7.5px;letter-spacing:-0.02em">
+              <span style="color:#565B5E;width:11px;font-variant-numeric:tabular-nums">03</span>
+              <span style="color:#929292;flex-shrink:0">Confidence</span>
+              <span class="iter-leader" style="flex:1;border-bottom:0.5px dotted #1C1C1C;margin-bottom:3px"></span>
+              <span style="color:#C7C7C7;font-variant-numeric:tabular-nums">70% · 3y</span>
+            </div>
+            <div class="iter-leader-row" style="display:flex;align-items:baseline;gap:6px;font-size:7.5px;letter-spacing:-0.02em">
+              <span style="color:#565B5E;width:11px;font-variant-numeric:tabular-nums">04</span>
+              <span style="color:#929292;flex-shrink:0">Source</span>
+              <span class="iter-leader" style="flex:1;border-bottom:0.5px dotted #1C1C1C;margin-bottom:3px"></span>
+              <span style="color:#C7C7C7">Social media</span>
+            </div>
+            <div class="iter-leader-row iter-case-block" style="border-left:0.5px solid #1C1C1C;padding:6px 0 6px 8px;margin-top:8px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:7px;color:#565B5E;letter-spacing:-0.01em"><span style="color:#565B5E;font-variant-numeric:tabular-nums">05</span>  Investment case</span><button class="iter-case-chev" type="button" onclick="event.stopPropagation();toggleIterCase(this)" style="font-size:8px;color:#929292">⌄</button></div>
+              <div class="iter-case-prose" style="font-size:7.5px;color:#C7C7C7;line-height:1.55;letter-spacing:-0.02em;font-style:italic">"Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare. The load-bearing assumption is that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding."</div>
+            </div>
+          </div>
+          <div style="margin-top:7px;display:flex;justify-content:flex-end"><span style="font-size:12px;color:#fff">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Iteration 5 (Ticket) removed per user request ── -->
+
+    <!-- ── Iteration 6: Atlas (card-stack with hero confidence) ──
+         Same chrome as the rest of MVP V1 (‹ Exit / AAPL · Review / Drafted /
+         ● Memo header). The defining move is the BODY: a hero card with the
+         70% confidence number at large weight-300 scale, then mini-cards
+         for Classification, Sizing, Source, and the Investment case — each
+         on a subtle #0F0F0F fill with rounded corners. Distinct from
+         Iteration 1's single hairline card. -->
+    <div class="artboard-col" data-iter="6" onclick="selectIteration('6')">
+      <div class="artboard-col-lbl">6 — Atlas</div>
+      <div class="artboard-phone iter-6-tile">
+        <div style="height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-feature-settings:'lnum' 1,'tnum' 1;padding:13px;box-sizing:border-box;color:#fff;background:#000">
+
+          <!-- Top chrome — matches the canonical m6 pattern -->
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:9px;color:#565B5E">‹</span><span style="font-size:8px;color:#929292">Exit</span></div>
+          <div style="border-top:0.5px solid #1C1C1C;margin:0 -13px 13px"></div>
+          <div style="font-size:7px;color:#565B5E;margin-bottom:6px;letter-spacing:-0.01em">AAPL · Review</div>
+          <div style="font-size:7px;color:#565B5E;margin-bottom:12px;letter-spacing:-0.01em">Drafted Jun 5, 2026</div>
+
+          <!-- Section header: ● Memo + Tap each to update -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:9.5px;font-weight:500;color:#fff;display:inline-flex;align-items:center;gap:5px;letter-spacing:-0.02em"><span class="iter-pulse-dot" style="width:4px;height:4px;border-radius:50%;background:#30D158"></span>Memo</span>
+            <span style="font-size:7px;color:#565B5E;letter-spacing:-0.01em">Tap each to update</span>
+          </div>
+
+          <!-- Hero card — 70% confidence -->
+          <div class="iter-6-hero" style="background:#0F0F0F;border-radius:10px;padding:11px;margin-bottom:5px">
+            <div style="font-size:7px;color:#929292;letter-spacing:-0.01em;margin-bottom:3px">Confidence</div>
+            <div style="font-size:22px;font-weight:300;letter-spacing:-0.035em;color:#fff;line-height:1;margin-bottom:5px">70<span style="font-size:13px;color:#929292;margin-left:1px">%</span></div>
+            <div style="font-size:6.5px;color:#565B5E;letter-spacing:-0.01em">20% / yr · 3 years</div>
+          </div>
+
+          <!-- 2-col card row: Classification + Sizing -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px">
+            <div class="iter-6-mini" style="background:#0F0F0F;border-radius:8px;padding:8px">
+              <div style="font-size:6.5px;color:#929292;margin-bottom:3px;letter-spacing:-0.01em">Classification</div>
+              <div style="font-size:8.5px;color:#fff;letter-spacing:-0.02em">Compounder</div>
+            </div>
+            <div class="iter-6-mini" style="background:#0F0F0F;border-radius:8px;padding:8px">
+              <div style="font-size:6.5px;color:#929292;margin-bottom:3px;letter-spacing:-0.01em">Sizing</div>
+              <div style="font-size:8.5px;color:#fff;letter-spacing:-0.02em">Core Position</div>
+            </div>
+          </div>
+
+          <!-- Source mini-card (single row) -->
+          <div class="iter-6-mini" style="background:#0F0F0F;border-radius:8px;padding:8px 9px;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+            <span style="font-size:6.5px;color:#929292;letter-spacing:-0.01em">Source</span>
+            <span style="font-size:8.5px;color:#fff;letter-spacing:-0.02em">Social media</span>
+          </div>
+
+          <!-- Investment case mini-card (collapsible) -->
+          <div class="iter-6-mini iter-case-block" style="background:#0F0F0F;border-radius:8px;padding:9px;flex:1;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:6.5px;color:#929292;letter-spacing:-0.01em">Investment case</span><button class="iter-case-chev" type="button" onclick="event.stopPropagation();toggleIterCase(this)" style="font-size:8px;color:#929292">⌄</button></div>
+            <div class="iter-case-prose" style="font-size:7.5px;color:#C7C7C7;line-height:1.5;letter-spacing:-0.02em">Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare. The load-bearing assumption is that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding.</div>
+          </div>
+
+          <div style="margin-top:8px;display:flex;justify-content:flex-end"><span style="font-size:12px;color:#fff">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Iteration 7: Editorial (magazine-style layout with drop cap) ── -->
+    <div class="artboard-col" data-iter="7" onclick="selectIteration('7')">
+      <div class="artboard-col-lbl">7 — Editorial</div>
+      <div class="artboard-phone iter-7-tile">
+        <div style="height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif;font-feature-settings:'lnum' 1,'tnum' 1;padding:14px 13px;box-sizing:border-box;color:#fff;background:#000">
+
+          <div style="display:flex;justify-content:space-between;margin-bottom:18px"><span style="font-size:9px;color:#565B5E">‹</span><span style="font-size:8px;color:#929292">Exit</span></div>
+
+          <!-- Masthead -->
+          <div style="border-bottom:0.5px solid #C7C7C7;padding-bottom:9px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline">
+            <div style="font-size:6.5px;color:#929292;letter-spacing:0.04em">No. 001 · Memo</div>
+            <div style="font-size:6.5px;color:#929292;letter-spacing:0.04em">Jun 5, 2026</div>
+          </div>
+
+          <!-- Large editorial title -->
+          <div style="font-size:18px;font-weight:400;color:#fff;letter-spacing:-0.03em;line-height:1.15;margin-bottom:14px">Apple,<br>a long-form bet on services.</div>
+
+          <!-- Numbered sections -->
+          <div style="flex:1;display:flex;flex-direction:column;gap:11px;overflow:hidden">
+            <div class="iter-7-section" style="display:flex;gap:9px">
+              <span style="font-size:13px;color:#565B5E;font-weight:300;line-height:1;flex-shrink:0;letter-spacing:-0.03em">01</span>
+              <div style="flex:1">
+                <div style="font-size:6.5px;color:#929292;letter-spacing:-0.01em;margin-bottom:2px">Classification</div>
+                <div style="font-size:9px;color:#fff;letter-spacing:-0.02em">Compounder</div>
+              </div>
+            </div>
+            <div class="iter-7-section" style="display:flex;gap:9px">
+              <span style="font-size:13px;color:#565B5E;font-weight:300;line-height:1;flex-shrink:0;letter-spacing:-0.03em">02</span>
+              <div style="flex:1">
+                <div style="font-size:6.5px;color:#929292;letter-spacing:-0.01em;margin-bottom:2px">Sizing</div>
+                <div style="font-size:9px;color:#fff;letter-spacing:-0.02em">Core Position</div>
+              </div>
+            </div>
+            <div class="iter-7-section" style="display:flex;gap:9px">
+              <span style="font-size:13px;color:#565B5E;font-weight:300;line-height:1;flex-shrink:0;letter-spacing:-0.03em">03</span>
+              <div style="flex:1">
+                <div style="font-size:6.5px;color:#929292;letter-spacing:-0.01em;margin-bottom:2px">Confidence · 20% / yr over 3 years</div>
+                <div style="font-size:9px;color:#fff;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">70%</div>
+              </div>
+            </div>
+            <div class="iter-7-section iter-case-block" style="display:flex;gap:9px">
+              <span style="font-size:13px;color:#565B5E;font-weight:300;line-height:1;flex-shrink:0;letter-spacing:-0.03em">04</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px"><span style="font-size:6.5px;color:#929292;letter-spacing:-0.01em">Investment case</span><button class="iter-case-chev" type="button" onclick="event.stopPropagation();toggleIterCase(this)" style="font-size:8px;color:#929292">⌄</button></div>
+                <div class="iter-case-prose" style="font-size:7.5px;color:#C7C7C7;line-height:1.5;letter-spacing:-0.02em">Aritzia is a US growth story in its middle innings. The US flywheel (flagship-led brand-building, app-driven engagement, and disciplined new-box openings that pay back in under a year) can roughly double the US fleet while e-commerce climbs toward 45% of revenue. Revenue compounds mid-to-high teens, margins expand on occupancy leverage and improving initial mark-up (IMU), EPS outgrows revenue, and at a sensible entry price the return clears the hurdle with room to spare. The load-bearing assumption is that Aritzia can roughly double its US boutique base (76 → 150+) without per-store productivity or brand desirability eroding.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:8px;display:flex;justify-content:flex-end"><span style="font-size:12px;color:#fff">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Legacy iterations (A–G) below kept commented out for reference; new
+         4-iteration grid above is canonical. Remove the wrapping div + the
+         opening of iteration A on the next line. ══ -->
+    <div style="display:none">
+    <!-- legacy A start -->
     <div class="artboard-col" data-iter="A" onclick="selectIteration('A')">
       <div class="artboard-col-lbl">A — Document</div>
       <div class="artboard-phone">
@@ -9903,6 +10711,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
         </div>
       </div>
     </div>
+    </div><!-- /legacy display:none wrapper -->
 
   </div>
 </div>
@@ -10634,14 +11443,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <!-- COMPOUNDER VIEW -->
               <div id="s12-comp-view" style="display:none">
 
-                <!-- Module 1: Hurdle — read-only display, no card chrome -->
-                <div class="uw-module uw-module--flat">
-                  <div class="section-eyebrow is-info" onclick="showInfoModal('uw_hurdle')" style="margin-bottom:10px">Exceptional Compounding Hurdle</div>
-                  <div class="hurdle-display-static" onclick="showInfoModal('hurdle_standard')" style="cursor:pointer;display:inline-flex;align-items:baseline;gap:5px">
-                    <span id="s12-hurdle-display">20% per year</span>
-                    <span style="display:inline-block;width:9px;height:9px;flex-shrink:0;margin-bottom:2px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23565B5E%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cline x1=%227%22 y1=%2217%22 x2=%2217%22 y2=%227%22/%3E%3Cpolyline points=%227 7 17 7 17 17%22/%3E%3C/svg%3E');background-size:contain;background-repeat:no-repeat;background-position:center"></span>
-                  </div>
-                </div>
+                <!-- Hurdle module removed — the 20% inline in the
+                     prediction sentence below now opens the combined
+                     hurdle info modal directly. -->
 
                 <!-- ── Prediction block (replaces the prior Horizon + Calibration cards).
                      One coherent statement: "How confident that AAPL compounds at
@@ -10650,12 +11454,15 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <div class="s12-pred" id="s12-horizon-module">
                   <div class="s12-pred-eyebrow is-info" onclick="showInfoModal('uw_horizon')">The prediction</div>
                   <div class="s12-pred-statement" id="s12-horizon-prompt">
-                    How confident are you that <span class="s12-pred-ticker">AAPL</span> will compound at <span class="uw-hurdle-inline" id="s12-horizon-hurdle-num">20</span><span class="uw-hurdle-inline">%</span> per year over the next
+                    How confident are you that <span class="s12-pred-ticker">AAPL</span> will compound at <span class="uw-hurdle-inline uw-hurdle-tap" id="s12-horizon-hurdle-num" onclick="showInfoModal('uw_hurdle')" role="button" aria-label="What is the compounding hurdle?">20</span><span class="uw-hurdle-inline uw-hurdle-tap" onclick="showInfoModal('uw_hurdle')">%</span> per year over the next
                   </div>
-                  <div class="s12-horizon-seg" data-list="s12-horizon-list">
-                    <button class="s12-horizon-tab" data-horiz="y1" onclick="setHorizonSel('y1')" type="button">1 yr</button>
-                    <button class="s12-horizon-tab" data-horiz="y3" onclick="setHorizonSel('y3')" type="button">3 yrs</button>
-                    <button class="s12-horizon-tab" data-horiz="y5p" onclick="setHorizonSel('y5p')" type="button">5 yrs+</button>
+                  <!-- Horizon picker — radio rows (aligns with msrc / msell
+                       selection patterns). 3 years is the default, marked
+                       is-on at render time. -->
+                  <div class="field-list s12-horizon-radio" data-list="s12-horizon-list">
+                    <button class="radio-row" data-horiz="y1" onclick="setHorizonSel('y1')" type="button"><div class="lbl-block"><div class="head">1 year</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row is-on" data-horiz="y3" onclick="setHorizonSel('y3')" type="button"><div class="lbl-block"><div class="head">3 years</div></div><div class="radio-dot"></div></button>
+                    <button class="radio-row" data-horiz="y5p" onclick="setHorizonSel('y5p')" type="button"><div class="lbl-block"><div class="head">5+ years</div></div><div class="radio-dot"></div></button>
                   </div>
                 </div>
 
@@ -11153,16 +11960,40 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                 </div>
                 <div class="memo-body--reveal">
-                  <div style="display:flex;flex-direction:column;gap:10px">
-                    <div class="mc-field-instruct">Why this is the right place for this capital, in this form.</div>
-                    <textarea class="mc-textarea" id="mc2-reason" placeholder="Write your reasoning here…" oninput="onMc2Input()"></textarea>
-                    <div class="field-ex-row" style="justify-content:flex-end">
-                      <button class="field-ex-btn" id="ex-btn-mc2-reason" onclick="toggleFieldEx('mc2-reason')" type="button">[ex]</button>
+                  <div class="bracket mc2-composer">
+                    <div class="mc-field-instruct" style="margin-bottom:12px">Why this is the right place for this capital, in this form.</div>
+                    <!-- Composer toolbar — paste / attach icons mirror the m5 Investment Case pattern. -->
+                    <div class="m5-composer-divider" aria-hidden="true"></div>
+                    <div class="composer-toolbar m5-toolbar-top">
+                      <span class="composer-toolbar-spacer"></span>
+                      <button class="composer-icon-btn" onclick="pasteToTextarea('mc2-reason')" type="button" aria-label="Paste from clipboard" title="Paste from clipboard">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                          <rect x="3" y="2.5" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1"/>
+                          <rect x="5.5" y="1" width="5" height="2.5" rx="0.6" fill="currentColor"/>
+                          <line x1="5.5" y1="7"   x2="10.5" y2="7"   stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                          <line x1="5.5" y1="9.5" x2="10.5" y2="9.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                          <line x1="5.5" y1="12"  x2="8.5"  y2="12"  stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        </svg>
+                      </button>
+                      <button class="composer-icon-btn" onclick="document.getElementById('mc2-file-input').click()" type="button" aria-label="Attach file" title="Attach PDF / Word file">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                          <path d="M11.5 5.5L6.8 10.2c-0.6 0.6-0.6 1.6 0 2.2 0.6 0.6 1.6 0.6 2.2 0L13.7 7.7c1.2-1.2 1.2-3.2 0-4.4-1.2-1.2-3.2-1.2-4.4 0L4.6 8c-1.8 1.8-1.8 4.8 0 6.6 1.8 1.8 4.8 1.8 6.6 0L15 11" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                      <input id="mc2-file-input" type="file" accept=".pdf,.doc,.docx,.txt,.md" style="display:none" onchange="attachComposerFile(event, 'mc2')">
                     </div>
-                    <div class="field-ex-block" id="ex-block-mc2-reason">
-                      <div class="field-ex-lbl">Example</div>
-                      <div class="field-ex-text">This capital is intended for long-term retirement compounding with a 25-year horizon. I don't claim consistent edge over the S&P 500 across this much capital. Broad-market exposure captures the compounding I need without active risk that isn't warranted.</div>
+                    <!-- Textarea with blinking caret in the empty state. -->
+                    <div class="m5-textarea-wrap mc2-textarea-wrap">
+                      <span class="m5-caret mc2-caret" aria-hidden="true"></span>
+                      <textarea id="mc2-reason" rows="2" placeholder="" oninput="onMc2Input(); autoExpand(this)"></textarea>
                     </div>
+                  </div>
+                  <div class="field-ex-row" style="justify-content:flex-end;margin-top:8px">
+                    <button class="field-ex-btn" id="ex-btn-mc2-reason" onclick="toggleFieldEx('mc2-reason')" type="button">[ex]</button>
+                  </div>
+                  <div class="field-ex-block" id="ex-block-mc2-reason">
+                    <div class="field-ex-lbl">Example</div>
+                    <div class="field-ex-text">This capital is intended for long-term retirement compounding with a 25-year horizon. I don't claim consistent edge over the S&P 500 across this much capital. Broad-market exposure captures the compounding I need without active risk that isn't warranted.</div>
                   </div>
                 </div>
               </div>
@@ -11252,8 +12083,14 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div style="display:flex;flex-direction:column;gap:12px">
                     <div class="mc-instruct-note">Conditions under which this allocation should be reconsidered — specific changes in your situation, portfolio structure, or the role this capital serves. Not market conditions, not emotional responses.</div>
                     <div class="mc-condition-wrap" id="mc4-conditions">
-                      <textarea class="mc-condition-input" id="mc4-cond-0" placeholder="Condition 1" oninput="onMc4Input()"></textarea>
-                      <textarea class="mc-condition-input" id="mc4-cond-1" placeholder="Condition 2" oninput="onMc4Input()"></textarea>
+                      <div class="mc-condition-row">
+                        <div class="mc-condition-lbl">Condition 1</div>
+                        <textarea class="mc-condition-input" id="mc4-cond-0" placeholder="What would prompt you to reconsider?" oninput="onMc4Input()"></textarea>
+                      </div>
+                      <div class="mc-condition-row">
+                        <div class="mc-condition-lbl">Condition 2</div>
+                        <textarea class="mc-condition-input" id="mc4-cond-1" placeholder="What would prompt you to reconsider?" oninput="onMc4Input()"></textarea>
+                      </div>
                     </div>
                     <div class="field-ex-row" style="margin-top:4px">
                       <button class="mc-add-condition" onclick="addCoreCondition()" type="button">+ Add condition</button>
@@ -11282,32 +12119,34 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
               <hr class="div">
             </div>
             <div class="body-scroll">
-              <div class="memo-page m6-ledger" style="gap:16px">
-                <!-- Ledger header -->
-                <div class="mc5-ledger-header">
-                  <div class="mc5-path-badge">Core / Treasury</div>
-                  <div class="mc5-ticker-hero"><span class="memo-ctx-ticker">—</span></div>
-                  <div class="mc5-doc-label">ALLOCATION MEMO · V1</div>
-                  <div class="mc5-date" id="mc5-date">—</div>
-                  <div class="m6-ledger-meta" style="margin-top:8px">4 / 4</div>
+              <div class="memo-page m6-ledger mc5-review" style="gap:16px">
+                <!-- Header chrome — mirrors the m6 institutional layout:
+                     small meta line + drafted date + Active/Core lbl, then
+                     the section header below. -->
+                <div class="m6-ledger-header">
+                  <div class="m6-ledger-meta"><span class="memo-ctx-ticker">—</span> · Review</div>
+                  <div class="alloc-type-lbl mc5-alloc-lbl">Core / Treasury</div>
+                  <div class="m6-ledger-date" id="mc5-date">—</div>
                 </div>
-                <!-- Review rows -->
-                <div>
-                  <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">Memo</div>
-                    <span class="m6-section-edit-hint">Tap each to update</span>
+
+                <!-- Section header: ● Memo + Tap each to update -->
+                <div class="m6-ledger-section-row mc5-section-row">
+                  <div class="m6-ledger-section-head">Memo</div>
+                  <span class="m6-section-edit-hint">Tap each to update</span>
+                </div>
+
+                <!-- Card: side-by-side rows on a hairline-bordered surface. -->
+                <div class="m6-card">
+                  <div>
+                    <div class="memo-row" onclick="go('mc2')"><div class="k">Why</div><div class="v" id="mc5-reason">—</div></div>
+                    <div class="memo-row" onclick="go('mc3')"><div class="k">Role</div><div class="v" id="mc5-role">—</div></div>
+                    <div class="memo-row" onclick="go('mc4')"><div class="k">Conditions</div><div class="v" id="mc5-conditions">—</div></div>
                   </div>
-                  <div class="memo-row" onclick="go('mfork')"><div class="k">Path</div><div class="v">Core / Treasury</div></div>
-                  <div class="memo-row" onclick="go('mc2')"><div class="k">Why</div><div class="v" id="mc5-reason">—</div></div>
-                  <div class="memo-row" onclick="go('mc3')"><div class="k">Role</div><div class="v" id="mc5-role">—</div></div>
-                  <div class="memo-row" onclick="go('mc4')"><div class="k">Conditions</div><div class="v" id="mc5-conditions">—</div></div>
                 </div>
+
                 <!-- Footer note -->
                 <div class="t-bsm" style="line-height:1.6;color:var(--t-800)">
                   The allocation memo is recorded. This documents the intent and conditions for this capital deployment.
-                </div>
-                <div class="m6-immutability">
-                  This version is permanent once confirmed. Edits create new versions.
                 </div>
               </div>
             </div>
@@ -12454,62 +13293,72 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   </div>
                 </div>
 
-                <!-- Memo rows — split into two visual groups with the
-                     CALIBRATION block sitting between Size and Thesis so
-                     the prediction reads as a separator between "what
-                     the position is" and "why you took it". -->
-                <div>
-                  <div class="m6-ledger-section-row">
-                    <div class="m6-ledger-section-head">Memo</div>
-                    <span class="m6-section-edit-hint">Tap each to update</span>
-                  </div>
-                  <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Type</div><div class="v" id="m6-type">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('m1b')"><div class="k">Size</div><div class="v" id="m6-size">—</div></div>
+                <!-- Memo section row — sits OUTSIDE the card per the
+                     reference doc layout. Small "Memo" title with green
+                     pulsing dot anchors the section; card with the row
+                     content sits below. -->
+                <div class="m6-ledger-section-row">
+                  <div class="m6-ledger-section-head">Memo</div>
+                  <span class="m6-section-edit-hint">Tap each to update</span>
                 </div>
 
-                <!-- Calibration block — sits between Size and the rest of
-                     the memo content. One descriptive row that bundles the
-                     user's confidence, the hurdle rate, and the horizon
-                     into a single readable statement. -->
-                <div id="m6-calibration-section">
-                  <div class="m6-ledger-section-head">Confidence</div>
-                  <div class="memo-row m6-cal-summary-row" onclick="editFromReview('s12')">
-                    <div class="k" id="m6-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
-                    <div class="v" id="m6-cal-summary-val">—</div>
-                  </div>
-                  <!-- Legacy split rows kept hidden — older code paths may
-                       still read these IDs. The visible row above is the
-                       new canonical display. -->
-                  <div class="memo-row" style="display:none" onclick="editFromReview('s12')"><div class="k">Prob</div><div class="v" id="m6-prob">—</div></div>
-                  <div class="memo-row" style="display:none" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
-                </div>
+                <!-- Memo card — single hairline-bordered container that
+                     groups Type, Size, Calibration, Source, and the
+                     Investment case prose into one continuous document
+                     surface, mirroring the reference (Stock Page Return
+                     User) design. -->
+                <div class="m6-card">
 
-                <!-- Memo writing — Thesis through Note. -->
-                <div>
-                  <div class="memo-row" onclick="editFromReview('m2')"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
-                  <div class="memo-row" id="m6-timing-row" style="display:none" onclick="editFromReview('m2')"><div class="k">Why now</div><div class="v" id="m6-timing">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill</div><div class="v" id="m6-kill">—</div></div>
-                  <div class="memo-row" id="m6-floor-row" style="display:none" onclick="editFromReview('m3')"><div class="k">Floor</div><div class="v" id="m6-floor-disp">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">IV</div><div class="v" id="m6-iv">—</div></div>
-                  <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MoS</div><div class="v" id="m6-mos">—</div></div>
-                  <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
-                  <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')">
-                    <!-- Header row — key on the left, chevron at top right.
-                         Chevron toggles expansion; tap anywhere else on
-                         the row still routes to m5 for editing. -->
-                    <div class="m6-note-head">
-                      <div class="k">Note</div>
-                      <button class="m6-note-chevron" type="button" aria-label="Toggle full memo" onclick="event.stopPropagation();toggleM6NoteExpand()">
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                          <path d="M4 5.5 L7 8.5 L10 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </button>
+                  <!-- Classification + Sizing -->
+                  <div>
+                    <div class="memo-row" onclick="editFromReview('m1')"><div class="k">Classification</div><div class="v" id="m6-type">—</div></div>
+                    <div class="memo-row" onclick="editFromReview('m1b')"><div class="k">Sizing</div><div class="v" id="m6-size">—</div></div>
+                  </div>
+
+                  <!-- Calibration block — sits between Size and the rest of
+                       the memo content. One descriptive row that bundles the
+                       user's confidence, the hurdle rate, and the horizon
+                       into a single readable statement. -->
+                  <div id="m6-calibration-section">
+                    <div class="m6-ledger-section-head">Confidence</div>
+                    <div class="memo-row m6-cal-summary-row" onclick="editFromReview('s12')">
+                      <div class="k" id="m6-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
+                      <div class="v" id="m6-cal-summary-val">—</div>
                     </div>
-                    <!-- Prose truncates to 3 lines with native iOS-style "…"
-                         (-webkit-line-clamp). Tap the chevron to expand. -->
-                    <div class="v" id="m6-note-display">—</div>
+                    <!-- Legacy split rows kept hidden — older code paths may
+                         still read these IDs. The visible row above is the
+                         new canonical display. -->
+                    <div class="memo-row" style="display:none" onclick="editFromReview('s12')"><div class="k">Prob</div><div class="v" id="m6-prob">—</div></div>
+                    <div class="memo-row" style="display:none" onclick="editFromReview('s12')"><div class="k">Horizon</div><div class="v" id="m6-horizon">—</div></div>
                   </div>
-                </div>
+
+                  <!-- Memo writing — Thesis through Note. -->
+                  <div>
+                    <div class="memo-row" onclick="editFromReview('m2')"><div class="k">Thesis</div><div class="v" id="m6-thesis">—</div></div>
+                    <div class="memo-row" id="m6-timing-row" style="display:none" onclick="editFromReview('m2')"><div class="k">Why now</div><div class="v" id="m6-timing">—</div></div>
+                    <div class="memo-row" onclick="editFromReview('m3')"><div class="k">Kill</div><div class="v" id="m6-kill">—</div></div>
+                    <div class="memo-row" id="m6-floor-row" style="display:none" onclick="editFromReview('m3')"><div class="k">Floor</div><div class="v" id="m6-floor-disp">—</div></div>
+                    <div class="memo-row" onclick="editFromReview('miv')"><div class="k">IV</div><div class="v" id="m6-iv">—</div></div>
+                    <div class="memo-row" onclick="editFromReview('miv')"><div class="k">MoS</div><div class="v" id="m6-mos">—</div></div>
+                    <div class="memo-row" id="m6-source-row" style="display:none" onclick="editFromReview('msrc')"><div class="k">Source</div><div class="v" id="m6-source-display">—</div></div>
+                    <div class="memo-row" id="m6-note-row" style="display:none" onclick="editFromReview('m5')">
+                      <!-- Header row — key on the left, chevron at top right.
+                           Chevron toggles expansion; tap anywhere else on
+                           the row still routes to m5 for editing. -->
+                      <div class="m6-note-head">
+                        <div class="k">Note</div>
+                        <button class="m6-note-chevron" type="button" aria-label="Toggle full memo" onclick="event.stopPropagation();toggleM6NoteExpand()">
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                            <path d="M4 5.5 L7 8.5 L10 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                      <!-- Prose truncates to 3 lines with native iOS-style "…"
+                           (-webkit-line-clamp). Tap the chevron to expand. -->
+                      <div class="v" id="m6-note-display">—</div>
+                    </div>
+                  </div>
+                </div><!-- /.m6-card -->
 
                 <!-- Footer note (buy / first-time framing) -->
                 <div class="t-bsm" id="m6-buy-footer" style="line-height:1.6;color:var(--t-800)">
@@ -12618,6 +13467,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <h1 class="memo-header-title" id="mreread-title">Before you decide, re-read what you wrote.</h1>
                   </div>
                   <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · Memo</div>
+                  <div class="memo-header-right">
+                    <span class="alloc-type-lbl">Active allocation</span>
+                  </div>
                 </div>
                 <div class="memo-body--reveal">
                   <!-- "Update memo instead" off-ramp removed — the re-read
@@ -12705,6 +13557,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-header-meta">Capital decision</div>
                   <div class="memo-header-right">
                     <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · <span id="msell-tag">Reduce</span></span>
+                    <span class="alloc-type-lbl">Active allocation</span>
                   </div>
                 </div>
                 <div class="memo-body--reveal">
@@ -12785,6 +13638,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <h1 class="memo-header-title" id="marticulate-title">Articulate</h1>
                   </div>
                   <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · <span id="marticulate-tag">Reason</span></div>
+                  <div class="memo-header-right">
+                    <span class="alloc-type-lbl">Active allocation</span>
+                  </div>
                 </div>
                 <div class="memo-body--reveal">
                   <!-- The selected reason — read-only context so the user knows
@@ -12859,6 +13715,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <h1 class="memo-header-title">Recorded.</h1>
                   </div>
                   <div class="memo-header-meta"><span class="memo-ctx-ticker">AAPL</span> · Journal entry created</div>
+                  <div class="memo-header-right">
+                    <span class="alloc-type-lbl">Active allocation</span>
+                  </div>
                 </div>
                 <div class="memo-body--reveal">
                   <!-- Both blocks are editable until the user holds to
@@ -12910,6 +13769,7 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="memo-header-meta">Capital decision</div>
                   <div class="memo-header-right">
                     <span class="memo-header-version"><span class="memo-ctx-ticker">AAPL</span> · Add</span>
+                    <span class="alloc-type-lbl">Active allocation</span>
                   </div>
                 </div>
                 <div class="memo-body--reveal">
@@ -13199,6 +14059,11 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                   <div class="s4r-ticker">AAPL</div>
                   <div class="s4r-action" id="s4-action">Buy</div>
                 </div>
+                <!-- Pre-baked allocation label — read-only, tappable to
+                     open the mfork_decision info modal so users can learn
+                     what "Active allocation" / "Core" mean. JS hydrates
+                     the text per state.memo.allocationType. -->
+                <div class="alloc-type-lbl s4-alloc-lbl" id="s4-alloc-lbl">Active allocation</div>
                 <div class="s4r-header-meta s4r-editable" onclick="editFromS4('macct')">
                   <span>Non-Registered</span>
                   <span class="s4r-meta-sep">·</span>
@@ -13261,28 +14126,12 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <div class="s4r-stress-body" id="s4-stress-body">—</div>
               </div>
 
-              <!-- Calibration — moved ABOVE the memo section so the prediction
-                   isn't buried below a long memo body. One descriptive row
-                   bundles the user's confidence, hurdle rate, and horizon. -->
-              <div class="s4r-section">
-                <div class="s4r-section-head">Confidence</div>
-                <div class="s4r-row s4r-row--stack s4r-editable" onclick="editFromS4('s12')">
-                  <div class="s4r-row-head">
-                    <div class="s4r-key" id="s4-cal-summary-key">Probability of 20% / yr Return Over 3 Years</div>
-                    <span class="s4r-edit-mark">Edit ›</span>
-                  </div>
-                  <div class="s4r-val" id="s4-cal-summary-val">—</div>
-                </div>
-                <!-- Legacy split fields kept hidden so older readers don't break. -->
-                <div class="s4r-row" style="display:none">
-                  <div class="s4r-key">Prob</div>
-                  <div class="s4r-val" id="s4-conf">—</div>
-                </div>
-                <div class="s4r-row" style="display:none">
-                  <div class="s4r-key">Horizon</div>
-                  <div class="s4r-val" id="s4-horizon">—</div>
-                </div>
-              </div>
+              <!-- Calibration is now rendered INSIDE the memo card below
+                   (#s4-calibration-section). The standalone Confidence
+                   section that used to sit here was removed — it duplicated
+                   the #s4-cal-summary-key / #s4-cal-summary-val IDs, so the
+                   JS only ever updated this (hidden) copy and left the
+                   visible card row stuck on the "—" placeholder. -->
 
               <!-- Memo section (initial buy only)
                    Card layout — header is tappable to collapse / expand
@@ -13297,56 +14146,61 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                     <path d="M3 4.5 L6 7.5 L9 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </div>
+                <!-- Memo card body — mirrors the m6 institutional layout
+                     exactly: Classification + Sizing (with sub-descriptions),
+                     Confidence section in the middle, Source row, then the
+                     Investment case row with chevron + 3-line clamp. -->
                 <div class="s4-memo-body">
-                  <div class="s4r-row s4r-editable" onclick="editFromS4('m1')">
-                    <div class="s4r-key">Type</div>
-                    <div class="s4r-val">
-                      <div class="s4r-row-head">
-                        <span id="s4-memo-type">—</span>
-                        <span class="s4r-edit-mark">Edit ›</span>
+                  <div class="m6-card">
+
+                    <!-- Classification + Sizing rows -->
+                    <div>
+                      <div class="memo-row s4r-editable" onclick="editFromS4('m1')">
+                        <div class="k">Classification</div>
+                        <div class="v" id="s4-memo-type">—<div class="memo-row-sub" id="s4-memo-type-sub"></div></div>
                       </div>
-                      <div class="s4r-val-sub" id="s4-memo-type-sub"></div>
-                    </div>
-                  </div>
-                  <div class="s4r-row s4r-editable" onclick="editFromS4('m1b')">
-                    <div class="s4r-key">Size</div>
-                    <div class="s4r-val">
-                      <div class="s4r-row-head">
-                        <span id="s4-memo-size">—</span>
-                        <span class="s4r-edit-mark">Edit ›</span>
-                      </div>
-                      <div class="s4r-val-sub" id="s4-memo-size-sub"></div>
-                    </div>
-                  </div>
-                  <!-- Source — sits directly above the investment case row.
-                       Visible whenever a source has been recorded. -->
-                  <div class="s4r-row s4r-editable" id="s4-memo-source-row" style="display:none" onclick="editFromS4('msrc')">
-                    <div class="s4r-key">Source</div>
-                    <div class="s4r-val">
-                      <div class="s4r-row-head">
-                        <span id="s4-memo-source">—</span>
-                        <span class="s4r-edit-mark">Edit ›</span>
+                      <div class="memo-row s4r-editable" onclick="editFromS4('m1b')">
+                        <div class="k">Sizing</div>
+                        <div class="v" id="s4-memo-size">—<div class="memo-row-sub" id="s4-memo-size-sub"></div></div>
                       </div>
                     </div>
-                  </div>
-                  <div class="s4r-row s4r-row--stack s4r-editable" id="s4-memo-note-row" style="display:none" onclick="editFromS4('m5')">
-                    <div class="s4r-row-head">
-                      <div class="s4r-key" id="s4-memo-note-key">Investment Case</div>
-                      <span class="s4r-edit-mark">Edit ›</span>
+
+                    <!-- Confidence (mirrors m6-calibration-section) -->
+                    <div id="s4-calibration-section">
+                      <div class="m6-ledger-section-head">Confidence</div>
+                      <div class="memo-row m6-cal-summary-row s4r-editable" onclick="editFromS4('s12')">
+                        <div class="k" id="s4-cal-summary-key"><span class="m6-cal-key-main">Confidence</span><span class="m6-cal-key-sub">20% / yr over 3 years</span></div>
+                        <div class="v" id="s4-cal-summary-val">—</div>
+                      </div>
                     </div>
-                    <div class="s4r-val" id="s4-memo-note">—</div>
-                  </div>
-                  <div class="s4r-row s4r-row--stack" id="s4-memo-thesis-row">
-                    <div class="s4r-key">Thesis</div>
-                    <div class="s4r-val" id="s4-memo-thesis">—</div>
-                  </div>
-                  <div class="s4r-row s4r-row--stack" id="s4-memo-kill-row">
-                    <div class="s4r-key">Kill</div>
-                    <div class="s4r-val" id="s4-memo-kill">—</div>
-                  </div>
-                  <div class="s4r-row" id="s4-memo-mos-row">
-                    <div class="s4r-key">MoS</div>
-                    <div class="s4r-val" id="s4-memo-mos">—</div>
+
+                    <!-- Source + Investment case -->
+                    <div>
+                      <div class="memo-row s4r-editable" id="s4-memo-source-row" style="display:none" onclick="editFromS4('msrc')">
+                        <div class="k">Source</div>
+                        <div class="v" id="s4-memo-source">—</div>
+                      </div>
+                      <div class="memo-row s4r-editable" id="s4-memo-note-row" style="display:none" onclick="editFromS4('m5')">
+                        <div class="m6-note-head">
+                          <div class="k" id="s4-memo-note-key">Investment case</div>
+                          <button class="m6-note-chevron" type="button" aria-label="Toggle full memo" onclick="event.stopPropagation();toggleS4NoteExpand()">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                              <path d="M4 5.5 L7 8.5 L10 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="v" id="s4-memo-note">—</div>
+                      </div>
+                    </div>
+
+                    <!-- V4.5-only Thesis / Kill / MoS rows kept hidden in MVP V1.
+                         Display:none here so the JS that populates them still
+                         finds the elements, but they don't render visually. -->
+                    <div id="s4-v45-rows" style="display:none">
+                      <div class="memo-row" id="s4-memo-thesis-row"><div class="k">Thesis</div><div class="v" id="s4-memo-thesis">—</div></div>
+                      <div class="memo-row" id="s4-memo-kill-row"><div class="k">Kill</div><div class="v" id="s4-memo-kill">—</div></div>
+                      <div class="memo-row" id="s4-memo-mos-row"><div class="k">MoS</div><div class="v" id="s4-memo-mos">—</div></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -13372,6 +14226,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <div class="s9-ledger-header">
                   <div class="m6-ledger-meta" id="s9-filled-at">—</div>
                   <div class="s9-ticker-hero"><span class="memo-ctx-ticker">AAPL</span></div>
+                  <!-- Allocation label sits directly under the AAPL hero, as
+                       primary metadata (mirrors the m6 institutional header). -->
+                  <div class="alloc-type-lbl s9-alloc-lbl">Active allocation</div>
                   <div class="s9-event-label" id="s9-event-label">Order Filled</div>
                   <div class="s9-order-subtype" id="s9-type">Market Buy</div>
                 </div>
@@ -13495,6 +14352,9 @@ body.eng-notes-on .eng-notes-panel { display: flex; }
                 <div class="s9-ledger-header">
                   <div class="m6-ledger-meta" id="mvprec-date">—</div>
                   <div class="s9-ticker-hero"><span class="memo-ctx-ticker">AAPL</span></div>
+                  <!-- Allocation label sits directly under the AAPL hero, as
+                       primary metadata (mirrors the m6 institutional header). -->
+                  <div class="alloc-type-lbl s9-alloc-lbl">Active allocation</div>
                   <div class="s9-event-label">Position opened</div>
                   <div class="s9-order-subtype" id="mvprec-type">Market Buy</div>
                 </div>
@@ -15957,8 +16817,12 @@ let aaplLiveDelta = 0.22; // % move today — starts at the s0 chip value
 function aaplPriceMoveHTML() {
   const pct  = aaplLiveDelta;
   const sign = pct >= 0 ? '+' : '';
-  // Pure white, no color cue — pct already shows the direction via the sign.
-  return aaplLivePrice.toFixed(2) + ' ' + sign + pct.toFixed(2) + '%';
+  // Wrap price + percentage in distinct spans so they don't read as one
+  // continuous number. The ticker (memo-ctx-ticker) is medium-weight
+  // white, the price is regular weight white, the percentage is lighter
+  // gray with tabular-nums for stable digits.
+  return '<span class="memo-px">' + aaplLivePrice.toFixed(2) + '</span>' +
+         ' <span class="memo-pct">' + sign + pct.toFixed(2) + '%</span>';
 }
 
 /* m6 (returning) doc-label — anchors the memo to live market state + date.
@@ -16786,6 +17650,48 @@ function backFromMfork() {
   go('s0');
 }
 
+/* Click any .alloc-type-lbl anywhere in the app → open the explainer
+   modal. Allocation type is pre-baked per ticker; the label is
+   read-only context, not an editable field. Global event delegation
+   so we don't have to wire onclick on every span/div instance. */
+document.addEventListener('click', function (e) {
+  const lbl = e.target.closest && e.target.closest('.alloc-type-lbl');
+  if (!lbl) return;
+  e.stopPropagation();
+  try { showInfoModal('mfork_decision'); } catch(_) {}
+});
+
+/* Convert state.memo.allocationType ('active' | 'core') into the
+   user-facing label. Called from each screen's render path so the
+   label always matches the pre-baked type. */
+function allocationTypeLabel(type) {
+  return type === 'core' ? 'Core / Treasury' : 'Active allocation';
+}
+/* Hydrate every visible .alloc-type-lbl with the current type. Called
+   on every go() so any newly-shown screen picks up the right text. */
+function refreshAllocationLabels() {
+  const type = (state && state.memo && state.memo.allocationType) || 'active';
+  const txt  = allocationTypeLabel(type);
+  document.querySelectorAll('.alloc-type-lbl').forEach(el => {
+    el.textContent = txt;
+  });
+}
+
+/* Allocation type is now PRE-BAKED per ticker / instrument type — users
+   no longer pick it via the mfork step in MVP V1. Stocks default to
+   'active', ETFs default to 'core' (a treasury role). The mfork
+   screen + selectFork() still exist for the legacy V4.5 path; MVP V1
+   skips them and looks up the type via this helper at init time. */
+function getInstrumentAllocationType(ticker) {
+  if (!ticker) return 'active';
+  const t = String(ticker).toUpperCase();
+  // Minimal classification for the prototype. A real system would
+  // hydrate this from the instrument record.
+  const ETFS = ['VTI','VOO','SPY','QQQ','VXUS','BND','SCHD','VEA','VWO','IVV'];
+  if (ETFS.indexOf(t) !== -1) return 'core';
+  return 'active';
+}
+
 function selectFork(type) {
   state.memo.allocationType = type;
   document.querySelectorAll('.mfork-option').forEach(el => el.classList.remove('is-on'));
@@ -16858,15 +17764,23 @@ function hydrateMc4() {
   const saved = state.memo.coreConditions || ['', ''];
   const inputs = wrap.querySelectorAll('.mc-condition-input');
   inputs.forEach((el, i) => { el.value = saved[i] || ''; });
-  // If saved has more conditions than inputs, add them
+  // If saved has more conditions than inputs, append additional rows
+  // using the same .mc-condition-row pattern as the static rows.
   for (let i = inputs.length; i < saved.length; i++) {
+    const row = document.createElement('div');
+    row.className = 'mc-condition-row';
+    const lbl = document.createElement('div');
+    lbl.className = 'mc-condition-lbl';
+    lbl.textContent = 'Condition ' + (i + 1);
     const ta = document.createElement('textarea');
     ta.className = 'mc-condition-input';
     ta.id = 'mc4-cond-' + i;
-    ta.placeholder = 'Condition ' + (i + 1);
+    ta.placeholder = 'What would prompt you to reconsider?';
     ta.setAttribute('oninput', 'onMc4Input()');
     ta.value = saved[i] || '';
-    wrap.appendChild(ta);
+    row.appendChild(lbl);
+    row.appendChild(ta);
+    wrap.appendChild(row);
   }
   const btn = document.getElementById('mc4-next');
   const filled = (state.memo.coreConditions || []).filter(c => c.trim().length > 0).length;
@@ -16883,6 +17797,10 @@ function onMc2Input() {
   state.memo.coreReason = val;
   const btn = document.getElementById('mc2-next');
   if (btn) btn.classList.toggle('locked', val.trim().length < 20);
+  // Hide the blinking caret as soon as the user starts typing — same
+  // pattern as m5's caret.
+  const caret = document.querySelector('.mc2-caret');
+  if (caret) caret.style.display = val.length > 0 ? 'none' : '';
   try { persistMemoDraft(); } catch(_) {}
 }
 
@@ -16916,12 +17834,21 @@ function addCoreCondition() {
   if (!wrap) return;
   const count = wrap.querySelectorAll('.mc-condition-input').length;
   if (count >= 5) return;
+  // New row matches the static rows: thin left border + small label +
+  // free-type textarea (no boxed input).
+  const row = document.createElement('div');
+  row.className = 'mc-condition-row';
+  const lbl = document.createElement('div');
+  lbl.className = 'mc-condition-lbl';
+  lbl.textContent = 'Condition ' + (count + 1);
   const ta = document.createElement('textarea');
   ta.className = 'mc-condition-input';
   ta.id = 'mc4-cond-' + count;
-  ta.placeholder = 'Condition ' + (count + 1);
+  ta.placeholder = 'What would prompt you to reconsider?';
   ta.setAttribute('oninput', 'onMc4Input()');
-  wrap.appendChild(ta);
+  row.appendChild(lbl);
+  row.appendChild(ta);
+  wrap.appendChild(row);
   ta.focus();
 }
 
@@ -17603,6 +18530,7 @@ function toggleArtboard() {
   if (isOpen) {
     ab.style.display = 'none';
     if (btn) btn.classList.remove('is-on');
+    stopArtboardMatrix();
   } else {
     // Reset state on open
     artboardZoom = 1;
@@ -17617,7 +18545,68 @@ function toggleArtboard() {
     closePreview();
     ab.style.display = 'flex';
     if (btn) btn.classList.add('is-on');
+    // Kick the matrix character cycling on Iteration 2's value cells.
+    // Loops every ~5s while the artboard is open.
+    startArtboardMatrix();
   }
+}
+
+/* Artboard — toggle Investment case collapse/expand.
+   Each tile's case block starts collapsed (3-line clamp); the chevron
+   button calls this with `this` pointing at the button. We climb to
+   the nearest .iter-case-block ancestor and toggle .is-expanded.
+   stopPropagation on the inline handler keeps the toggle from
+   triggering selectIteration on the tile. */
+function toggleIterCase(btn) {
+  let el = btn;
+  while (el && !(el.classList && el.classList.contains('iter-case-block'))) {
+    el = el.parentElement;
+  }
+  if (el) el.classList.toggle('is-expanded');
+}
+
+/* Matrix-style character cycling for Iteration 2 (Terminal). Each
+   value cell cycles random Inter glyphs for ~500ms (8 frames × 60ms)
+   then settles on its real value. Cells stagger by 180ms so the four
+   cells settle in a left→right wave. Loops every 5s while the
+   artboard is open; cleared by stopArtboardMatrix(). */
+let _artboardMatrixTimer = null;
+function startArtboardMatrix() {
+  stopArtboardMatrix();
+  runArtboardMatrix();
+  _artboardMatrixTimer = setInterval(runArtboardMatrix, 5000);
+}
+function stopArtboardMatrix() {
+  if (_artboardMatrixTimer) {
+    clearInterval(_artboardMatrixTimer);
+    _artboardMatrixTimer = null;
+  }
+}
+function runArtboardMatrix() {
+  const cells = document.querySelectorAll('.iter-2-tile .iter-typeval');
+  const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#@%&?/!';
+  cells.forEach((el, i) => {
+    const target = el.getAttribute('data-val') || el.textContent;
+    const steps = 8;
+    const stepDur = 60;
+    setTimeout(() => {
+      let s = 0;
+      const tick = setInterval(() => {
+        if (s < steps) {
+          el.textContent = Array.from({length: target.length}, (_, ci) => {
+            // Preserve spaces and punctuation to keep visual rhythm.
+            const c = target[ci];
+            if (c === ' ' || c === '.' || c === '/' || c === '%') return c;
+            return glyphs[Math.floor(Math.random() * glyphs.length)];
+          }).join('');
+          s++;
+        } else {
+          el.textContent = target;
+          clearInterval(tick);
+        }
+      }, stepDur);
+    }, i * 180);
+  });
 }
 
 /* ── Ctrl+scroll = zoom, Middle mouse = pan ──────────── */
@@ -18213,6 +19202,9 @@ function go(id) {
   if (id === 's4')  renderS4();
   if (id === 's9')  renderS9();
   if (id === 'm6')  renderM6();
+  // Pre-baked allocation labels — re-hydrate every screen change so
+  // any visible .alloc-type-lbl matches the current state.memo.allocationType.
+  try { refreshAllocationLabels(); } catch(_) {}
   if (id === 's5')  renderCalAnalytics();
   if (id === 's10') renderDashboard();
   if (id === 's11') renderS11Init();
@@ -18779,9 +19771,15 @@ function onCapitalDecision() {
     state.cd = 'initial';
     state.prob = 0;
     state._memoEditedThisFlow = false;
-    // MVP V1 jumps straight to the allocation fork — no protocol intro,
-    // no research orientation. Both orientation pages are V4.5-only.
-    go(state.version === 'mvp1' ? 'mfork' : 'mintro');
+    // MVP V1: allocationType is pre-baked per ticker — no mfork step.
+    // Stocks default to 'active', ETFs to 'core'. Users still SEE the
+    // label on review surfaces (tap to learn) but can't change it.
+    if (state.version === 'mvp1') {
+      state.memo.allocationType = getInstrumentAllocationType('AAPL');
+      go('m1');
+      return;
+    }
+    go('mintro');
     return;
   }
   // Returning user: surface the action picker over s0.
@@ -18973,7 +19971,16 @@ function continueFromS19() {
    screen (s19). For a draft memo (writing the artifact without buying) back
    returns to the stock page (s0). */
 function backFromM1() {
-  // If the user came through the fork screen, always return to it
+  // MVP V1: mfork is gone — back from m1 returns to s0 (or s19 for
+  // increase/reduce/exit flows). The legacy V4.5 path still rewinds
+  // through mfork when allocationType was set there.
+  if (state.version === 'mvp1') {
+    if (state.cd === 'draft')                 { go('s0');  return; }
+    if (state.cd && state.cd !== 'initial')   { go('s19'); return; }
+    go('s0');
+    return;
+  }
+  // V4.5: if the user came through the fork screen, return to it
   if (state.memo.allocationType) { go('mfork'); return; }
   if (state.cd === 'draft')                   { go('s0');  return; }
   if (state.cd && state.cd !== 'initial')     { go('s19'); return; }
@@ -19736,11 +20743,13 @@ function showExampleToast(message) {
 function startDraftMemo() {
   if (state.exampleMode) { showExampleToast(); return; }
   state.cd = 'draft';
-  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false, kill1Action:null, kill2Action:null, kill3Action:null, kill4:'', kill4Action:null, whatChangesMind:'', ivLow:'', ivHigh:'', cantValueReason:'', ptStatus:null, ptConfirmed:null, allocationType:null, coreReason:'', coreRole:null, coreConditions:['',''] };
+  state.memo = { type:null, size:null, thesis:'', kill:'', mos:null, top3:null, note:'', source:null, sourceDetail:'', intrinsicValue:'', ivMethod:'', marginEnough:null, cantValue:false, kill1Action:null, kill2Action:null, kill3Action:null, kill4:'', kill4Action:null, whatChangesMind:'', ivLow:'', ivHigh:'', cantValueReason:'', ptStatus:null, ptConfirmed:null, allocationType: getInstrumentAllocationType('AAPL'), coreReason:'', coreRole:null, coreConditions:['',''] };
   state.prob    = 0;
   state.horizon = '3y';
   state._increaseSeeded = false;
-  go('mfork');
+  // MVP V1: skip the mfork step (allocationType pre-baked above) and
+  // open the draft directly at m1. V4.5 keeps the legacy mfork flow.
+  go(state.version === 'mvp1' ? 'm1' : 'mfork');
 }
 
 
@@ -21647,7 +22656,7 @@ function hydrateMemoStepNav(stepId) {
       }
     }
     if (st) st.textContent = isMvp1
-      ? 'Paste your finalized investment case here — the research and analysis behind this position. A strong case typically covers your thesis, kill criteria, intrinsic value, and margin of safety.'
+      ? 'Add your finalized investment case here — the research and analysis behind this position. A strong case typically covers your thesis, kill criteria, intrinsic value, and margin of safety.'
       : 'The work behind it.';
     if (sh) sh.style.display = isMvp1 ? 'none' : '';
     if (exBtn)  exBtn.style.display  = isMvp1 ? 'none' : '';
@@ -21657,9 +22666,9 @@ function hydrateMemoStepNav(stepId) {
     if (hint) hint.style.display = 'none';
     const ta = document.getElementById('m5-note');
     if (ta) {
-      // Single quiet line — biases toward pasting a finalized case from
-      // research (Fiscal, prompt, or otherwise), doesn't preclude typing.
-      ta.placeholder = isMvp1 ? 'Paste your investment case or start typing' : '';
+      // Neutral prompt — the user decides how to get their case in (paste
+      // from research, write it inline, etc.); we don't prescribe a method.
+      ta.placeholder = isMvp1 ? 'Add your investment case' : '';
     }
   }
 }
@@ -22241,8 +23250,32 @@ function renderM6() {
   // below a long memo body.
   const calKey = document.getElementById('m6-cal-summary-key');
   const calVal = document.getElementById('m6-cal-summary-val');
-  if (calKey) calKey.textContent = formatCalibrationLabel();
-  if (calVal) calVal.textContent = state.prob + '%';
+  // Two-line Confidence layout ("Confidence" / "20% / yr over 3 years") is
+  // used whenever the memo shows inside the institutional .m6-card — that's
+  // first-time AND the increase (buy-side) returning flow, which now shares
+  // the same card. Sell flows keep the single-line calibration label.
+  const isInst = (state.version === 'mvp1' &&
+                  (state.cd === 'initial' || (isMvpReturning() && !isSellFlow())));
+  if (calKey) {
+    if (isInst) {
+      // Institutional layout — "Confidence" sits as the main label with
+      // a sub-line naming the underlying claim ("20% / yr over 3 years")
+      // so the user reads what the % is measuring without burying the
+      // word "Confidence" inside a long phrase.
+      const hurdleVal = (state.memo && state.memo.hurdleRate) || state.defaultHurdleRate || 20;
+      const horizonRaw = HORIZON_LBL[state.horizon] || state.horizon || '3 years';
+      const horizonLower = String(horizonRaw).toLowerCase();
+      calKey.innerHTML = '<span class="m6-cal-key-main">Confidence</span>' +
+                         '<span class="m6-cal-key-sub">' + hurdleVal + '% / yr over ' + horizonLower + '</span>';
+    } else {
+      calKey.textContent = formatCalibrationLabel();
+    }
+  }
+  if (calVal) {
+    // Plain "70%" — the sub-line under the key already conveys the
+    // hurdle + horizon context, so no need to append "· 3y" here.
+    calVal.textContent = (state.prob != null) ? (state.prob + '%') : '—';
+  }
 
   // Stats strip — populate if present (live default design)
   const classifyEl = document.getElementById('m6-classify');
@@ -22414,6 +23447,14 @@ function renderMvp1ReturningView() {
   if (!block) return;
   const isReturning = isMvpReturning();
   const isDraft = isMvpDraftView();
+  // Increase / buy-side returning presents the memo using the SAME
+  // institutional .m6-card as the first-time review — the two review
+  // surfaces share one card. Sell flows (reduce / exit) and the draft
+  // persona keep the flat declarations view. `.is-card-memo` lights up the
+  // card + section-row styling (which my CSS scopes to
+  // :is(.is-institutional, .is-card-memo)) WITHOUT pulling in the
+  // first-time-only animation cascade / seal footer.
+  const useCardView = isReturning && !isSellFlow();
   // Draft view shares the returning-view chrome (chip + declarations +
   // inline memo body) but with draft-specific overrides applied below.
   block.style.display = (isReturning || isDraft) ? '' : 'none';
@@ -22421,6 +23462,16 @@ function renderMvp1ReturningView() {
   // hidden two-clocks / banner / nudge, etc.).
   const scrEl = document.querySelector('.scr[data-id="m6"]');
   if (scrEl) scrEl.classList.toggle('is-draft-view', isDraft);
+  // Card-view marker — drives the shared .m6-card chrome on the returning
+  // increase flow without the institutional header treatment.
+  if (scrEl) scrEl.classList.toggle('is-card-memo', useCardView);
+  // Authoritative institutional toggle — the full first-time treatment
+  // (header chrome + animation cascade + seal footer) applies ONLY to the
+  // first-time buy. Toggling here (not just in the first-time branch below)
+  // ensures the class is REMOVED when navigating into a sell / draft flow,
+  // so a lingering .is-institutional from a prior first-time render can't
+  // mis-style the returning header.
+  if (scrEl) scrEl.classList.toggle('is-institutional', state.version === 'mvp1' && state.cd === 'initial');
   // Footer swap — draft footer (Save draft memo) replaces the seal arrow.
   const draftSaveBtn = document.getElementById('m6-draft-save');
   if (draftSaveBtn) draftSaveBtn.style.display = isDraft ? '' : 'none';
@@ -22443,12 +23494,15 @@ function renderMvp1ReturningView() {
     saveSecRow:     document.getElementById('m6-save-secondary-row'),
     savePrimary:    document.getElementById('m6-save-primary')
   };
-  const memoRowsWrap = ids.rowsSection ? ids.rowsSection.parentElement : null;
-  // The second memo-rows wrap (Thesis → Note) sits below the calibration
-  // section after the recent restructure. Find it via the note row's
-  // parent so we can hide it too in returning mode.
-  const noteRowEl  = document.getElementById('m6-note-row');
-  const memoRowsWrap2 = noteRowEl ? noteRowEl.parentElement : null;
+  // After the card-unification restructure, the Type/Size/Confidence/Note
+  // rows ALL live inside a single .m6-card, and the "Memo" section head is
+  // the .m6-ledger-section-row — both are now DIRECT children of the
+  // .memo-page wrapper. We must NOT use ids.rowsSection.parentElement here:
+  // that now resolves to the whole .memo-page and hiding it blanks the
+  // entire screen in returning / draft mode. Target the card + section-head
+  // explicitly instead.
+  const memoRowsWrap  = document.querySelector('.scr[data-id="m6"] .m6-card'); // the memo card
+  const memoRowsWrap2 = ids.rowsSection;                                       // the "Memo" section head
 
   if (!isReturning && !isDraft) {
     // First-time / V4.5: bare arrow seal owns the footer.
@@ -22643,16 +23697,33 @@ function renderMvp1ReturningView() {
   const hdr = document.getElementById('m6-ledger-header');
   if (hdr) hdr.classList.add('is-prose-title');
 
-  // Hide the V4.5 / first-time pieces — the new view owns the page.
-  if (memoRowsWrap)  memoRowsWrap.style.display  = 'none';
-  if (memoRowsWrap2) memoRowsWrap2.style.display = 'none';
-  if (ids.calSection) ids.calSection.style.display = 'none';
+  // Memo body. CARD VIEW (increase returning): show the SAME .m6-card +
+  // "Memo" section head as the first-time review, and hide the flat
+  // declarations / inline-memo block below. FLAT VIEW (sell + draft): keep
+  // the declarations and hide the card.
+  if (memoRowsWrap)   memoRowsWrap.style.display   = useCardView ? '' : 'none';
+  if (memoRowsWrap2)  memoRowsWrap2.style.display  = useCardView ? '' : 'none';
+  if (ids.calSection) ids.calSection.style.display = useCardView ? '' : 'none';
   if (ids.buyFooter)  ids.buyFooter.style.display  = 'none';
   if (ids.sellFooter) ids.sellFooter.style.display = 'none';
   if (ids.immut)      ids.immut.style.display      = 'none';
   if (ids.posStatus)  ids.posStatus.style.display  = 'none';
   if (ids.ptStep)     ids.ptStep.style.display     = 'none';
   if (ids.reasonSec)  ids.reasonSec.style.display  = 'none';
+  // In card view, the memo content lives in the .m6-card, so collapse the
+  // flat declarations / inline-memo / edit-hint / chip inside the returning
+  // block — keeping only the contextual flow banner (and conditional nudge)
+  // above the card. The flat view restores them.
+  {
+    const flatBits = ['.m6-declarations', '.m6-inline-memo', '.m6-mvp1-edit-hint', '.m6-newmemo-chip'];
+    flatBits.forEach(sel => {
+      const el = block.querySelector(sel);
+      if (el) el.style.display = useCardView ? 'none' : '';
+    });
+    // The "Memo" section head carries the green dot in card view, so the
+    // is-first-memo hero promotion (first-time only) must not linger.
+    if (ids.rowsSection) ids.rowsSection.classList.remove('is-first-memo');
+  }
   // Footer swap. Returning shows the canonical save stack; Draft shows
   // the Edit / Delete affordances (the m6-draft-footer is toggled in
   // the early section above). Both hide the bare arrow seal.
@@ -22676,10 +23747,11 @@ function renderMvp1ReturningView() {
   // a separate meta caption above the title is redundant.
   const tickerMeta = document.getElementById('m6-ticker-meta');
   if (tickerMeta) tickerMeta.style.display = 'none';
-  // Alloc-lbl removed in returning mode — the title ("Adding to Apple")
-  // already carries the verb, so a separate "Adding more" line is noise.
+  // Alloc-lbl: shown in card view (read-only "Active allocation" under the
+  // title, matching the first-time review header). Hidden in the flat
+  // declarations view — there the title alone carries the verb.
   const allocLbl = document.querySelector('.scr[data-id="m6"] .alloc-type-lbl');
-  if (allocLbl) allocLbl.style.display = 'none';
+  if (allocLbl) allocLbl.style.display = useCardView ? 'block' : 'none';
   const classifyEl = document.getElementById('m6-classify');
   if (classifyEl) classifyEl.textContent = (TYPE_LBL[state.memo.type] || '') +
     (state.memo.size ? ' · ' + (SIZE_LBL[state.memo.size] || '') : '');
@@ -23736,13 +24808,9 @@ function renderS4() {
   // Live market price reflects the simulated quote on this screen too.
   const mp = document.getElementById('s4-mkt-price');
   if (mp) mp.textContent = (typeof aaplLivePrice === 'number' ? aaplLivePrice : MKTPRICE_USD).toFixed(2) + ' USD';
-  document.getElementById('s4-conf').textContent = state.prob + '%';
-  document.getElementById('s4-horizon').textContent = HORIZON_LBL[state.horizon] || state.horizon;
-  // New combined calibration row — single descriptive label, user's % as value.
-  const s4CalKey = document.getElementById('s4-cal-summary-key');
-  const s4CalVal = document.getElementById('s4-cal-summary-val');
-  if (s4CalKey) s4CalKey.textContent = formatCalibrationLabel();
-  if (s4CalVal) s4CalVal.textContent = state.prob + '%';
+  // Confidence (#s4-cal-summary-key / -val) is populated inside the memo
+  // card branch below — the legacy standalone Confidence section and its
+  // split Prob / Horizon fields were removed, so there's nothing to set here.
 
   // V4.5 only: stress test. Show what a 30% drop would do in dollars +
   // portfolio impact. Most impactful when sized as a Core position.
@@ -23765,20 +24833,26 @@ function renderS4() {
   // Show the memo on the first-time buy AND the MVP V1 returning flow.
   if (state.cd === 'initial' || isMvpReturning()) {
     memoSec.style.display = 'block';
-    document.getElementById('s4-memo-type').textContent   = TYPE_LBL[state.memo.type] || '—';
-    document.getElementById('s4-memo-size').textContent   = SIZE_LBL[state.memo.size] || '—';
+    // s4 memo card mirrors m6's institutional card — both the value
+    // AND its sub-description live INSIDE the .v element. Use innerHTML
+    // so the nested .memo-row-sub stays present after each render.
+    const typeEl = document.getElementById('s4-memo-type');
+    if (typeEl) {
+      const lbl = TYPE_LBL[state.memo.type] || '—';
+      const sub = TYPE_SUB[state.memo.type] || '';
+      typeEl.innerHTML = sub ? `${lbl}<div class="memo-row-sub">${sub}</div>` : lbl;
+    }
+    const sizeEl = document.getElementById('s4-memo-size');
+    if (sizeEl) {
+      const lbl = SIZE_LBL[state.memo.size] || '—';
+      const sub = SIZE_SUB[state.memo.size] || '';
+      const w   = getCurrentPositionWeightPct();
+      const subHtml = sub + (w > 0 ? `<div class="memo-row-now">Currently ${w.toFixed(1)}%</div>` : '');
+      sizeEl.innerHTML = sub || w > 0 ? `${lbl}<div class="memo-row-sub">${subHtml}</div>` : lbl;
+    }
     document.getElementById('s4-memo-thesis').textContent = state.memo.thesis || '—';
     document.getElementById('s4-memo-kill').textContent   = state.memo.kill   || '—';
     document.getElementById('s4-memo-mos').textContent    = MOS_LBL[state.memo.mos] || '—';
-    // Sub-descriptions under Type / Size — mirrors m6 / s8 review rows
-    const typeSub = document.getElementById('s4-memo-type-sub');
-    if (typeSub) typeSub.textContent = TYPE_SUB[state.memo.type] || '';
-    const sizeSub = document.getElementById('s4-memo-size-sub');
-    if (sizeSub) {
-      const sub = SIZE_SUB[state.memo.size] || '';
-      const w   = getCurrentPositionWeightPct();
-      sizeSub.innerHTML = sub + (w > 0 ? `<div class="memo-row-now">Currently ${w.toFixed(1)}%</div>` : '');
-    }
     // MVP V1 captures neither thesis, kill, nor MOS — drop those rows here too.
     const isMvp1 = state.version === 'mvp1';
     ['s4-memo-thesis-row','s4-memo-kill-row','s4-memo-mos-row'].forEach(rid => {
@@ -23807,9 +24881,34 @@ function renderS4() {
         sourceRow.style.display = 'none';
       }
     }
+    // Confidence row — mirrors the m6 calibration display: "Confidence"
+    // main label + "20% / yr over 3 years" sub, with the probability
+    // value (60%) on the right.
+    const s4CalKey = document.getElementById('s4-cal-summary-key');
+    const s4CalVal = document.getElementById('s4-cal-summary-val');
+    if (s4CalKey) {
+      const hurdleVal  = (state.memo && state.memo.hurdleRate) || state.defaultHurdleRate || 20;
+      const horizonRaw = HORIZON_LBL[state.horizon] || state.horizon || '3 years';
+      s4CalKey.innerHTML = '<span class="m6-cal-key-main">Confidence</span>' +
+                           '<span class="m6-cal-key-sub">' + hurdleVal + '% / yr over ' + String(horizonRaw).toLowerCase() + '</span>';
+    }
+    if (s4CalVal) {
+      s4CalVal.textContent = (state.prob != null) ? (state.prob + '%') : '—';
+    }
+    // Reset Investment case to collapsed state on every render so the
+    // user always lands on the truncated preview.
+    const s4NoteRow = document.getElementById('s4-memo-note-row');
+    if (s4NoteRow) s4NoteRow.classList.remove('is-expanded');
   } else {
     memoSec.style.display = 'none';
   }
+}
+
+/* s4 Investment case — chevron toggle for the 3-line / full prose
+   collapse. Mirrors toggleM6NoteExpand on the m6 review. */
+function toggleS4NoteExpand() {
+  const row = document.getElementById('s4-memo-note-row');
+  if (row) row.classList.toggle('is-expanded');
 }
 
 const HOLD_MS = 1800;
@@ -23994,7 +25093,8 @@ function openMvpRecord() {
 }
 function closeMvpRecord() {
   const back = window._mvpRecordReturn;
-  go(back && back !== 'mvprecord' ? back : (state.version === 'mvp1' ? 'mfork' : 's10'));
+  // MVP V1 falls back to s0 since mfork is no longer in the flow.
+  go(back && back !== 'mvprecord' ? back : (state.version === 'mvp1' ? 's0' : 's10'));
 }
 function renderMvpRecord() {
   const txns = (state.transactions || []).filter(t => !t.paper && t.action === 'Buy');
@@ -24304,17 +25404,16 @@ function refreshVersionVisibility() {
 
 /* Version picker chip — updates state, persists, and refreshes UI.
    V1–V3 were retired; clamp anything below 4 up to the V4 baseline. */
-/* MVP V1 has no dashboard or search surface — the flow begins at the
-   allocation fork. Reset to a fresh first-time memo and land on mfork. */
+/* MVP V1 has no dashboard or search surface — the flow begins at m1
+   (allocationType is pre-baked per ticker, no mfork step). Reset to a
+   fresh first-time memo and land on the Classification screen. */
 function startMvpFirstFlow() {
   state.cd = 'initial';
   state.prob = 0;
   state._memoEditedThisFlow = false;
   state.account = null;
-  if (state.memo) state.memo.allocationType = null;
-  // First-time MVP V1 starts at the allocation fork. macct moves to the
-  // start of order placement (between m6 commit and s8).
-  go('mfork');
+  if (state.memo) state.memo.allocationType = getInstrumentAllocationType('AAPL');
+  go('m1');
 }
 
 /* MVP V1 landing router. First-time persona → the allocation fork (write the
@@ -24355,6 +25454,9 @@ function setVersion(v) {
       state.thesisReviews = []; persistThesisReviews();
       state.reviewPending = false; persistReviewPending(false);
     }
+    // Pre-bake allocation type per ticker (AAPL → active). Users no
+    // longer pick this via mfork; the label is read-only on review.
+    if (state.memo) state.memo.allocationType = getInstrumentAllocationType('AAPL');
     enterMvp();
     return;
   }
@@ -25689,18 +26791,22 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
   },
   mfork_decision: {
     eyebrow: 'Capital allocation',
-    title:   'Two kinds of decisions.',
-    bodyHtml: `<p>Every capital deployment is one of two things: a position where you believe you can outperform the market, or one where you are deciding how capital should sit relative to the market.</p>
-<p><strong>Active allocation</strong> — you are claiming an edge. The memo records why you expect this position to outperform the S&amp;P 500 over your stated horizon, and your record is later measured against that benchmark.</p>
-<p><strong>Core / Treasury</strong> — you are not claiming an edge. The memo records why this capital belongs here, in this form, at this scale — for liquidity, long-term compounding, or stability.</p>
-<p>Classifying the decision honestly is what makes calibration meaningful. Active positions are assessed on outperformance; Core / Treasury positions are assessed on the role they were meant to play.</p>
-<p><em>Neither label is better than the other. The point is to be honest about which one you are making.</em></p>
-<p class="info-disclaimer">This is a journaling and self-calibration framework, not investment advice or a recommendation. You choose the classification; the system only records and measures your own judgment over time.</p>`
+    title:   'How positions are classified.',
+    bodyHtml: `<p>Every position the system records falls into one of two categories. The classification is <strong>not a user choice</strong> — it follows from the instrument you hold, because the asset type itself determines whether an edge claim is being made.</p>
+<p><strong>Active allocation</strong> — assigned to individual securities (single stocks). Owning a single company implies a claim of edge: that this position can outperform the broad market through security selection. The memo records why, and the record is later measured against the S&amp;P 500 over your stated horizon.</p>
+<p><strong>Core / Treasury</strong> — assigned to broadly diversified funds (ETFs, index funds). Owning these is market exposure, not a bet on any specific company — no edge claim is being made. The memo records why this capital belongs here, in this form, at this scale — for liquidity, long-term compounding, or stability.</p>
+<p>The labels exist so positions are measured against the right standard: Active positions are assessed on outperformance, Core / Treasury positions on the role they were meant to play. If you want a different stance for this capital, the answer is to use a different instrument — not to relabel the position.</p>
+<p><em>Neither label is better than the other. They describe different kinds of bets, measured by different standards.</em></p>
+<p class="info-disclaimer">This is a journaling and self-calibration framework, not investment advice or a recommendation. The system assigns the classification based on the instrument; it records and measures your own judgment over time.</p>`
   },
   uw_hurdle: {
     eyebrow: 'Exceptional Compounding Hurdle',
-    title:   'The minimum return required to justify the bet.',
+    title:   '20% per year — the minimum return required to justify the bet.',
     bodyHtml: `
+<p>This rate applies to all Compounder memos as the minimum annual return the underwriting must support. We default to <strong>20%</strong> — meaningfully above the S&amp;P 500's ~15% average over the past decade — so the bar represents real outperformance, not just keeping up with the market.</p>
+<p>Set this against your <strong>full portfolio</strong>, not just positions held in this app. If you hold Compounders on other brokerages or platforms, the standard is the same — pick the rate that reflects how you actually think about returns across everything you own.</p>
+
+<h4>Why a demanding hurdle</h4>
 <p>Exceptional businesses are rare. Setting a demanding hurdle rate is a discipline mechanism — it forces explicit comparison to the rarest tier of compounders rather than to average market returns.</p>
 <p>A hurdle rate is not a target. It is the floor below which the investment thesis does not justify concentrated exposure. If the business cannot plausibly compound at the hurdle by your own underwriting, that has implications for how you approach sizing and classification.</p>
 <p>Setting a demanding hurdle forces an honest comparison: not against average returns, but against the rarest tier of businesses. Most companies — including good ones — will not clear it. That is the discipline.</p>
@@ -25720,25 +26826,34 @@ Stating "≥20%/yr" also forces honesty. It's a high bar, so most names won't cl
 </ul>
 
 <p><em>Most positions will not clear the hurdle. That is not a failure of the system — it is the system working.</em></p>
-`
+`,
+    edit: 'hurdle'
   },
   uw_horizon: {
-    eyebrow: 'Exceptional Compounding Horizon',
-    title:   'The time window over which the thesis plays out.',
+    eyebrow: 'The prediction',
+    title:   'A falsifiable bet about the business — recorded now, judged later.',
     bodyHtml: `
-<p>Compounding is inseparable from time. A business that compounds at 20% per year over one year is interesting. Over five years, it is transformational. The horizon defines which of those you are actually underwriting.</p>
-<p>The horizon also determines what constitutes evidence that the thesis is working — or isn't. Without a horizon, there is no signal, only noise.</p>
-
-<h4>Reading the options</h4>
+<p>A memo without a prediction is just an opinion. The prediction is what turns this position into something you can <strong>learn</strong> from later — by comparing what you believed when you bought to what actually happened.</p>
+<p>It has three parts, and they have to live together:</p>
 <ul class="info-list">
-  <li><strong>1 Year.</strong> Unusual for a genuine compounder. If the thesis depends on compounding, one year is rarely the right window.</li>
-  <li><strong>3 Years.</strong> The minimum meaningful window for a quality business to begin demonstrating durability. Requires visible inflection or re-rating catalyst.</li>
-  <li><strong>5+ Years.</strong> The standard for a true compounder. Enough time for the business to prove the reinvestment runway and for the market to recognize it.</li>
-  <li><strong>Does not meet hurdle — reclassify.</strong> The thesis is real but cannot justify the compounding hurdle. This is not a compounder. Reclassify before proceeding.</li>
-  <li><strong>Unclear — underwriting incomplete.</strong> The work is not done yet. The memo is provisional until this is resolved.</li>
+  <li><strong>The hurdle</strong> — the annual return below which this thesis doesn't justify concentrated capital. Set above the market so the bet is about real outperformance, not just keeping up.</li>
+  <li><strong>The horizon</strong> — the time window over which the thesis plays out. Without one, there is no signal, only noise.</li>
+  <li><strong>Your confidence</strong> — the honest probability you assign to clearing the hurdle over the horizon. Not your hope, not your enthusiasm — your odds.</li>
+</ul>
+<p>Stated together: <em>"I am <strong>X%</strong> confident <strong>AAPL</strong> will compound at <strong>20%</strong> per year over the next <strong>3 years</strong>."</em> That sentence is the bet. The future will tell you whether you were right about the business — and whether your <strong>confidence</strong> was well-calibrated.</p>
+
+<h4>Why this matters</h4>
+<p>Most investors unconsciously rewrite history after the fact — winners feel inevitable, losers feel like things you "never really believed." This product makes that rewriting structurally impossible. The number you choose today is the number you'll see when the horizon ends. That's where learning happens.</p>
+
+<h4>About the horizon</h4>
+<p>Compounding is inseparable from time. A business that compounds at 20% per year over one year is interesting. Over five years, it is transformational. The horizon defines which of those you are actually underwriting — and what counts as evidence the thesis is working.</p>
+<ul class="info-list">
+  <li><strong>1 year.</strong> Unusual for a genuine compounder. If the thesis depends on compounding, one year is rarely the right window — short horizons are usually a mispricing bet wearing a compounder's clothing.</li>
+  <li><strong>3 years.</strong> The minimum meaningful window for a quality business to begin demonstrating durability. Requires visible inflection or a re-rating catalyst.</li>
+  <li><strong>5+ years.</strong> The standard for a true compounder. Enough time for the business to prove the reinvestment runway and for the market to recognize it.</li>
 </ul>
 
-<p><em>Short horizons on compounders are almost always a signal that the thesis is actually a mispricing bet. Be honest about which bet is being placed.</em></p>
+<p><em>Be honest about which bet is being placed. A short horizon on a compounder usually means the underwriting is for a different thesis than the label suggests.</em></p>
 `
   },
   uw_calibration: {
@@ -26078,8 +27193,31 @@ function showInfoModal(key) {
     bodyEl.classList.remove('is-html');
     bodyEl.textContent = body;
   }
-  // Editable hurdle rate — iOS-style scroll wheel constrained to defensible
-  // round numbers. The centered row is the selection.
+  // mfork_decision — prepend a "Why we classified [TICKER] as X" block
+  // that explains the system's pre-baked decision for the current
+  // position. Built dynamically from state so it always matches what
+  // the user sees on their review pages.
+  if (key === 'mfork_decision') {
+    const type   = (state.memo && state.memo.allocationType) || 'active';
+    const ticker = 'AAPL'; // only ticker in the prototype
+    const isActive = type !== 'core';
+    const reason  = isActive
+      ? `<p><strong>${ticker}</strong> is an individual stock — owning it implies a claim that this single security can outperform the broad market through your security selection. That makes it an <strong>Active allocation</strong> by definition: you are betting on this company, not on market exposure.</p>
+         <p>The system pre-classifies all individual securities (single stocks) as Active, and all broad-market ETFs / index funds as Core / Treasury. The label follows from <em>what you own</em>, not from <em>what you intend</em>, because the asset type is what carries the edge claim.</p>`
+      : `<p><strong>${ticker}</strong> is a broadly diversified fund — owning it gives you market exposure rather than a bet on a specific company. That makes it a <strong>Core / Treasury allocation</strong> by definition: you are deciding how capital should sit relative to the market, not claiming an edge over it.</p>
+         <p>The system pre-classifies all broad-market ETFs / index funds as Core / Treasury, and all individual stocks as Active. The label follows from <em>what you own</em>, not from <em>what you intend</em>, because the asset type is what carries the edge claim.</p>`;
+    const whyBlock = `
+      <div class="info-why-classified">
+        <h4>Why ${ticker} is classified as ${isActive ? 'Active' : 'Core / Treasury'}</h4>
+        ${reason}
+        <p class="info-why-readonly"><em>You can't change this classification — it's structural to the asset, not a preference. If you want a different stance for this capital, the answer is to use a different instrument (e.g., a stock for Active, an ETF for Core).</em></p>
+      </div>`;
+    bodyEl.innerHTML = whyBlock + bodyEl.innerHTML;
+  }
+  // Editable hurdle rate — iOS-style scroll wheel constrained to
+  // defensible round numbers. The centered row is the selection.
+  // Wheel sits at the TOP of the body so it's the first thing the
+  // user sees when opening the merged hurdle modal.
   if (m.edit === 'hurdle') {
     const rates = [15, 20, 25, 30, 35, 40, 45, 50];
     const stateRate = state.memo.hurdleRate || state.defaultHurdleRate || 20;
@@ -26087,8 +27225,8 @@ function showInfoModal(key) {
       const label = (r === 50 ? '50%+' : r + '%') + ' per year';
       return `<div class="hurdle-wheel-item" data-rate="${r}">${label}</div>`;
     }).join('');
-    bodyEl.innerHTML += `
-      <div class="hurdle-wheel-picker">
+    const wheelHtml = `
+      <div class="hurdle-wheel-picker hurdle-wheel-picker--lead">
         <div class="hurdle-wheel-eyebrow">Your standard</div>
         <div class="hurdle-wheel">
           <div class="hurdle-wheel-selection"></div>
@@ -26099,6 +27237,9 @@ function showInfoModal(key) {
           </div>
         </div>
       </div>`;
+    // Prepend the wheel to the body so it leads the modal content,
+    // not append (which placed it below the long prose).
+    bodyEl.innerHTML = wheelHtml + bodyEl.innerHTML;
     setTimeout(() => initHurdleWheel(stateRate), 0);
   }
   // Reset scroll to top so the user always lands at the first sentence
